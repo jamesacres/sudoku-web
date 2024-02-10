@@ -1,5 +1,5 @@
 import { calculateCellId } from '@/helpers/calculateId';
-import { SetSelectedCell } from '../Sudoku/Sudoku';
+import { SetAnswer, SetSelectedCell } from '../Sudoku';
 import SudokuInput from '../SudokuInput';
 import { PuzzleBox, PuzzleRowOrColumn } from '@/types/puzzle';
 
@@ -8,16 +8,18 @@ const SudokuBox = ({
   selectedCell,
   setSelectedCell,
   answer,
+  setAnswer,
   validation,
 }: {
   boxId: string;
   selectedCell: string | null;
   setSelectedCell: SetSelectedCell;
   answer: PuzzleBox;
+  setAnswer: SetAnswer;
   validation?: PuzzleBox<boolean | undefined>;
 }) => {
   return (
-    <div className="grid aspect-square grid-cols-3 grid-rows-3 border">
+    <div className="grid aspect-square cursor-pointer grid-cols-3 grid-rows-3 border">
       {Array.from(Array(3)).map((_, y) =>
         Array.from(Array(3)).map((_, x) => {
           const cellId = calculateCellId(boxId, x, y);
@@ -27,6 +29,7 @@ const SudokuBox = ({
               cellId={cellId}
               selectedCell={selectedCell}
               setSelectedCell={setSelectedCell}
+              setAnswer={setAnswer}
               value={answer[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]}
               validation={
                 validation &&

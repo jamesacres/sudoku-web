@@ -8,8 +8,8 @@ import {
   splitCellId,
 } from '@/helpers/calculateId';
 import { checkCell, checkGrid } from '@/helpers/checkAnswer';
-
-export type SetSelectedCell = (_cell: string | null) => void;
+import { Notes } from '@/types/notes';
+import { SetAnswer } from './types';
 
 const Sudoku = ({
   puzzle: { initial, final },
@@ -24,8 +24,8 @@ const Sudoku = ({
     undefined | Puzzle<boolean | undefined>
   >(undefined);
 
-  const setAnswer = React.useCallback(
-    (value: number) => {
+  const setAnswer: SetAnswer = React.useCallback(
+    (value: number | Notes) => {
       if (selectedCell) {
         const { box, cell } = splitCellId(selectedCell);
         if (!initial[box.x][box.y][cell.x][cell.y]) {
@@ -76,11 +76,12 @@ const Sudoku = ({
             const boxId = calculateBoxId(x, y);
             return (
               <SudokuBox
+                key={boxId}
                 boxId={boxId}
                 selectedCell={selectedCell}
                 setSelectedCell={setSelectedCell}
-                key={boxId}
                 answer={answer[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]}
+                setAnswer={setAnswer}
                 validation={
                   validation &&
                   validation[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]
