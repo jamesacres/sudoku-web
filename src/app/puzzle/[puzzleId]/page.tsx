@@ -1,6 +1,7 @@
 'use server';
 import Sudoku from '@/components/Sudoku';
-import puzzles, { Puzzle } from '@/data/puzzles/puzzles';
+import puzzles from '@/data/puzzles/puzzles';
+import { Puzzle } from '@/types/puzzle';
 import { notFound } from 'next/navigation';
 
 const getPuzzle = (puzzleId: number): Puzzle => {

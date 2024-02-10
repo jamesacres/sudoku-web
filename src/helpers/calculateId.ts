@@ -1,3 +1,5 @@
+import { PuzzleRowOrColumn } from '@/types/puzzle';
+
 const calculateBoxId = (x: number, y: number) => {
   return `box:${x},${y}`;
 };
@@ -9,14 +11,19 @@ const calculateCellId = (boxId: string, x: number, y: number) => {
 const splitCellId = (
   cellId: string
 ): {
-  box: { x: number; y: number };
-  cell: { x: number; y: number };
+  box: { x: PuzzleRowOrColumn; y: PuzzleRowOrColumn };
+  cell: { x: PuzzleRowOrColumn; y: PuzzleRowOrColumn };
 } => {
   const matches = Array.from(
     cellId.matchAll(
       new RegExp('box:([0-3]),([0-3]),cell:([0-3]),([0-3])', 'g')
     ),
-    (m) => [Number(m[1]), Number(m[2]), Number(m[3]), Number(m[4])]
+    (m) => [
+      Number(m[1]) as PuzzleRowOrColumn,
+      Number(m[2]) as PuzzleRowOrColumn,
+      Number(m[3]) as PuzzleRowOrColumn,
+      Number(m[4]) as PuzzleRowOrColumn,
+    ]
   )[0];
   return {
     box: { x: matches[0], y: matches[1] },
@@ -35,44 +42,44 @@ const calculateNextCellId = (
   if (direction === 'down') {
     if (cell.y === 2) {
       if (box.y < 2) {
-        nextBox.y = nextBox.y + 1;
+        nextBox.y = (nextBox.y + 1) as PuzzleRowOrColumn;
         nextCell.y = 0;
       }
     } else {
-      nextCell.y = nextCell.y + 1;
+      nextCell.y = (nextCell.y + 1) as PuzzleRowOrColumn;
     }
   }
 
   if (direction === 'up') {
     if (cell.y === 0) {
       if (box.y > 0) {
-        nextBox.y = nextBox.y - 1;
+        nextBox.y = (nextBox.y - 1) as PuzzleRowOrColumn;
         nextCell.y = 2;
       }
     } else {
-      nextCell.y = nextCell.y - 1;
+      nextCell.y = (nextCell.y - 1) as PuzzleRowOrColumn;
     }
   }
 
   if (direction === 'left') {
     if (cell.x === 0) {
       if (box.x > 0) {
-        nextBox.x = nextBox.x - 1;
+        nextBox.x = (nextBox.x - 1) as PuzzleRowOrColumn;
         nextCell.x = 2;
       }
     } else {
-      nextCell.x = nextCell.x - 1;
+      nextCell.x = (nextCell.x - 1) as PuzzleRowOrColumn;
     }
   }
 
   if (direction === 'right') {
     if (cell.x === 2) {
       if (box.x < 2) {
-        nextBox.x = nextBox.x + 1;
+        nextBox.x = (nextBox.x + 1) as PuzzleRowOrColumn;
         nextCell.x = 0;
       }
     } else {
-      nextCell.x = nextCell.x + 1;
+      nextCell.x = (nextCell.x + 1) as PuzzleRowOrColumn;
     }
   }
 
@@ -83,4 +90,4 @@ const calculateNextCellId = (
   );
 };
 
-export { calculateBoxId, calculateCellId, calculateNextCellId };
+export { calculateBoxId, calculateCellId, splitCellId, calculateNextCellId };

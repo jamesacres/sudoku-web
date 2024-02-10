@@ -18,7 +18,7 @@ const SudokuInput = ({
       onClick={(_) => setSelectedCell(cellId)}
       className={`flex h-full w-full items-center justify-center border text-center text-3xl text-black dark:text-white ${isSelected ? 'bg-red-600' : undefined}`}
     >
-      {value}
+      {!!value && value}
     </div>
   );
 };

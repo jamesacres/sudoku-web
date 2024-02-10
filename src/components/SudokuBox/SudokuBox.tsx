@@ -1,15 +1,18 @@
 import { calculateCellId } from '@/helpers/calculateId';
 import { SetSelectedCell } from '../Sudoku/Sudoku';
 import SudokuInput from '../SudokuInput';
+import { PuzzleBox, PuzzleRowOrColumn } from '@/types/puzzle';
 
 const SudokuBox = ({
   boxId,
   selectedCell,
   setSelectedCell,
+  answer,
 }: {
   boxId: string;
   selectedCell: string | null;
   setSelectedCell: SetSelectedCell;
+  answer: PuzzleBox;
 }) => {
   return (
     <div className="grid aspect-square grid-cols-3 grid-rows-3 border">
@@ -22,7 +25,7 @@ const SudokuBox = ({
               cellId={cellId}
               selectedCell={selectedCell}
               setSelectedCell={setSelectedCell}
-              value={y}
+              value={answer[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]}
             />
           );
         })
