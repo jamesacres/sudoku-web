@@ -7,7 +7,7 @@ const SudokuInput = ({
   value,
 }: {
   cellId: string;
-  selectedCell: string;
+  selectedCell: string | null;
   setSelectedCell: SetSelectedCell;
   value?: number;
 }) => {

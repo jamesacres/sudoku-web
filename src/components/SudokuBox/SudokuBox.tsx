@@ -1,3 +1,4 @@
+import { calculateCellId } from '@/helpers/calculateId';
 import { SetSelectedCell } from '../Sudoku/Sudoku';
 import SudokuInput from '../SudokuInput';
 
@@ -7,21 +8,21 @@ const SudokuBox = ({
   setSelectedCell,
 }: {
   boxId: string;
-  selectedCell: string;
+  selectedCell: string | null;
   setSelectedCell: SetSelectedCell;
 }) => {
   return (
     <div className="grid aspect-square grid-cols-3 grid-rows-3 border">
-      {Array.from(Array(3)).map((_, i) =>
-        Array.from(Array(3)).map((_, j) => {
-          const cellId = `${boxId},cell:${i},${j}`;
+      {Array.from(Array(3)).map((_, y) =>
+        Array.from(Array(3)).map((_, x) => {
+          const cellId = calculateCellId(boxId, x, y);
           return (
             <SudokuInput
               key={cellId}
               cellId={cellId}
               selectedCell={selectedCell}
               setSelectedCell={setSelectedCell}
-              value={i}
+              value={y}
             />
           );
         })
