@@ -4,7 +4,7 @@ import puzzles from '@/data/puzzles/puzzles';
 import { Puzzle } from '@/types/puzzle';
 import { notFound } from 'next/navigation';
 
-const getPuzzle = (puzzleId: number): Puzzle => {
+const getPuzzle = (puzzleId: number): { initial: Puzzle; final: Puzzle } => {
   return puzzles[puzzleId];
 };
 

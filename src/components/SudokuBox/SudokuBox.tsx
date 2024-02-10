@@ -8,11 +8,13 @@ const SudokuBox = ({
   selectedCell,
   setSelectedCell,
   answer,
+  validation,
 }: {
   boxId: string;
   selectedCell: string | null;
   setSelectedCell: SetSelectedCell;
   answer: PuzzleBox;
+  validation?: PuzzleBox<boolean | undefined>;
 }) => {
   return (
     <div className="grid aspect-square grid-cols-3 grid-rows-3 border">
@@ -26,6 +28,10 @@ const SudokuBox = ({
               selectedCell={selectedCell}
               setSelectedCell={setSelectedCell}
               value={answer[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]}
+              validation={
+                validation &&
+                validation[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]
+              }
             />
           );
         })

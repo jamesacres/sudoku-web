@@ -7,27 +7,40 @@ import {
   calculateNextCellId,
   splitCellId,
 } from '@/helpers/calculateId';
+import { checkAnswer } from '@/helpers/checkAnswer';
 
 export type SetSelectedCell = (_cell: string | null) => void;
 
-const Sudoku = ({ puzzle }: { puzzle: Puzzle }) => {
+const Sudoku = ({
+  puzzle: { initial, final },
+}: {
+  puzzle: { initial: Puzzle; final: Puzzle };
+}) => {
   const [selectedCell, setSelectedCell] = React.useState<null | string>(null);
   const [answer, setAnswerState] = React.useState<Puzzle>(
-    structuredClone(puzzle)
+    structuredClone(initial)
   );
+  const [validation, setValidation] = React.useState<
+    undefined | Puzzle<boolean | undefined>
+  >(undefined);
+
   const setAnswer = React.useCallback(
     (value: number) => {
       if (selectedCell) {
         const { box, cell } = splitCellId(selectedCell);
-        if (!puzzle[box.x][box.y][cell.x][cell.y]) {
+        if (!initial[box.x][box.y][cell.x][cell.y]) {
           const nextAnswer = structuredClone(answer);
           nextAnswer[box.x][box.y][cell.x][cell.y] = value;
           setAnswerState(nextAnswer);
         }
       }
     },
-    [puzzle, answer, selectedCell]
+    [initial, answer, selectedCell]
   );
+
+  React.useEffect(() => {
+    setValidation(undefined);
+  }, [answer, selectedCell]);
 
   React.useEffect(() => {
     const keydownHandler = (e: KeyboardEvent) => {
@@ -68,10 +81,22 @@ const Sudoku = ({ puzzle }: { puzzle: Puzzle }) => {
                 setSelectedCell={setSelectedCell}
                 key={boxId}
                 answer={answer[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]}
+                validation={
+                  validation &&
+                  validation[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]
+                }
               />
             );
           })
         )}
+      </div>
+      <div className="mt-4 border-t-2 border-t-pink-500 pt-4">
+        <button
+          onClick={() => setValidation(checkAnswer(initial, final, answer))}
+          className="rounded bg-pink-500 px-4 py-2 font-bold text-white hover:bg-pink-700"
+        >
+          Check Answer
+        </button>
       </div>
     </div>
   );
