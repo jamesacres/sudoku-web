@@ -19,7 +19,7 @@ const SudokuInput = ({
   if (value && validation !== undefined) {
     backgroundClass = validation ? 'bg-green-600' : 'bg-red-600';
   } else if (isSelected) {
-    backgroundClass = 'bg-blue-600';
+    backgroundClass = 'dark:bg-blue-600 bg-blue-300';
   }
 
   return (
