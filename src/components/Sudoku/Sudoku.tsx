@@ -18,9 +18,50 @@ const Sudoku = ({
   puzzle: { initial: Puzzle; final: Puzzle };
 }) => {
   const [selectedCell, setSelectedCell] = React.useState<null | string>(null);
-  const [answer, setAnswerState] = React.useState<Puzzle>(
-    structuredClone(initial)
+  const [answerStack, setAnswerStack] = React.useState<Puzzle[]>([
+    structuredClone(initial),
+  ]);
+  const answer = answerStack[answerStack.length - 1];
+  const [redoAnswerStack, setRedoAnswerStack] = React.useState<Puzzle[]>([]);
+  const pushAnswer = React.useCallback(
+    (nextAnswer: Puzzle) => {
+      setAnswerStack([...answerStack, nextAnswer]);
+      setRedoAnswerStack([]);
+    },
+    [answerStack]
   );
+  // Don't undo initial state
+  const isUndoDisabled = answerStack.length < 2;
+  const undo = React.useCallback(() => {
+    if (!isUndoDisabled) {
+      const lastAnswer = answerStack[answerStack.length - 1];
+      setRedoAnswerStack([...redoAnswerStack, lastAnswer]);
+      setAnswerStack(answerStack.slice(0, answerStack.length - 1));
+    }
+  }, [isUndoDisabled, answerStack, redoAnswerStack]);
+  const isRedoDisabled = !redoAnswerStack.length;
+  const redo = React.useCallback(() => {
+    if (!isRedoDisabled) {
+      const lastUndo = redoAnswerStack[redoAnswerStack.length - 1];
+      setAnswerStack([...answerStack, lastUndo]);
+      setRedoAnswerStack(redoAnswerStack.slice(0, redoAnswerStack.length - 1));
+    }
+  }, [isRedoDisabled, answerStack, redoAnswerStack]);
+
+  const setAnswer: SetAnswer = React.useCallback(
+    (value: number | Notes) => {
+      if (selectedCell) {
+        const { box, cell } = splitCellId(selectedCell);
+        if (!initial[box.x][box.y][cell.x][cell.y]) {
+          const nextAnswer = structuredClone(answer);
+          nextAnswer[box.x][box.y][cell.x][cell.y] = value;
+          pushAnswer(nextAnswer);
+        }
+      }
+    },
+    [initial, answer, selectedCell, pushAnswer]
+  );
+
   const [validation, setValidation] = React.useState<
     undefined | Puzzle<boolean | undefined>
   >(undefined);
@@ -33,20 +74,6 @@ const Sudoku = ({
       selectedCell &&
       setValidation(checkCell(selectedCell, initial, final, answer)),
     [selectedCell, initial, final, answer]
-  );
-
-  const setAnswer: SetAnswer = React.useCallback(
-    (value: number | Notes) => {
-      if (selectedCell) {
-        const { box, cell } = splitCellId(selectedCell);
-        if (!initial[box.x][box.y][cell.x][cell.y]) {
-          const nextAnswer = structuredClone(answer);
-          nextAnswer[box.x][box.y][cell.x][cell.y] = value;
-          setAnswerState(nextAnswer);
-        }
-      }
-    },
-    [initial, answer, selectedCell]
   );
 
   React.useEffect(() => {
@@ -106,6 +133,10 @@ const Sudoku = ({
         isValidateCellDisabled={!selectedCell}
         validateCell={validateCell}
         validateGrid={validateGrid}
+        isUndoDisabled={isUndoDisabled}
+        isRedoDisabled={isRedoDisabled}
+        undo={undo}
+        redo={redo}
       />
     </div>
   );
