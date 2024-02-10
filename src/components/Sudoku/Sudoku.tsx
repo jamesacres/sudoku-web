@@ -12,7 +12,22 @@ export type SetSelectedCell = (_cell: string | null) => void;
 
 const Sudoku = ({ puzzle }: { puzzle: Puzzle }) => {
   const [selectedCell, setSelectedCell] = React.useState<null | string>(null);
-  const [answer, setAnswer] = React.useState<Puzzle>(structuredClone(puzzle));
+  const [answer, setAnswerState] = React.useState<Puzzle>(
+    structuredClone(puzzle)
+  );
+  const setAnswer = React.useCallback(
+    (value: number) => {
+      if (selectedCell) {
+        const { box, cell } = splitCellId(selectedCell);
+        if (!puzzle[box.x][box.y][cell.x][cell.y]) {
+          const nextAnswer = structuredClone(answer);
+          nextAnswer[box.x][box.y][cell.x][cell.y] = value;
+          setAnswerState(nextAnswer);
+        }
+      }
+    },
+    [puzzle, answer, selectedCell]
+  );
 
   React.useEffect(() => {
     const keydownHandler = (e: KeyboardEvent) => {
@@ -27,15 +42,9 @@ const Sudoku = ({ puzzle }: { puzzle: Puzzle }) => {
         } else if (e.key === 'ArrowRight') {
           nextCell = calculateNextCellId(selectedCell, 'right');
         } else if (e.key === 'Backspace' || e.key === 'Delete') {
-          const { box, cell } = splitCellId(selectedCell);
-          const nextAnswer = structuredClone(answer);
-          nextAnswer[box.x][box.y][cell.x][cell.y] = 0;
-          setAnswer(nextAnswer);
+          setAnswer(0);
         } else if (/[1-9]/.test(e.key)) {
-          const { box, cell } = splitCellId(selectedCell);
-          const nextAnswer = structuredClone(answer);
-          nextAnswer[box.x][box.y][cell.x][cell.y] = Number(e.key);
-          setAnswer(nextAnswer);
+          setAnswer(Number(e.key));
         }
         if (nextCell) {
           setSelectedCell(nextCell);
@@ -44,7 +53,7 @@ const Sudoku = ({ puzzle }: { puzzle: Puzzle }) => {
     };
     window.addEventListener('keydown', keydownHandler);
     return () => window.removeEventListener('keydown', keydownHandler);
-  }, [selectedCell, setSelectedCell, answer, setAnswer]);
+  }, [selectedCell, setSelectedCell, setAnswer]);
 
   return (
     <div className="container mx-auto max-w-screen-md">
