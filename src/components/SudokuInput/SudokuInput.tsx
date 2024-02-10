@@ -1,4 +1,7 @@
+import React from 'react';
 import { SetSelectedCell } from '../Sudoku/Sudoku';
+import SudokuInputNotes from '../SudokuInputNotes';
+import { Notes, ToggleNote } from '@/types/notes';
 
 const SudokuInput = ({
   cellId,
@@ -13,6 +16,12 @@ const SudokuInput = ({
   value?: number;
   validation?: boolean;
 }) => {
+  const [notes, setNotes] = React.useState<Notes>({});
+  const toggleNote: ToggleNote = (value: number) => {
+    const nextNotes = { ...notes, [value]: !notes[value] };
+    setNotes(nextNotes);
+  };
+
   const isSelected = selectedCell === cellId;
 
   let backgroundClass = undefined;
@@ -24,11 +33,23 @@ const SudokuInput = ({
 
   return (
     <div
-      data-cell-id={cellId}
       onClick={(_) => setSelectedCell(cellId)}
-      className={`flex h-full w-full items-center justify-center border text-center text-3xl text-black dark:text-white ${backgroundClass}`}
+      className={`flex h-full w-full items-center justify-center border ${backgroundClass}`}
     >
-      {!!value && value}
+      {!value ? (
+        <SudokuInputNotes
+          isSelected={isSelected}
+          notes={notes}
+          toggleNote={toggleNote}
+        />
+      ) : (
+        <div
+          data-cell-id={cellId}
+          className={`text-center text-3xl text-black dark:text-white`}
+        >
+          {!!value && value}
+        </div>
+      )}
     </div>
   );
 };
