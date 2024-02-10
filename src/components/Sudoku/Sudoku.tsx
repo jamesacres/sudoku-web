@@ -7,7 +7,7 @@ import {
   calculateNextCellId,
   splitCellId,
 } from '@/helpers/calculateId';
-import { checkAnswer } from '@/helpers/checkAnswer';
+import { checkCell, checkGrid } from '@/helpers/checkAnswer';
 
 export type SetSelectedCell = (_cell: string | null) => void;
 
@@ -92,10 +92,20 @@ const Sudoku = ({
       </div>
       <div className="mt-4 border-t-2 border-t-pink-500 pt-4">
         <button
-          onClick={() => setValidation(checkAnswer(initial, final, answer))}
+          onClick={() => setValidation(checkGrid(initial, final, answer))}
           className="rounded bg-pink-500 px-4 py-2 font-bold text-white hover:bg-pink-700"
         >
-          Check Answer
+          Check Grid
+        </button>
+        <button
+          disabled={!selectedCell}
+          onClick={() =>
+            selectedCell &&
+            setValidation(checkCell(selectedCell, initial, final, answer))
+          }
+          className="ml-4 rounded bg-pink-500 px-4 py-2 font-bold text-white hover:bg-pink-700 disabled:bg-pink-300"
+        >
+          Check Cell
         </button>
       </div>
     </div>

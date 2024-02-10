@@ -1,13 +1,16 @@
 import { Puzzle, PuzzleRowOrColumn } from '@/types/puzzle';
+import { splitCellId } from './calculateId';
 
-export const checkAnswer = (
+// eslint-disable-next-line
+const emptyValidatation = (): Puzzle<boolean|undefined> => [[[[undefined,undefined,undefined],[undefined,undefined,undefined],[undefined,undefined,undefined]],[[undefined,undefined,undefined],[undefined,undefined,undefined],[undefined,undefined,undefined]],[[undefined,undefined,undefined],[undefined,undefined,undefined],[undefined,undefined,undefined]]],[[[undefined,undefined,undefined],[undefined,undefined,undefined],[undefined,undefined,undefined]],[[undefined,undefined,undefined],[undefined,undefined,undefined],[undefined,undefined,undefined]],[[undefined,undefined,undefined],[undefined,undefined,undefined],[undefined,undefined,undefined]]],[[[undefined,undefined,undefined],[undefined,undefined,undefined],[undefined,undefined,undefined]],[[undefined,undefined,undefined],[undefined,undefined,undefined],[undefined,undefined,undefined]],[[undefined,undefined,undefined],[undefined,undefined,undefined],[undefined,undefined,undefined]]]];
+
+const checkGrid = (
   initial: Puzzle,
   final: Puzzle,
   answer: Puzzle
 ): Puzzle<boolean | undefined> => {
   const rowOrColumn: PuzzleRowOrColumn[] = [0, 1, 2];
-  // eslint-disable-next-line
-  const validation: Puzzle<boolean|undefined> = [[[[undefined,undefined,undefined],[undefined,undefined,undefined],[undefined,undefined,undefined]],[[undefined,undefined,undefined],[undefined,undefined,undefined],[undefined,undefined,undefined]],[[undefined,undefined,undefined],[undefined,undefined,undefined],[undefined,undefined,undefined]]],[[[undefined,undefined,undefined],[undefined,undefined,undefined],[undefined,undefined,undefined]],[[undefined,undefined,undefined],[undefined,undefined,undefined],[undefined,undefined,undefined]],[[undefined,undefined,undefined],[undefined,undefined,undefined],[undefined,undefined,undefined]]],[[[undefined,undefined,undefined],[undefined,undefined,undefined],[undefined,undefined,undefined]],[[undefined,undefined,undefined],[undefined,undefined,undefined],[undefined,undefined,undefined]],[[undefined,undefined,undefined],[undefined,undefined,undefined],[undefined,undefined,undefined]]]];
+  const validation = emptyValidatation();
   for (const boxX of rowOrColumn) {
     for (const boxY of rowOrColumn) {
       for (const cellX of rowOrColumn) {
@@ -24,3 +27,22 @@ export const checkAnswer = (
   }
   return validation;
 };
+
+const checkCell = (
+  selectedCell: string,
+  initial: Puzzle,
+  final: Puzzle,
+  answer: Puzzle
+): Puzzle<boolean | undefined> => {
+  const validation = emptyValidatation();
+  const { box, cell } = splitCellId(selectedCell);
+  if (!initial[box.x][box.y][cell.x][cell.y]) {
+    const isValid =
+      final[box.x][box.y][cell.x][cell.y] ===
+      answer[box.x][box.y][cell.x][cell.y];
+    validation[box.x][box.y][cell.x][cell.y] = isValid;
+  }
+  return validation;
+};
+
+export { checkCell, checkGrid };
