@@ -10,6 +10,7 @@ import {
 import { checkCell, checkGrid } from '@/helpers/checkAnswer';
 import { Notes } from '@/types/notes';
 import { SetAnswer } from './types';
+import SudokuControls from '../SudokuControls';
 
 const Sudoku = ({
   puzzle: { initial, final },
@@ -23,6 +24,16 @@ const Sudoku = ({
   const [validation, setValidation] = React.useState<
     undefined | Puzzle<boolean | undefined>
   >(undefined);
+  const validateGrid = React.useCallback(
+    () => setValidation(checkGrid(initial, final, answer)),
+    [initial, final, answer]
+  );
+  const validateCell = React.useCallback(
+    () =>
+      selectedCell &&
+      setValidation(checkCell(selectedCell, initial, final, answer)),
+    [selectedCell, initial, final, answer]
+  );
 
   const setAnswer: SetAnswer = React.useCallback(
     (value: number | Notes) => {
@@ -66,7 +77,7 @@ const Sudoku = ({
     };
     window.addEventListener('keydown', keydownHandler);
     return () => window.removeEventListener('keydown', keydownHandler);
-  }, [selectedCell, setSelectedCell, setAnswer]);
+  }, [selectedCell, setAnswer]);
 
   return (
     <div className="container mx-auto max-w-screen-md">
@@ -91,24 +102,11 @@ const Sudoku = ({
           })
         )}
       </div>
-      <div className="mt-4 border-t-2 border-t-pink-500 pt-4">
-        <button
-          onClick={() => setValidation(checkGrid(initial, final, answer))}
-          className="rounded bg-pink-500 px-4 py-2 font-bold text-white hover:bg-pink-700"
-        >
-          Check Grid
-        </button>
-        <button
-          disabled={!selectedCell}
-          onClick={() =>
-            selectedCell &&
-            setValidation(checkCell(selectedCell, initial, final, answer))
-          }
-          className="ml-4 rounded bg-pink-500 px-4 py-2 font-bold text-white hover:bg-pink-700 disabled:bg-pink-300"
-        >
-          Check Cell
-        </button>
-      </div>
+      <SudokuControls
+        isValidateCellDisabled={!selectedCell}
+        validateCell={validateCell}
+        validateGrid={validateGrid}
+      />
     </div>
   );
 };
