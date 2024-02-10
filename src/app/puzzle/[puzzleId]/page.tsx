@@ -19,7 +19,7 @@ export default async function PuzzlePage({
   }
   return (
     <div>
-      <Sudoku puzzle={puzzle} />
+      <Sudoku puzzleId={puzzleId} puzzle={puzzle} />
     </div>
   );
 }

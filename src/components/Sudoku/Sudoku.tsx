@@ -12,17 +12,37 @@ import { Notes } from '@/types/notes';
 import { SetAnswer } from './types';
 import SudokuControls from '../SudokuControls';
 
+const getSavedState = (puzzleId: string) => {
+  try {
+    const savedState = localStorage.getItem(`sudoku-${puzzleId}`);
+    if (savedState) {
+      return JSON.parse(savedState);
+    }
+  } catch (e) {
+    console.error(e);
+  }
+  return undefined;
+};
+
+const saveState = (puzzleId: string, state: Puzzle[]) => {
+  localStorage.setItem(`sudoku-${puzzleId}`, JSON.stringify(state));
+};
+
 const Sudoku = ({
+  puzzleId,
   puzzle: { initial, final },
 }: {
+  puzzleId: string;
   puzzle: { initial: Puzzle; final: Puzzle };
 }) => {
   const [selectedCell, setSelectedCell] = React.useState<null | string>(null);
   const [answerStack, setAnswerStack] = React.useState<Puzzle[]>([
     structuredClone(initial),
   ]);
-  const answer = answerStack[answerStack.length - 1];
   const [redoAnswerStack, setRedoAnswerStack] = React.useState<Puzzle[]>([]);
+
+  // Answers
+  const answer = answerStack[answerStack.length - 1];
   const pushAnswer = React.useCallback(
     (nextAnswer: Puzzle) => {
       setAnswerStack([...answerStack, nextAnswer]);
@@ -30,6 +50,21 @@ const Sudoku = ({
     },
     [answerStack]
   );
+  const setAnswer: SetAnswer = React.useCallback(
+    (value: number | Notes) => {
+      if (selectedCell) {
+        const { box, cell } = splitCellId(selectedCell);
+        if (!initial[box.x][box.y][cell.x][cell.y]) {
+          const nextAnswer = structuredClone(answer);
+          nextAnswer[box.x][box.y][cell.x][cell.y] = value;
+          pushAnswer(nextAnswer);
+        }
+      }
+    },
+    [initial, answer, selectedCell, pushAnswer]
+  );
+
+  // Undo and Redo
   // Don't undo initial state
   const isUndoDisabled = answerStack.length < 2;
   const undo = React.useCallback(() => {
@@ -48,20 +83,20 @@ const Sudoku = ({
     }
   }, [isRedoDisabled, answerStack, redoAnswerStack]);
 
-  const setAnswer: SetAnswer = React.useCallback(
-    (value: number | Notes) => {
-      if (selectedCell) {
-        const { box, cell } = splitCellId(selectedCell);
-        if (!initial[box.x][box.y][cell.x][cell.y]) {
-          const nextAnswer = structuredClone(answer);
-          nextAnswer[box.x][box.y][cell.x][cell.y] = value;
-          pushAnswer(nextAnswer);
-        }
-      }
-    },
-    [initial, answer, selectedCell, pushAnswer]
-  );
+  // Restore and save state
+  React.useEffect(() => {
+    const savedState = getSavedState(puzzleId);
+    if (savedState) {
+      setAnswerStack(savedState);
+    }
+  }, [puzzleId]);
+  React.useEffect(() => {
+    if (answerStack.length > 1) {
+      saveState(puzzleId, answerStack);
+    }
+  }, [puzzleId, answerStack]);
 
+  // Validation
   const [validation, setValidation] = React.useState<
     undefined | Puzzle<boolean | undefined>
   >(undefined);
@@ -75,11 +110,11 @@ const Sudoku = ({
       setValidation(checkCell(selectedCell, initial, final, answer)),
     [selectedCell, initial, final, answer]
   );
-
   React.useEffect(() => {
     setValidation(undefined);
   }, [answer, selectedCell]);
 
+  // Handle keyboard
   React.useEffect(() => {
     const keydownHandler = (e: KeyboardEvent) => {
       if (selectedCell) {
