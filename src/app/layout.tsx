@@ -3,7 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import React from 'react';
 import { Providers } from './providers';
-import ThemeSwitch from '@/components/ThemeSwitch';
+import Header from '@/components/Header';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -21,7 +21,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <Providers>
-          <ThemeSwitch />
+          <Header />
           {children}
         </Providers>
       </body>
