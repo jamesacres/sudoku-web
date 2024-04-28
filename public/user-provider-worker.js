@@ -48,7 +48,6 @@
 
     if (isApiUrl(destURL)) {
       // Automatically send auth header to API URLs
-      console.info('accessToken', accessToken);
       if (accessToken) {
         // TODO check if accessToken has expired, if it has refresh it
         // TODO confirm if that gets intercepted..

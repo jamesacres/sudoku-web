@@ -30,6 +30,8 @@ const saveState = (puzzleId: string, state: Puzzle[]) => {
 };
 
 const fetchSession = async () => {
+  // TODO move somewhere sensible
+  // TODO add handler for all requests that if we ever get a 401 we should logout the user
   const response = await fetch(
     'https://api.bubblyclouds.com/sessions/sudoku-1'
   );
