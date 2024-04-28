@@ -91,6 +91,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         };
         codeExchange();
       } else {
+        // TODO get from worker instead of storage?
         // Set user if not expired
         const userJson = sessionStorage.getItem('user');
         const userExpiry = sessionStorage.getItem('userExpiry');
