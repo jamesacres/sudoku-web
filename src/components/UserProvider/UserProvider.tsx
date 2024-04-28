@@ -36,6 +36,8 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         // Worker in public directory, intercepts our requests to inject and cache tokens for us
         await navigator.serviceWorker.register('/user-provider-worker.js');
         await navigator.serviceWorker.ready;
+        // TODO new tab currently loses user in sessionStorage - restore it from worker
+        // TODO if worker has no tokens, ensure we don't restore user
       }
       if (window.location.pathname === '/auth') {
         setIsLoggingIn(true);
