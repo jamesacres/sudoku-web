@@ -11,6 +11,7 @@ import { checkCell, checkGrid } from '@/helpers/checkAnswer';
 import { Notes } from '@/types/notes';
 import { SetAnswer } from './types';
 import SudokuControls from '../SudokuControls';
+import { UserContext } from '../UserProvider';
 
 const getSavedState = (puzzleId: string) => {
   try {
@@ -28,6 +29,16 @@ const saveState = (puzzleId: string, state: Puzzle[]) => {
   localStorage.setItem(`sudoku-${puzzleId}`, JSON.stringify(state));
 };
 
+const fetchSession = async () => {
+  const response = await fetch(
+    'https://api.bubblyclouds.com/sessions/sudoku-1'
+  );
+  if (response.ok) {
+    const session = await response.json();
+    console.info(session);
+  }
+};
+
 const Sudoku = ({
   puzzleId,
   puzzle: { initial, final },
@@ -35,6 +46,12 @@ const Sudoku = ({
   puzzleId: string;
   puzzle: { initial: Puzzle; final: Puzzle };
 }) => {
+  const { user } = React.useContext(UserContext) || {};
+  if (user) {
+    // TODO only fetch when needed
+    fetchSession();
+  }
+
   const [selectedCell, setSelectedCell] = React.useState<null | string>(null);
   const [answerStack, setAnswerStack] = React.useState<Puzzle[]>([
     structuredClone(initial),

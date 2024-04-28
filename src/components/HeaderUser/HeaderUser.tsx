@@ -1,15 +1,31 @@
 'use client';
 
 import React from 'react';
+import { UserContext } from '../UserProvider';
 
 const HeaderUser = () => {
-  const [isLoggingIn, setIsLoggingIn] = React.useState(false);
+  const { isLoggingIn, loginRedirect, user } =
+    React.useContext(UserContext) || {};
+
   const login = () => {
-    setIsLoggingIn(true);
-    window.location.href =
-      'https://auth.bubblyclouds.com/oidc/auth?state=3-aF1UZtvFL7iLG-dkFCmcqE.fZ0FAmpvfZB36BUx3d&redirect_uri=http://localhost:3000/cb&client_id=bubbly-sudoku&response_type=code&scope=openid profile&code_challenge=ZqoAqOr3wIoURrtuxBmgcb5svVDDPaaQzEMzkHwT2Uo&code_challenge_method=S256&resource=https://bubbly-sudoku.com';
+    if (loginRedirect) {
+      loginRedirect();
+    }
   };
-  return (
+  return user ? (
+    <pre>
+      {user.picture ? (
+        <img
+          src={user.picture}
+          alt={user.name || 'user'}
+          width={25}
+          height={25}
+        />
+      ) : (
+        <></>
+      )}
+    </pre>
+  ) : (
     <button
       disabled={isLoggingIn}
       onClick={() => login()}
