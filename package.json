@@ -10,7 +10,6 @@
     "lint:fix": "next lint --fix"
   },
   "dependencies": {
-    "jwt-decode": "^4.0.0",
     "next": "^14.1.0",
     "next-themes": "^0.2.1",
     "react": "^18",

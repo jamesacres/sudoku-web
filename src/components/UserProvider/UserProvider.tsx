@@ -1,17 +1,9 @@
 'use client';
-import { JwtPayload, jwtDecode } from 'jwt-decode';
+import { UserProfile } from '@/types/userProfile';
 import React from 'react';
 
-interface UserProfile extends JwtPayload {
-  sub: string;
-  name?: string;
-  given_name?: string;
-  family_name?: string;
-  picture?: string;
-}
-
 interface UserContextInterface {
-  user: UserProfile;
+  user?: UserProfile;
   loginRedirect: () => void;
   isLoggingIn: boolean;
 }
@@ -32,12 +24,22 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 
   React.useEffect(() => {
     const asyncEffect = async () => {
+      let registration;
       if ('serviceWorker' in navigator) {
         // Worker in public directory, intercepts our requests to inject and cache tokens for us
         await navigator.serviceWorker.register('/user-provider-worker.js');
-        await navigator.serviceWorker.ready;
-        // TODO new tab currently loses user in sessionStorage - restore it from worker
-        // TODO if worker has no tokens, ensure we don't restore user
+        registration = await navigator.serviceWorker.ready;
+
+        // Set user after receiving a getUser result from our postMessage
+        navigator.serviceWorker.addEventListener('message', (event) => {
+          if (event.data.type === 'getUser') {
+            const { user } = event.data;
+            if (user) {
+              console.info('user received from getUser event', user);
+              setUser(user);
+            }
+          }
+        });
       }
       if (window.location.pathname === '/auth') {
         setIsLoggingIn(true);
@@ -68,19 +70,13 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
                 body: params.toString(),
               });
               if (response.ok) {
-                const json = await response.json();
-                if (json.id_token) {
-                  const user: UserProfile = jwtDecode(json.id_token);
-                  sessionStorage.setItem('user', JSON.stringify(user));
-                  const userExpiry = new Date();
-                  userExpiry.setTime(userExpiry.getTime() + 14 * 86400 * 1000);
-                  sessionStorage.setItem(
-                    'userExpiry',
-                    userExpiry.toISOString()
-                  );
+                // Modified response from public/user-provider-worker.js
+                const { user } = await response.json();
+                if (user) {
+                  console.info('user received from code exchange', user);
                   setUser(user);
-                  // TODO navigate back to previous
                 }
+                // TODO navigate back to previous
               }
             }
           } catch (e) {
@@ -91,18 +87,8 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         };
         codeExchange();
       } else {
-        // TODO get from worker instead of storage?
-        // Set user if not expired
-        const userJson = sessionStorage.getItem('user');
-        const userExpiry = sessionStorage.getItem('userExpiry');
-        if (
-          userJson &&
-          userJson.startsWith('{') &&
-          userExpiry &&
-          new Date(userExpiry).getTime() > new Date().getTime()
-        ) {
-          setUser(JSON.parse(userJson));
-        }
+        // Request the worker sends us a user result
+        registration?.active?.postMessage('getUser');
       }
     };
     asyncEffect();

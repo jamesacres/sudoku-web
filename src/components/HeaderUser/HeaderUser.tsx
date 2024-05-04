@@ -12,6 +12,7 @@ const HeaderUser = () => {
       loginRedirect();
     }
   };
+  console.info(user?.picture);
   return user ? (
     <pre>
       {user.picture ? (
