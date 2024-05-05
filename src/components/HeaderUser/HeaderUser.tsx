@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { UserContext } from '../UserProvider';
+import Image from 'next/image';
 
 const HeaderUser = () => {
   const { isLoggingIn, loginRedirect, user } =
@@ -16,7 +17,7 @@ const HeaderUser = () => {
   return user ? (
     <pre>
       {user.picture ? (
-        <img
+        <Image
           src={user.picture}
           alt={user.name || 'user'}
           width={25}

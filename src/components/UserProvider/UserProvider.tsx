@@ -1,5 +1,6 @@
 'use client';
 import { UserProfile } from '@/types/userProfile';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 
 interface UserContextInterface {
@@ -13,17 +14,80 @@ export const UserContext = React.createContext<
 >(undefined);
 
 let isExhanging = false;
+let isInitialising = false;
 const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [user, setUser] = React.useState<UserProfile | undefined>(undefined);
   const [isLoggingIn, setIsLoggingIn] = React.useState(false);
+  const router = useRouter();
 
   const iss = 'https://auth.bubblyclouds.com';
   const clientId = 'bubbly-sudoku';
 
+  const loginRedirect = React.useCallback(() => {
+    console.info('loginRedirect..');
+    setIsLoggingIn(true);
+    sessionStorage.setItem('restorePathname', window.location.pathname);
+
+    // TODO store random state
+    // TODO store code_challenge
+
+    const state = '3-aF1UZtvFL7iLG-dkFCmcqE.fZ0FAmpvfZB36BUx3d';
+    const redirectUri = `${window.location.origin}/auth`;
+    const scope = [
+      'openid',
+      'profile',
+      'offline_access',
+      'parties.write',
+      'members.write',
+      'invites.write',
+      'sessions.write',
+    ];
+    const codeChallenge = 'ZqoAqOr3wIoURrtuxBmgcb5svVDDPaaQzEMzkHwT2Uo';
+    const codeChallengeMethod = 'S256';
+    const resource = 'https://api.bubblyclouds.com';
+
+    const params = new URLSearchParams();
+    params.set('state', state);
+    params.set('redirect_uri', redirectUri);
+    params.set('client_id', clientId);
+    params.set('response_type', 'code');
+    params.set('scope', scope.join(' '));
+    params.set('code_challenge', codeChallenge);
+    params.set('code_challenge_method', codeChallengeMethod);
+    params.set('resource', resource);
+
+    window.location.href = `${iss}/oidc/auth?${params.toString()}`;
+  }, []);
+
   React.useEffect(() => {
+    // Really we should unmount service worker and intervals
+    // However, tricky to unmount, so to avoid strict mode issues, ensure this only runs once
+    if (isInitialising) {
+      console.warn('isInitialising, exiting early');
+      return;
+    }
+    isInitialising = true;
+
     const asyncEffect = async () => {
+      const handleUser = (user: UserProfile) => {
+        console.info('handleUser', user);
+        setUser(user);
+        // Indicate that if browser closes, next reopen we can try to recover our session
+        localStorage.setItem('recoverSession', 'true');
+
+        // Ping worker fetch /ping endpoint to keep token cache alive
+        setInterval(async () => {
+          const ping = await fetch('https://api.bubblyclouds.com/workerping');
+          if (!ping.ok) {
+            // Redirect to login (hopefully automatically recover auth session)
+            console.warn('ping is not okay, redirecting to login');
+            loginRedirect();
+          }
+        }, 20000);
+      };
+
       let registration;
       if ('serviceWorker' in navigator) {
         // Worker in public directory, intercepts our requests to inject and cache tokens for us
@@ -34,9 +98,16 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         navigator.serviceWorker.addEventListener('message', (event) => {
           if (event.data.type === 'getUser') {
             const { user } = event.data;
+            console.info('user received from getUser event', user);
             if (user) {
-              console.info('user received from getUser event', user);
-              setUser(user);
+              handleUser(user);
+            } else {
+              if (localStorage.getItem('recoverSession') === 'true') {
+                localStorage.setItem('recoverSession', 'false');
+                // Redirect to login (hopefully automatically recover auth session)
+                console.warn('no user, redirecting to login');
+                loginRedirect();
+              }
             }
           }
         });
@@ -72,62 +143,35 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
               if (response.ok) {
                 // Modified response from public/user-provider-worker.js
                 const { user } = await response.json();
+                console.info('user received from code exchange', user);
                 if (user) {
-                  console.info('user received from code exchange', user);
-                  setUser(user);
+                  handleUser(user);
                 }
-                // TODO navigate back to previous
               }
             }
           } catch (e) {
             console.error(e);
           }
+
           setIsLoggingIn(false);
           isExhanging = false;
+
+          // Navigate back to previous location
+          const restorePathname = sessionStorage.getItem('restorePathname');
+          router.push(
+            restorePathname && restorePathname !== '/auth'
+              ? restorePathname
+              : '/'
+          );
         };
-        codeExchange();
+        await codeExchange();
       } else {
         // Request the worker sends us a user result
         registration?.active?.postMessage('getUser');
       }
     };
     asyncEffect();
-  }, []);
-
-  const loginRedirect = React.useCallback(() => {
-    setIsLoggingIn(true);
-
-    // TODO store current path to redirect back to
-    // TODO store random state
-    // TODO store code_challenge
-
-    const state = '3-aF1UZtvFL7iLG-dkFCmcqE.fZ0FAmpvfZB36BUx3d';
-    const redirectUri = `${window.location.origin}/auth`;
-    const scope = [
-      'openid',
-      'profile',
-      'offline_access',
-      'parties.write',
-      'members.write',
-      'invites.write',
-      'sessions.write',
-    ];
-    const codeChallenge = 'ZqoAqOr3wIoURrtuxBmgcb5svVDDPaaQzEMzkHwT2Uo';
-    const codeChallengeMethod = 'S256';
-    const resource = 'https://api.bubblyclouds.com';
-
-    const params = new URLSearchParams();
-    params.set('state', state);
-    params.set('redirect_uri', redirectUri);
-    params.set('client_id', clientId);
-    params.set('response_type', 'code');
-    params.set('scope', scope.join(' '));
-    params.set('code_challenge', codeChallenge);
-    params.set('code_challenge_method', codeChallengeMethod);
-    params.set('resource', resource);
-
-    window.location.href = `${iss}/oidc/auth?${params.toString()}`;
-  }, []);
+  }, [loginRedirect, router]);
 
   return (
     <UserContext.Provider value={{ isLoggingIn, loginRedirect, user }}>
