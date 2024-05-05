@@ -11,6 +11,8 @@
           .join('')
       )
     );
+  const iss = 'https://auth.bubblyclouds.com';
+  const clientId = 'bubbly-sudoku';
   const apiUrls = ['https://api.bubblyclouds.com'];
   const authUrls = ['https://auth.bubblyclouds.com'];
   const pingUrl = 'https://api.bubblyclouds.com/workerping';
@@ -33,6 +35,83 @@
     };
   };
   resetState();
+
+  const handleTokenSuccess = async (response) => {
+    console.info('user-provider-worker handleTokenSuccess');
+    const data = await response.json();
+    const {
+      expires_in,
+      id_token,
+      access_token: accessToken,
+      refresh_token: refreshToken,
+    } = data;
+
+    const accessExpiry = new Date();
+    accessExpiry.setTime(accessExpiry.getTime() + expires_in * 1000);
+
+    const refreshExpiry = new Date();
+    // Refresh tokens don't rotate forever, we expect them to last 14 days
+    refreshExpiry.setTime(refreshExpiry.getTime() + 14 * 86400 * 1000);
+
+    const user = jwtDecode(id_token);
+    // Same expiry as the first refresh token
+    const userExpiry = new Date(refreshExpiry);
+
+    state = {
+      accessExpiry,
+      accessToken,
+      refreshExpiry,
+      refreshToken,
+      user,
+      userExpiry,
+    };
+  };
+
+  let isRefreshing = false;
+  const checkRefresh = async () => {
+    if (isRefreshing) {
+      console.warn('skipping checkRefresh as already checking');
+      return;
+    }
+    isRefreshing = true;
+
+    try {
+      // If accessToken is close to expiry, refresh it
+      const fifteenMinsMs = 900000;
+      if (
+        state.refreshToken &&
+        new Date(state.accessExpiry).getTime() <=
+          new Date().getTime() + fifteenMinsMs
+      ) {
+        console.info('user-provider-worker refreshing token..');
+        const params = new URLSearchParams();
+        params.set('grant_type', 'refresh_token');
+        params.set('client_id', clientId);
+        params.set('refresh_token', state.refreshToken);
+        const refreshResponse = await fetch(`${iss}/oidc/token`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: params.toString(),
+        });
+        if (refreshResponse.ok) {
+          await handleTokenSuccess(refreshResponse);
+        } else {
+          console.error(
+            'user-provider-worker failed to refresh token',
+            refreshResponse.status
+          );
+        }
+      } else {
+        console.info('user-provider-worker no need to refresh token');
+      }
+    } catch (e) {
+      console.error(e);
+    }
+
+    isRefreshing = false;
+  };
 
   const hasValidUser = () =>
     state.user &&
@@ -91,8 +170,7 @@
       console.info('user-provider-worker handleFetch apiUrl');
       // Automatically send auth header to API URLs
       if (state.accessToken) {
-        // TODO check if accessToken has expired, if it has refresh it
-        // TODO confirm if that gets intercepted..
+        await checkRefresh();
         headers.append('Authorization', `Bearer ${state.accessToken}`);
       }
       const authReq = new Request(event.request, { headers });
@@ -108,33 +186,7 @@
       const authReq = new Request(event.request, { headers });
       const response = await fetch(authReq);
       if (response.ok) {
-        const data = await response.json();
-        const {
-          expires_in,
-          id_token,
-          access_token: accessToken,
-          refresh_token: refreshToken,
-        } = data;
-
-        const accessExpiry = new Date();
-        accessExpiry.setTime(accessExpiry.getTime() + expires_in * 1000);
-
-        const refreshExpiry = new Date();
-        // Refresh tokens don't rotate forever, we expect them to last 14 days
-        refreshExpiry.setTime(refreshExpiry.getTime() + 14 * 86400 * 1000);
-
-        const user = jwtDecode(id_token);
-        // Same expiry as the first refresh token
-        const userExpiry = new Date(refreshExpiry);
-
-        state = {
-          accessExpiry,
-          accessToken,
-          refreshExpiry,
-          refreshToken,
-          user,
-          userExpiry,
-        };
+        await handleTokenSuccess(response);
 
         // Send modified response with only the user profile
         return new Response(JSON.stringify({ user: state.user }), {
