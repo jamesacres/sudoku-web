@@ -1,11 +1,12 @@
 'use client';
+import { pkce } from '@/helpers/pkce';
 import { UserProfile } from '@/types/userProfile';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
 interface UserContextInterface {
   user?: UserProfile;
-  loginRedirect: () => void;
+  loginRedirect: () => Promise<void>;
   isLoggingIn: boolean;
 }
 
@@ -25,15 +26,17 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   const iss = 'https://auth.bubblyclouds.com';
   const clientId = 'bubbly-sudoku';
 
-  const loginRedirect = React.useCallback(() => {
+  const loginRedirect = React.useCallback(async () => {
     console.info('loginRedirect..');
     setIsLoggingIn(true);
     sessionStorage.setItem('restorePathname', window.location.pathname);
 
-    // TODO store random state
-    // TODO store code_challenge
+    const state = window.crypto.randomUUID();
+    sessionStorage.setItem('state', state);
 
-    const state = '3-aF1UZtvFL7iLG-dkFCmcqE.fZ0FAmpvfZB36BUx3d';
+    const { codeChallenge, codeVerifier, codeChallengeMethod } = await pkce();
+    sessionStorage.setItem('code_verifier', codeVerifier);
+
     const redirectUri = `${window.location.origin}/auth`;
     const scope = [
       'openid',
@@ -44,8 +47,6 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
       'invites.write',
       'sessions.write',
     ];
-    const codeChallenge = 'ZqoAqOr3wIoURrtuxBmgcb5svVDDPaaQzEMzkHwT2Uo';
-    const codeChallengeMethod = 'S256';
     const resource = 'https://api.bubblyclouds.com';
 
     const params = new URLSearchParams();
@@ -83,7 +84,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
           if (!ping.ok) {
             // Redirect to login (hopefully automatically recover auth session)
             console.warn('ping is not okay, redirecting to login');
-            loginRedirect();
+            await loginRedirect();
           }
         }, 20000);
       };
@@ -95,7 +96,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         registration = await navigator.serviceWorker.ready;
 
         // Set user after receiving a getUser result from our postMessage
-        navigator.serviceWorker.addEventListener('message', (event) => {
+        navigator.serviceWorker.addEventListener('message', async (event) => {
           if (event.data.type === 'getUser') {
             const { user } = event.data;
             console.info('user received from getUser event', user);
@@ -106,7 +107,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
                 localStorage.setItem('recoverSession', 'false');
                 // Redirect to login (hopefully automatically recover auth session)
                 console.warn('no user, redirecting to login');
-                loginRedirect();
+                await loginRedirect();
               }
             }
           }
@@ -122,30 +123,28 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
               const query = new URLSearchParams(window.location.search);
               const code = query.get('code') || '';
               const state = query.get('state') || '';
-              // TODO check state matches expected value
-              console.info(state);
-              // TODO send code_verifier
-              // TODO exchange code for tokens
-              const params = new URLSearchParams();
-              params.set('grant_type', 'authorization_code');
-              params.set('client_id', clientId);
-              const codeVerifier =
-                'aG4FaELR91anIPjYX7sm0pf8A48ZabVAZynZ0JfE7hI';
-              params.set('code_verifier', codeVerifier);
-              params.set('code', code);
-              const response = await fetch(`${iss}/oidc/token`, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: params.toString(),
-              });
-              if (response.ok) {
-                // Modified response from public/user-provider-worker.js
-                const { user } = await response.json();
-                console.info('user received from code exchange', user);
-                if (user) {
-                  handleUser(user);
+
+              const codeVerifier = sessionStorage.getItem('code_verifier');
+              if (state === sessionStorage.getItem('state') && codeVerifier) {
+                const params = new URLSearchParams();
+                params.set('grant_type', 'authorization_code');
+                params.set('client_id', clientId);
+                params.set('code_verifier', codeVerifier);
+                params.set('code', code);
+                const response = await fetch(`${iss}/oidc/token`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                  },
+                  body: params.toString(),
+                });
+                if (response.ok) {
+                  // Modified response from public/user-provider-worker.js
+                  const { user } = await response.json();
+                  console.info('user received from code exchange', user);
+                  if (user) {
+                    handleUser(user);
+                  }
                 }
               }
             }
