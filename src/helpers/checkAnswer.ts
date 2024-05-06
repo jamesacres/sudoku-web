@@ -28,6 +28,11 @@ const checkGrid = (
   return validation;
 };
 
+const isInitialCell = (selectedCell: string, initial: Puzzle): boolean => {
+  const { box, cell } = splitCellId(selectedCell);
+  return !!initial[box.x][box.y][cell.x][cell.y];
+};
+
 const checkCell = (
   selectedCell: string,
   initial: Puzzle,
@@ -45,4 +50,4 @@ const checkCell = (
   return validation;
 };
 
-export { checkCell, checkGrid };
+export { checkCell, checkGrid, isInitialCell };

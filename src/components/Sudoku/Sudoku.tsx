@@ -7,7 +7,7 @@ import {
   calculateNextCellId,
   splitCellId,
 } from '@/helpers/calculateId';
-import { checkCell, checkGrid } from '@/helpers/checkAnswer';
+import { checkCell, checkGrid, isInitialCell } from '@/helpers/checkAnswer';
 import { Notes } from '@/types/notes';
 import { SetAnswer } from './types';
 import SudokuControls from '../SudokuControls';
@@ -82,6 +82,15 @@ const Sudoku = ({
     },
     [initial, answer, selectedCell, pushAnswer]
   );
+  const selectedAnswer = React.useCallback(() => {
+    if (selectedCell) {
+      const { box, cell } = splitCellId(selectedCell);
+      const result = answer[box.x][box.y][cell.x][cell.y];
+      if (typeof result === 'number') {
+        return result;
+      }
+    }
+  }, [answer, selectedCell]);
 
   // Undo and Redo
   // Don't undo initial state
@@ -190,7 +199,11 @@ const Sudoku = ({
         )}
       </div>
       <SudokuControls
-        isValidateCellDisabled={!selectedCell}
+        isValidateCellDisabled={
+          !selectedCell ||
+          isInitialCell(selectedCell, initial) ||
+          !selectedAnswer()
+        }
         validateCell={validateCell}
         validateGrid={validateGrid}
         isUndoDisabled={isUndoDisabled}
