@@ -1,7 +1,7 @@
 const Footer = () => {
   return (
-    <nav className="mt-3 flex flex-wrap items-center justify-between bg-gray-200 p-6 text-sm">
-      <div className="mr-6 flex flex-shrink-0 items-center text-black">
+    <nav className="mt-3 flex flex-wrap items-center justify-between bg-gray-200 p-6 text-sm text-black">
+      <div className="mr-6 flex flex-shrink-0 items-center">
         <span className="tracking-tight">
           Powered by{' '}
           <a href="https://bubblyclouds.com/" className="hover:underline">
