@@ -29,17 +29,17 @@ const saveState = (puzzleId: string, state: Puzzle[]) => {
   localStorage.setItem(`sudoku-${puzzleId}`, JSON.stringify(state));
 };
 
-const fetchSession = async () => {
-  // TODO move somewhere sensible
-  // TODO add handler for all requests that if we ever get a 401 we should logout the user
-  const response = await fetch(
-    'https://api.bubblyclouds.com/sessions/sudoku-1'
-  );
-  if (response.ok) {
-    const session = await response.json();
-    console.info(session);
-  }
-};
+// const fetchSession = async () => {
+//   // TODO move somewhere sensible
+//   // TODO add handler for all requests that if we ever get a 401 we should logout the user
+//   const response = await fetch(
+//     'https://api.bubblyclouds.com/sessions/sudoku-1'
+//   );
+//   if (response.ok) {
+//     const session = await response.json();
+//     console.info(session);
+//   }
+// };
 
 const Sudoku = ({
   puzzleId,
@@ -51,7 +51,7 @@ const Sudoku = ({
   const { user } = React.useContext(UserContext) || {};
   if (user) {
     // TODO only fetch when needed
-    fetchSession();
+    // fetchSession();
   }
 
   const [selectedCell, setSelectedCell] = React.useState<null | string>(null);

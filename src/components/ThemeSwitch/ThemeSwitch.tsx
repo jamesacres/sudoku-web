@@ -22,6 +22,7 @@ const ThemeSwitch = () => {
           theme === 'dark' || resolvedTheme === 'dark' ? 'light' : 'dark'
         )
       }
+      className="rounded-full"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

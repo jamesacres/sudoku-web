@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { UserContext } from '../UserProvider';
-import Image from 'next/image';
+import { UserButton } from './UserButton';
 
 const HeaderUser = () => {
   const { isLoggingIn, loginRedirect, user } =
@@ -14,19 +14,7 @@ const HeaderUser = () => {
     }
   };
   return user ? (
-    <pre>
-      {user.picture ? (
-        <Image
-          src={user.picture}
-          alt={user.name || 'user'}
-          width={32}
-          height={32}
-          className="mr-2 cursor-pointer rounded-full ring-white hover:ring-1"
-        />
-      ) : (
-        <></>
-      )}
-    </pre>
+    <UserButton user={user} />
   ) : (
     <button
       disabled={isLoggingIn}
