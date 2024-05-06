@@ -16,31 +16,31 @@ const SudokuControls = ({
   redo: () => void;
 }) => {
   return (
-    <div className="mt-4 grid grid-cols-4 gap-4 border-t-2 border-t-pink-500 pt-4">
+    <div className="mt-4 grid grid-cols-4 gap-4 border-t-2 border-t-blue-500 pt-4">
       <button
         onClick={() => validateGrid()}
-        className="rounded bg-pink-500 px-4 py-2 font-bold text-white hover:bg-pink-700"
+        className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
       >
         Check Grid
       </button>
       <button
         disabled={isValidateCellDisabled}
         onClick={() => validateCell()}
-        className="rounded bg-pink-500 px-4 py-2 font-bold text-white hover:bg-pink-700 disabled:bg-pink-300"
+        className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700 disabled:bg-blue-300"
       >
         Check Cell
       </button>
       <button
         disabled={isUndoDisabled}
         onClick={() => undo()}
-        className="rounded bg-pink-500 px-4 py-2 font-bold text-white hover:bg-pink-700 disabled:bg-pink-300"
+        className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700 disabled:bg-blue-300"
       >
         Undo
       </button>
       <button
         disabled={isRedoDisabled}
         onClick={() => redo()}
-        className="rounded bg-pink-500 px-4 py-2 font-bold text-white hover:bg-pink-700 disabled:bg-pink-300"
+        className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700 disabled:bg-blue-300"
       >
         Redo
       </button>

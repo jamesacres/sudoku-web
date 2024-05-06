@@ -19,7 +19,7 @@ const SudokuBox = ({
   validation?: PuzzleBox<boolean | undefined>;
 }) => {
   return (
-    <div className="grid aspect-square cursor-pointer grid-cols-3 grid-rows-3 border">
+    <div className="grid aspect-square cursor-pointer grid-cols-3 grid-rows-3 border border-black dark:border-white">
       {Array.from(Array(3)).map((_, y) =>
         Array.from(Array(3)).map((_, x) => {
           const cellId = calculateCellId(boxId, x, y);

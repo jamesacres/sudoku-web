@@ -140,16 +140,22 @@ const Sudoku = ({
         let nextCell;
         if (e.key === 'ArrowDown') {
           nextCell = calculateNextCellId(selectedCell, 'down');
+          e.preventDefault();
         } else if (e.key === 'ArrowUp') {
           nextCell = calculateNextCellId(selectedCell, 'up');
+          e.preventDefault();
         } else if (e.key === 'ArrowLeft') {
           nextCell = calculateNextCellId(selectedCell, 'left');
+          e.preventDefault();
         } else if (e.key === 'ArrowRight') {
           nextCell = calculateNextCellId(selectedCell, 'right');
+          e.preventDefault();
         } else if (e.key === 'Backspace' || e.key === 'Delete') {
           setAnswer(0);
+          e.preventDefault();
         } else if (/[1-9]/.test(e.key)) {
           setAnswer(Number(e.key));
+          e.preventDefault();
         }
         if (nextCell) {
           setSelectedCell(nextCell);
