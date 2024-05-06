@@ -8,6 +8,7 @@ interface UserContextInterface {
   user?: UserProfile;
   loginRedirect: () => Promise<void>;
   isLoggingIn: boolean;
+  logout: () => void;
 }
 
 export const UserContext = React.createContext<
@@ -16,6 +17,7 @@ export const UserContext = React.createContext<
 
 let isExhanging = false;
 let isInitialising = false;
+let registration: ServiceWorkerRegistration;
 const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
@@ -79,17 +81,21 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         localStorage.setItem('recoverSession', 'true');
 
         // Ping worker fetch /ping endpoint to keep token cache alive
-        setInterval(async () => {
+        const pingId = setInterval(async () => {
           const ping = await fetch('https://api.bubblyclouds.com/workerping');
           if (!ping.ok) {
-            // Redirect to login (hopefully automatically recover auth session)
-            console.warn('ping is not okay, redirecting to login');
-            await loginRedirect();
+            if (localStorage.getItem('recoverSession') === 'true') {
+              // Redirect to login (hopefully automatically recover auth session)
+              console.warn('ping is not okay, redirecting to login');
+              await loginRedirect();
+            } else {
+              console.warn('ping is not okay, stopping ping');
+              clearInterval(pingId);
+            }
           }
         }, 20000);
       };
 
-      let registration;
       if ('serviceWorker' in navigator) {
         // Worker in public directory, intercepts our requests to inject and cache tokens for us
         await navigator.serviceWorker.register('/user-provider-worker.js');
@@ -172,8 +178,14 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     asyncEffect();
   }, [loginRedirect, router]);
 
+  const logout = () => {
+    localStorage.setItem('recoverSession', 'false');
+    setUser(undefined);
+    registration?.active?.postMessage('logout');
+  };
+
   return (
-    <UserContext.Provider value={{ isLoggingIn, loginRedirect, user }}>
+    <UserContext.Provider value={{ isLoggingIn, loginRedirect, logout, user }}>
       {children}
     </UserContext.Provider>
   );

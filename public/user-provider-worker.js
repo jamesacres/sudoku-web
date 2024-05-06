@@ -138,6 +138,8 @@
           type: 'getUser',
         });
       }
+    } else if (event.data === 'logout') {
+      resetState();
     }
     return;
   });

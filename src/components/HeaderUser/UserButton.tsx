@@ -4,7 +4,13 @@ import { Fragment } from 'react';
 import { UserPanel } from './UserPanel';
 import { UserAvatar } from './UserAvatar';
 
-export const UserButton = ({ user }: { user: UserProfile }) => {
+export const UserButton = ({
+  user,
+  logout,
+}: {
+  user: UserProfile;
+  logout: () => void;
+}) => {
   return (
     <Popover className="relative" style={{ height: 32 }}>
       <Popover.Button className="mr-2 cursor-pointer rounded-full ring-white hover:ring-1">
@@ -21,7 +27,7 @@ export const UserButton = ({ user }: { user: UserProfile }) => {
         leaveTo="opacity-0 translate-y-1"
       >
         <Popover.Panel className="absolute -right-10 z-10 mt-3 w-screen max-w-sm transform px-4">
-          <UserPanel user={user} />
+          <UserPanel user={user} logout={logout} />
         </Popover.Panel>
       </Transition>
     </Popover>

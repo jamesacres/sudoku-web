@@ -5,7 +5,7 @@ import { UserContext } from '../UserProvider';
 import { UserButton } from './UserButton';
 
 const HeaderUser = () => {
-  const { isLoggingIn, loginRedirect, user } =
+  const { isLoggingIn, loginRedirect, logout, user } =
     React.useContext(UserContext) || {};
 
   const login = () => {
@@ -14,7 +14,7 @@ const HeaderUser = () => {
     }
   };
   return user ? (
-    <UserButton user={user} />
+    <UserButton user={user} logout={logout} />
   ) : (
     <button
       disabled={isLoggingIn}
