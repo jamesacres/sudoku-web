@@ -13,7 +13,7 @@ const HeaderUser = () => {
       loginRedirect();
     }
   };
-  return user ? (
+  return user && logout ? (
     <UserButton user={user} logout={logout} />
   ) : (
     <button

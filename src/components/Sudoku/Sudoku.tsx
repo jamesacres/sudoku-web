@@ -8,10 +8,11 @@ import {
   splitCellId,
 } from '@/helpers/calculateId';
 import { checkCell, checkGrid, isInitialCell } from '@/helpers/checkAnswer';
-import { Notes } from '@/types/notes';
+import { Notes, ToggleNote } from '@/types/notes';
 import { SetAnswer } from './types';
 import SudokuControls from '../SudokuControls';
 import { UserContext } from '../UserProvider';
+import { SelectNumber } from '@/types/selectNumber';
 
 const getSavedState = (puzzleId: string) => {
   try {
@@ -54,6 +55,7 @@ const Sudoku = ({
     // fetchSession();
   }
 
+  const [isNotesMode, setIsNotesMode] = React.useState<boolean>(false);
   const [selectedCell, setSelectedCell] = React.useState<null | string>(null);
   const [answerStack, setAnswerStack] = React.useState<Puzzle[]>([
     structuredClone(initial),
@@ -82,6 +84,33 @@ const Sudoku = ({
     },
     [initial, answer, selectedCell, pushAnswer]
   );
+  const toggleNote: ToggleNote = React.useCallback(
+    (value: number) => {
+      if (selectedCell) {
+        const { box, cell } = splitCellId(selectedCell);
+        if (!initial[box.x][box.y][cell.x][cell.y]) {
+          const currentAnswer = answer[box.x][box.y][cell.x][cell.y];
+          const notes = typeof currentAnswer === 'object' ? currentAnswer : {};
+          if (notes) {
+            const nextNotes = { ...notes, [value]: !notes[value] };
+            setAnswer(nextNotes);
+          }
+        }
+      }
+    },
+    [initial, answer, selectedCell, setAnswer]
+  );
+  const selectNumber: SelectNumber = React.useCallback(
+    (number: number) => {
+      if (isNotesMode) {
+        toggleNote(number);
+      } else {
+        setAnswer(number);
+      }
+    },
+    [isNotesMode, setAnswer, toggleNote]
+  );
+
   const selectedAnswer = React.useCallback(() => {
     if (selectedCell) {
       const { box, cell } = splitCellId(selectedCell);
@@ -145,6 +174,16 @@ const Sudoku = ({
   // Handle keyboard
   React.useEffect(() => {
     const keydownHandler = (e: KeyboardEvent) => {
+      if (e.key === 'n') {
+        setIsNotesMode(!isNotesMode);
+        e.preventDefault();
+      } else if (e.key === 'z') {
+        undo();
+        e.preventDefault();
+      } else if (e.key === 'y') {
+        redo();
+        e.preventDefault();
+      }
       if (selectedCell) {
         let nextCell;
         if (e.key === 'ArrowDown') {
@@ -163,7 +202,7 @@ const Sudoku = ({
           setAnswer(0);
           e.preventDefault();
         } else if (/[1-9]/.test(e.key)) {
-          setAnswer(Number(e.key));
+          selectNumber(Number(e.key));
           e.preventDefault();
         }
         if (nextCell) {
@@ -173,44 +212,61 @@ const Sudoku = ({
     };
     window.addEventListener('keydown', keydownHandler);
     return () => window.removeEventListener('keydown', keydownHandler);
-  }, [selectedCell, setAnswer]);
+  }, [isNotesMode, selectedCell, selectNumber, setAnswer, setIsNotesMode]);
 
   return (
-    <div className="container mx-auto max-w-screen-md">
-      <div className="grid grid-cols-3 grid-rows-3">
-        {Array.from(Array(3)).map((_, y) =>
-          Array.from(Array(3)).map((_, x) => {
-            const boxId = calculateBoxId(x, y);
-            return (
-              <SudokuBox
-                key={boxId}
-                boxId={boxId}
-                selectedCell={selectedCell}
-                setSelectedCell={setSelectedCell}
-                answer={answer[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]}
-                setAnswer={setAnswer}
-                validation={
-                  validation &&
-                  validation[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]
-                }
-              />
-            );
-          })
-        )}
+    <div>
+      <div className="container mx-auto max-w-screen-sm">
+        <div className="mb-4 mt-4 border-b-2 border-blue-500 pb-4 pl-0 pr-2">
+          <p>
+            Tips: use your keyboard if you have one, toggle notes mode with n.
+          </p>
+          <p>TODO parties and members</p>
+        </div>
       </div>
-      <SudokuControls
-        isValidateCellDisabled={
-          !selectedCell ||
-          isInitialCell(selectedCell, initial) ||
-          !selectedAnswer()
-        }
-        validateCell={validateCell}
-        validateGrid={validateGrid}
-        isUndoDisabled={isUndoDisabled}
-        isRedoDisabled={isRedoDisabled}
-        undo={undo}
-        redo={redo}
-      />
+      <div className="container mx-auto max-w-screen-sm">
+        <div className="grid grid-cols-3 grid-rows-3">
+          {Array.from(Array(3)).map((_, y) =>
+            Array.from(Array(3)).map((_, x) => {
+              const boxId = calculateBoxId(x, y);
+              return (
+                <SudokuBox
+                  key={boxId}
+                  boxId={boxId}
+                  selectedCell={selectedCell}
+                  setSelectedCell={setSelectedCell}
+                  answer={
+                    answer[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]
+                  }
+                  selectNumber={selectNumber}
+                  validation={
+                    validation &&
+                    validation[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]
+                  }
+                />
+              );
+            })
+          )}
+        </div>
+      </div>
+      <div className="container mx-auto max-w-screen-sm">
+        <SudokuControls
+          isValidateCellDisabled={
+            !selectedCell ||
+            isInitialCell(selectedCell, initial) ||
+            !selectedAnswer()
+          }
+          validateCell={validateCell}
+          validateGrid={validateGrid}
+          isUndoDisabled={isUndoDisabled}
+          isRedoDisabled={isRedoDisabled}
+          undo={undo}
+          redo={redo}
+          selectNumber={selectNumber}
+          isNotesMode={isNotesMode}
+          setIsNotesMode={setIsNotesMode}
+        />
+      </div>
     </div>
   );
 };

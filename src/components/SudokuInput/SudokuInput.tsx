@@ -1,31 +1,26 @@
 import React from 'react';
-import { SetAnswer, SetSelectedCell } from '../Sudoku';
+import { SetSelectedCell } from '../Sudoku';
 import SudokuInputNotes from '../SudokuInputNotes';
-import { Notes, ToggleNote } from '@/types/notes';
+import { Notes } from '@/types/notes';
+import { SelectNumber } from '@/types/selectNumber';
 
 const SudokuInput = ({
   cellId,
   selectedCell,
   setSelectedCell,
-  setAnswer,
+  selectNumber,
   value,
   validation,
 }: {
   cellId: string;
   selectedCell: string | null;
   setSelectedCell: SetSelectedCell;
-  setAnswer: SetAnswer;
+  selectNumber: SelectNumber;
   value?: number | Notes;
   validation?: boolean;
 }) => {
   const isNotesMode = !(value && typeof value === 'number');
   const notes = isNotesMode && typeof value === 'object' ? value : {};
-  const toggleNote: ToggleNote = (value: number) => {
-    if (notes) {
-      const nextNotes = { ...notes, [value]: !notes[value] };
-      setAnswer(nextNotes);
-    }
-  };
 
   const isSelected = selectedCell === cellId;
 
@@ -45,7 +40,7 @@ const SudokuInput = ({
         <SudokuInputNotes
           isSelected={isSelected}
           notes={notes}
-          toggleNote={toggleNote}
+          selectNumber={selectNumber}
         />
       ) : (
         <div

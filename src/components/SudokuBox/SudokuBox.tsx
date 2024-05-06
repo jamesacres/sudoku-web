@@ -1,21 +1,22 @@
 import { calculateCellId } from '@/helpers/calculateId';
-import { SetAnswer, SetSelectedCell } from '../Sudoku';
+import { SetSelectedCell } from '../Sudoku';
 import SudokuInput from '../SudokuInput';
 import { PuzzleBox, PuzzleRowOrColumn } from '@/types/puzzle';
+import { SelectNumber } from '@/types/selectNumber';
 
 const SudokuBox = ({
   boxId,
   selectedCell,
   setSelectedCell,
   answer,
-  setAnswer,
+  selectNumber,
   validation,
 }: {
   boxId: string;
   selectedCell: string | null;
   setSelectedCell: SetSelectedCell;
   answer: PuzzleBox;
-  setAnswer: SetAnswer;
+  selectNumber: SelectNumber;
   validation?: PuzzleBox<boolean | undefined>;
 }) => {
   return (
@@ -29,7 +30,7 @@ const SudokuBox = ({
               cellId={cellId}
               selectedCell={selectedCell}
               setSelectedCell={setSelectedCell}
-              setAnswer={setAnswer}
+              selectNumber={selectNumber}
               value={answer[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]}
               validation={
                 validation &&

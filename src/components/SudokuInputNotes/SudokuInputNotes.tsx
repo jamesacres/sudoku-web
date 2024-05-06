@@ -1,13 +1,14 @@
-import { Notes, ToggleNote } from '@/types/notes';
+import { Notes } from '@/types/notes';
+import { SelectNumber } from '@/types/selectNumber';
 
 const SudokuInputNotes = ({
   isSelected,
   notes,
-  toggleNote,
+  selectNumber,
 }: {
   isSelected: boolean;
   notes: Notes;
-  toggleNote: ToggleNote;
+  selectNumber: SelectNumber;
 }) => {
   return (
     <div className={`grid h-full w-full grid-cols-3 grid-rows-3`}>
@@ -19,7 +20,7 @@ const SudokuInputNotes = ({
         const boldClass = isChecked ? 'font-bold' : undefined;
         return isSelected || isChecked ? (
           <div
-            onClick={() => toggleNote(value)}
+            onClick={() => selectNumber(value)}
             className={`flex h-full w-full items-center justify-center text-sm ${colorClass} ${boldClass}`}
             key={crypto.randomUUID()}
           >
