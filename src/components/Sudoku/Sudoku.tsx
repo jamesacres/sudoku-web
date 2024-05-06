@@ -212,7 +212,15 @@ const Sudoku = ({
     };
     window.addEventListener('keydown', keydownHandler);
     return () => window.removeEventListener('keydown', keydownHandler);
-  }, [isNotesMode, selectedCell, selectNumber, setAnswer, setIsNotesMode]);
+  }, [
+    isNotesMode,
+    redo,
+    selectedCell,
+    selectNumber,
+    setAnswer,
+    setIsNotesMode,
+    undo,
+  ]);
 
   return (
     <div>
@@ -224,7 +232,7 @@ const Sudoku = ({
           <p>TODO parties and members</p>
         </div>
       </div>
-      <div className="container mx-auto max-w-screen-sm">
+      <div className="container mx-auto max-w-xl">
         <div className="grid grid-cols-3 grid-rows-3">
           {Array.from(Array(3)).map((_, y) =>
             Array.from(Array(3)).map((_, x) => {
