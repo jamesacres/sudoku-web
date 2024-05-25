@@ -1,5 +1,4 @@
 import dynamic from 'next/dynamic';
-// import HeaderUser from '../HeaderUser';
 const HeaderUser = dynamic(() => import('../HeaderUser'), { ssr: false });
 import ThemeSwitch from '../ThemeSwitch';
 
@@ -18,7 +17,9 @@ const Header = () => {
             Puzzles
           </a>
         </div>
-        <HeaderUser />
+        <div className="min-h-10">
+          <HeaderUser />
+        </div>
         <ThemeSwitch />
       </div>
     </nav>

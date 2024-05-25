@@ -129,6 +129,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
               const query = new URLSearchParams(window.location.search);
               const code = query.get('code') || '';
               const state = query.get('state') || '';
+              const redirectUri = `${window.location.origin}/auth`;
 
               const codeVerifier = sessionStorage.getItem('code_verifier');
               if (state === sessionStorage.getItem('state') && codeVerifier) {
@@ -137,6 +138,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
                 params.set('client_id', clientId);
                 params.set('code_verifier', codeVerifier);
                 params.set('code', code);
+                params.set('redirect_uri', redirectUri);
                 const response = await fetch(`${iss}/oidc/token`, {
                   method: 'POST',
                   headers: {
