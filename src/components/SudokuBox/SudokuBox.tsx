@@ -11,6 +11,7 @@ const SudokuBox = ({
   answer,
   selectNumber,
   validation,
+  initial,
 }: {
   boxId: string;
   selectedCell: string | null;
@@ -18,9 +19,10 @@ const SudokuBox = ({
   answer: PuzzleBox;
   selectNumber: SelectNumber;
   validation?: PuzzleBox<boolean | undefined>;
+  initial: PuzzleBox;
 }) => {
   return (
-    <div className="grid aspect-square cursor-pointer grid-cols-3 grid-rows-3 border border-black dark:border-white">
+    <div className="grid aspect-square cursor-pointer grid-cols-3 grid-rows-3 border border-slate-400">
       {Array.from(Array(3)).map((_, y) =>
         Array.from(Array(3)).map((_, x) => {
           const cellId = calculateCellId(boxId, x, y);
@@ -35,6 +37,9 @@ const SudokuBox = ({
               validation={
                 validation &&
                 validation[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]
+              }
+              isInitial={
+                !!initial[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]
               }
             />
           );

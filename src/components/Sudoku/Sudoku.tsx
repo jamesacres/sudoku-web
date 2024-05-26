@@ -4,6 +4,7 @@ import SudokuBox from '../SudokuBox';
 import React from 'react';
 import {
   calculateBoxId,
+  calculateCellId,
   calculateNextCellId,
   splitCellId,
 } from '@/helpers/calculateId';
@@ -184,30 +185,30 @@ const Sudoku = ({
         redo();
         e.preventDefault();
       }
-      if (selectedCell) {
-        let nextCell;
-        if (e.key === 'ArrowDown') {
-          nextCell = calculateNextCellId(selectedCell, 'down');
-          e.preventDefault();
-        } else if (e.key === 'ArrowUp') {
-          nextCell = calculateNextCellId(selectedCell, 'up');
-          e.preventDefault();
-        } else if (e.key === 'ArrowLeft') {
-          nextCell = calculateNextCellId(selectedCell, 'left');
-          e.preventDefault();
-        } else if (e.key === 'ArrowRight') {
-          nextCell = calculateNextCellId(selectedCell, 'right');
-          e.preventDefault();
-        } else if (e.key === 'Backspace' || e.key === 'Delete') {
-          setAnswer(0);
-          e.preventDefault();
-        } else if (/[1-9]/.test(e.key)) {
-          selectNumber(Number(e.key));
-          e.preventDefault();
-        }
-        if (nextCell) {
-          setSelectedCell(nextCell);
-        }
+      let currentSelectedCell =
+        selectedCell || calculateCellId(calculateBoxId(0, 0), 0, 0);
+      let nextCell;
+      if (e.key === 'ArrowDown') {
+        nextCell = calculateNextCellId(currentSelectedCell, 'down');
+        e.preventDefault();
+      } else if (e.key === 'ArrowUp') {
+        nextCell = calculateNextCellId(currentSelectedCell, 'up');
+        e.preventDefault();
+      } else if (e.key === 'ArrowLeft') {
+        nextCell = calculateNextCellId(currentSelectedCell, 'left');
+        e.preventDefault();
+      } else if (e.key === 'ArrowRight') {
+        nextCell = calculateNextCellId(currentSelectedCell, 'right');
+        e.preventDefault();
+      } else if (e.key === 'Backspace' || e.key === 'Delete') {
+        setAnswer(0);
+        e.preventDefault();
+      } else if (/[1-9]/.test(e.key)) {
+        selectNumber(Number(e.key));
+        e.preventDefault();
+      }
+      if (nextCell) {
+        setSelectedCell(nextCell);
       }
     };
     window.addEventListener('keydown', keydownHandler);
@@ -226,15 +227,12 @@ const Sudoku = ({
     <div>
       <div className="container mx-auto max-w-screen-sm">
         <div className="mb-4 mt-4 pb-4 pl-0 pr-2">
-          <p>
-            Tips: use your keyboard if you have one, toggle notes mode with n.
-          </p>
           <p>TODO parties and members</p>
         </div>
       </div>
       <div className="flex flex-col items-center lg:flex-row">
-        <div className="container mx-auto">
-          <div className="m-4 ml-auto mr-auto grid max-w-xl grid-cols-3 grid-rows-3 p-4 lg:mr-0">
+        <div className="container mx-auto p-4">
+          <div className="m-4 ml-auto mr-auto grid max-w-xl grid-cols-3 grid-rows-3 border border-2 border-slate-400 lg:mr-0">
             {Array.from(Array(3)).map((_, y) =>
               Array.from(Array(3)).map((_, x) => {
                 const boxId = calculateBoxId(x, y);
@@ -252,6 +250,9 @@ const Sudoku = ({
                       validation &&
                       validation[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]
                     }
+                    initial={
+                      initial[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]
+                    }
                   />
                 );
               })
@@ -260,6 +261,9 @@ const Sudoku = ({
         </div>
         <div className="container mx-auto basis-3/5">
           <SudokuControls
+            isInputDisabled={
+              !selectedCell || isInitialCell(selectedCell, initial)
+            }
             isValidateCellDisabled={
               !selectedCell ||
               isInitialCell(selectedCell, initial) ||

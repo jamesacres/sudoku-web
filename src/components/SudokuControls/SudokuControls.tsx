@@ -6,11 +6,14 @@ import {
   Edit2,
   Grid,
   Square,
+  X,
 } from 'react-feather';
 import NumberPad from '../NumberPad';
 import NotesToggle from '../NotesToggle';
+import React from 'react';
 
 const SudokuControls = ({
+  isInputDisabled,
   isValidateCellDisabled,
   validateGrid,
   validateCell,
@@ -22,6 +25,7 @@ const SudokuControls = ({
   isNotesMode,
   setIsNotesMode,
 }: {
+  isInputDisabled: boolean;
   isValidateCellDisabled: boolean;
   validateGrid: () => void;
   validateCell: () => void;
@@ -34,8 +38,24 @@ const SudokuControls = ({
   isNotesMode: boolean;
   setIsNotesMode: (_value: boolean) => void;
 }) => {
+  const [showKeyboardHint, setShowKeyboardHint] = React.useState(true);
   return (
     <div className="mb-8 mt-4 pl-0 pr-2 pt-4">
+      {showKeyboardHint ? (
+        <div className="mb-10 hidden text-center text-sm lg:block">
+          <div className="relative inline-block rounded bg-amber-100 p-4 pr-8 text-black">
+            <button>
+              <X
+                className="absolute right-2 top-2"
+                onClick={() => setShowKeyboardHint(false)}
+              />
+            </button>
+            Keyboard: arrow keys, undo, redo, n to toggle notes mode.
+          </div>
+        </div>
+      ) : (
+        <></>
+      )}
       <div className="flex items-center justify-center text-sm">
         <button
           className="ml-2 mr-2"
@@ -55,7 +75,10 @@ const SudokuControls = ({
       <div className="flex flex-col items-center justify-center sm:flex-row">
         <div className="mr-2 mt-2" style={{ minWidth: 120 }}>
           <div className="square">
-            <NumberPad selectNumber={selectNumber} />
+            <NumberPad
+              selectNumber={selectNumber}
+              isInputDisabled={isInputDisabled}
+            />
           </div>
         </div>
         <div className="text-center sm:flex-row" style={{ maxWidth: '200px' }}>

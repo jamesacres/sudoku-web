@@ -11,6 +11,7 @@ const SudokuInput = ({
   selectNumber,
   value,
   validation,
+  isInitial,
 }: {
   cellId: string;
   selectedCell: string | null;
@@ -18,6 +19,7 @@ const SudokuInput = ({
   selectNumber: SelectNumber;
   value?: number | Notes;
   validation?: boolean;
+  isInitial: boolean;
 }) => {
   const isNotesMode = !(value && typeof value === 'number');
   const notes = isNotesMode && typeof value === 'object' ? value : {};
@@ -31,10 +33,15 @@ const SudokuInput = ({
     backgroundClass = 'dark:bg-blue-600 bg-blue-300';
   }
 
+  const fontClass = isInitial
+    ? 'text-zinc-500 dark:text-zinc-500'
+    : 'text-black dark:text-white';
+  console.info(fontClass);
+
   return (
     <div
       onClick={(_) => setSelectedCell(cellId)}
-      className={`flex h-full w-full items-center justify-center border ${backgroundClass}`}
+      className={`flex h-full w-full items-center justify-center border border-slate-400 ${backgroundClass}`}
     >
       {isNotesMode ? (
         <SudokuInputNotes
@@ -45,7 +52,7 @@ const SudokuInput = ({
       ) : (
         <div
           data-cell-id={cellId}
-          className={`text-center	text-lg text-black dark:text-white sm:text-3xl`}
+          className={`text-center text-lg sm:text-3xl ${fontClass}`}
         >
           {!!value && value}
         </div>
