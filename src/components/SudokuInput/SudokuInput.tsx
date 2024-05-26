@@ -45,7 +45,7 @@ const SudokuInput = ({
       ) : (
         <div
           data-cell-id={cellId}
-          className={`text-center text-3xl text-black dark:text-white`}
+          className={`text-center	text-lg text-black dark:text-white sm:text-3xl`}
         >
           {!!value && value}
         </div>

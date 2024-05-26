@@ -35,7 +35,7 @@ const SudokuControls = ({
   setIsNotesMode: (_value: boolean) => void;
 }) => {
   return (
-    <div className="mb-8 mt-4 border-t-2 border-blue-500 pl-0 pr-2 pt-4">
+    <div className="mb-8 mt-4 pl-0 pr-2 pt-4">
       <div className="flex items-center justify-center text-sm">
         <button
           className="ml-2 mr-2"
@@ -52,13 +52,13 @@ const SudokuControls = ({
           <NotesToggle isEnabled={isNotesMode} setEnabled={setIsNotesMode} />
         </div>
       </div>
-      <div className="flex flex-row justify-center">
+      <div className="flex flex-col items-center justify-center sm:flex-row">
         <div className="mr-2 mt-2" style={{ minWidth: 120 }}>
           <div className="square">
             <NumberPad selectNumber={selectNumber} />
           </div>
         </div>
-        <div className="sm:flex-row">
+        <div className="text-center sm:flex-row" style={{ maxWidth: '200px' }}>
           <button
             disabled={isValidateCellDisabled}
             onClick={() => selectNumber(0)}
@@ -68,7 +68,7 @@ const SudokuControls = ({
             Delete
           </button>
           <div
-            className="inline-fle mr-2"
+            className="mr-2 inline-flex min-w-52 flex-nowrap"
             role="group"
             aria-label="Button group"
           >

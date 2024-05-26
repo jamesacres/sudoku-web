@@ -11,7 +11,7 @@ export const NumberPad = ({
           onClick={() => {
             selectNumber(value);
           }}
-          className={`flex h-full w-full items-center justify-center rounded  px-4 py-2 text-2xl text-black hover:bg-blue-700 dark:text-white dark:text-white`}
+          className={`flex h-full w-full items-center justify-center rounded px-4 py-2 text-2xl text-black hover:bg-blue-300 dark:text-white dark:text-white dark:hover:bg-blue-500`}
           key={crypto.randomUUID()}
         >
           {value}

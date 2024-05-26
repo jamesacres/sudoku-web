@@ -225,55 +225,57 @@ const Sudoku = ({
   return (
     <div>
       <div className="container mx-auto max-w-screen-sm">
-        <div className="mb-4 mt-4 border-b-2 border-blue-500 pb-4 pl-0 pr-2">
+        <div className="mb-4 mt-4 pb-4 pl-0 pr-2">
           <p>
             Tips: use your keyboard if you have one, toggle notes mode with n.
           </p>
           <p>TODO parties and members</p>
         </div>
       </div>
-      <div className="container mx-auto max-w-xl">
-        <div className="grid grid-cols-3 grid-rows-3">
-          {Array.from(Array(3)).map((_, y) =>
-            Array.from(Array(3)).map((_, x) => {
-              const boxId = calculateBoxId(x, y);
-              return (
-                <SudokuBox
-                  key={boxId}
-                  boxId={boxId}
-                  selectedCell={selectedCell}
-                  setSelectedCell={setSelectedCell}
-                  answer={
-                    answer[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]
-                  }
-                  selectNumber={selectNumber}
-                  validation={
-                    validation &&
-                    validation[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]
-                  }
-                />
-              );
-            })
-          )}
+      <div className="flex flex-col items-center lg:flex-row">
+        <div className="container mx-auto">
+          <div className="m-4 ml-auto mr-auto grid max-w-xl grid-cols-3 grid-rows-3 p-4 lg:mr-0">
+            {Array.from(Array(3)).map((_, y) =>
+              Array.from(Array(3)).map((_, x) => {
+                const boxId = calculateBoxId(x, y);
+                return (
+                  <SudokuBox
+                    key={boxId}
+                    boxId={boxId}
+                    selectedCell={selectedCell}
+                    setSelectedCell={setSelectedCell}
+                    answer={
+                      answer[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]
+                    }
+                    selectNumber={selectNumber}
+                    validation={
+                      validation &&
+                      validation[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]
+                    }
+                  />
+                );
+              })
+            )}
+          </div>
         </div>
-      </div>
-      <div className="container mx-auto max-w-screen-sm">
-        <SudokuControls
-          isValidateCellDisabled={
-            !selectedCell ||
-            isInitialCell(selectedCell, initial) ||
-            !selectedAnswer()
-          }
-          validateCell={validateCell}
-          validateGrid={validateGrid}
-          isUndoDisabled={isUndoDisabled}
-          isRedoDisabled={isRedoDisabled}
-          undo={undo}
-          redo={redo}
-          selectNumber={selectNumber}
-          isNotesMode={isNotesMode}
-          setIsNotesMode={setIsNotesMode}
-        />
+        <div className="container mx-auto basis-3/5">
+          <SudokuControls
+            isValidateCellDisabled={
+              !selectedCell ||
+              isInitialCell(selectedCell, initial) ||
+              !selectedAnswer()
+            }
+            validateCell={validateCell}
+            validateGrid={validateGrid}
+            isUndoDisabled={isUndoDisabled}
+            isRedoDisabled={isRedoDisabled}
+            undo={undo}
+            redo={redo}
+            selectNumber={selectNumber}
+            isNotesMode={isNotesMode}
+            setIsNotesMode={setIsNotesMode}
+          />
+        </div>
       </div>
     </div>
   );
