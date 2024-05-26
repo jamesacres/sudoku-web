@@ -227,7 +227,7 @@ const Sudoku = ({
     <div>
       <div className="container mx-auto max-w-screen-sm">
         <div className="mb-4 mt-4 pb-4 pl-0 pr-2">
-          <p>TODO parties and members</p>
+          <p>TODO parties and members, and timer since session start</p>
         </div>
       </div>
       <div className="flex flex-col items-center lg:flex-row">
