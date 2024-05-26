@@ -17,10 +17,10 @@ const Header = () => {
             Puzzles
           </a>
         </div>
-        <div className="min-h-10">
+        <div className="flex min-h-10 items-center">
           <HeaderUser />
+          <ThemeSwitch />
         </div>
-        <ThemeSwitch />
       </div>
     </nav>
   );
