@@ -30,13 +30,15 @@ const SudokuInput = ({
   if (!isNotesMode && value && validation !== undefined) {
     backgroundClass = validation ? 'bg-green-600' : 'bg-red-600';
   } else if (isSelected) {
-    backgroundClass = 'dark:bg-blue-600 bg-blue-300';
+    const initialBackgroundClass = isInitial
+      ? 'dark:bg-opacity-75 bg-opacity-50'
+      : '';
+    backgroundClass = `dark:bg-blue-600 bg-blue-300 ${initialBackgroundClass}`;
   }
 
-  const fontClass = isInitial
-    ? 'text-zinc-500 dark:text-zinc-500'
+  const textClass = isInitial
+    ? 'text-zinc-500 dark:text-zinc-400'
     : 'text-black dark:text-white';
-  console.info(fontClass);
 
   return (
     <div
@@ -52,7 +54,7 @@ const SudokuInput = ({
       ) : (
         <div
           data-cell-id={cellId}
-          className={`text-center text-lg sm:text-3xl ${fontClass}`}
+          className={`text-center text-lg sm:text-3xl ${textClass}`}
         >
           {!!value && value}
         </div>
