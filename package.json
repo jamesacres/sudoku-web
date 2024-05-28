@@ -2,18 +2,28 @@
   "name": "sudoku-web",
   "version": "0.1.0",
   "private": true,
-  "main": "electron/main.mjs",
   "author": "James Acres",
   "description": "Sudoku",
+  "main": "electron/main.mjs",
+  "build": {
+    "files": [
+      "electron",
+      {
+        "from": "out",
+        "to": "electron/out"
+      }
+    ]
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "electron": "electron .",
-    "electron:dev": "IS_ELECTRON=true concurrently -n \"NEXT,ELECTRON\" -c \"yellow,blue\" --kill-others \"next dev\" \"electron .\"",
+    "electron": "electron ./electron",
+    "electron:dev": "IS_ELECTRON=true concurrently -n \"NEXT,ELECTRON\" -c \"yellow,blue\" --kill-others \"next dev\" \"electron ./electron\"",
     "electron:build": "IS_ELECTRON=true next build && electron-builder",
     "start": "next start",
     "lint": "next lint",
-    "lint:fix": "next lint --fix"
+    "lint:fix": "next lint --fix",
+    "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.19",

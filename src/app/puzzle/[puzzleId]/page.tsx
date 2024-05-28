@@ -1,8 +1,16 @@
-'use server';
+// 'use server';
 import Sudoku from '@/components/Sudoku';
 import puzzles from '@/data/puzzles/puzzles';
 import { Puzzle } from '@/types/puzzle';
 import { notFound } from 'next/navigation';
+
+export async function generateStaticParams() {
+  const puzzleIds = [1];
+
+  return puzzleIds.map((puzzleId) => ({
+    puzzleId: `${puzzleId}`,
+  }));
+}
 
 const getPuzzle = (puzzleId: number): { initial: Puzzle; final: Puzzle } => {
   return puzzles[puzzleId];

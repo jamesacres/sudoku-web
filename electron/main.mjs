@@ -1,11 +1,11 @@
-const { app, BrowserWindow } = await import('electron');
-const serve = await import('electron-serve');
-const path = await import('path');
+import { app, BrowserWindow } from 'electron';
+import serve from 'electron-serve';
+import path from 'path';
 const __dirname = import.meta.dirname;
 
 const appServe = app.isPackaged
   ? serve({
-      directory: path.join(__dirname, '../out'),
+      directory: path.join(__dirname, 'out'),
     })
   : null;
 
@@ -23,7 +23,7 @@ const createWindow = () => {
       win.loadURL('app://-');
     });
   } else {
-    win.loadURL('http://localhost:3000/puzzle/1');
+    win.loadURL('http://localhost:3000');
     win.webContents.openDevTools();
     win.webContents.on('did-fail-load', (e, code, desc) => {
       win.webContents.reloadIgnoringCache();
