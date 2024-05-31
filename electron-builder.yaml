@@ -10,3 +10,7 @@ linux:
 mac:
   target: ["dir", "dmg", "zip"]
   icon: "resources/icon.icns"
+  extendInfo: "sudoku"
+protocols:
+  name: "sudoku"
+  schemes: ["sudoku"]

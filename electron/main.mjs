@@ -3,6 +3,8 @@ import serve from 'electron-serve';
 import path from 'path';
 const __dirname = import.meta.dirname;
 
+app.setAsDefaultProtocolClient('sudoku');
+
 const appServe = serve({
   directory: path.join(__dirname, 'out'),
 });
