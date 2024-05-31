@@ -15,6 +15,14 @@ export const UserContext = React.createContext<
   UserContextInterface | undefined
 >(undefined);
 
+const buildRedirectUri = () => {
+  let origin = window.location.origin;
+  if ((window as any).electronAPI) {
+    origin = 'sudoku://-';
+  }
+  return `${origin}/auth`;
+};
+
 let isExhanging = false;
 let isInitialising = false;
 let registration: ServiceWorkerRegistration;
@@ -39,7 +47,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     const { codeChallenge, codeVerifier, codeChallengeMethod } = await pkce();
     sessionStorage.setItem('code_verifier', codeVerifier);
 
-    const redirectUri = `${window.location.origin}/auth`;
+    const redirectUri = buildRedirectUri();
     const scope = [
       'openid',
       'profile',
@@ -61,7 +69,12 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     params.set('code_challenge_method', codeChallengeMethod);
     params.set('resource', resource);
 
-    window.location.href = `${iss}/oidc/auth?${params.toString()}`;
+    const url = `${iss}/oidc/auth?${params.toString()}`;
+    if ((window as any).electronAPI) {
+      await (window as any).electronAPI.openBrowser(url);
+    } else {
+      window.location.href = url;
+    }
   }, []);
 
   React.useEffect(() => {
@@ -129,7 +142,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
               const query = new URLSearchParams(window.location.search);
               const code = query.get('code') || '';
               const state = query.get('state') || '';
-              const redirectUri = `${window.location.origin}/auth`;
+              const redirectUri = buildRedirectUri();
 
               const codeVerifier = sessionStorage.getItem('code_verifier');
               if (state === sessionStorage.getItem('state') && codeVerifier) {
