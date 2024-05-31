@@ -6,11 +6,6 @@
   "author": "James Acres",
   "description": "Sudoku",
   "dependencies": {
-    "@headlessui/react": "^1.7.19",
-    "electron-serve": "^2.0.0",
-    "next-themes": "^0.2.1",
-    "react": "^18",
-    "react-dom": "^18",
-    "react-feather": "^2.0.10"
+    "electron-serve": "^2.0.0"
   }
 }

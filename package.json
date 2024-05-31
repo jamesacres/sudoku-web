@@ -4,30 +4,16 @@
   "private": true,
   "author": "James Acres",
   "description": "Sudoku",
-  "main": "electron/main.mjs",
-  "build": {
-    "files": [
-      "electron",
-      {
-        "from": "out",
-        "to": "electron/out"
-      }
-    ]
-  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "electron": "electron ./electron",
-    "electron:dev": "IS_ELECTRON=true concurrently -n \"NEXT,ELECTRON\" -c \"yellow,blue\" --kill-others \"next dev\" \"electron ./electron\"",
-    "electron:build": "IS_ELECTRON=true next build && electron-builder",
+    "build:electron": "./scripts/buildElectron.sh",
     "start": "next start",
     "lint": "next lint",
-    "lint:fix": "next lint --fix",
-    "postinstall": "electron-builder install-app-deps"
+    "lint:fix": "next lint --fix"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.19",
-    "electron-serve": "^2.0.0",
     "next": "^14.1.0",
     "next-themes": "^0.2.1",
     "react": "^18",

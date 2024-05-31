@@ -1,34 +1,30 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, screen } from 'electron';
 import serve from 'electron-serve';
 import path from 'path';
 const __dirname = import.meta.dirname;
 
-const appServe = app.isPackaged
-  ? serve({
-      directory: path.join(__dirname, 'out'),
-    })
-  : null;
+const appServe = serve({
+  directory: path.join(__dirname, 'out'),
+});
 
 const createWindow = () => {
+  const { width, height } = screen.getPrimaryDisplay().workAreaSize;
   const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    show: false,
+    width: width - 100,
+    height: height - 100,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     },
   });
 
-  if (app.isPackaged) {
-    appServe(win).then(() => {
-      win.loadURL('app://-');
-    });
-  } else {
-    win.loadURL('http://localhost:3000');
-    win.webContents.openDevTools();
-    win.webContents.on('did-fail-load', (e, code, desc) => {
-      win.webContents.reloadIgnoringCache();
-    });
-  }
+  appServe(win).then(() => {
+    win.loadURL('app://-');
+  });
+
+  win.once('ready-to-show', () => {
+    win.show();
+  });
 };
 
 app.on('ready', () => {
@@ -36,7 +32,7 @@ app.on('ready', () => {
 });
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
+  //if (process.platform !== 'darwin') {
+  app.quit();
+  //}
 });
