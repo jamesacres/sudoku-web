@@ -24,8 +24,16 @@
   const isPingUrl = (destURL) => destURL.toString() === pingUrl;
 
   // These tokens never leave the worker unless in a native environment
-  let state;
+  let state = {
+    accessToken: null,
+    accessExpiry: null,
+    refreshToken: null,
+    refreshExpiry: null,
+    user: null,
+    userExpiry: null,
+  };
   const saveState = async (newState) => {
+    console.info('user-provider-worker saveState');
     state = newState;
     if (isNative) {
       // Save state in native app
@@ -40,6 +48,7 @@
     }
   };
   const resetState = () => {
+    console.info('user-provider-worker resetState');
     saveState({
       accessToken: null,
       accessExpiry: null,
@@ -49,7 +58,6 @@
       userExpiry: null,
     });
   };
-  resetState();
 
   const handleTokenSuccess = async (response) => {
     console.info('user-provider-worker handleTokenSuccess');
@@ -154,6 +162,7 @@
         });
       }
     } else if (event.data === 'logout') {
+      console.info('user-provider-worker logout');
       resetState();
     } else if (event.data.startsWith('restoreState:')) {
       console.info('user-provider-worker restoreState');
