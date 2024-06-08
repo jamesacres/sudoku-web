@@ -10,7 +10,7 @@ linux:
 mac:
   target: ["dir", "dmg", "zip"]
   icon: "resources/icon.icns"
-  extendInfo: "sudoku"
+  extendInfo: "com.bubblyclouds.sudoku"
 protocols:
-  name: "sudoku"
-  schemes: ["sudoku"]
+  name: "com.bubblyclouds.sudoku"
+  schemes: ["com.bubblyclouds.sudoku"]
