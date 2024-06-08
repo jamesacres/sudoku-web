@@ -1,5 +1,6 @@
 #!/bin/bash
 rm -rf dist
+rm -rf out
 npm install
 IS_ELECTRON=true next build
 cd electron

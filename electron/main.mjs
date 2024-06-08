@@ -1,16 +1,33 @@
-import { app, BrowserWindow, dialog, ipcMain, screen, shell } from 'electron';
+import {
+  app,
+  BrowserWindow,
+  dialog,
+  ipcMain,
+  safeStorage,
+  screen,
+  shell,
+} from 'electron';
 import serve from 'electron-serve';
+import Store from 'electron-store';
 import path from 'path';
 const __dirname = import.meta.dirname;
 
+const scheme = 'com.bubblyclouds.sudoku';
+
+const store = new Store({
+  state: {
+    type: 'string',
+  },
+});
+
 if (process.defaultApp) {
   if (process.argv.length >= 2) {
-    app.setAsDefaultProtocolClient('sudoku', process.execPath, [
+    app.setAsDefaultProtocolClient(scheme, process.execPath, [
       path.resolve(process.argv[1]),
     ]);
   }
 } else {
-  app.setAsDefaultProtocolClient('sudoku');
+  app.setAsDefaultProtocolClient(scheme);
 }
 
 const appServe = serve({
@@ -30,7 +47,11 @@ const createWindow = () => {
   });
 
   appServe(win).then(() => {
-    win.loadURL('app://-');
+    if (store.has('state')) {
+      win.loadURL(`app://-/restoreState.html?state=${store.get('state')}`);
+    } else {
+      win.loadURL('app://-');
+    }
   });
 
   win.once('ready-to-show', () => {
@@ -44,8 +65,8 @@ const handleDeepLink = (url) => {
       win.restore();
     }
     win.focus();
+    win.loadURL(url.replace(scheme, 'app'));
   }
-  dialog.showErrorBox('Welcome Back', `You arrived from: ${url}`);
 };
 
 const gotTheLock = app.requestSingleInstanceLock();
@@ -74,4 +95,28 @@ app.on('window-all-closed', () => {
 
 ipcMain.handle('openBrowser', (_event, url) => {
   shell.openExternal(url);
+});
+
+ipcMain.handle('saveState', (_event, encryptedString) => {
+  store.set('state', encryptedString);
+});
+
+ipcMain.handle('encrypt', (_event, plainText) => {
+  return safeStorage
+    .encryptString(plainText)
+    .toString('base64')
+    .replace(/[+/=]/g, function (m0) {
+      return m0 === '+' ? '-' : m0 === '/' ? '_' : '*';
+    });
+});
+
+ipcMain.handle('decrypt', (_event, encryptedString) => {
+  return safeStorage.decryptString(
+    Buffer.from(
+      encryptedString.replace(/[-_*]/g, function (m0) {
+        return m0 === '-' ? '+' : m0 === '_' ? '/' : '=';
+      }),
+      'base64'
+    )
+  );
 });
