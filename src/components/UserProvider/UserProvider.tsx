@@ -1,4 +1,5 @@
 'use client';
+import { isElectron, openBrowser } from '@/helpers/electron';
 import { pkce } from '@/helpers/pkce';
 import { UserProfile } from '@/types/userProfile';
 import { useRouter } from 'next/navigation';
@@ -15,6 +16,14 @@ export const UserContext = React.createContext<
   UserContextInterface | undefined
 >(undefined);
 
+const buildRedirectUri = () => {
+  if (isElectron()) {
+    const scheme = 'com.bubblyclouds.sudoku';
+    return `${scheme}://-/auth.html`;
+  }
+  return `${window.location.origin}/auth`;
+};
+
 let isExhanging = false;
 let isInitialising = false;
 let registration: ServiceWorkerRegistration;
@@ -26,7 +35,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   const router = useRouter();
 
   const iss = 'https://auth.bubblyclouds.com';
-  const clientId = 'bubbly-sudoku';
+  const clientId = isElectron() ? 'bubbly-sudoku-native' : 'bubbly-sudoku';
 
   const loginRedirect = React.useCallback(async () => {
     console.info('loginRedirect..');
@@ -39,7 +48,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     const { codeChallenge, codeVerifier, codeChallengeMethod } = await pkce();
     sessionStorage.setItem('code_verifier', codeVerifier);
 
-    const redirectUri = `${window.location.origin}/auth`;
+    const redirectUri = buildRedirectUri();
     const scope = [
       'openid',
       'profile',
@@ -61,8 +70,13 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     params.set('code_challenge_method', codeChallengeMethod);
     params.set('resource', resource);
 
-    window.location.href = `${iss}/oidc/auth?${params.toString()}`;
-  }, []);
+    const url = `${iss}/oidc/auth?${params.toString()}`;
+    if (isElectron()) {
+      await openBrowser(url);
+    } else {
+      window.location.href = url;
+    }
+  }, [clientId]);
 
   React.useEffect(() => {
     // Really we should unmount service worker and intervals
@@ -77,8 +91,10 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
       const handleUser = (user: UserProfile) => {
         console.info('handleUser', user);
         setUser(user);
-        // Indicate that if browser closes, next reopen we can try to recover our session
-        localStorage.setItem('recoverSession', 'true');
+        if (!isElectron()) {
+          // Indicate that if browser closes, next reopen we can try to recover our session
+          localStorage.setItem('recoverSession', 'true');
+        }
 
         // Ping worker fetch /ping endpoint to keep token cache alive
         const pingId = setInterval(async () => {
@@ -116,10 +132,20 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
                 await loginRedirect();
               }
             }
+          } else if (
+            event.data.type === 'saveState' &&
+            'electronAPI' in window
+          ) {
+            console.info('saveState');
+            const { state } = event.data;
+            const encryptedState = await (window as any).electronAPI.encrypt(
+              JSON.stringify(state)
+            );
+            await (window as any).electronAPI.saveState(encryptedState);
           }
         });
       }
-      if (window.location.pathname === '/auth') {
+      if (window.location.pathname.replace('.html', '') === '/auth') {
         setIsLoggingIn(true);
 
         const codeExchange = async () => {
@@ -129,7 +155,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
               const query = new URLSearchParams(window.location.search);
               const code = query.get('code') || '';
               const state = query.get('state') || '';
-              const redirectUri = `${window.location.origin}/auth`;
+              const redirectUri = buildRedirectUri();
 
               const codeVerifier = sessionStorage.getItem('code_verifier');
               if (state === sessionStorage.getItem('state') && codeVerifier) {
@@ -172,13 +198,26 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
           );
         };
         await codeExchange();
+      } else if (
+        window.location.pathname.replace('.html', '') === '/restoreState' &&
+        'electronAPI' in window
+      ) {
+        console.info('restoreState');
+        // Request the worker restores the persisted state from electron
+        const query = new URLSearchParams(window.location.search);
+        const encryptedState = query.get('state') || '';
+        const state = await (window as any).electronAPI.decrypt(encryptedState);
+        registration?.active?.postMessage(`restoreState:${state}`);
+        // getUser result will happen in background
+        // Redirect to root of app
+        router.push('/');
       } else {
         // Request the worker sends us a user result
         registration?.active?.postMessage('getUser');
       }
     };
     asyncEffect();
-  }, [loginRedirect, router]);
+  }, [loginRedirect, router, clientId]);
 
   const logout = () => {
     localStorage.setItem('recoverSession', 'false');

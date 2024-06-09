@@ -2,6 +2,7 @@
 // Inspired by https://github.com/elie29/jwt-token-storage/blob/service-worker/frontend/service-worker.js
 // Closure to protect all variables
 ((_) => {
+  const isNative = !self.location.protocol.startsWith('http');
   const jwtDecode = (token) =>
     JSON.parse(
       decodeURIComponent(
@@ -12,7 +13,7 @@
       )
     );
   const iss = 'https://auth.bubblyclouds.com';
-  const clientId = 'bubbly-sudoku';
+  const clientId = isNative ? 'bubbly-sudoku-native' : 'bubbly-sudoku';
   const apiUrls = ['https://api.bubblyclouds.com'];
   const authUrls = ['https://auth.bubblyclouds.com'];
   const pingUrl = 'https://api.bubblyclouds.com/workerping';
@@ -22,19 +23,41 @@
     authUrls.includes(destURL.origin) && tokenUrls.includes(destURL.pathname);
   const isPingUrl = (destURL) => destURL.toString() === pingUrl;
 
-  // These tokens never leave the worker
-  let state;
+  // These tokens never leave the worker unless in a native environment
+  let state = {
+    accessToken: null,
+    accessExpiry: null,
+    refreshToken: null,
+    refreshExpiry: null,
+    user: null,
+    userExpiry: null,
+  };
+  const saveState = async (newState) => {
+    console.info('user-provider-worker saveState');
+    state = newState;
+    if (isNative) {
+      // Save state in native app
+      self.clients.matchAll().then((clients) => {
+        clients.forEach((client) =>
+          client.postMessage({
+            state,
+            type: 'saveState',
+          })
+        );
+      });
+    }
+  };
   const resetState = () => {
-    state = {
+    console.info('user-provider-worker resetState');
+    saveState({
       accessToken: null,
       accessExpiry: null,
       refreshToken: null,
       refreshExpiry: null,
       user: null,
       userExpiry: null,
-    };
+    });
   };
-  resetState();
 
   const handleTokenSuccess = async (response) => {
     console.info('user-provider-worker handleTokenSuccess');
@@ -57,14 +80,14 @@
     // Same expiry as the first refresh token
     const userExpiry = new Date(refreshExpiry);
 
-    state = {
+    saveState({
       accessExpiry,
       accessToken,
       refreshExpiry,
       refreshToken,
       user,
       userExpiry,
-    };
+    });
   };
 
   let isRefreshing = false;
@@ -122,7 +145,7 @@
     new Date(state.refreshExpiry).getTime() > new Date().getTime();
 
   // Listen to calls to postMessage
-  addEventListener('message', (event) => {
+  addEventListener('message', async (event) => {
     if (event.data === 'getUser') {
       console.info('user-provider-worker getUser event received');
       if (hasValidUser()) {
@@ -139,7 +162,16 @@
         });
       }
     } else if (event.data === 'logout') {
+      console.info('user-provider-worker logout');
       resetState();
+    } else if (event.data.startsWith('restoreState:')) {
+      console.info('user-provider-worker restoreState');
+      const stateString = event.data.split(':').slice(1).join(':');
+      await saveState(JSON.parse(stateString));
+      event.source.postMessage({
+        user: state.user,
+        type: 'getUser',
+      });
     }
     return;
   });

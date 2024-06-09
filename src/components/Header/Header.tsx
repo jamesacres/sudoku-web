@@ -1,6 +1,7 @@
 import dynamic from 'next/dynamic';
 const HeaderUser = dynamic(() => import('../HeaderUser'), { ssr: false });
 import ThemeSwitch from '../ThemeSwitch';
+import Link from 'next/link';
 
 const Header = () => {
   return (
@@ -10,12 +11,12 @@ const Header = () => {
       </div>
       <div className="block flex flex-grow items-center">
         <div className="flex-grow text-sm">
-          <a
+          <Link
             href="/"
             className="mr-4 mt-0 block inline-block text-blue-200 hover:text-white"
           >
             Puzzles
-          </a>
+          </Link>
         </div>
         <div className="flex min-h-10 items-center">
           <HeaderUser />
