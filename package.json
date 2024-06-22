@@ -13,6 +13,9 @@
     "lint:fix": "next lint --fix"
   },
   "dependencies": {
+    "@capacitor/android": "^6.1.0",
+    "@capacitor/core": "^6.1.0",
+    "@capacitor/ios": "^6.1.0",
     "@headlessui/react": "^1.7.19",
     "next": "^14.1.0",
     "next-themes": "^0.2.1",
@@ -21,6 +24,7 @@
     "react-feather": "^2.0.10"
   },
   "devDependencies": {
+    "@capacitor/cli": "^6.1.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
