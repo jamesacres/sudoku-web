@@ -21,7 +21,7 @@ const SudokuInputNotes = ({
         return isSelected || isChecked ? (
           <div
             onClick={() => selectNumber(value)}
-            className={`flex h-full w-full items-center justify-center text-xs md:text-sm ${colorClass} ${boldClass}`}
+            className={`flex aspect-square h-full w-full items-center justify-center text-xs md:text-sm ${colorClass} ${boldClass}`}
             key={crypto.randomUUID()}
           >
             {value}
