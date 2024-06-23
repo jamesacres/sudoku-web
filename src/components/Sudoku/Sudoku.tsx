@@ -10,14 +10,26 @@ import {
 } from '@/helpers/calculateId';
 import { checkCell, checkGrid, isInitialCell } from '@/helpers/checkAnswer';
 import { Notes, ToggleNote } from '@/types/notes';
-import { SetAnswer } from './types';
+import { SetAnswer, StateType, Timer } from './types';
 import SudokuControls from '../SudokuControls';
 import { UserContext } from '../UserProvider';
 import { SelectNumber } from '@/types/selectNumber';
+import { useDocumentVisibility } from '@/hooks/documentVisibility';
 
-const getSavedState = (puzzleId: string) => {
+const getStateKey = (type: StateType, puzzleId: string) => {
+  let key = `sudoku-${puzzleId}`;
+  if (type !== StateType.PUZZLE) {
+    key = `${key}-${type}`;
+  }
+  return key;
+};
+
+const getSavedState = <T,>(
+  type: StateType,
+  puzzleId: string
+): T | undefined => {
   try {
-    const savedState = localStorage.getItem(`sudoku-${puzzleId}`);
+    const savedState = localStorage.getItem(getStateKey(type, puzzleId));
     if (savedState) {
       return JSON.parse(savedState);
     }
@@ -27,8 +39,8 @@ const getSavedState = (puzzleId: string) => {
   return undefined;
 };
 
-const saveState = (puzzleId: string, state: Puzzle[]) => {
-  localStorage.setItem(`sudoku-${puzzleId}`, JSON.stringify(state));
+const saveState = <T,>(type: StateType, puzzleId: string, state: T) => {
+  localStorage.setItem(getStateKey(type, puzzleId), JSON.stringify(state));
 };
 
 // const fetchSession = async () => {
@@ -50,6 +62,7 @@ const Sudoku = ({
   puzzleId: string;
   puzzle: { initial: Puzzle; final: Puzzle };
 }) => {
+  const isDocumentVisible = useDocumentVisibility();
   const { user } = React.useContext(UserContext) || {};
   if (user) {
     // TODO only fetch when needed
@@ -62,6 +75,62 @@ const Sudoku = ({
     structuredClone(initial),
   ]);
   const [redoAnswerStack, setRedoAnswerStack] = React.useState<Puzzle[]>([]);
+  const [timer, setTimer] = React.useState<null | Timer>(null);
+  // Timer - calculates time spent on page
+  const calculateSeconds = (timer: Timer | null) => {
+    let nextSeconds = 0;
+    if (timer) {
+      nextSeconds =
+        timer.seconds +
+        Math.floor(
+          (new Date(timer.inProgress.lastInteraction).getTime() -
+            new Date(timer.inProgress.start).getTime()) /
+            1000
+        );
+    }
+    return nextSeconds;
+  };
+  const padNumber = (number: number) => `${number}`.padStart(2, '0');
+  const formatSeconds = (totalSeconds: number) => {
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = Math.floor(totalSeconds % 60);
+    return `${padNumber(hours)}:${padNumber(minutes)}:${padNumber(seconds)}`;
+  };
+  const setTimerNewSession = React.useCallback(() => {
+    const now = new Date().toISOString();
+    setTimer((timer) => {
+      return {
+        ...timer,
+        seconds: calculateSeconds(timer),
+        inProgress: { start: now, lastInteraction: now },
+      };
+    });
+  }, []);
+  const setTimerLastInteraction = React.useCallback(() => {
+    const now = new Date().toISOString();
+    setTimer((timer) => {
+      if (timer) {
+        return {
+          ...timer,
+          inProgress: {
+            ...timer.inProgress,
+            lastInteraction: now,
+          },
+        };
+      }
+      return null;
+    });
+  }, []);
+  // Force timer to re-render
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      if (isDocumentVisible) {
+        setTimerLastInteraction();
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [isDocumentVisible, setTimerLastInteraction]);
 
   // Answers
   const answer = answerStack[answerStack.length - 1];
@@ -143,16 +212,36 @@ const Sudoku = ({
 
   // Restore and save state
   React.useEffect(() => {
-    const savedState = getSavedState(puzzleId);
+    const savedState = getSavedState<Puzzle[]>(StateType.PUZZLE, puzzleId);
+    const savedTimer = getSavedState<Timer>(StateType.TIMER, puzzleId);
     if (savedState) {
       setAnswerStack(savedState);
+    }
+    if (savedTimer) {
+      setTimer(savedTimer);
     }
   }, [puzzleId]);
   React.useEffect(() => {
     if (answerStack.length > 1) {
-      saveState(puzzleId, answerStack);
+      setTimerLastInteraction();
+      saveState(StateType.PUZZLE, puzzleId, answerStack);
     }
-  }, [puzzleId, answerStack]);
+  }, [puzzleId, answerStack, setTimerLastInteraction]);
+  React.useEffect(() => {
+    if (timer) {
+      saveState(StateType.TIMER, puzzleId, timer);
+    }
+  }, [puzzleId, timer]);
+  React.useEffect(() => {
+    console.info('isDocumentVisible', isDocumentVisible);
+    if (isDocumentVisible) {
+      // Document now visible, start a new session
+      setTimerNewSession();
+    } else {
+      // Document now invisible, set lastInteraction to now
+      setTimerLastInteraction();
+    }
+  }, [isDocumentVisible, setTimerNewSession, setTimerLastInteraction]);
 
   // Validation
   const [validation, setValidation] = React.useState<
@@ -170,7 +259,8 @@ const Sudoku = ({
   );
   React.useEffect(() => {
     setValidation(undefined);
-  }, [answer, selectedCell]);
+    setTimerLastInteraction();
+  }, [answer, selectedCell, setTimerLastInteraction]);
 
   // Handle keyboard
   React.useEffect(() => {
@@ -227,7 +317,11 @@ const Sudoku = ({
     <div>
       <div className="container mx-auto max-w-screen-sm">
         <div className="mb-4 mt-4 pb-4 pl-0 pr-2">
-          <p>TODO parties and members, and timer since session start</p>
+          <p>
+            TODO sync session on answer state change, parties and members -
+            invite + accept
+          </p>
+          \<p>Timer: {formatSeconds(calculateSeconds(timer))}</p>
         </div>
       </div>
       <div className="flex flex-col items-center lg:flex-row">
