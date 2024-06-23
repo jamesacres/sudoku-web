@@ -76,7 +76,7 @@ const Sudoku = ({
   ]);
   const [redoAnswerStack, setRedoAnswerStack] = React.useState<Puzzle[]>([]);
   const [timer, setTimer] = React.useState<null | Timer>(null);
-  // Timer - calcuates time spent on page
+  // Timer - calculates time spent on page
   const calculateSeconds = (timer: Timer | null) => {
     let nextSeconds = 0;
     if (timer) {
