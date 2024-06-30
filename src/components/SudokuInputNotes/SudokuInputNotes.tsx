@@ -1,5 +1,5 @@
 import { Notes } from '@/types/notes';
-import { SelectNumber } from '@/types/selectNumber';
+import { SelectNumber } from '@/types/state';
 
 const SudokuInputNotes = ({
   isSelected,

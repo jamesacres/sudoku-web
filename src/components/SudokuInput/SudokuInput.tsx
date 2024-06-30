@@ -1,8 +1,7 @@
 import React from 'react';
-import { SetSelectedCell } from '../Sudoku';
 import SudokuInputNotes from '../SudokuInputNotes';
 import { Notes } from '@/types/notes';
-import { SelectNumber } from '@/types/selectNumber';
+import { SelectNumber, SetSelectedCell } from '@/types/state';
 
 const SudokuInput = ({
   cellId,

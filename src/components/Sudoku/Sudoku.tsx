@@ -1,47 +1,14 @@
 'use client';
 import { Puzzle, PuzzleRowOrColumn } from '@/types/puzzle';
 import SudokuBox from '../SudokuBox';
-import React from 'react';
-import {
-  calculateBoxId,
-  calculateCellId,
-  calculateNextCellId,
-  splitCellId,
-} from '@/helpers/calculateId';
-import { checkCell, checkGrid, isInitialCell } from '@/helpers/checkAnswer';
-import { Notes, ToggleNote } from '@/types/notes';
-import { SetAnswer, StateType, Timer } from './types';
+import { calculateBoxId } from '@/helpers/calculateId';
+import { isInitialCell } from '@/helpers/checkAnswer';
 import SudokuControls from '../SudokuControls';
 import { UserContext } from '../UserProvider';
-import { SelectNumber } from '@/types/selectNumber';
-import { useDocumentVisibility } from '@/hooks/documentVisibility';
-
-const getStateKey = (type: StateType, puzzleId: string) => {
-  let key = `sudoku-${puzzleId}`;
-  if (type !== StateType.PUZZLE) {
-    key = `${key}-${type}`;
-  }
-  return key;
-};
-
-const getSavedState = <T,>(
-  type: StateType,
-  puzzleId: string
-): T | undefined => {
-  try {
-    const savedState = localStorage.getItem(getStateKey(type, puzzleId));
-    if (savedState) {
-      return JSON.parse(savedState);
-    }
-  } catch (e) {
-    console.error(e);
-  }
-  return undefined;
-};
-
-const saveState = <T,>(type: StateType, puzzleId: string, state: T) => {
-  localStorage.setItem(getStateKey(type, puzzleId), JSON.stringify(state));
-};
+import { useTimer } from '@/hooks/timer';
+import { formatSeconds } from '@/helpers/formatSeconds';
+import { useGameState } from '@/hooks/gameState';
+import { useContext } from 'react';
 
 // const fetchSession = async () => {
 //   // TODO move somewhere sensible
@@ -62,256 +29,40 @@ const Sudoku = ({
   puzzleId: string;
   puzzle: { initial: Puzzle; final: Puzzle };
 }) => {
-  const isDocumentVisible = useDocumentVisibility();
-  const { user } = React.useContext(UserContext) || {};
+  const { user } = useContext(UserContext) || {};
+  const { calculateSeconds, timer } = useTimer({
+    puzzleId,
+  });
+  const {
+    answer,
+    selectedCell,
+    setIsNotesMode,
+    isNotesMode,
+    undo,
+    redo,
+    selectNumber,
+    setSelectedCell,
+    selectedAnswer,
+    isUndoDisabled,
+    isRedoDisabled,
+    validation,
+    validateCell,
+    validateGrid,
+  } = useGameState({
+    final,
+    initial,
+    puzzleId,
+  });
+
   if (user) {
+    // TODO fetch on load
+    // TODO update parties from response
+    // TODO overwrite local storage if last updated newer than local
+    // TODO update server if local storage newer than server
+    // TODO on every puzzle change update server with debounce, update parties from response
     // TODO only fetch when needed
     // fetchSession();
   }
-
-  const [isNotesMode, setIsNotesMode] = React.useState<boolean>(false);
-  const [selectedCell, setSelectedCell] = React.useState<null | string>(null);
-  const [answerStack, setAnswerStack] = React.useState<Puzzle[]>([
-    structuredClone(initial),
-  ]);
-  const [redoAnswerStack, setRedoAnswerStack] = React.useState<Puzzle[]>([]);
-  const [timer, setTimer] = React.useState<null | Timer>(null);
-  // Timer - calculates time spent on page
-  const calculateSeconds = (timer: Timer | null) => {
-    let nextSeconds = 0;
-    if (timer) {
-      nextSeconds =
-        timer.seconds +
-        Math.floor(
-          (new Date(timer.inProgress.lastInteraction).getTime() -
-            new Date(timer.inProgress.start).getTime()) /
-            1000
-        );
-    }
-    return nextSeconds;
-  };
-  const padNumber = (number: number) => `${number}`.padStart(2, '0');
-  const formatSeconds = (totalSeconds: number) => {
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = Math.floor(totalSeconds % 60);
-    return `${padNumber(hours)}:${padNumber(minutes)}:${padNumber(seconds)}`;
-  };
-  const setTimerNewSession = React.useCallback(() => {
-    const now = new Date().toISOString();
-    setTimer((timer) => {
-      return {
-        ...timer,
-        seconds: calculateSeconds(timer),
-        inProgress: { start: now, lastInteraction: now },
-      };
-    });
-  }, []);
-  const setTimerLastInteraction = React.useCallback(() => {
-    const now = new Date().toISOString();
-    setTimer((timer) => {
-      if (timer) {
-        return {
-          ...timer,
-          inProgress: {
-            ...timer.inProgress,
-            lastInteraction: now,
-          },
-        };
-      }
-      return null;
-    });
-  }, []);
-  // Force timer to re-render
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      if (isDocumentVisible) {
-        setTimerLastInteraction();
-      }
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [isDocumentVisible, setTimerLastInteraction]);
-
-  // Answers
-  const answer = answerStack[answerStack.length - 1];
-  const pushAnswer = React.useCallback(
-    (nextAnswer: Puzzle) => {
-      setAnswerStack([...answerStack, nextAnswer]);
-      setRedoAnswerStack([]);
-    },
-    [answerStack]
-  );
-  const setAnswer: SetAnswer = React.useCallback(
-    (value: number | Notes) => {
-      if (selectedCell) {
-        const { box, cell } = splitCellId(selectedCell);
-        if (!initial[box.x][box.y][cell.x][cell.y]) {
-          const nextAnswer = structuredClone(answer);
-          nextAnswer[box.x][box.y][cell.x][cell.y] = value;
-          pushAnswer(nextAnswer);
-        }
-      }
-    },
-    [initial, answer, selectedCell, pushAnswer]
-  );
-  const toggleNote: ToggleNote = React.useCallback(
-    (value: number) => {
-      if (selectedCell) {
-        const { box, cell } = splitCellId(selectedCell);
-        if (!initial[box.x][box.y][cell.x][cell.y]) {
-          const currentAnswer = answer[box.x][box.y][cell.x][cell.y];
-          const notes = typeof currentAnswer === 'object' ? currentAnswer : {};
-          if (notes) {
-            const nextNotes = { ...notes, [value]: !notes[value] };
-            setAnswer(nextNotes);
-          }
-        }
-      }
-    },
-    [initial, answer, selectedCell, setAnswer]
-  );
-  const selectNumber: SelectNumber = React.useCallback(
-    (number: number) => {
-      if (isNotesMode) {
-        toggleNote(number);
-      } else {
-        setAnswer(number);
-      }
-    },
-    [isNotesMode, setAnswer, toggleNote]
-  );
-
-  const selectedAnswer = React.useCallback(() => {
-    if (selectedCell) {
-      const { box, cell } = splitCellId(selectedCell);
-      const result = answer[box.x][box.y][cell.x][cell.y];
-      if (typeof result === 'number') {
-        return result;
-      }
-    }
-  }, [answer, selectedCell]);
-
-  // Undo and Redo
-  // Don't undo initial state
-  const isUndoDisabled = answerStack.length < 2;
-  const undo = React.useCallback(() => {
-    if (!isUndoDisabled) {
-      const lastAnswer = answerStack[answerStack.length - 1];
-      setRedoAnswerStack([...redoAnswerStack, lastAnswer]);
-      setAnswerStack(answerStack.slice(0, answerStack.length - 1));
-    }
-  }, [isUndoDisabled, answerStack, redoAnswerStack]);
-  const isRedoDisabled = !redoAnswerStack.length;
-  const redo = React.useCallback(() => {
-    if (!isRedoDisabled) {
-      const lastUndo = redoAnswerStack[redoAnswerStack.length - 1];
-      setAnswerStack([...answerStack, lastUndo]);
-      setRedoAnswerStack(redoAnswerStack.slice(0, redoAnswerStack.length - 1));
-    }
-  }, [isRedoDisabled, answerStack, redoAnswerStack]);
-
-  // Restore and save state
-  React.useEffect(() => {
-    const savedState = getSavedState<Puzzle[]>(StateType.PUZZLE, puzzleId);
-    const savedTimer = getSavedState<Timer>(StateType.TIMER, puzzleId);
-    if (savedState) {
-      setAnswerStack(savedState);
-    }
-    if (savedTimer) {
-      setTimer(savedTimer);
-    }
-  }, [puzzleId]);
-  React.useEffect(() => {
-    if (answerStack.length > 1) {
-      setTimerLastInteraction();
-      saveState(StateType.PUZZLE, puzzleId, answerStack);
-    }
-  }, [puzzleId, answerStack, setTimerLastInteraction]);
-  React.useEffect(() => {
-    if (timer) {
-      saveState(StateType.TIMER, puzzleId, timer);
-    }
-  }, [puzzleId, timer]);
-  React.useEffect(() => {
-    console.info('isDocumentVisible', isDocumentVisible);
-    if (isDocumentVisible) {
-      // Document now visible, start a new session
-      setTimerNewSession();
-    } else {
-      // Document now invisible, set lastInteraction to now
-      setTimerLastInteraction();
-    }
-  }, [isDocumentVisible, setTimerNewSession, setTimerLastInteraction]);
-
-  // Validation
-  const [validation, setValidation] = React.useState<
-    undefined | Puzzle<boolean | undefined>
-  >(undefined);
-  const validateGrid = React.useCallback(
-    () => setValidation(checkGrid(initial, final, answer)),
-    [initial, final, answer]
-  );
-  const validateCell = React.useCallback(
-    () =>
-      selectedCell &&
-      setValidation(checkCell(selectedCell, initial, final, answer)),
-    [selectedCell, initial, final, answer]
-  );
-  React.useEffect(() => {
-    setValidation(undefined);
-    setTimerLastInteraction();
-  }, [answer, selectedCell, setTimerLastInteraction]);
-
-  // Handle keyboard
-  React.useEffect(() => {
-    const keydownHandler = (e: KeyboardEvent) => {
-      if (e.key === 'n') {
-        setIsNotesMode(!isNotesMode);
-        e.preventDefault();
-      } else if (e.key === 'z') {
-        undo();
-        e.preventDefault();
-      } else if (e.key === 'y') {
-        redo();
-        e.preventDefault();
-      }
-      let currentSelectedCell =
-        selectedCell || calculateCellId(calculateBoxId(0, 0), 0, 0);
-      let nextCell;
-      if (e.key === 'ArrowDown') {
-        nextCell = calculateNextCellId(currentSelectedCell, 'down');
-        e.preventDefault();
-      } else if (e.key === 'ArrowUp') {
-        nextCell = calculateNextCellId(currentSelectedCell, 'up');
-        e.preventDefault();
-      } else if (e.key === 'ArrowLeft') {
-        nextCell = calculateNextCellId(currentSelectedCell, 'left');
-        e.preventDefault();
-      } else if (e.key === 'ArrowRight') {
-        nextCell = calculateNextCellId(currentSelectedCell, 'right');
-        e.preventDefault();
-      } else if (e.key === 'Backspace' || e.key === 'Delete') {
-        setAnswer(0);
-        e.preventDefault();
-      } else if (/[1-9]/.test(e.key)) {
-        selectNumber(Number(e.key));
-        e.preventDefault();
-      }
-      if (nextCell) {
-        setSelectedCell(nextCell);
-      }
-    };
-    window.addEventListener('keydown', keydownHandler);
-    return () => window.removeEventListener('keydown', keydownHandler);
-  }, [
-    isNotesMode,
-    redo,
-    selectedCell,
-    selectNumber,
-    setAnswer,
-    setIsNotesMode,
-    undo,
-  ]);
 
   return (
     <div>
