@@ -8,11 +8,3 @@ export enum StateType {
   PUZZLE = 'PUZZLE',
   TIMER = 'TIMER',
 }
-
-export interface Timer {
-  seconds: number;
-  inProgress: {
-    start: string;
-    lastInteraction: string;
-  };
-}

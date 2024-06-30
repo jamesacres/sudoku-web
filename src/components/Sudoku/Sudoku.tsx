@@ -10,11 +10,11 @@ import {
 } from '@/helpers/calculateId';
 import { checkCell, checkGrid, isInitialCell } from '@/helpers/checkAnswer';
 import { Notes, ToggleNote } from '@/types/notes';
-import { SetAnswer, StateType, Timer } from './types';
+import { SetAnswer, StateType } from './types';
 import SudokuControls from '../SudokuControls';
 import { UserContext } from '../UserProvider';
 import { SelectNumber } from '@/types/selectNumber';
-import { useDocumentVisibility } from '@/hooks/documentVisibility';
+import { Timer, useTimer } from '@/hooks/timer';
 
 const getStateKey = (type: StateType, puzzleId: string) => {
   let key = `sudoku-${puzzleId}`;
@@ -62,7 +62,12 @@ const Sudoku = ({
   puzzleId: string;
   puzzle: { initial: Puzzle; final: Puzzle };
 }) => {
-  const isDocumentVisible = useDocumentVisibility();
+  const {
+    calculateSeconds,
+    setTimerNewSession,
+    setTimerLastInteraction,
+    timer,
+  } = useTimer();
   const { user } = React.useContext(UserContext) || {};
   if (user) {
     // TODO only fetch when needed
@@ -75,21 +80,7 @@ const Sudoku = ({
     structuredClone(initial),
   ]);
   const [redoAnswerStack, setRedoAnswerStack] = React.useState<Puzzle[]>([]);
-  const [timer, setTimer] = React.useState<null | Timer>(null);
-  // Timer - calculates time spent on page
-  const calculateSeconds = (timer: Timer | null) => {
-    let nextSeconds = 0;
-    if (timer) {
-      nextSeconds =
-        timer.seconds +
-        Math.floor(
-          (new Date(timer.inProgress.lastInteraction).getTime() -
-            new Date(timer.inProgress.start).getTime()) /
-            1000
-        );
-    }
-    return nextSeconds;
-  };
+
   const padNumber = (number: number) => `${number}`.padStart(2, '0');
   const formatSeconds = (totalSeconds: number) => {
     const hours = Math.floor(totalSeconds / 3600);
@@ -97,40 +88,6 @@ const Sudoku = ({
     const seconds = Math.floor(totalSeconds % 60);
     return `${padNumber(hours)}:${padNumber(minutes)}:${padNumber(seconds)}`;
   };
-  const setTimerNewSession = React.useCallback(() => {
-    const now = new Date().toISOString();
-    setTimer((timer) => {
-      return {
-        ...timer,
-        seconds: calculateSeconds(timer),
-        inProgress: { start: now, lastInteraction: now },
-      };
-    });
-  }, []);
-  const setTimerLastInteraction = React.useCallback(() => {
-    const now = new Date().toISOString();
-    setTimer((timer) => {
-      if (timer) {
-        return {
-          ...timer,
-          inProgress: {
-            ...timer.inProgress,
-            lastInteraction: now,
-          },
-        };
-      }
-      return null;
-    });
-  }, []);
-  // Force timer to re-render
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      if (isDocumentVisible) {
-        setTimerLastInteraction();
-      }
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [isDocumentVisible, setTimerLastInteraction]);
 
   // Answers
   const answer = answerStack[answerStack.length - 1];
@@ -218,9 +175,9 @@ const Sudoku = ({
       setAnswerStack(savedState);
     }
     if (savedTimer) {
-      setTimer(savedTimer);
+      setTimerNewSession(savedTimer);
     }
-  }, [puzzleId]);
+  }, [puzzleId, setTimerNewSession]);
   React.useEffect(() => {
     if (answerStack.length > 1) {
       setTimerLastInteraction();
@@ -232,16 +189,6 @@ const Sudoku = ({
       saveState(StateType.TIMER, puzzleId, timer);
     }
   }, [puzzleId, timer]);
-  React.useEffect(() => {
-    console.info('isDocumentVisible', isDocumentVisible);
-    if (isDocumentVisible) {
-      // Document now visible, start a new session
-      setTimerNewSession();
-    } else {
-      // Document now invisible, set lastInteraction to now
-      setTimerLastInteraction();
-    }
-  }, [isDocumentVisible, setTimerNewSession, setTimerLastInteraction]);
 
   // Validation
   const [validation, setValidation] = React.useState<
