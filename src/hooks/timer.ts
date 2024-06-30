@@ -1,6 +1,7 @@
 'use client';
 import { useCallback, useEffect, useState } from 'react';
 import { useDocumentVisibility } from './documentVisibility';
+import { StateType, useLocalStorage } from './localStorage';
 
 export interface Timer {
   seconds: number;
@@ -10,8 +11,12 @@ export interface Timer {
   };
 }
 
-function useTimer() {
+function useTimer({ puzzleId }: { puzzleId: string }) {
   const isDocumentVisible = useDocumentVisibility();
+  const { getSavedState, saveState } = useLocalStorage({
+    id: puzzleId,
+    type: StateType.TIMER,
+  });
   const [timer, setTimer] = useState<null | Timer>(null);
 
   // Timer - calculates time spent on page
@@ -80,6 +85,19 @@ function useTimer() {
       setTimerLastInteraction();
     }
   }, [isDocumentVisible, setTimerNewSession, setTimerLastInteraction]);
+
+  // Save and Restore state
+  useEffect(() => {
+    const savedTimer = getSavedState<Timer>();
+    if (savedTimer) {
+      setTimerNewSession(savedTimer);
+    }
+  }, [puzzleId, getSavedState, setTimerNewSession]);
+  useEffect(() => {
+    if (timer) {
+      saveState(timer);
+    }
+  }, [puzzleId, timer, saveState]);
 
   return {
     calculateSeconds,

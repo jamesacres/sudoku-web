@@ -6,17 +6,14 @@ import {
   calculateBoxId,
   calculateCellId,
   calculateNextCellId,
-  splitCellId,
 } from '@/helpers/calculateId';
 import { checkCell, checkGrid, isInitialCell } from '@/helpers/checkAnswer';
-import { Notes, ToggleNote } from '@/types/notes';
-import { SetAnswer } from './types';
 import SudokuControls from '../SudokuControls';
 import { UserContext } from '../UserProvider';
-import { SelectNumber } from '@/types/selectNumber';
 import { Timer, useTimer } from '@/hooks/timer';
 import { formatSeconds } from '@/helpers/formatSeconds';
 import { StateType, useLocalStorage } from '@/hooks/localStorage';
+import { useGameState } from '@/hooks/gameState';
 
 // const fetchSession = async () => {
 //   // TODO move somewhere sensible
@@ -38,119 +35,31 @@ const Sudoku = ({
   puzzle: { initial: Puzzle; final: Puzzle };
 }) => {
   const { user } = React.useContext(UserContext) || {};
-  const { calculateSeconds, setTimerNewSession, timer } = useTimer();
-  const { getSavedState, saveState } = useLocalStorage();
+  const { calculateSeconds, timer } = useTimer({
+    puzzleId,
+  });
+  const {
+    answer,
+    selectedCell,
+    setIsNotesMode,
+    isNotesMode,
+    undo,
+    redo,
+    setAnswer,
+    selectNumber,
+    setSelectedCell,
+    selectedAnswer,
+    isUndoDisabled,
+    isRedoDisabled,
+  } = useGameState({
+    initial,
+    puzzleId,
+  });
+
   if (user) {
     // TODO only fetch when needed
     // fetchSession();
   }
-
-  const [isNotesMode, setIsNotesMode] = React.useState<boolean>(false);
-  const [selectedCell, setSelectedCell] = React.useState<null | string>(null);
-  const [answerStack, setAnswerStack] = React.useState<Puzzle[]>([
-    structuredClone(initial),
-  ]);
-  const [redoAnswerStack, setRedoAnswerStack] = React.useState<Puzzle[]>([]);
-
-  // Answers
-  const answer = answerStack[answerStack.length - 1];
-  const pushAnswer = React.useCallback(
-    (nextAnswer: Puzzle) => {
-      setAnswerStack([...answerStack, nextAnswer]);
-      setRedoAnswerStack([]);
-    },
-    [answerStack]
-  );
-  const setAnswer: SetAnswer = React.useCallback(
-    (value: number | Notes) => {
-      if (selectedCell) {
-        const { box, cell } = splitCellId(selectedCell);
-        if (!initial[box.x][box.y][cell.x][cell.y]) {
-          const nextAnswer = structuredClone(answer);
-          nextAnswer[box.x][box.y][cell.x][cell.y] = value;
-          pushAnswer(nextAnswer);
-        }
-      }
-    },
-    [initial, answer, selectedCell, pushAnswer]
-  );
-  const toggleNote: ToggleNote = React.useCallback(
-    (value: number) => {
-      if (selectedCell) {
-        const { box, cell } = splitCellId(selectedCell);
-        if (!initial[box.x][box.y][cell.x][cell.y]) {
-          const currentAnswer = answer[box.x][box.y][cell.x][cell.y];
-          const notes = typeof currentAnswer === 'object' ? currentAnswer : {};
-          if (notes) {
-            const nextNotes = { ...notes, [value]: !notes[value] };
-            setAnswer(nextNotes);
-          }
-        }
-      }
-    },
-    [initial, answer, selectedCell, setAnswer]
-  );
-  const selectNumber: SelectNumber = React.useCallback(
-    (number: number) => {
-      if (isNotesMode) {
-        toggleNote(number);
-      } else {
-        setAnswer(number);
-      }
-    },
-    [isNotesMode, setAnswer, toggleNote]
-  );
-
-  const selectedAnswer = React.useCallback(() => {
-    if (selectedCell) {
-      const { box, cell } = splitCellId(selectedCell);
-      const result = answer[box.x][box.y][cell.x][cell.y];
-      if (typeof result === 'number') {
-        return result;
-      }
-    }
-  }, [answer, selectedCell]);
-
-  // Undo and Redo
-  // Don't undo initial state
-  const isUndoDisabled = answerStack.length < 2;
-  const undo = React.useCallback(() => {
-    if (!isUndoDisabled) {
-      const lastAnswer = answerStack[answerStack.length - 1];
-      setRedoAnswerStack([...redoAnswerStack, lastAnswer]);
-      setAnswerStack(answerStack.slice(0, answerStack.length - 1));
-    }
-  }, [isUndoDisabled, answerStack, redoAnswerStack]);
-  const isRedoDisabled = !redoAnswerStack.length;
-  const redo = React.useCallback(() => {
-    if (!isRedoDisabled) {
-      const lastUndo = redoAnswerStack[redoAnswerStack.length - 1];
-      setAnswerStack([...answerStack, lastUndo]);
-      setRedoAnswerStack(redoAnswerStack.slice(0, redoAnswerStack.length - 1));
-    }
-  }, [isRedoDisabled, answerStack, redoAnswerStack]);
-
-  // Restore and save state
-  React.useEffect(() => {
-    const savedState = getSavedState<Puzzle[]>(StateType.PUZZLE, puzzleId);
-    const savedTimer = getSavedState<Timer>(StateType.TIMER, puzzleId);
-    if (savedState) {
-      setAnswerStack(savedState);
-    }
-    if (savedTimer) {
-      setTimerNewSession(savedTimer);
-    }
-  }, [puzzleId, setTimerNewSession, getSavedState]);
-  React.useEffect(() => {
-    if (answerStack.length > 1) {
-      saveState(StateType.PUZZLE, puzzleId, answerStack);
-    }
-  }, [puzzleId, answerStack, saveState]);
-  React.useEffect(() => {
-    if (timer) {
-      saveState(StateType.TIMER, puzzleId, timer);
-    }
-  }, [puzzleId, timer, saveState]);
 
   // Validation
   const [validation, setValidation] = React.useState<
@@ -219,6 +128,7 @@ const Sudoku = ({
     setAnswer,
     setIsNotesMode,
     undo,
+    setSelectedCell,
   ]);
 
   return (

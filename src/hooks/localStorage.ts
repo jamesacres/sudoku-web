@@ -7,35 +7,32 @@ export enum StateType {
   TIMER = 'TIMER',
 }
 
-function useLocalStorage() {
-  const getStateKey = (type: StateType, puzzleId: string) => {
-    let key = `sudoku-${puzzleId}`;
+function useLocalStorage({ type, id }: { type: StateType; id: string }) {
+  const getStateKey = useCallback(() => {
+    let key = `sudoku-${id}`;
     if (type !== StateType.PUZZLE) {
       key = `${key}-${type}`;
     }
     return key;
-  };
+  }, [id, type]);
 
-  const getSavedState = useCallback(
-    <T>(type: StateType, puzzleId: string): T | undefined => {
-      try {
-        const savedState = localStorage.getItem(getStateKey(type, puzzleId));
-        if (savedState) {
-          return JSON.parse(savedState);
-        }
-      } catch (e) {
-        console.error(e);
+  const getSavedState = useCallback(<T>(): T | undefined => {
+    try {
+      const savedState = localStorage.getItem(getStateKey());
+      if (savedState) {
+        return JSON.parse(savedState);
       }
-      return undefined;
-    },
-    []
-  );
+    } catch (e) {
+      console.error(e);
+    }
+    return undefined;
+  }, [getStateKey]);
 
   const saveState = useCallback(
-    <T>(type: StateType, puzzleId: string, state: T) => {
-      localStorage.setItem(getStateKey(type, puzzleId), JSON.stringify(state));
+    <T>(state: T) => {
+      localStorage.setItem(getStateKey(), JSON.stringify(state));
     },
-    []
+    [getStateKey]
   );
 
   return { getSavedState, saveState };
