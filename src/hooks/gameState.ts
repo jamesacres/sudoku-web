@@ -22,7 +22,7 @@ function useGameState({
   initial: Puzzle;
   puzzleId: string;
 }) {
-  const { getSavedState, saveState } = useLocalStorage({
+  const { getValue, saveValue } = useLocalStorage({
     id: puzzleId,
     type: StateType.PUZZLE,
   });
@@ -131,16 +131,16 @@ function useGameState({
 
   // Restore and save state
   useEffect(() => {
-    const savedState = getSavedState<Puzzle[]>();
+    const { state: savedState } = getValue<Puzzle[]>() || {};
     if (savedState) {
       setAnswerStack(savedState);
     }
-  }, [puzzleId, getSavedState]);
+  }, [puzzleId, getValue]);
   useEffect(() => {
     if (answerStack.length > 1) {
-      saveState(answerStack);
+      saveValue(answerStack);
     }
-  }, [puzzleId, answerStack, saveState]);
+  }, [puzzleId, answerStack, saveValue]);
 
   // Handle keyboard
   useEffect(() => {

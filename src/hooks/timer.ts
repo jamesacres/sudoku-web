@@ -13,7 +13,7 @@ interface Timer {
 
 function useTimer({ puzzleId }: { puzzleId: string }) {
   const isDocumentVisible = useDocumentVisibility();
-  const { getSavedState, saveState } = useLocalStorage({
+  const { getValue, saveValue } = useLocalStorage({
     id: puzzleId,
     type: StateType.TIMER,
   });
@@ -88,16 +88,16 @@ function useTimer({ puzzleId }: { puzzleId: string }) {
 
   // Save and Restore state
   useEffect(() => {
-    const savedTimer = getSavedState<Timer>();
+    const { state: savedTimer } = getValue<Timer>() || {};
     if (savedTimer) {
       setTimerNewSession(savedTimer);
     }
-  }, [puzzleId, getSavedState, setTimerNewSession]);
+  }, [puzzleId, getValue, setTimerNewSession]);
   useEffect(() => {
     if (timer) {
-      saveState(timer);
+      saveValue(timer);
     }
-  }, [puzzleId, timer, saveState]);
+  }, [puzzleId, timer, saveValue]);
 
   return {
     calculateSeconds,

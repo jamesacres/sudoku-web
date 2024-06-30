@@ -16,7 +16,9 @@ function useLocalStorage({ type, id }: { type: StateType; id: string }) {
     return key;
   }, [id, type]);
 
-  const getSavedState = useCallback(<T>(): T | undefined => {
+  const getValue = useCallback(<T>():
+    | { lastUpdated: number; state: T }
+    | undefined => {
     try {
       const savedState = localStorage.getItem(getStateKey());
       if (savedState) {
@@ -28,14 +30,18 @@ function useLocalStorage({ type, id }: { type: StateType; id: string }) {
     return undefined;
   }, [getStateKey]);
 
-  const saveState = useCallback(
+  const saveValue = useCallback(
     <T>(state: T) => {
-      localStorage.setItem(getStateKey(), JSON.stringify(state));
+      const lastUpdated = new Date().getTime();
+      localStorage.setItem(
+        getStateKey(),
+        JSON.stringify({ lastUpdated, state })
+      );
     },
     [getStateKey]
   );
 
-  return { getSavedState, saveState };
+  return { getValue, saveValue };
 }
 
 export { useLocalStorage };

@@ -55,6 +55,11 @@ const Sudoku = ({
   });
 
   if (user) {
+    // TODO fetch on load
+    // TODO update parties from response
+    // TODO overwrite local storage if last updated newer than local
+    // TODO update server if local storage newer than server
+    // TODO on every puzzle change update server with debounce, update parties from response
     // TODO only fetch when needed
     // fetchSession();
   }
