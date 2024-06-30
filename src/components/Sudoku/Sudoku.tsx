@@ -15,6 +15,7 @@ import SudokuControls from '../SudokuControls';
 import { UserContext } from '../UserProvider';
 import { SelectNumber } from '@/types/selectNumber';
 import { Timer, useTimer } from '@/hooks/timer';
+import { formatSeconds } from '@/helpers/formatSeconds';
 
 const getStateKey = (type: StateType, puzzleId: string) => {
   let key = `sudoku-${puzzleId}`;
@@ -80,14 +81,6 @@ const Sudoku = ({
     structuredClone(initial),
   ]);
   const [redoAnswerStack, setRedoAnswerStack] = React.useState<Puzzle[]>([]);
-
-  const padNumber = (number: number) => `${number}`.padStart(2, '0');
-  const formatSeconds = (totalSeconds: number) => {
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = Math.floor(totalSeconds % 60);
-    return `${padNumber(hours)}:${padNumber(minutes)}:${padNumber(seconds)}`;
-  };
 
   // Answers
   const answer = answerStack[answerStack.length - 1];
