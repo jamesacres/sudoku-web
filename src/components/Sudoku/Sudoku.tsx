@@ -10,39 +10,13 @@ import {
 } from '@/helpers/calculateId';
 import { checkCell, checkGrid, isInitialCell } from '@/helpers/checkAnswer';
 import { Notes, ToggleNote } from '@/types/notes';
-import { SetAnswer, StateType } from './types';
+import { SetAnswer } from './types';
 import SudokuControls from '../SudokuControls';
 import { UserContext } from '../UserProvider';
 import { SelectNumber } from '@/types/selectNumber';
 import { Timer, useTimer } from '@/hooks/timer';
 import { formatSeconds } from '@/helpers/formatSeconds';
-
-const getStateKey = (type: StateType, puzzleId: string) => {
-  let key = `sudoku-${puzzleId}`;
-  if (type !== StateType.PUZZLE) {
-    key = `${key}-${type}`;
-  }
-  return key;
-};
-
-const getSavedState = <T,>(
-  type: StateType,
-  puzzleId: string
-): T | undefined => {
-  try {
-    const savedState = localStorage.getItem(getStateKey(type, puzzleId));
-    if (savedState) {
-      return JSON.parse(savedState);
-    }
-  } catch (e) {
-    console.error(e);
-  }
-  return undefined;
-};
-
-const saveState = <T,>(type: StateType, puzzleId: string, state: T) => {
-  localStorage.setItem(getStateKey(type, puzzleId), JSON.stringify(state));
-};
+import { StateType, useLocalStorage } from '@/hooks/localStorage';
 
 // const fetchSession = async () => {
 //   // TODO move somewhere sensible
@@ -63,8 +37,9 @@ const Sudoku = ({
   puzzleId: string;
   puzzle: { initial: Puzzle; final: Puzzle };
 }) => {
-  const { calculateSeconds, setTimerNewSession, timer } = useTimer();
   const { user } = React.useContext(UserContext) || {};
+  const { calculateSeconds, setTimerNewSession, timer } = useTimer();
+  const { getSavedState, saveState } = useLocalStorage();
   if (user) {
     // TODO only fetch when needed
     // fetchSession();
@@ -165,17 +140,17 @@ const Sudoku = ({
     if (savedTimer) {
       setTimerNewSession(savedTimer);
     }
-  }, [puzzleId, setTimerNewSession]);
+  }, [puzzleId, setTimerNewSession, getSavedState]);
   React.useEffect(() => {
     if (answerStack.length > 1) {
       saveState(StateType.PUZZLE, puzzleId, answerStack);
     }
-  }, [puzzleId, answerStack]);
+  }, [puzzleId, answerStack, saveState]);
   React.useEffect(() => {
     if (timer) {
       saveState(StateType.TIMER, puzzleId, timer);
     }
-  }, [puzzleId, timer]);
+  }, [puzzleId, timer, saveState]);
 
   // Validation
   const [validation, setValidation] = React.useState<
