@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useDocumentVisibility } from './documentVisibility';
 import { StateType, useLocalStorage } from './localStorage';
 
-export interface Timer {
+interface Timer {
   seconds: number;
   inProgress: {
     start: string;

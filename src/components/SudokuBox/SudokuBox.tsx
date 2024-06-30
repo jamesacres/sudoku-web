@@ -1,7 +1,7 @@
 import { calculateCellId } from '@/helpers/calculateId';
 import SudokuInput from '../SudokuInput';
 import { PuzzleBox, PuzzleRowOrColumn } from '@/types/puzzle';
-import { SelectNumber } from '@/types/selectNumber';
+import { SelectNumber, SetSelectedCell } from '@/types/state';
 
 const SudokuBox = ({
   boxId,

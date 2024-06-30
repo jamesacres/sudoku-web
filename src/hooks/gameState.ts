@@ -3,14 +3,22 @@
 import { Puzzle } from '@/types/puzzle';
 import { Notes, ToggleNote } from '@/types/notes';
 import { useCallback, useEffect, useState } from 'react';
-import { splitCellId } from '@/helpers/calculateId';
+import {
+  calculateBoxId,
+  calculateCellId,
+  calculateNextCellId,
+  splitCellId,
+} from '@/helpers/calculateId';
 import { SelectNumber, SetAnswer } from '@/types/state';
 import { StateType, useLocalStorage } from './localStorage';
+import { checkCell, checkGrid } from '@/helpers/checkAnswer';
 
 function useGameState({
+  final,
   initial,
   puzzleId,
 }: {
+  final: Puzzle;
   initial: Puzzle;
   puzzleId: string;
 }) {
@@ -103,6 +111,24 @@ function useGameState({
     }
   }, [isRedoDisabled, answerStack, redoAnswerStack]);
 
+  // Validation
+  const [validation, setValidation] = useState<
+    undefined | Puzzle<boolean | undefined>
+  >(undefined);
+  const validateGrid = useCallback(
+    () => setValidation(checkGrid(initial, final, answer)),
+    [initial, final, answer]
+  );
+  const validateCell = useCallback(
+    () =>
+      selectedCell &&
+      setValidation(checkCell(selectedCell, initial, final, answer)),
+    [selectedCell, initial, final, answer]
+  );
+  useEffect(() => {
+    setValidation(undefined);
+  }, [answer, selectedCell]);
+
   // Restore and save state
   useEffect(() => {
     const savedState = getSavedState<Puzzle[]>();
@@ -116,6 +142,58 @@ function useGameState({
     }
   }, [puzzleId, answerStack, saveState]);
 
+  // Handle keyboard
+  useEffect(() => {
+    const keydownHandler = (e: KeyboardEvent) => {
+      if (e.key === 'n') {
+        setIsNotesMode(!isNotesMode);
+        e.preventDefault();
+      } else if (e.key === 'z') {
+        undo();
+        e.preventDefault();
+      } else if (e.key === 'y') {
+        redo();
+        e.preventDefault();
+      }
+      let currentSelectedCell =
+        selectedCell || calculateCellId(calculateBoxId(0, 0), 0, 0);
+      let nextCell;
+      if (e.key === 'ArrowDown') {
+        nextCell = calculateNextCellId(currentSelectedCell, 'down');
+        e.preventDefault();
+      } else if (e.key === 'ArrowUp') {
+        nextCell = calculateNextCellId(currentSelectedCell, 'up');
+        e.preventDefault();
+      } else if (e.key === 'ArrowLeft') {
+        nextCell = calculateNextCellId(currentSelectedCell, 'left');
+        e.preventDefault();
+      } else if (e.key === 'ArrowRight') {
+        nextCell = calculateNextCellId(currentSelectedCell, 'right');
+        e.preventDefault();
+      } else if (e.key === 'Backspace' || e.key === 'Delete') {
+        setAnswer(0);
+        e.preventDefault();
+      } else if (/[1-9]/.test(e.key)) {
+        selectNumber(Number(e.key));
+        e.preventDefault();
+      }
+      if (nextCell) {
+        setSelectedCell(nextCell);
+      }
+    };
+    window.addEventListener('keydown', keydownHandler);
+    return () => window.removeEventListener('keydown', keydownHandler);
+  }, [
+    isNotesMode,
+    redo,
+    selectedCell,
+    selectNumber,
+    setAnswer,
+    setIsNotesMode,
+    undo,
+    setSelectedCell,
+  ]);
+
   return {
     answer,
     selectedCell,
@@ -123,12 +201,14 @@ function useGameState({
     isNotesMode,
     undo,
     redo,
-    setAnswer,
     selectNumber,
     setSelectedCell,
     selectedAnswer,
     isUndoDisabled,
     isRedoDisabled,
+    validation,
+    validateCell,
+    validateGrid,
   };
 }
 

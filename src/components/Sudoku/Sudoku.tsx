@@ -1,19 +1,14 @@
 'use client';
 import { Puzzle, PuzzleRowOrColumn } from '@/types/puzzle';
 import SudokuBox from '../SudokuBox';
-import React from 'react';
-import {
-  calculateBoxId,
-  calculateCellId,
-  calculateNextCellId,
-} from '@/helpers/calculateId';
-import { checkCell, checkGrid, isInitialCell } from '@/helpers/checkAnswer';
+import { calculateBoxId } from '@/helpers/calculateId';
+import { isInitialCell } from '@/helpers/checkAnswer';
 import SudokuControls from '../SudokuControls';
 import { UserContext } from '../UserProvider';
-import { Timer, useTimer } from '@/hooks/timer';
+import { useTimer } from '@/hooks/timer';
 import { formatSeconds } from '@/helpers/formatSeconds';
-import { StateType, useLocalStorage } from '@/hooks/localStorage';
 import { useGameState } from '@/hooks/gameState';
+import { useContext } from 'react';
 
 // const fetchSession = async () => {
 //   // TODO move somewhere sensible
@@ -34,7 +29,7 @@ const Sudoku = ({
   puzzleId: string;
   puzzle: { initial: Puzzle; final: Puzzle };
 }) => {
-  const { user } = React.useContext(UserContext) || {};
+  const { user } = useContext(UserContext) || {};
   const { calculateSeconds, timer } = useTimer({
     puzzleId,
   });
@@ -45,13 +40,16 @@ const Sudoku = ({
     isNotesMode,
     undo,
     redo,
-    setAnswer,
     selectNumber,
     setSelectedCell,
     selectedAnswer,
     isUndoDisabled,
     isRedoDisabled,
+    validation,
+    validateCell,
+    validateGrid,
   } = useGameState({
+    final,
     initial,
     puzzleId,
   });
@@ -60,76 +58,6 @@ const Sudoku = ({
     // TODO only fetch when needed
     // fetchSession();
   }
-
-  // Validation
-  const [validation, setValidation] = React.useState<
-    undefined | Puzzle<boolean | undefined>
-  >(undefined);
-  const validateGrid = React.useCallback(
-    () => setValidation(checkGrid(initial, final, answer)),
-    [initial, final, answer]
-  );
-  const validateCell = React.useCallback(
-    () =>
-      selectedCell &&
-      setValidation(checkCell(selectedCell, initial, final, answer)),
-    [selectedCell, initial, final, answer]
-  );
-  React.useEffect(() => {
-    setValidation(undefined);
-  }, [answer, selectedCell]);
-
-  // Handle keyboard
-  React.useEffect(() => {
-    const keydownHandler = (e: KeyboardEvent) => {
-      if (e.key === 'n') {
-        setIsNotesMode(!isNotesMode);
-        e.preventDefault();
-      } else if (e.key === 'z') {
-        undo();
-        e.preventDefault();
-      } else if (e.key === 'y') {
-        redo();
-        e.preventDefault();
-      }
-      let currentSelectedCell =
-        selectedCell || calculateCellId(calculateBoxId(0, 0), 0, 0);
-      let nextCell;
-      if (e.key === 'ArrowDown') {
-        nextCell = calculateNextCellId(currentSelectedCell, 'down');
-        e.preventDefault();
-      } else if (e.key === 'ArrowUp') {
-        nextCell = calculateNextCellId(currentSelectedCell, 'up');
-        e.preventDefault();
-      } else if (e.key === 'ArrowLeft') {
-        nextCell = calculateNextCellId(currentSelectedCell, 'left');
-        e.preventDefault();
-      } else if (e.key === 'ArrowRight') {
-        nextCell = calculateNextCellId(currentSelectedCell, 'right');
-        e.preventDefault();
-      } else if (e.key === 'Backspace' || e.key === 'Delete') {
-        setAnswer(0);
-        e.preventDefault();
-      } else if (/[1-9]/.test(e.key)) {
-        selectNumber(Number(e.key));
-        e.preventDefault();
-      }
-      if (nextCell) {
-        setSelectedCell(nextCell);
-      }
-    };
-    window.addEventListener('keydown', keydownHandler);
-    return () => window.removeEventListener('keydown', keydownHandler);
-  }, [
-    isNotesMode,
-    redo,
-    selectedCell,
-    selectNumber,
-    setAnswer,
-    setIsNotesMode,
-    undo,
-    setSelectedCell,
-  ]);
 
   return (
     <div>
