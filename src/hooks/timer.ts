@@ -84,7 +84,6 @@ function useTimer() {
   return {
     calculateSeconds,
     setTimerNewSession,
-    setTimerLastInteraction,
     timer,
   };
 }

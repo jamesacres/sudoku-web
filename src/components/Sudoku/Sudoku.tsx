@@ -63,12 +63,7 @@ const Sudoku = ({
   puzzleId: string;
   puzzle: { initial: Puzzle; final: Puzzle };
 }) => {
-  const {
-    calculateSeconds,
-    setTimerNewSession,
-    setTimerLastInteraction,
-    timer,
-  } = useTimer();
+  const { calculateSeconds, setTimerNewSession, timer } = useTimer();
   const { user } = React.useContext(UserContext) || {};
   if (user) {
     // TODO only fetch when needed
@@ -173,10 +168,9 @@ const Sudoku = ({
   }, [puzzleId, setTimerNewSession]);
   React.useEffect(() => {
     if (answerStack.length > 1) {
-      setTimerLastInteraction();
       saveState(StateType.PUZZLE, puzzleId, answerStack);
     }
-  }, [puzzleId, answerStack, setTimerLastInteraction]);
+  }, [puzzleId, answerStack]);
   React.useEffect(() => {
     if (timer) {
       saveState(StateType.TIMER, puzzleId, timer);
@@ -199,8 +193,7 @@ const Sudoku = ({
   );
   React.useEffect(() => {
     setValidation(undefined);
-    setTimerLastInteraction();
-  }, [answer, selectedCell, setTimerLastInteraction]);
+  }, [answer, selectedCell]);
 
   // Handle keyboard
   React.useEffect(() => {
