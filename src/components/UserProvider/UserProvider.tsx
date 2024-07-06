@@ -1,4 +1,5 @@
 'use client';
+import { isCapacitor } from '@/helpers/capacitor';
 import { isElectron, openBrowser } from '@/helpers/electron';
 import { pkce } from '@/helpers/pkce';
 import { UserProfile } from '@/types/userProfile';
@@ -21,8 +22,12 @@ export const UserContext = React.createContext<
 
 const buildRedirectUri = () => {
   if (isElectron()) {
+    // Deep link
     const scheme = 'com.bubblyclouds.sudoku';
     return `${scheme}://-/auth.html`;
+  } else if (isCapacitor()) {
+    // Universal deep link
+    return `https://sudoku.bubblyclouds.com/auth`;
   }
   return `${window.location.origin}/auth`;
 };
