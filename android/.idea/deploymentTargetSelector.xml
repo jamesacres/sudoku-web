@@ -8,6 +8,12 @@
       <SelectionState runConfigName="URL https://sudoku.bubblyclouds.com">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
+      <SelectionState runConfigName="URL https://sudoku.bubblyclouds.com/puzzle/1">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="URL https://sudoku.bubblyclouds.com/auth?test=123">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
     </selectionStates>
   </component>
 </project>

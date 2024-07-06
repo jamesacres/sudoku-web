@@ -190,6 +190,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     isInitialising = true;
 
     const asyncEffect = async () => {
+      // TODO does not work on Android/iOS - find another solution secure storage
       if ('serviceWorker' in navigator) {
         // Worker in public directory, intercepts our requests to inject and cache tokens for us
         await navigator.serviceWorker.register('/user-provider-worker.js');
