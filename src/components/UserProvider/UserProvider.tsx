@@ -9,7 +9,10 @@ interface UserContextInterface {
   user?: UserProfile;
   loginRedirect: () => Promise<void>;
   isLoggingIn: boolean;
+  isInitialised: boolean;
   logout: () => void;
+  handleAuthUrl: () => void;
+  handleRestoreState: () => void;
 }
 
 export const UserContext = React.createContext<
@@ -32,6 +35,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [user, setUser] = React.useState<UserProfile | undefined>(undefined);
   const [isLoggingIn, setIsLoggingIn] = React.useState(false);
+  const [isInitialised, setIsInitialised] = React.useState(false);
   const router = useRouter();
 
   const iss = 'https://auth.bubblyclouds.com';
@@ -78,6 +82,99 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [clientId]);
 
+  const handleUser = React.useCallback(
+    (user: UserProfile) => {
+      console.info('handleUser', user);
+      setUser(user);
+      if (!isElectron()) {
+        // Indicate that if browser closes, next reopen we can try to recover our session
+        localStorage.setItem('recoverSession', 'true');
+      }
+
+      // Ping worker fetch /ping endpoint to keep token cache alive
+      const pingId = setInterval(async () => {
+        const ping = await fetch('https://api.bubblyclouds.com/workerping');
+        if (!ping.ok) {
+          if (localStorage.getItem('recoverSession') === 'true') {
+            // Redirect to login (hopefully automatically recover auth session)
+            console.warn('ping is not okay, redirecting to login');
+            await loginRedirect();
+          } else {
+            console.warn('ping is not okay, stopping ping');
+            clearInterval(pingId);
+          }
+        }
+      }, 20000);
+    },
+    [loginRedirect]
+  );
+
+  const handleAuthUrl = React.useCallback(async () => {
+    console.info('handleAuthUrl');
+    setIsLoggingIn(true);
+
+    const codeExchange = async () => {
+      try {
+        if (!isExhanging) {
+          isExhanging = true;
+          const query = new URLSearchParams(window.location.search);
+          const code = query.get('code') || '';
+          const state = query.get('state') || '';
+          const redirectUri = buildRedirectUri();
+
+          const codeVerifier = sessionStorage.getItem('code_verifier');
+          if (state === sessionStorage.getItem('state') && codeVerifier) {
+            const params = new URLSearchParams();
+            params.set('grant_type', 'authorization_code');
+            params.set('client_id', clientId);
+            params.set('code_verifier', codeVerifier);
+            params.set('code', code);
+            params.set('redirect_uri', redirectUri);
+            const response = await fetch(`${iss}/oidc/token`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              body: params.toString(),
+            });
+            if (response.ok) {
+              // Modified response from public/user-provider-worker.js
+              const { user } = await response.json();
+              console.info('user received from code exchange', user);
+              if (user) {
+                handleUser(user);
+              }
+            }
+          }
+        }
+      } catch (e) {
+        console.error(e);
+      }
+
+      setIsLoggingIn(false);
+      isExhanging = false;
+
+      // Navigate back to previous location
+      const restorePathname = sessionStorage.getItem('restorePathname');
+      router.push(
+        restorePathname && restorePathname !== '/auth' ? restorePathname : '/'
+      );
+    };
+    await codeExchange();
+  }, [clientId, router, handleUser]);
+
+  const handleRestoreState = React.useCallback(async () => {
+    console.info('restoreState');
+    // Request the worker restores the persisted state from electron
+    const query = new URLSearchParams(window.location.search);
+    const encryptedState = query.get('state') || '';
+    const state = await (window as any).electronAPI.decrypt(encryptedState);
+    registration?.active?.postMessage(`restoreState:${state}`);
+    // getUser result will happen in background
+    // Redirect to root of app
+    router.push('/');
+  }, [router]);
+
   React.useEffect(() => {
     // Really we should unmount service worker and intervals
     // However, tricky to unmount, so to avoid strict mode issues, ensure this only runs once
@@ -88,30 +185,6 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     isInitialising = true;
 
     const asyncEffect = async () => {
-      const handleUser = (user: UserProfile) => {
-        console.info('handleUser', user);
-        setUser(user);
-        if (!isElectron()) {
-          // Indicate that if browser closes, next reopen we can try to recover our session
-          localStorage.setItem('recoverSession', 'true');
-        }
-
-        // Ping worker fetch /ping endpoint to keep token cache alive
-        const pingId = setInterval(async () => {
-          const ping = await fetch('https://api.bubblyclouds.com/workerping');
-          if (!ping.ok) {
-            if (localStorage.getItem('recoverSession') === 'true') {
-              // Redirect to login (hopefully automatically recover auth session)
-              console.warn('ping is not okay, redirecting to login');
-              await loginRedirect();
-            } else {
-              console.warn('ping is not okay, stopping ping');
-              clearInterval(pingId);
-            }
-          }
-        }, 20000);
-      };
-
       if ('serviceWorker' in navigator) {
         // Worker in public directory, intercepts our requests to inject and cache tokens for us
         await navigator.serviceWorker.register('/user-provider-worker.js');
@@ -145,79 +218,19 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
           }
         });
       }
-      if (window.location.pathname.replace('.html', '') === '/auth') {
-        setIsLoggingIn(true);
-
-        const codeExchange = async () => {
-          try {
-            if (!isExhanging) {
-              isExhanging = true;
-              const query = new URLSearchParams(window.location.search);
-              const code = query.get('code') || '';
-              const state = query.get('state') || '';
-              const redirectUri = buildRedirectUri();
-
-              const codeVerifier = sessionStorage.getItem('code_verifier');
-              if (state === sessionStorage.getItem('state') && codeVerifier) {
-                const params = new URLSearchParams();
-                params.set('grant_type', 'authorization_code');
-                params.set('client_id', clientId);
-                params.set('code_verifier', codeVerifier);
-                params.set('code', code);
-                params.set('redirect_uri', redirectUri);
-                const response = await fetch(`${iss}/oidc/token`, {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                  },
-                  body: params.toString(),
-                });
-                if (response.ok) {
-                  // Modified response from public/user-provider-worker.js
-                  const { user } = await response.json();
-                  console.info('user received from code exchange', user);
-                  if (user) {
-                    handleUser(user);
-                  }
-                }
-              }
-            }
-          } catch (e) {
-            console.error(e);
-          }
-
-          setIsLoggingIn(false);
-          isExhanging = false;
-
-          // Navigate back to previous location
-          const restorePathname = sessionStorage.getItem('restorePathname');
-          router.push(
-            restorePathname && restorePathname !== '/auth'
-              ? restorePathname
-              : '/'
-          );
-        };
-        await codeExchange();
-      } else if (
-        window.location.pathname.replace('.html', '') === '/restoreState' &&
-        'electronAPI' in window
+      if (
+        !['/auth', '/restoreState'].includes(
+          window.location.pathname.replace('.html', '')
+        )
       ) {
-        console.info('restoreState');
-        // Request the worker restores the persisted state from electron
-        const query = new URLSearchParams(window.location.search);
-        const encryptedState = query.get('state') || '';
-        const state = await (window as any).electronAPI.decrypt(encryptedState);
-        registration?.active?.postMessage(`restoreState:${state}`);
-        // getUser result will happen in background
-        // Redirect to root of app
-        router.push('/');
-      } else {
         // Request the worker sends us a user result
         registration?.active?.postMessage('getUser');
       }
+
+      setIsInitialised(true);
     };
     asyncEffect();
-  }, [loginRedirect, router, clientId]);
+  }, [loginRedirect, router, clientId, handleUser]);
 
   const logout = () => {
     localStorage.setItem('recoverSession', 'false');
@@ -226,7 +239,17 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   return (
-    <UserContext.Provider value={{ isLoggingIn, loginRedirect, logout, user }}>
+    <UserContext.Provider
+      value={{
+        isInitialised,
+        isLoggingIn,
+        loginRedirect,
+        logout,
+        user,
+        handleAuthUrl,
+        handleRestoreState,
+      }}
+    >
       {children}
     </UserContext.Provider>
   );
