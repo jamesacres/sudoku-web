@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "build:capacitor": "./scripts/buildCapacitor.sh",
+    "build:capacitor": ". ./scripts/buildCapacitor.sh",
     "build:electron": "./scripts/buildElectron.sh",
     "open:android": "npm run build:capacitor && npx cap open android",
     "open:ios": "npm run build:capacitor && npx cap open ios",
