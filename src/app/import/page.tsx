@@ -21,7 +21,7 @@ export default function Home() {
     <>
       {solution !== undefined && <div>{solution}</div>}
       <Script
-        src="/solve.js"
+        src="/solve.js" // Copyright (c) 2019, Tom Dillon https://github.com/t-dillon/tdoku
         onReady={() => {
           if ((window as any).Module) {
             if ((window as any).Module.onRuntimeInitialized) {
