@@ -1,25 +1,115 @@
 'use client';
 
 import Script from 'next/script';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import type {
+  Solver,
+  VideoReadyPayload,
+} from '../../augmentedReality/Processor';
+import type Processor from '../../augmentedReality/Processor';
+
+let processor: Processor;
+let solver: Solver;
 
 export default function Home() {
   const [solution, setSolution] = useState<string | undefined>(undefined);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [videoWidth, setVideoWidth] = useState(100);
+  const [videoHeight, setVideoHeight] = useState(100);
+  const initialized = useRef(false);
+
+  function videoReadyListener({ width, height }: VideoReadyPayload) {
+    setVideoWidth(width);
+    setVideoHeight(height);
+  }
+
+  // start the video playing
+  useEffect(() => {
+    if (!initialized.current) {
+      initialized.current = true;
+
+      (async () => {
+        if (!processor) {
+          processor = new (
+            await import('../../augmentedReality/Processor')
+          ).default();
+
+          // update the video scale as needed
+          processor.on('videoReady', videoReadyListener);
+        }
+
+        const video = videoRef.current;
+        if (video) {
+          processor.setSolver((...args) => {
+            if (solver) {
+              return solver(...args);
+            }
+            return '';
+          });
+          processor.startVideo(video).then(
+            () => {},
+            (error) => alert(error.message)
+          );
+        }
+      })();
+    }
+    return () => {
+      if (processor) {
+        processor.stopVideo();
+        processor.setSolver(null);
+        processor.off('videoReady', videoReadyListener);
+      }
+    };
+  }, [videoRef]);
+
   const ready = useCallback(() => {
-    setSolution(
-      (window as any).Module.ccall(
+    solver = (boxes: { x: number; y: number; contents: number }[]) => {
+      const MAX = 8;
+      let lastX = -1;
+      let lastY = 0;
+      // Example '.1...3.942....5...7....82...67......1..4....6.4..81..5....72.....3....8.......1.3'
+      let boxesString = boxes.reduce((result, { x, y, contents }) => {
+        let newResult = result;
+        if (y !== lastY) {
+          // Add empty squares to end of last row
+          newResult = `${result}${[...new Array(MAX - lastX)].map((_) => '.').join('')}`;
+          lastX = -1;
+        }
+        if (x > 0) {
+          // Add empty squares for skipped
+          newResult = `${newResult}${[...new Array(x - lastX - 1)].map((_) => '.').join('')}`;
+        }
+        lastX = x;
+        lastY = y;
+        return `${newResult}${contents}`;
+      }, '');
+      // Add empty strings until the end
+      boxesString = `${boxesString}${[...new Array(81 - boxesString.length)].map((_) => '.').join('')}`;
+
+      const thisSolution = (window as any).Module.ccall(
         'solve',
         'string',
         ['string'],
-        [
-          '.1...3.942....5...7....82...67......1..4....6.4..81..5....72.....3....8.......1.3',
-        ]
-      )
-    );
+        [boxesString]
+      );
+      setSolution(thisSolution);
+      return thisSolution;
+    };
+    if (processor) {
+      processor.setSolver(solver);
+    }
   }, []);
   return (
     <>
       {solution !== undefined && <div>{solution}</div>}
+      <video
+        ref={videoRef}
+        className="video-preview"
+        width={videoWidth}
+        height={videoHeight}
+        playsInline
+        muted
+      />
       <Script
         src="/solve.js" // Copyright (c) 2019, Tom Dillon https://github.com/t-dillon/tdoku
         onReady={() => {

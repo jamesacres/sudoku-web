@@ -25,6 +25,10 @@ interface ProcessorEvents {
   videoReady: VideoReadyPayload;
 }
 
+export type Solver = (
+  boxes: { x: number; y: number; contents: number }[]
+) => string;
+
 type ProcessorEventEmitter = StrictEventEmitter<EventEmitter, ProcessorEvents>;
 
 type SolvedBox = {
@@ -68,6 +72,8 @@ export default class Processor extends (EventEmitter as {
   extractBoxesTime: number = 0;
   neuralNetTime: number = 0;
 
+  solver: Solver | null = null;
+
   /**
    * Start streaming video from the back camera of a phone (or webcam on a computer)
    * @param video A video element - needs to be on the page for iOS to work
@@ -93,6 +99,21 @@ export default class Processor extends (EventEmitter as {
     this.video.addEventListener('canplay', canPlayListener);
     this.video.srcObject = stream;
     this.video.play();
+  }
+  async stopVideo() {
+    if (this.video) {
+      this.video.pause();
+      if (this.video.srcObject) {
+        (this.video.srcObject! as MediaStream)
+          .getTracks()
+          .forEach(function (track) {
+            track.stop();
+          });
+      }
+    }
+  }
+  setSolver(solver: Solver | null) {
+    this.solver = solver;
   }
 
   /**
@@ -297,8 +318,10 @@ export default class Processor extends (EventEmitter as {
             this.neuralNetTime =
               0.1 * (performance.now() - startTime) + this.neuralNetTime * 0.9;
 
-            // TODO solve puzzle, stop on solution and open puzzle
-            console.info(boxes);
+            // Solve puzzle, stop on solution found
+            if (this.solver && this.solver(boxes)) {
+              return this.stopVideo();
+            }
           }
         } else {
           this.corners = null;

@@ -1,9 +1,9 @@
 import * as tf from '@tensorflow/tfjs';
-import { setWasmPaths } from '@tensorflow/tfjs-backend-wasm';
+import { setWasmPath } from '@tensorflow/tfjs-backend-wasm';
 import { PuzzleBox } from '../imageProcessing/extractBoxes';
 
-setWasmPaths(`tfjs/tfjs-backend-wasm.wasm`);
-const MODEL_URL = 'tfjs/tfjs_model/model.json';
+setWasmPath(`${window.location.origin}/tfjs/tfjs-backend-wasm.wasm`);
+const MODEL_URL = `${window.location.origin}/tfjs/tfjs_model/model.json`;
 
 const CLASSES = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const IMAGE_SIZE = 20;
@@ -17,7 +17,7 @@ async function loadModel() {
   _model = await tf.loadLayersModel(MODEL_URL);
   return _model;
 }
-loadModel().then(() => console.log('Model Loaded', console.error));
+loadModel();
 
 /**
  * Work out what the class should be from the results of the neural network prediction
