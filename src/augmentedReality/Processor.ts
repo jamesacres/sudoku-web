@@ -1,7 +1,6 @@
 import StrictEventEmitter from 'strict-event-emitter-types';
 import { EventEmitter } from 'events';
 import fillInPrediction from './imageRecognition/tensorflow';
-import SudokuSolver from './solver/sudokuSolver';
 import getLargestConnectedComponent, {
   Point,
 } from './imageProcessing/getLargestConnectedComponent';
@@ -59,8 +58,7 @@ export default class Processor extends (EventEmitter as {
   } | null;
   // the calculated grid lines in the video space
   gridLines!: { p1: Point; p2: Point }[] | null;
-  // completely solved puzzle
-  solvedPuzzle!: SolvedBox[][] | null;
+
   // performance stats
   captureTime: number = 0;
   thresholdTime: number = 0;
@@ -69,7 +67,6 @@ export default class Processor extends (EventEmitter as {
   extractPuzzleTime: number = 0;
   extractBoxesTime: number = 0;
   neuralNetTime: number = 0;
-  solveTime: number = 0;
 
   /**
    * Start streaming video from the back camera of a phone (or webcam on a computer)
@@ -165,29 +162,6 @@ export default class Processor extends (EventEmitter as {
       isKnown: isKnown,
       position: textPosition,
     };
-  }
-
-  /**
-   * Map from the found solution to something that can be displayed in video space
-   * @param solver The solver with the solution
-   * @param transform The transform to video space
-   */
-  createSolvedPuzzle(solver: SudokuSolver, transform: Transform) {
-    const results: SolvedBox[][] = new Array(9);
-    for (let y = 0; y < 9; y++) {
-      results[y] = new Array(9);
-    }
-    solver.solution.forEach((sol) => {
-      const { x, y, entry, isKnown } = sol.guess!;
-      results[y][x] = this.getTextDetailsForBox(
-        x,
-        y,
-        entry,
-        isKnown,
-        transform
-      );
-    });
-    return results;
   }
 
   sanityCheckCorners({
@@ -323,33 +297,16 @@ export default class Processor extends (EventEmitter as {
             this.neuralNetTime =
               0.1 * (performance.now() - startTime) + this.neuralNetTime * 0.9;
 
-            // solve the suoku puzzle using the dancing links and algorithm X - https://en.wikipedia.org/wiki/Knuth%27s_Algorithm_X
-            startTime = performance.now();
-            const solver = new SudokuSolver();
-            // set the known values
-            boxes.forEach((box) => {
-              if (box.contents !== 0) {
-                solver.setNumber(box.x, box.y, box.contents - 1);
-              }
-            });
-            // search for a solution
-            if (solver.search(0)) {
-              this.solvedPuzzle = this.createSolvedPuzzle(solver, transform);
-            } else {
-              this.solvedPuzzle = null;
-            }
-            this.solveTime =
-              0.1 * (performance.now() - startTime) + this.solveTime * 0.9;
+            // TODO solve puzzle, stop on solution and open puzzle
+            console.info(boxes);
           }
         } else {
           this.corners = null;
           this.gridLines = null;
-          this.solvedPuzzle = null;
         }
       } else {
         this.corners = null;
         this.gridLines = null;
-        this.solvedPuzzle = null;
       }
     } catch (error) {
       console.error(error);

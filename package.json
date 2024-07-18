@@ -24,6 +24,9 @@
     "@capacitor/ios": "^6.1.0",
     "@capacitor/status-bar": "^6.0.0",
     "@headlessui/react": "^1.7.19",
+    "@tensorflow/tfjs": "^4.20.0",
+    "@tensorflow/tfjs-backend-wasm": "^4.20.0",
+    "mathjs": "^13.0.2",
     "next": "^14.1.0",
     "next-themes": "^0.2.1",
     "react": "^18",
@@ -47,6 +50,7 @@
     "postcss": "^8",
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.5.11",
+    "strict-event-emitter-types": "^2.0.0",
     "tailwindcss": "^3.3.0",
     "typescript": "^5"
   }

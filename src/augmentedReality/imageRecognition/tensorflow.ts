@@ -1,9 +1,9 @@
 import * as tf from '@tensorflow/tfjs';
-import { setWasmPath } from '@tensorflow/tfjs-backend-wasm';
+import { setWasmPaths } from '@tensorflow/tfjs-backend-wasm';
 import { PuzzleBox } from '../imageProcessing/extractBoxes';
 
-setWasmPath(`${process.env.PUBLIC_URL}/tfjs-backend-wasm.wasm`);
-const MODEL_URL = `${process.env.PUBLIC_URL}/tfjs_model/model.json`;
+setWasmPaths(`tfjs/tfjs-backend-wasm.wasm`);
+const MODEL_URL = 'tfjs/tfjs_model/model.json';
 
 const CLASSES = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const IMAGE_SIZE = 20;
