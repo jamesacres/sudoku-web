@@ -1,3 +1,6 @@
+// Source https://github.com/atomic14/ar-browser-sudoku
+// https://www.atomic14.com/2020/07/25/browser-ar-sudoku.html
+
 import StrictEventEmitter from 'strict-event-emitter-types';
 import { EventEmitter } from 'events';
 import fillInPrediction from './imageRecognition/tensorflow';
