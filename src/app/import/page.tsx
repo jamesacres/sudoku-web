@@ -72,7 +72,7 @@ export default function Home() {
         let newResult = result;
         if (y !== lastY) {
           // Add empty squares to end of last row
-          newResult = `${result}${[...new Array(MAX - lastX)].map((_) => '.').join('')}`;
+          newResult = `${newResult}${[...new Array(MAX - lastX)].map((_) => '.').join('')}`;
           lastX = -1;
         }
         if (x > 0) {
