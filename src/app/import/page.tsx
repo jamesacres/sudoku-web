@@ -112,8 +112,8 @@ export default function Home() {
           initial: boxesString,
           final: thisSolution,
         });
+        return thisSolution;
       }
-      return thisSolution;
     };
     if (processor) {
       processor.setSolver(solver);
