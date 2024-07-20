@@ -23,11 +23,9 @@ import { useContext } from 'react';
 // };
 
 const Sudoku = ({
-  puzzleId,
-  puzzle: { initial, final },
+  puzzle: { initial, final, puzzleId },
 }: {
-  puzzleId: string;
-  puzzle: { initial: Puzzle; final: Puzzle };
+  puzzle: { initial: Puzzle; final: Puzzle; puzzleId: string };
 }) => {
   const { user } = useContext(UserContext) || {};
   const { calculateSeconds, timer } = useTimer({

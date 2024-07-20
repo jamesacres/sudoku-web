@@ -7,12 +7,16 @@ import type {
   VideoReadyPayload,
 } from '../../augmentedReality/Processor';
 import type Processor from '../../augmentedReality/Processor';
+import { useRouter } from 'next/navigation';
 
-let processor: Processor;
-let solver: Solver;
+let processor: Processor | undefined;
+let solver: Solver | undefined;
 
 export default function Home() {
-  const [solution, setSolution] = useState<string | undefined>(undefined);
+  const router = useRouter();
+  const [puzzleStrings, setPuzzleStrings] = useState<
+    { initial: string; final: string } | undefined
+  >(undefined);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoWidth, setVideoWidth] = useState(100);
   const [videoHeight, setVideoHeight] = useState(100);
@@ -22,6 +26,17 @@ export default function Home() {
     setVideoWidth(width);
     setVideoHeight(height);
   }
+
+  useEffect(() => {
+    if (puzzleStrings) {
+      // After identifying puzzle redirect
+      processor = undefined;
+      solver = undefined;
+      router.replace(
+        `/puzzle?initial=${puzzleStrings.initial}&final=${puzzleStrings.final}`
+      );
+    }
+  }, [router, puzzleStrings]);
 
   // start the video playing
   useEffect(() => {
@@ -92,7 +107,12 @@ export default function Home() {
         ['string'],
         [boxesString]
       );
-      setSolution(thisSolution);
+      if (thisSolution && thisSolution.length === 81) {
+        setPuzzleStrings({
+          initial: boxesString,
+          final: thisSolution,
+        });
+      }
       return thisSolution;
     };
     if (processor) {
@@ -101,12 +121,12 @@ export default function Home() {
   }, []);
   return (
     <>
-      {solution !== undefined && <div>{solution}</div>}
       <video
         ref={videoRef}
         className="video-preview"
         width={videoWidth}
         height={videoHeight}
+        style={{ width: '100%' }}
         playsInline
         muted
       />
