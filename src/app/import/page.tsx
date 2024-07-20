@@ -14,6 +14,7 @@ let solver: Solver | undefined;
 
 export default function Home() {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
   const [puzzleStrings, setPuzzleStrings] = useState<
     { initial: string; final: string } | undefined
   >(undefined);
@@ -62,7 +63,9 @@ export default function Home() {
             return '';
           });
           processor.startVideo(video).then(
-            () => {},
+            () => {
+              setIsLoading(false);
+            },
             (error) => alert(error.message)
           );
         }
@@ -121,6 +124,7 @@ export default function Home() {
   }, []);
   return (
     <>
+      {isLoading ? 'Loading' : <></>}
       <video
         ref={videoRef}
         className="video-preview"
