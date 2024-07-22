@@ -3,9 +3,6 @@ import { FetchContext, State } from '@/providers/FetchProvider';
 import { UserProfile } from '@/types/userProfile';
 import { useCallback, useContext } from 'react';
 
-// TODO use context so state shared globally
-// TODO
-
 const jwtDecode = (token: string) =>
   JSON.parse(
     decodeURIComponent(
