@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { UserContext } from '../UserProvider';
+import { UserContext } from '../../providers/UserProvider';
 import { UserButton } from './UserButton';
 
 const HeaderUser = () => {

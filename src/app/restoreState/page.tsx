@@ -1,5 +1,5 @@
 'use client';
-import { UserContext } from '@/components/UserProvider';
+import { UserContext } from '@/providers/UserProvider';
 import { useContext, useEffect } from 'react';
 
 export default function Home() {

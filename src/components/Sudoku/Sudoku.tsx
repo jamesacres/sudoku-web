@@ -4,7 +4,7 @@ import SudokuBox from '../SudokuBox';
 import { calculateBoxId } from '@/helpers/calculateId';
 import { isInitialCell } from '@/helpers/checkAnswer';
 import SudokuControls from '../SudokuControls';
-import { UserContext } from '../UserProvider';
+import { UserContext } from '../../providers/UserProvider';
 import { useTimer } from '@/hooks/timer';
 import { formatSeconds } from '@/helpers/formatSeconds';
 import { useGameState } from '@/hooks/gameState';

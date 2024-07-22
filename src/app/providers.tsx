@@ -1,7 +1,7 @@
 'use client';
 
-import CapacitorProvider from '@/components/CapacitorProvider';
-import UserProvider from '@/components/UserProvider';
+import CapacitorProvider from '@/providers/CapacitorProvider';
+import UserProvider from '@/providers/UserProvider';
 import { ThemeProvider } from 'next-themes';
 import { PropsWithChildren } from 'react';
 
