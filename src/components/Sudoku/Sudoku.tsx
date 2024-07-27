@@ -4,32 +4,15 @@ import SudokuBox from '../SudokuBox';
 import { calculateBoxId } from '@/helpers/calculateId';
 import { isInitialCell } from '@/helpers/checkAnswer';
 import SudokuControls from '../SudokuControls';
-import { UserContext } from '../UserProvider';
 import { useTimer } from '@/hooks/timer';
 import { formatSeconds } from '@/helpers/formatSeconds';
 import { useGameState } from '@/hooks/gameState';
-import { useContext } from 'react';
-
-// const fetchSession = async () => {
-//   // TODO move somewhere sensible
-//   // TODO add handler for all requests that if we ever get a 401 we should logout the user
-//   const response = await fetch(
-//     'https://api.bubblyclouds.com/sessions/sudoku-1'
-//   );
-//   if (response.ok) {
-//     const session = await response.json();
-//     console.info(session);
-//   }
-// };
 
 const Sudoku = ({
-  puzzleId,
-  puzzle: { initial, final },
+  puzzle: { initial, final, puzzleId },
 }: {
-  puzzleId: string;
-  puzzle: { initial: Puzzle; final: Puzzle };
+  puzzle: { initial: Puzzle; final: Puzzle; puzzleId: string };
 }) => {
-  const { user } = useContext(UserContext) || {};
   const { calculateSeconds, timer } = useTimer({
     puzzleId,
   });
@@ -53,16 +36,6 @@ const Sudoku = ({
     initial,
     puzzleId,
   });
-
-  if (user) {
-    // TODO fetch on load
-    // TODO update parties from response
-    // TODO overwrite local storage if last updated newer than local
-    // TODO update server if local storage newer than server
-    // TODO on every puzzle change update server with debounce, update parties from response
-    // TODO only fetch when needed
-    // fetchSession();
-  }
 
   return (
     <div>

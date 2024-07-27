@@ -1,13 +1,19 @@
 'use client';
 
-import UserProvider from '@/components/UserProvider';
+import FetchProvider from '@/providers/FetchProvider';
+import CapacitorProvider from '@/providers/CapacitorProvider';
+import UserProvider from '@/providers/UserProvider';
 import { ThemeProvider } from 'next-themes';
 import { PropsWithChildren } from 'react';
 
 export function Providers({ children }: PropsWithChildren) {
   return (
-    <UserProvider>
-      <ThemeProvider attribute="class">{children}</ThemeProvider>
-    </UserProvider>
+    <FetchProvider>
+      <CapacitorProvider>
+        <UserProvider>
+          <ThemeProvider attribute="class">{children}</ThemeProvider>
+        </UserProvider>
+      </CapacitorProvider>
+    </FetchProvider>
   );
 }

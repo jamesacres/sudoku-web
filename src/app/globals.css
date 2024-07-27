@@ -6,11 +6,22 @@
   body {
     @apply dark:bg-zinc-800 bg-zinc-100
   }
-}
 
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  .pt-safe {
+    padding-top: max(24px, env(safe-area-inset-top, ));
+  }
+
+  .pb-safe {
+    padding-bottom: max(24px, env(safe-area-inset-bottom));
   }
 }

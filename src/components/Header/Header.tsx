@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 const Header = () => {
   return (
-    <nav className="mb-3 flex flex-wrap items-center justify-between bg-blue-600 p-6">
+    <nav className="pt-safe mb-3 flex flex-wrap items-center justify-between bg-blue-600 p-6">
       <div className="mr-6 flex flex-shrink-0 items-center text-white">
         <span className="text-xl font-semibold tracking-tight">Sudoku</span>
       </div>
