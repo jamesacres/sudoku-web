@@ -1,3 +1,4 @@
+import { isCapacitor, saveCapacitorState } from '@/helpers/capacitor';
 import { isElectron, saveElectronState } from '@/helpers/electron';
 import { FetchContext, State } from '@/providers/FetchProvider';
 import { UserProfile } from '@/types/userProfile';
@@ -27,15 +28,28 @@ function useFetch() {
   const [state, setState] = useContext(FetchContext)!;
 
   const saveState = useCallback(
-    async (newState: State) => {
+    async (newState: State, isRestoreState: boolean = false) => {
       console.info('useFetch saveState');
       setState(newState);
-      if (isElectron()) {
-        console.info('useFetch electron saveState');
-        await saveElectronState(state);
+      if (!isRestoreState) {
+        if (isElectron()) {
+          console.info('useFetch electron saveState');
+          try {
+            await saveElectronState(newState);
+          } catch (e) {
+            console.warn(e);
+          }
+        } else if (isCapacitor()) {
+          console.info('useFetch capacitor saveState');
+          try {
+            await saveCapacitorState(newState);
+          } catch (e) {
+            console.warn(e);
+          }
+        }
       }
     },
-    [state, setState]
+    [setState]
   );
 
   const resetState = useCallback(async () => {
@@ -160,7 +174,7 @@ function useFetch() {
     async (stateString: string): Promise<UserProfile | undefined> => {
       console.info('useFetch restoreState');
       const newState = JSON.parse(stateString);
-      await saveState(newState);
+      await saveState(newState, true);
       return newState.user;
     },
     [saveState]

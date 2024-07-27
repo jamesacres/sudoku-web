@@ -1,5 +1,5 @@
 'use client';
-import { isCapacitor } from '@/helpers/capacitor';
+import { getCapacitorState, isCapacitor } from '@/helpers/capacitor';
 import { isElectron, openBrowser } from '@/helpers/electron';
 import { pkce } from '@/helpers/pkce';
 import { UserProfile } from '@/types/userProfile';
@@ -89,7 +89,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [clientId]);
 
   const handleUser = React.useCallback(
-    async (user?: UserProfile) => {
+    async (user?: UserProfile, isRestoreState: boolean = false) => {
       console.info('user received', user);
       if (user) {
         console.info('handleUser', user);
@@ -98,7 +98,21 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
           // Indicate that if browser closes, next reopen we can try to recover our session
           localStorage.setItem('recoverSession', 'true');
         }
-      } else {
+      } else if (!isRestoreState) {
+        if (isCapacitor()) {
+          try {
+            const capacitorState = await getCapacitorState();
+            if (capacitorState) {
+              const user = await restoreState(capacitorState);
+              if (user) {
+                await handleUser(user, true);
+                return;
+              }
+            }
+          } catch (e) {
+            console.warn(e);
+          }
+        }
         if (localStorage.getItem('recoverSession') === 'true') {
           localStorage.setItem('recoverSession', 'false');
           // Redirect to login (hopefully automatically recover auth session)
@@ -107,7 +121,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         }
       }
     },
-    [loginRedirect]
+    [loginRedirect, restoreState]
   );
 
   const handleAuthUrl = React.useCallback(async () => {
