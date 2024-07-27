@@ -7,7 +7,7 @@ import { useFetch } from '@/hooks/fetch';
 import { UserContext } from '@/providers/UserProvider';
 import { Puzzle } from '@/types/puzzle';
 import { useSearchParams } from 'next/navigation';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { Suspense, useContext, useEffect, useRef, useState } from 'react';
 
 const DEFAULT_PUZZLE_ID = '1';
 
@@ -15,7 +15,7 @@ const getPuzzle = (puzzleId: number): { initial: Puzzle; final: Puzzle } => {
   return puzzles[puzzleId];
 };
 
-export default function PuzzlePage() {
+function PuzzlePageComponent() {
   const searchParams = useSearchParams();
   const initial = searchParams.get('initial');
   const final = searchParams.get('final');
@@ -82,4 +82,12 @@ export default function PuzzlePage() {
   }, [initial, final, puzzleId]);
 
   return <div>{puzzle && <Sudoku puzzle={puzzle} />}</div>;
+}
+
+export default function PuzzlePage() {
+  return (
+    <Suspense>
+      <PuzzlePageComponent />
+    </Suspense>
+  );
 }
