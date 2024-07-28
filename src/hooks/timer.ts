@@ -3,14 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useDocumentVisibility } from './documentVisibility';
 import { useLocalStorage } from './localStorage';
 import { StateType } from '../types/StateType';
-
-interface Timer {
-  seconds: number;
-  inProgress: {
-    start: string;
-    lastInteraction: string;
-  };
-}
+import { Timer } from '../types/timer';
 
 function useTimer({ puzzleId }: { puzzleId: string }) {
   const isDocumentVisible = useDocumentVisibility();

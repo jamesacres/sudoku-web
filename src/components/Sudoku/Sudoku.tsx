@@ -7,15 +7,13 @@ import SudokuControls from '../SudokuControls';
 import { useTimer } from '@/hooks/timer';
 import { formatSeconds } from '@/helpers/formatSeconds';
 import { useGameState } from '@/hooks/gameState';
+import { useEffect, useRef } from 'react';
 
 const Sudoku = ({
   puzzle: { initial, final, puzzleId },
 }: {
   puzzle: { initial: Puzzle; final: Puzzle; puzzleId: string };
 }) => {
-  const { calculateSeconds, timer } = useTimer({
-    puzzleId,
-  });
   const {
     answer,
     selectedCell,
@@ -31,6 +29,8 @@ const Sudoku = ({
     validation,
     validateCell,
     validateGrid,
+    calculateSeconds,
+    timer,
   } = useGameState({
     final,
     initial,

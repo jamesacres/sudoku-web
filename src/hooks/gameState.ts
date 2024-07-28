@@ -2,7 +2,7 @@
 
 import { Puzzle } from '@/types/puzzle';
 import { Notes, ToggleNote } from '@/types/notes';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   calculateBoxId,
   calculateCellId,
@@ -14,9 +14,15 @@ import { useLocalStorage } from './localStorage';
 import { ServerStateResult, useServerStorage } from './serverStorage';
 import { checkCell, checkGrid } from '@/helpers/checkAnswer';
 import { StateType } from '@/types/StateType';
+import { useTimer } from './timer';
+import { Timer } from '@/types/timer';
 
 interface GameState {
   answerStack: Puzzle[];
+}
+
+interface ServerState extends GameState {
+  timer?: Timer;
 }
 
 function useGameState({
@@ -28,6 +34,16 @@ function useGameState({
   initial: Puzzle;
   puzzleId: string;
 }) {
+  const { calculateSeconds, timer, setTimerNewSession } = useTimer({
+    puzzleId,
+  });
+
+  // Reference to timer value to use without triggering re-renders
+  const timerRef = useRef(timer);
+  useEffect(() => {
+    timerRef.current = timer;
+  }, [calculateSeconds, timer]);
+
   const { getValue: getLocalValue, saveValue: saveLocalValue } =
     useLocalStorage({
       id: puzzleId,
@@ -47,10 +63,10 @@ function useGameState({
 
   const getValue = useCallback((): {
     localValue: { lastUpdated: number; state: GameState } | undefined;
-    serverValuePromise: Promise<ServerStateResult<GameState> | undefined>;
+    serverValuePromise: Promise<ServerStateResult<ServerState> | undefined>;
   } => {
     let localValue = getLocalValue<GameState>();
-    const serverValuePromise = getServerValue<GameState>();
+    const serverValuePromise = getServerValue<ServerState>();
     return { localValue, serverValuePromise };
   }, [getLocalValue, getServerValue]);
   const saveValue = useCallback(
@@ -61,10 +77,13 @@ function useGameState({
       serverValuePromise: Promise<ServerStateResult<GameState> | undefined>;
     } => {
       const localValue = saveLocalValue<GameState>(state);
-      const serverValuePromise = saveServerValue(state);
+      const serverValuePromise = saveServerValue<ServerState>({
+        ...state,
+        timer: timerRef.current || undefined,
+      });
       return { localValue, serverValuePromise };
     },
-    [saveLocalValue, saveServerValue]
+    [saveLocalValue, saveServerValue, timerRef]
   );
 
   // Answers
@@ -178,13 +197,14 @@ function useGameState({
             serverValue?.updatedAt &&
             serverValue.updatedAt.getTime() > localValue?.lastUpdated))
       ) {
-        // Update local state if server state is newer
+        // Update local state and timer if server state is newer
         setAnswerStack(serverValue.state.answerStack);
+        setTimerNewSession(serverValue.state.timer);
       }
       // TODO Update parties list
       console.info('restored state, TODO Update parties list', serverValue);
     });
-  }, [puzzleId, getValue]);
+  }, [puzzleId, getValue, setTimerNewSession]);
   useEffect(() => {
     if (answerStack.length > 1) {
       // TODO pass timer value to server too?
@@ -266,6 +286,8 @@ function useGameState({
     validation,
     validateCell,
     validateGrid,
+    calculateSeconds,
+    timer,
   };
 }
 
