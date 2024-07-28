@@ -1,7 +1,8 @@
 'use client';
 import { useCallback, useEffect, useState } from 'react';
 import { useDocumentVisibility } from './documentVisibility';
-import { StateType, useLocalStorage } from './localStorage';
+import { useLocalStorage } from './localStorage';
+import { StateType } from '../types/StateType';
 
 interface Timer {
   seconds: number;

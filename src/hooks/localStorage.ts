@@ -1,11 +1,7 @@
 'use client';
 
+import { StateType } from '@/types/StateType';
 import { useCallback } from 'react';
-
-export enum StateType {
-  PUZZLE = 'PUZZLE',
-  TIMER = 'TIMER',
-}
 
 export interface StateResult<T> {
   lastUpdated: number;
