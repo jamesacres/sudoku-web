@@ -22,16 +22,29 @@ function useGameState({
   initial: Puzzle;
   puzzleId: string;
 }) {
-  const { getValue, saveValue } = useLocalStorage({
-    id: puzzleId,
-    type: StateType.PUZZLE,
-  });
+  const { getValue: getLocalValue, saveValue: saveLocalValue } =
+    useLocalStorage({
+      id: puzzleId,
+      type: StateType.PUZZLE,
+    });
   const [isNotesMode, setIsNotesMode] = useState<boolean>(false);
   const [selectedCell, setSelectedCell] = useState<null | string>(null);
   const [answerStack, setAnswerStack] = useState<Puzzle[]>([
     structuredClone(initial),
   ]);
   const [redoAnswerStack, setRedoAnswerStack] = useState<Puzzle[]>([]);
+
+  const getValue = useCallback(<T>():
+    | { lastUpdated: number; state: T }
+    | undefined => {
+    return getLocalValue();
+  }, [getLocalValue]);
+  const saveValue = useCallback(
+    <T>(state: T): { lastUpdated: number; state: T } | undefined => {
+      return saveLocalValue(state);
+    },
+    [saveLocalValue]
+  );
 
   // Answers
   const answer = answerStack[answerStack.length - 1];
