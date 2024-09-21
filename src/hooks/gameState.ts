@@ -207,7 +207,6 @@ function useGameState({
   }, [puzzleId, getValue, setTimerNewSession]);
   useEffect(() => {
     if (answerStack.length > 1) {
-      // TODO pass timer value to server too?
       const { serverValuePromise } = saveValue({ answerStack });
       serverValuePromise.then((serverValue) => {
         // TODO Update parties list

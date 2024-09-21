@@ -4,10 +4,8 @@ import SudokuBox from '../SudokuBox';
 import { calculateBoxId } from '@/helpers/calculateId';
 import { isInitialCell } from '@/helpers/checkAnswer';
 import SudokuControls from '../SudokuControls';
-import { useTimer } from '@/hooks/timer';
 import { formatSeconds } from '@/helpers/formatSeconds';
 import { useGameState } from '@/hooks/gameState';
-import { useEffect, useRef } from 'react';
 
 const Sudoku = ({
   puzzle: { initial, final, puzzleId },
