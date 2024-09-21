@@ -5,14 +5,17 @@ import { useFetch } from './fetch';
 import { UserContext } from '../providers/UserProvider';
 import { StateType } from '@/types/StateType';
 
+const app = 'sudoku';
 const apiUrl = 'https://api.bubblyclouds.com';
 
 interface SessionResponse<T> {
+  sessionId: string;
   state: T;
   updatedAt: string;
 }
 
 interface SessionResult<T> {
+  sessionId: string;
   state: T;
   updatedAt: Date;
 }
@@ -30,52 +33,79 @@ interface StateResponse<T> extends SessionResponse<T> {
 }
 
 export interface ServerStateResult<T> extends SessionResult<T> {
-  parties: Parties<SessionResult<T>>;
+  parties?: Parties<SessionResult<T>>;
 }
 
 const responseToResult = <T>(
   response: StateResponse<T>
 ): ServerStateResult<T> => {
   return {
-    parties: Object.entries(response.parties).reduce(
-      (result, [partyId, partyResponse]) => {
-        return {
-          ...result,
-          [partyId]: {
-            memberSessions: Object.entries(partyResponse.memberSessions).reduce(
-              (result, [userId, memberSessionResponse]) => {
-                const memberSessionResult: SessionResult<T> = {
-                  state: memberSessionResponse.state,
-                  updatedAt: new Date(memberSessionResponse.updatedAt),
-                };
-                return {
-                  ...result,
-                  [userId]: memberSessionResult,
-                };
+    parties: response.parties
+      ? Object.entries(response.parties).reduce(
+          (result, [partyId, partyResponse]) => {
+            return {
+              ...result,
+              [partyId]: {
+                memberSessions: Object.entries(
+                  partyResponse.memberSessions
+                ).reduce((result, [userId, memberSessionResponse]) => {
+                  const memberSessionResult: SessionResult<T> = {
+                    sessionId: response.sessionId,
+                    state: memberSessionResponse.state,
+                    updatedAt: new Date(memberSessionResponse.updatedAt),
+                  };
+                  return {
+                    ...result,
+                    [userId]: memberSessionResult,
+                  };
+                }, {}),
               },
-              {}
-            ),
+            };
           },
-        };
-      },
-      {}
-    ),
+          {}
+        )
+      : undefined,
+    sessionId: response.sessionId,
     state: response.state,
     updatedAt: new Date(response.updatedAt),
   };
 };
 
-function useServerStorage({ type, id }: { type: StateType; id: string }) {
+function useServerStorage({
+  type,
+  id,
+}: { type?: StateType; id?: string } = {}) {
   const { user } = useContext(UserContext) || {};
   const { fetch } = useFetch();
 
   const getStateKey = useCallback(() => {
-    let key = `sudoku-${id}`;
+    let key = `${app}-${id}`;
     if (type !== StateType.PUZZLE) {
       key = `${key}-${type}`;
     }
     return key;
   }, [id, type]);
+
+  const listValues = useCallback(async <T>(): Promise<
+    ServerStateResult<T>[]
+  > => {
+    if (user) {
+      try {
+        console.info('fetching sessions');
+        const response = await fetch(
+          new Request(`${apiUrl}/sessions?app=${app}`)
+        );
+        if (response.ok) {
+          return (<StateResponse<T>[]>await response.json()).map((item) =>
+            responseToResult(item)
+          );
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    return [];
+  }, [fetch, user]);
 
   const getValue = useCallback(async <T>(): Promise<
     ServerStateResult<T> | undefined
@@ -126,7 +156,7 @@ function useServerStorage({ type, id }: { type: StateType; id: string }) {
     [getStateKey, fetch, user]
   );
 
-  return { getValue, saveValue };
+  return { listValues, getValue, saveValue };
 }
 
 export { useServerStorage };

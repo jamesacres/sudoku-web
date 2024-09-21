@@ -9,29 +9,20 @@ import {
   calculateNextCellId,
   splitCellId,
 } from '@/helpers/calculateId';
-import { SelectNumber, SetAnswer } from '@/types/state';
+import { GameState, SelectNumber, ServerState, SetAnswer } from '@/types/state';
 import { useLocalStorage } from './localStorage';
 import { ServerStateResult, useServerStorage } from './serverStorage';
 import { checkCell, checkGrid } from '@/helpers/checkAnswer';
 import { StateType } from '@/types/StateType';
 import { useTimer } from './timer';
-import { Timer } from '@/types/timer';
-
-interface GameState {
-  answerStack: Puzzle[];
-}
-
-interface ServerState extends GameState {
-  timer?: Timer;
-}
 
 function useGameState({
   final,
   initial,
   puzzleId,
 }: {
-  final: Puzzle;
-  initial: Puzzle;
+  final: Puzzle<number>;
+  initial: Puzzle<number>;
   puzzleId: string;
 }) {
   const { calculateSeconds, timer, setTimerNewSession } = useTimer({
@@ -225,7 +216,7 @@ function useGameState({
   useEffect(() => {
     let active = true;
     if (!isRestored && answerStack.length > 1) {
-      const { serverValuePromise } = saveValue({ answerStack });
+      const { serverValuePromise } = saveValue({ answerStack, initial, final });
       serverValuePromise.then((serverValue) => {
         if (active) {
           // TODO Update parties list
@@ -239,7 +230,7 @@ function useGameState({
     return () => {
       active = false;
     };
-  }, [puzzleId, answerStack, saveValue, isRestored]);
+  }, [puzzleId, answerStack, saveValue, isRestored, initial, final]);
 
   // Handle keyboard
   useEffect(() => {

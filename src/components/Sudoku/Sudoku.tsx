@@ -10,7 +10,7 @@ import { useGameState } from '@/hooks/gameState';
 const Sudoku = ({
   puzzle: { initial, final, puzzleId },
 }: {
-  puzzle: { initial: Puzzle; final: Puzzle; puzzleId: string };
+  puzzle: { initial: Puzzle<number>; final: Puzzle<number>; puzzleId: string };
 }) => {
   const {
     answer,
@@ -39,11 +39,7 @@ const Sudoku = ({
     <div>
       <div className="container mx-auto max-w-screen-sm">
         <div className="mb-4 mt-4 pb-4 pl-0 pr-2">
-          <p>
-            TODO sync session on answer state change, parties and members -
-            invite + accept
-          </p>
-          \<p>Timer: {formatSeconds(calculateSeconds(timer))}</p>
+          <p>Timer: {formatSeconds(calculateSeconds(timer))}</p>
         </div>
       </div>
       <div className="flex flex-col items-center lg:flex-row">
