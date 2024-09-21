@@ -56,9 +56,10 @@ function useGameState({
     });
   const [isNotesMode, setIsNotesMode] = useState<boolean>(false);
   const [selectedCell, setSelectedCell] = useState<null | string>(null);
-  const [answerStack, setAnswerStack] = useState<Puzzle[]>([
-    structuredClone(initial),
-  ]);
+  const [{ answerStack, isRestored }, setAnswerStack] = useState<{
+    answerStack: Puzzle[];
+    isRestored?: boolean;
+  }>({ answerStack: [structuredClone(initial)] });
   const [redoAnswerStack, setRedoAnswerStack] = useState<Puzzle[]>([]);
 
   const getValue = useCallback((): {
@@ -90,7 +91,7 @@ function useGameState({
   const answer = answerStack[answerStack.length - 1];
   const pushAnswer = useCallback(
     (nextAnswer: Puzzle) => {
-      setAnswerStack([...answerStack, nextAnswer]);
+      setAnswerStack({ answerStack: [...answerStack, nextAnswer] });
       setRedoAnswerStack([]);
     },
     [answerStack]
@@ -152,14 +153,16 @@ function useGameState({
     if (!isUndoDisabled) {
       const lastAnswer = answerStack[answerStack.length - 1];
       setRedoAnswerStack([...redoAnswerStack, lastAnswer]);
-      setAnswerStack(answerStack.slice(0, answerStack.length - 1));
+      setAnswerStack({
+        answerStack: answerStack.slice(0, answerStack.length - 1),
+      });
     }
   }, [isUndoDisabled, answerStack, redoAnswerStack]);
   const isRedoDisabled = !redoAnswerStack.length;
   const redo = useCallback(() => {
     if (!isRedoDisabled) {
       const lastUndo = redoAnswerStack[redoAnswerStack.length - 1];
-      setAnswerStack([...answerStack, lastUndo]);
+      setAnswerStack({ answerStack: [...answerStack, lastUndo] });
       setRedoAnswerStack(redoAnswerStack.slice(0, redoAnswerStack.length - 1));
     }
   }, [isRedoDisabled, answerStack, redoAnswerStack]);
@@ -188,7 +191,10 @@ function useGameState({
 
     const { localValue, serverValuePromise } = getValue() || {};
     if (localValue) {
-      setAnswerStack(localValue.state.answerStack);
+      setAnswerStack({
+        answerStack: localValue.state.answerStack,
+        isRestored: true,
+      });
     }
     serverValuePromise.then((serverValue) => {
       if (active) {
@@ -201,7 +207,10 @@ function useGameState({
               serverValue.updatedAt.getTime() > localValue?.lastUpdated))
         ) {
           // Update local state and timer if server state is newer
-          setAnswerStack(serverValue.state.answerStack);
+          setAnswerStack({
+            answerStack: serverValue.state.answerStack,
+            isRestored: true,
+          });
           setTimerNewSession(serverValue.state.timer);
         }
         // TODO Update parties list
@@ -215,7 +224,7 @@ function useGameState({
   }, [puzzleId, getValue, setTimerNewSession]);
   useEffect(() => {
     let active = true;
-    if (answerStack.length > 1) {
+    if (!isRestored && answerStack.length > 1) {
       const { serverValuePromise } = saveValue({ answerStack });
       serverValuePromise.then((serverValue) => {
         if (active) {
