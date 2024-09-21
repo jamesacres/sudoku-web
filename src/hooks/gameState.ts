@@ -239,7 +239,7 @@ function useGameState({
     return () => {
       active = false;
     };
-  }, [puzzleId, answerStack, saveValue]);
+  }, [puzzleId, answerStack, saveValue, isRestored]);
 
   // Handle keyboard
   useEffect(() => {
