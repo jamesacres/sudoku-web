@@ -184,38 +184,52 @@ function useGameState({
 
   // Restore and save state
   useEffect(() => {
+    let active = true;
+
     const { localValue, serverValuePromise } = getValue() || {};
     if (localValue) {
       setAnswerStack(localValue.state.answerStack);
     }
     serverValuePromise.then((serverValue) => {
-      if (
-        serverValue &&
-        (!localValue?.lastUpdated ||
-          (localValue?.lastUpdated &&
-            serverValue?.state &&
-            serverValue?.updatedAt &&
-            serverValue.updatedAt.getTime() > localValue?.lastUpdated))
-      ) {
-        // Update local state and timer if server state is newer
-        setAnswerStack(serverValue.state.answerStack);
-        setTimerNewSession(serverValue.state.timer);
+      if (active) {
+        if (
+          serverValue &&
+          (!localValue?.lastUpdated ||
+            (localValue?.lastUpdated &&
+              serverValue?.state &&
+              serverValue?.updatedAt &&
+              serverValue.updatedAt.getTime() > localValue?.lastUpdated))
+        ) {
+          // Update local state and timer if server state is newer
+          setAnswerStack(serverValue.state.answerStack);
+          setTimerNewSession(serverValue.state.timer);
+        }
+        // TODO Update parties list
+        console.info('restored state, TODO Update parties list', serverValue);
       }
-      // TODO Update parties list
-      console.info('restored state, TODO Update parties list', serverValue);
     });
+
+    return () => {
+      active = false;
+    };
   }, [puzzleId, getValue, setTimerNewSession]);
   useEffect(() => {
+    let active = true;
     if (answerStack.length > 1) {
       const { serverValuePromise } = saveValue({ answerStack });
       serverValuePromise.then((serverValue) => {
-        // TODO Update parties list
-        console.info(
-          'answerStack updated, TODO Update parties list',
-          serverValue
-        );
+        if (active) {
+          // TODO Update parties list
+          console.info(
+            'answerStack updated, TODO Update parties list',
+            serverValue
+          );
+        }
       });
     }
+    return () => {
+      active = false;
+    };
   }, [puzzleId, answerStack, saveValue]);
 
   // Handle keyboard
