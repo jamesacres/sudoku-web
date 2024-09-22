@@ -12,6 +12,10 @@ export interface GameState {
   answerStack: Puzzle[];
   initial: Puzzle<number>;
   final: Puzzle<number>;
+  completed?: {
+    at: string;
+    seconds: string;
+  }
 }
 
 export interface ServerState extends GameState {
