@@ -3,7 +3,7 @@ import { Puzzle, PuzzleRowOrColumn } from '@/types/puzzle';
 
 const SimpleSudoku = ({ puzzle }: { puzzle: Puzzle<number> }) => {
   return (
-    <div className="m-4 ml-auto mr-auto grid max-w-xl grid-cols-3 grid-rows-3 border border-2 border-slate-400 lg:mr-0">
+    <div className="border-1 ml-auto mr-auto grid max-w-xl grid-cols-3 grid-rows-3 border border-slate-400 lg:mr-0">
       {Array.from(Array(3)).map((_, y) =>
         Array.from(Array(3)).map((_, x) => {
           const boxId = calculateBoxId(x, y);

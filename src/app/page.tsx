@@ -49,10 +49,12 @@ export default function Home() {
     };
   }, [listValues]);
   return (
-    <>
+    <div className="container mx-auto p-6">
       <Link href="/import">Import</Link>
       <Link href="/puzzle?puzzleId=1">Load Puzzle 1</Link>
-      <ul>{sessions?.map((session) => SessionRow(session))}</ul>
-    </>
+      <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-4">
+        {sessions?.map((session) => SessionRow(session))}
+      </ul>
+    </div>
   );
 }

@@ -44,7 +44,7 @@ const Sudoku = ({
       </div>
       <div className="flex flex-col items-center lg:flex-row">
         <div className="container mx-auto p-4">
-          <div className="m-4 ml-auto mr-auto grid max-w-xl grid-cols-3 grid-rows-3 border border-2 border-slate-400 lg:mr-0">
+          <div className="ml-auto mr-auto grid max-w-xl grid-cols-3 grid-rows-3 border border-2 border-slate-400 lg:mr-0">
             {Array.from(Array(3)).map((_, y) =>
               Array.from(Array(3)).map((_, x) => {
                 const boxId = calculateBoxId(x, y);
