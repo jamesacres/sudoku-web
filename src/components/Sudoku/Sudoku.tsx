@@ -38,12 +38,12 @@ const Sudoku = ({
   return (
     <div>
       <div className="container mx-auto max-w-screen-sm">
-        <div className="mb-4 mt-4 pb-4 pl-0 pr-2">
+        <div className="">
           <p>Timer: {formatSeconds(calculateSeconds(timer))}</p>
         </div>
       </div>
       <div className="flex flex-col items-center lg:flex-row">
-        <div className="container mx-auto p-4">
+        <div className="container mx-auto px-4">
           <div className="ml-auto mr-auto grid max-w-xl grid-cols-3 grid-rows-3 border border-2 border-slate-400 lg:mr-0">
             {Array.from(Array(3)).map((_, y) =>
               Array.from(Array(3)).map((_, x) => {

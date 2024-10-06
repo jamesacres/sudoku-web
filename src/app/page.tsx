@@ -22,9 +22,12 @@ const SessionRow = (session: ServerStateResult<ServerState>) => {
   const initial = puzzleToPuzzleText(session.state.initial);
   const final = puzzleToPuzzleText(session.state.final);
   return (
-    <li key={session.sessionId}>
+    <li key={session.sessionId} className="rounded	border-2 border-slate-600">
       <Link href={`/puzzle?initial=${initial}&final=${final}`}>
         <SimpleSudoku puzzle={puzzleTextToPuzzle(initial)} />
+        <button className="mr-2 inline-block w-full bg-blue-500 px-4 py-2 text-white hover:bg-blue-700 disabled:bg-blue-300">
+          Continue Game
+        </button>
       </Link>
     </li>
   );
@@ -54,7 +57,7 @@ export default function Home() {
   const completed = sessions?.filter((session) => session.state.completed);
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto px-6">
       <div className="mb-4">
         <h1 className="mb-2 text-4xl font-extrabold">Get Started</h1>
         <p>Simply scan a sudoku from a puzzle book and solve on your device!</p>

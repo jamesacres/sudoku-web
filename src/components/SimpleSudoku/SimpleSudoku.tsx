@@ -14,7 +14,7 @@ const SimpleSudoku = ({ puzzle }: { puzzle: Puzzle<number> }) => {
             >
               {Array.from(Array(3)).map((_, celly) =>
                 Array.from(Array(3)).map((_, cellx) => {
-                  const cellId = calculateCellId(boxId, x, y);
+                  const cellId = calculateCellId(boxId, cellx, celly);
                   const value =
                     puzzle[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn][
                       cellx as PuzzleRowOrColumn
