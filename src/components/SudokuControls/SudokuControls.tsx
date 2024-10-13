@@ -72,8 +72,8 @@ const SudokuControls = ({
           <NotesToggle isEnabled={isNotesMode} setEnabled={setIsNotesMode} />
         </div>
       </div>
-      <div className="flex flex-col items-center justify-center sm:flex-row">
-        <div className="mr-2 mt-2" style={{ minWidth: 120 }}>
+      <div className="m-4 flex flex-col items-center justify-center lg:flex-row">
+        <div className="mx-auto mt-2" style={{ minWidth: 120 }}>
           <div className="square">
             <NumberPad
               selectNumber={selectNumber}
@@ -81,17 +81,23 @@ const SudokuControls = ({
             />
           </div>
         </div>
-        <div className="text-center sm:flex-row" style={{ maxWidth: '200px' }}>
-          <button
-            disabled={isValidateCellDisabled}
-            onClick={() => selectNumber(0)}
-            className="mr-2 mt-2 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700 disabled:bg-blue-300"
-          >
-            <Delete className="float-left mr-2" />
-            Delete
-          </button>
+        <div className="flex flex-row flex-wrap text-center lg:flex-col">
           <div
-            className="mr-2 inline-flex min-w-52 flex-nowrap"
+            className="mr-2 inline-flex flex-nowrap items-center"
+            role="group"
+            aria-label="Button group"
+          >
+            <button
+              disabled={isValidateCellDisabled}
+              onClick={() => selectNumber(0)}
+              className="mt-2 inline-flex rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700 disabled:bg-blue-300"
+            >
+              <Delete className="float-left mr-2" />
+              Delete
+            </button>
+          </div>
+          <div
+            className="mr-2 inline-flex min-w-52 flex-nowrap items-center"
             role="group"
             aria-label="Button group"
           >
@@ -112,7 +118,11 @@ const SudokuControls = ({
               <CornerUpRight className="float-right ml-2" />
             </button>
           </div>
-          <div className="inline-flex" role="group" aria-label="Button group">
+          <div
+            className="inline-flex items-center"
+            role="group"
+            aria-label="Button group"
+          >
             <button
               disabled={isValidateCellDisabled}
               onClick={() => validateCell()}

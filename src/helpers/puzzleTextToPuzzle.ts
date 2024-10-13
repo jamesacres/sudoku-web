@@ -1,8 +1,8 @@
 import { Puzzle, PuzzleRowOrColumn } from '@/types/puzzle';
 
-export const puzzleTextToPuzzle = (puzzleText: string): Puzzle => {
+export const puzzleTextToPuzzle = (puzzleText: string): Puzzle<number> => {
   // eslint-disable-next-line
-const puzzle: Puzzle = [[[[0,0,0],[0,0,0],[0,0,0]],[[0,0,0],[0,0,0],[0,0,0]],[[0,0,0],[0,0,0],[0,0,0]]],[[[0,0,0],[0,0,0],[0,0,0]],[[0,0,0],[0,0,0],[0,0,0]],[[0,0,0],[0,0,0],[0,0,0]]],[[[0,0,0],[0,0,0],[0,0,0]],[[0,0,0],[0,0,0],[0,0,0]],[[0,0,0],[0,0,0],[0,0,0]]]];
+const puzzle: Puzzle<number> = [[[[0,0,0],[0,0,0],[0,0,0]],[[0,0,0],[0,0,0],[0,0,0]],[[0,0,0],[0,0,0],[0,0,0]]],[[[0,0,0],[0,0,0],[0,0,0]],[[0,0,0],[0,0,0],[0,0,0]],[[0,0,0],[0,0,0],[0,0,0]]],[[[0,0,0],[0,0,0],[0,0,0]],[[0,0,0],[0,0,0],[0,0,0]],[[0,0,0],[0,0,0],[0,0,0]]]];
   const lines = [
     puzzleText.slice(0, 9),
     puzzleText.slice(9, 18),
@@ -28,4 +28,22 @@ const puzzle: Puzzle = [[[[0,0,0],[0,0,0],[0,0,0]],[[0,0,0],[0,0,0],[0,0,0]],[[0
     }
   }
   return puzzle;
+};
+
+export const puzzleToPuzzleText = (puzzle: Puzzle<number>): string => {
+  let puzzleText = '';
+  Array.from(Array(3)).map((_, a) => {
+    Array.from(Array(3)).map((_, b) => {
+      Array.from(Array(3)).map((_, c) => {
+        Array.from(Array(3)).map((_, d) => {
+          const number =
+            puzzle[c as PuzzleRowOrColumn][a as PuzzleRowOrColumn][
+              d as PuzzleRowOrColumn
+            ][b as PuzzleRowOrColumn];
+          puzzleText = `${puzzleText}${number || '.'}`;
+        });
+      });
+    });
+  });
+  return puzzleText;
 };

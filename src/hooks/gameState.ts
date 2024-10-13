@@ -2,42 +2,87 @@
 
 import { Puzzle } from '@/types/puzzle';
 import { Notes, ToggleNote } from '@/types/notes';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   calculateBoxId,
   calculateCellId,
   calculateNextCellId,
   splitCellId,
 } from '@/helpers/calculateId';
-import { SelectNumber, SetAnswer } from '@/types/state';
-import { StateType, useLocalStorage } from './localStorage';
+import { GameState, SelectNumber, ServerState, SetAnswer } from '@/types/state';
+import { useLocalStorage } from './localStorage';
+import { ServerStateResult, useServerStorage } from './serverStorage';
 import { checkCell, checkGrid } from '@/helpers/checkAnswer';
+import { StateType } from '@/types/StateType';
+import { useTimer } from './timer';
 
 function useGameState({
   final,
   initial,
   puzzleId,
 }: {
-  final: Puzzle;
-  initial: Puzzle;
+  final: Puzzle<number>;
+  initial: Puzzle<number>;
   puzzleId: string;
 }) {
-  const { getValue, saveValue } = useLocalStorage({
-    id: puzzleId,
-    type: StateType.PUZZLE,
+  const { calculateSeconds, timer, setTimerNewSession } = useTimer({
+    puzzleId,
   });
+
+  // Reference to timer value to use without triggering re-renders
+  const timerRef = useRef(timer);
+  useEffect(() => {
+    timerRef.current = timer;
+  }, [calculateSeconds, timer]);
+
+  const { getValue: getLocalValue, saveValue: saveLocalValue } =
+    useLocalStorage({
+      id: puzzleId,
+      type: StateType.PUZZLE,
+    });
+  const { getValue: getServerValue, saveValue: saveServerValue } =
+    useServerStorage({
+      id: puzzleId,
+      type: StateType.PUZZLE,
+    });
   const [isNotesMode, setIsNotesMode] = useState<boolean>(false);
   const [selectedCell, setSelectedCell] = useState<null | string>(null);
-  const [answerStack, setAnswerStack] = useState<Puzzle[]>([
-    structuredClone(initial),
-  ]);
+  const [{ answerStack, isRestored }, setAnswerStack] = useState<{
+    answerStack: Puzzle[];
+    isRestored?: boolean;
+  }>({ answerStack: [structuredClone(initial)] });
   const [redoAnswerStack, setRedoAnswerStack] = useState<Puzzle[]>([]);
+
+  const getValue = useCallback((): {
+    localValue: { lastUpdated: number; state: GameState } | undefined;
+    serverValuePromise: Promise<ServerStateResult<ServerState> | undefined>;
+  } => {
+    let localValue = getLocalValue<GameState>();
+    const serverValuePromise = getServerValue<ServerState>();
+    return { localValue, serverValuePromise };
+  }, [getLocalValue, getServerValue]);
+  const saveValue = useCallback(
+    (
+      state: GameState
+    ): {
+      localValue: { lastUpdated: number; state: GameState } | undefined;
+      serverValuePromise: Promise<ServerStateResult<GameState> | undefined>;
+    } => {
+      const localValue = saveLocalValue<GameState>(state);
+      const serverValuePromise = saveServerValue<ServerState>({
+        ...state,
+        timer: timerRef.current || undefined,
+      });
+      return { localValue, serverValuePromise };
+    },
+    [saveLocalValue, saveServerValue, timerRef]
+  );
 
   // Answers
   const answer = answerStack[answerStack.length - 1];
   const pushAnswer = useCallback(
     (nextAnswer: Puzzle) => {
-      setAnswerStack([...answerStack, nextAnswer]);
+      setAnswerStack({ answerStack: [...answerStack, nextAnswer] });
       setRedoAnswerStack([]);
     },
     [answerStack]
@@ -99,14 +144,16 @@ function useGameState({
     if (!isUndoDisabled) {
       const lastAnswer = answerStack[answerStack.length - 1];
       setRedoAnswerStack([...redoAnswerStack, lastAnswer]);
-      setAnswerStack(answerStack.slice(0, answerStack.length - 1));
+      setAnswerStack({
+        answerStack: answerStack.slice(0, answerStack.length - 1),
+      });
     }
   }, [isUndoDisabled, answerStack, redoAnswerStack]);
   const isRedoDisabled = !redoAnswerStack.length;
   const redo = useCallback(() => {
     if (!isRedoDisabled) {
       const lastUndo = redoAnswerStack[redoAnswerStack.length - 1];
-      setAnswerStack([...answerStack, lastUndo]);
+      setAnswerStack({ answerStack: [...answerStack, lastUndo] });
       setRedoAnswerStack(redoAnswerStack.slice(0, redoAnswerStack.length - 1));
     }
   }, [isRedoDisabled, answerStack, redoAnswerStack]);
@@ -131,16 +178,59 @@ function useGameState({
 
   // Restore and save state
   useEffect(() => {
-    const { state: savedState } = getValue<Puzzle[]>() || {};
-    if (savedState) {
-      setAnswerStack(savedState);
+    let active = true;
+
+    const { localValue, serverValuePromise } = getValue() || {};
+    if (localValue) {
+      setAnswerStack({
+        answerStack: localValue.state.answerStack,
+        isRestored: true,
+      });
     }
-  }, [puzzleId, getValue]);
+    serverValuePromise.then((serverValue) => {
+      if (active) {
+        if (
+          serverValue &&
+          (!localValue?.lastUpdated ||
+            (localValue?.lastUpdated &&
+              serverValue?.state &&
+              serverValue?.updatedAt &&
+              serverValue.updatedAt.getTime() > localValue?.lastUpdated))
+        ) {
+          // Update local state and timer if server state is newer
+          setAnswerStack({
+            answerStack: serverValue.state.answerStack,
+            isRestored: true,
+          });
+          setTimerNewSession(serverValue.state.timer);
+        }
+        // TODO Update parties list
+        console.info('restored state, TODO Update parties list', serverValue);
+      }
+    });
+
+    return () => {
+      active = false;
+    };
+  }, [puzzleId, getValue, setTimerNewSession]);
   useEffect(() => {
-    if (answerStack.length > 1) {
-      saveValue(answerStack);
+    let active = true;
+    if (!isRestored && answerStack.length > 1) {
+      const { serverValuePromise } = saveValue({ answerStack, initial, final });
+      serverValuePromise.then((serverValue) => {
+        if (active) {
+          // TODO Update parties list
+          console.info(
+            'answerStack updated, TODO Update parties list',
+            serverValue
+          );
+        }
+      });
     }
-  }, [puzzleId, answerStack, saveValue]);
+    return () => {
+      active = false;
+    };
+  }, [puzzleId, answerStack, saveValue, isRestored, initial, final]);
 
   // Handle keyboard
   useEffect(() => {
@@ -209,6 +299,8 @@ function useGameState({
     validation,
     validateCell,
     validateGrid,
+    calculateSeconds,
+    timer,
   };
 }
 

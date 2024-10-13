@@ -1,15 +1,9 @@
 'use client';
 import { useCallback, useEffect, useState } from 'react';
 import { useDocumentVisibility } from './documentVisibility';
-import { StateType, useLocalStorage } from './localStorage';
-
-interface Timer {
-  seconds: number;
-  inProgress: {
-    start: string;
-    lastInteraction: string;
-  };
-}
+import { useLocalStorage } from './localStorage';
+import { StateType } from '../types/StateType';
+import { Timer } from '../types/timer';
 
 function useTimer({ puzzleId }: { puzzleId: string }) {
   const isDocumentVisible = useDocumentVisibility();

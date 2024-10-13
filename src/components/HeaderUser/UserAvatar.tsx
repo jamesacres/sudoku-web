@@ -1,3 +1,4 @@
+'use client';
 import { UserProfile } from '@/types/userProfile';
 import Image from 'next/image';
 import { User } from 'react-feather';
@@ -15,7 +16,7 @@ export const UserAvatar = ({
       alt={user.name || 'user'}
       width={size}
       height={size}
-      className="rounded-full"
+      className="overflow-hidden rounded-full"
     />
   ) : (
     <User className="text-white" style={{ height: size, width: size }} />

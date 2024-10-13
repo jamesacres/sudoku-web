@@ -1,24 +1,18 @@
 import dynamic from 'next/dynamic';
 const HeaderUser = dynamic(() => import('../HeaderUser'), { ssr: false });
+const HeaderBack = dynamic(() => import('../HeaderBack'), { ssr: false });
+
 import ThemeSwitch from '../ThemeSwitch';
-import Link from 'next/link';
 
 const Header = () => {
   return (
-    <nav className="pt-safe mb-3 flex flex-wrap items-center justify-between bg-blue-600 p-6">
-      <div className="mr-6 flex flex-shrink-0 items-center text-white">
-        <span className="text-xl font-semibold tracking-tight">Sudoku</span>
+    <nav className="pt-safe fixed left-0 top-0 flex w-screen flex-wrap items-center justify-between bg-zinc-100 px-6 pb-2 dark:bg-zinc-800">
+      <div className="mr-6 flex flex-shrink-0 items-center dark:text-white">
+        <HeaderBack />
       </div>
       <div className="block flex flex-grow items-center">
-        <div className="flex-grow text-sm">
-          <Link
-            href="/"
-            className="mr-4 mt-0 block inline-block text-blue-200 hover:text-white"
-          >
-            Puzzles
-          </Link>
-        </div>
-        <div className="flex min-h-10 items-center">
+        <div className="flex-grow"></div>
+        <div className="flex h-10 items-center">
           <HeaderUser />
           <ThemeSwitch />
         </div>

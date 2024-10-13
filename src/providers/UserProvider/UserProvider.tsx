@@ -50,7 +50,10 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   const loginRedirect = React.useCallback(async () => {
     console.info('loginRedirect..');
     setIsLoggingIn(true);
-    sessionStorage.setItem('restorePathname', window.location.pathname);
+    sessionStorage.setItem(
+      'restorePathname',
+      `${window.location.pathname}${window.location.search}`
+    );
 
     const state = window.crypto.randomUUID();
     sessionStorage.setItem('state', state);

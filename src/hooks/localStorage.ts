@@ -1,10 +1,11 @@
 'use client';
 
+import { StateType } from '@/types/StateType';
 import { useCallback } from 'react';
 
-export enum StateType {
-  PUZZLE = 'PUZZLE',
-  TIMER = 'TIMER',
+export interface StateResult<T> {
+  lastUpdated: number;
+  state: T;
 }
 
 function useLocalStorage({ type, id }: { type: StateType; id: string }) {
@@ -16,9 +17,7 @@ function useLocalStorage({ type, id }: { type: StateType; id: string }) {
     return key;
   }, [id, type]);
 
-  const getValue = useCallback(<T>():
-    | { lastUpdated: number; state: T }
-    | undefined => {
+  const getValue = useCallback(<T>(): StateResult<T> | undefined => {
     try {
       const savedState = localStorage.getItem(getStateKey());
       if (savedState) {
@@ -31,12 +30,11 @@ function useLocalStorage({ type, id }: { type: StateType; id: string }) {
   }, [getStateKey]);
 
   const saveValue = useCallback(
-    <T>(state: T) => {
+    <T>(state: T): StateResult<T> => {
       const lastUpdated = new Date().getTime();
-      localStorage.setItem(
-        getStateKey(),
-        JSON.stringify({ lastUpdated, state })
-      );
+      const result = { lastUpdated, state };
+      localStorage.setItem(getStateKey(), JSON.stringify(result));
+      return result;
     },
     [getStateKey]
   );
