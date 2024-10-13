@@ -201,14 +201,14 @@ function useFetch() {
           console.warn(
             'Resetting state as no access token, and skipping API call'
           );
-          resetState();
+          await resetState();
           return new Response(null, { status: 401 });
         }
         const authReq = new Request(request, { headers });
         const response = await fetch(authReq);
         if (response.status === 401) {
           console.warn('Resetting state as received 401');
-          resetState();
+          await resetState();
         }
         return response;
       } else if (isTokenUrl(destURL)) {
