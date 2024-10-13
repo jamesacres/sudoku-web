@@ -216,7 +216,7 @@ function useGameState({
   }, [puzzleId, getValue, setTimerNewSession]);
   useEffect(() => {
     let active = true;
-    if (!isRestored && answerStack.length > 1) {
+    if (!isRestored && answerStack.length > 0) {
       const { serverValuePromise } = saveValue({ answerStack, initial, final });
       serverValuePromise.then((serverValue) => {
         if (active) {
