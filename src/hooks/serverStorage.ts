@@ -75,8 +75,22 @@ function useServerStorage({
   type,
   id,
 }: { type?: StateType; id?: string } = {}) {
-  const { user } = useContext(UserContext) || {};
-  const { fetch } = useFetch();
+  const { user, logout } = useContext(UserContext) || {};
+  const { fetch, getUser } = useFetch();
+
+  const isLoggedIn = useCallback(() => {
+    if (user) {
+      if (getUser()) {
+        return true;
+      }
+      console.warn('no longer logged in, logging out');
+      if (logout) {
+        logout();
+      }
+    }
+    console.warn('not logged in');
+    return false;
+  }, [getUser, logout, user]);
 
   const getStateKey = useCallback(() => {
     let key = `${app}-${id}`;
@@ -89,7 +103,7 @@ function useServerStorage({
   const listValues = useCallback(async <T>(): Promise<
     ServerStateResult<T>[]
   > => {
-    if (user) {
+    if (isLoggedIn()) {
       try {
         console.info('fetching sessions');
         const response = await fetch(
@@ -105,12 +119,12 @@ function useServerStorage({
       }
     }
     return [];
-  }, [fetch, user]);
+  }, [fetch, isLoggedIn]);
 
   const getValue = useCallback(async <T>(): Promise<
     ServerStateResult<T> | undefined
   > => {
-    if (user) {
+    if (isLoggedIn()) {
       try {
         const stateKey = getStateKey();
         console.info('fetching session', stateKey);
@@ -125,11 +139,11 @@ function useServerStorage({
       }
     }
     return undefined;
-  }, [getStateKey, fetch, user]);
+  }, [getStateKey, fetch, isLoggedIn]);
 
   const saveValue = useCallback(
     async <T>(state: T): Promise<ServerStateResult<T> | undefined> => {
-      if (user) {
+      if (isLoggedIn()) {
         try {
           const stateKey = getStateKey();
           console.info('fetching session', stateKey);
@@ -153,7 +167,7 @@ function useServerStorage({
       }
       return undefined;
     },
-    [getStateKey, fetch, user]
+    [getStateKey, fetch, isLoggedIn]
   );
 
   return { listValues, getValue, saveValue };
