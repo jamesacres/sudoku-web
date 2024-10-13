@@ -1,7 +1,16 @@
 import { calculateBoxId, calculateCellId } from '@/helpers/calculateId';
+import { Notes } from '@/types/notes';
 import { Puzzle, PuzzleRowOrColumn } from '@/types/puzzle';
 
-const SimpleSudoku = ({ puzzle }: { puzzle: Puzzle<number> }) => {
+const SimpleSudoku = ({
+  initial,
+  final,
+  latest,
+}: {
+  initial: Puzzle<number>;
+  final: Puzzle<number>;
+  latest: Puzzle<number | Notes>;
+}) => {
   return (
     <div className="border-1 ml-auto mr-auto grid max-w-xl grid-cols-3 grid-rows-3 border border-slate-400 lg:mr-0">
       {Array.from(Array(3)).map((_, y) =>
@@ -15,16 +24,34 @@ const SimpleSudoku = ({ puzzle }: { puzzle: Puzzle<number> }) => {
               {Array.from(Array(3)).map((_, celly) =>
                 Array.from(Array(3)).map((_, cellx) => {
                   const cellId = calculateCellId(boxId, cellx, celly);
-                  const value =
-                    puzzle[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn][
+                  const initialValue =
+                    initial[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn][
                       cellx as PuzzleRowOrColumn
                     ][celly as PuzzleRowOrColumn];
+                  const finalValue =
+                    final[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn][
+                      cellx as PuzzleRowOrColumn
+                    ][celly as PuzzleRowOrColumn];
+                  const latestValue =
+                    latest[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn][
+                      cellx as PuzzleRowOrColumn
+                    ][celly as PuzzleRowOrColumn];
+                  const hasCorrectGuess =
+                    !initialValue && latestValue && latestValue === finalValue;
+                  const hasIncorrectGuess =
+                    !initialValue && latestValue && latestValue !== finalValue;
+                  const correctBackground = hasCorrectGuess
+                    ? 'bg-green-500'
+                    : '';
+                  const incorrectBackground = hasIncorrectGuess
+                    ? 'bg-red-500'
+                    : '';
                   return (
                     <div
                       key={cellId}
-                      className="flex h-full w-full items-center justify-center border border-slate-400"
+                      className={`flex h-full w-full items-center justify-center border border-slate-400 ${correctBackground} ${incorrectBackground}`}
                     >
-                      {value || ''}
+                      {initialValue || ''}
                     </div>
                   );
                 })

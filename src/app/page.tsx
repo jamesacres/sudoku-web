@@ -1,6 +1,8 @@
 'use client';
 import SimpleSudoku from '@/components/SimpleSudoku';
+import { TimerDisplay } from '@/components/TimerDisplay/TimerDisplay';
 import puzzles from '@/data/puzzles/puzzles';
+import { calculateSeconds } from '@/helpers/calculateSeconds';
 import {
   puzzleTextToPuzzle,
   puzzleToPuzzleText,
@@ -17,19 +19,31 @@ import { Camera } from 'react-feather';
 
 const getPuzzle = (
   puzzleId: number
-): { initial: Puzzle<number>; final: Puzzle<number> } => {
+): {
+  initial: Puzzle<number>;
+  final: Puzzle<number>;
+} => {
   return puzzles[puzzleId];
 };
 
 const SessionRow = (session: ServerStateResult<ServerState>) => {
   const initial = puzzleToPuzzleText(session.state.initial);
   const final = puzzleToPuzzleText(session.state.final);
+  const latest =
+    session.state.answerStack[session.state.answerStack.length - 1];
   return (
     <li key={session.sessionId} className="rounded	border-2 border-slate-600">
       <Link href={`/puzzle?initial=${initial}&final=${final}`}>
-        <SimpleSudoku puzzle={puzzleTextToPuzzle(initial)} />
+        <SimpleSudoku
+          initial={puzzleTextToPuzzle(initial)}
+          final={puzzleTextToPuzzle(final)}
+          latest={latest}
+        />
         <button className="mr-2 inline-block w-full bg-blue-500 px-4 py-2 text-white hover:bg-blue-700 disabled:bg-blue-300">
           Continue Game
+          {session.state.timer !== undefined && (
+            <TimerDisplay seconds={calculateSeconds(session.state.timer)} />
+          )}
         </button>
       </Link>
     </li>

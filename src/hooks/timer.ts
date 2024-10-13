@@ -4,6 +4,7 @@ import { useDocumentVisibility } from './documentVisibility';
 import { useLocalStorage } from './localStorage';
 import { StateType } from '../types/StateType';
 import { Timer } from '../types/timer';
+import { calculateSeconds } from '@/helpers/calculateSeconds';
 
 function useTimer({ puzzleId }: { puzzleId: string }) {
   const isDocumentVisible = useDocumentVisibility();
@@ -14,34 +15,18 @@ function useTimer({ puzzleId }: { puzzleId: string }) {
   const [timer, setTimer] = useState<null | Timer>(null);
 
   // Timer - calculates time spent on page
-  const calculateSeconds = useCallback((timer: Timer | null) => {
-    let nextSeconds = 0;
-    if (timer) {
-      nextSeconds =
-        timer.seconds +
-        Math.floor(
-          (new Date(timer.inProgress.lastInteraction).getTime() -
-            new Date(timer.inProgress.start).getTime()) /
-            1000
-        );
-    }
-    return nextSeconds;
-  }, []);
 
-  const setTimerNewSession = useCallback(
-    (restoreTimer?: Timer) => {
-      const now = new Date().toISOString();
-      setTimer((currentTimer) => {
-        const timer = restoreTimer || currentTimer;
-        return {
-          ...timer,
-          seconds: calculateSeconds(timer),
-          inProgress: { start: now, lastInteraction: now },
-        };
-      });
-    },
-    [calculateSeconds]
-  );
+  const setTimerNewSession = useCallback((restoreTimer?: Timer) => {
+    const now = new Date().toISOString();
+    setTimer((currentTimer) => {
+      const timer = restoreTimer || currentTimer;
+      return {
+        ...timer,
+        seconds: calculateSeconds(timer),
+        inProgress: { start: now, lastInteraction: now },
+      };
+    });
+  }, []);
 
   const setTimerLastInteraction = useCallback(() => {
     const now = new Date().toISOString();
@@ -94,7 +79,6 @@ function useTimer({ puzzleId }: { puzzleId: string }) {
   }, [puzzleId, timer, saveValue]);
 
   return {
-    calculateSeconds,
     setTimerNewSession,
     timer,
   };
