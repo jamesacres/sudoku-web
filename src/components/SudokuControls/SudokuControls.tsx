@@ -149,7 +149,9 @@ const SudokuControls = ({
 };
 
 // Prevent re-render on timer change
-const MemoisedSudokuControls = memo(function MemoisedSudokuControls(args: Arguments) {
+const MemoisedSudokuControls = memo(function MemoisedSudokuControls(
+  args: Arguments
+) {
   return SudokuControls(args);
 });
 

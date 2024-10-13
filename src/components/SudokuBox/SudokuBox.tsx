@@ -56,5 +56,4 @@ const MemoisedSudokuBox = memo(function MemoisedSudokuBox(args: Arguments) {
   return SudokuBox(args);
 });
 
-
 export default MemoisedSudokuBox;
