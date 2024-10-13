@@ -2,6 +2,17 @@ import { calculateCellId } from '@/helpers/calculateId';
 import SudokuInput from '../SudokuInput';
 import { PuzzleBox, PuzzleRowOrColumn } from '@/types/puzzle';
 import { SelectNumber, SetSelectedCell } from '@/types/state';
+import { memo } from 'react';
+
+interface Arguments {
+  boxId: string;
+  selectedCell: string | null;
+  setSelectedCell: SetSelectedCell;
+  answer: PuzzleBox;
+  selectNumber: SelectNumber;
+  validation?: PuzzleBox<boolean | undefined>;
+  initial: PuzzleBox;
+}
 
 const SudokuBox = ({
   boxId,
@@ -11,15 +22,7 @@ const SudokuBox = ({
   selectNumber,
   validation,
   initial,
-}: {
-  boxId: string;
-  selectedCell: string | null;
-  setSelectedCell: SetSelectedCell;
-  answer: PuzzleBox;
-  selectNumber: SelectNumber;
-  validation?: PuzzleBox<boolean | undefined>;
-  initial: PuzzleBox;
-}) => {
+}: Arguments) => {
   return (
     <div className="grid aspect-square cursor-pointer grid-cols-3 grid-rows-3 border border-slate-400">
       {Array.from(Array(3)).map((_, y) =>
@@ -48,4 +51,10 @@ const SudokuBox = ({
   );
 };
 
-export default SudokuBox;
+// Prevent re-render on timer change
+const MemoisedSudokuBox = memo(function MemoisedSudokuBox(args: Arguments) {
+  return SudokuBox(args);
+});
+
+
+export default MemoisedSudokuBox;
