@@ -1,0 +1,37 @@
+'use client';
+import { GlobalStateContext } from '@/providers/GlobalStateProvider/GlobalStateProvider';
+import { useCallback, useContext, useEffect, useState } from 'react';
+
+function useOnline() {
+  const [globalState, setGlobalState] = useContext(GlobalStateContext)!;
+  const [isOnline, setIsOnline] = useState(
+    typeof window !== 'undefined' ? window.navigator.onLine : false
+  );
+
+  const handleOnlineChange = () => {
+    setIsOnline(window.navigator.onLine);
+  };
+
+  useEffect(() => {
+    window.addEventListener('online', handleOnlineChange);
+    window.addEventListener('offline', handleOnlineChange);
+
+    return () => {
+      window.removeEventListener('online', handleOnlineChange);
+      window.removeEventListener('offline', handleOnlineChange);
+    };
+  }, []);
+
+  const forceOffline = useCallback(
+    (isForceOffline: boolean) => {
+      setGlobalState({ ...globalState, isForceOffline });
+    },
+    [globalState, setGlobalState]
+  );
+
+  const isOnlineResult = isOnline && !globalState.isForceOffline;
+
+  return { forceOffline, isOnline: isOnlineResult };
+}
+
+export { useOnline };
