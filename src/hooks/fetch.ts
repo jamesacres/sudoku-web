@@ -198,8 +198,11 @@ function useFetch() {
           }
           headers.append('Authorization', `Bearer ${state.accessToken}`);
         } else {
-          console.warn('Resetting state as no access token');
+          console.warn(
+            'Resetting state as no access token, and skipping API call'
+          );
           resetState();
+          return new Response(null, { status: 401 });
         }
         const authReq = new Request(request, { headers });
         const response = await fetch(authReq);
