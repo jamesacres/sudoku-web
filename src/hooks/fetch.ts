@@ -103,7 +103,7 @@ function useFetch() {
   const checkRefresh = useCallback(async () => {
     if (isRefreshing) {
       console.warn('skipping checkRefresh as already checking');
-      return;
+      return { inProgress: true };
     }
     isRefreshing = true;
 
@@ -191,13 +191,24 @@ function useFetch() {
         console.info('useFetch handleFetch apiUrl');
         // Automatically send auth header to API URLs
         if (state.accessToken) {
-          await checkRefresh();
+          const { inProgress } = (await checkRefresh()) || {};
+          if (inProgress) {
+            console.warn('Skipping API call as refresh in progress');
+            return new Response(null, { status: 401 });
+          }
           headers.append('Authorization', `Bearer ${state.accessToken}`);
+        } else {
+          console.warn(
+            'Resetting state as no access token, and skipping API call'
+          );
+          await resetState();
+          return new Response(null, { status: 401 });
         }
         const authReq = new Request(request, { headers });
         const response = await fetch(authReq);
         if (response.status === 401) {
-          resetState();
+          console.warn('Resetting state as received 401');
+          await resetState();
         }
         return response;
       } else if (isTokenUrl(destURL)) {

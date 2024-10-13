@@ -219,6 +219,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [getUser, handleUser]);
 
   const handleLogout = async () => {
+    console.warn('handleLogout');
     localStorage.setItem('recoverSession', 'false');
     setUser(undefined);
     await logout();
