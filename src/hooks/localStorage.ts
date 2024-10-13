@@ -8,7 +8,7 @@ export interface StateResult<T> {
   state: T;
 }
 
-function useLocalStorage({ type, id }: { type: StateType; id: string }) {
+function useLocalStorage({ type, id }: { type: StateType; id?: string }) {
   const getStateKey = useCallback(() => {
     let key = `sudoku-${id}`;
     if (type !== StateType.PUZZLE) {
@@ -16,6 +16,34 @@ function useLocalStorage({ type, id }: { type: StateType; id: string }) {
     }
     return key;
   }, [id, type]);
+
+  const listValues = useCallback(
+    <T>(): (StateResult<T> & {
+      sessionId: string;
+    })[] =>
+      Object.entries(localStorage)
+        .filter(([key]) => {
+          if (type !== StateType.PUZZLE) {
+            return key.endsWith(`-${type}`);
+          }
+          return /^sudoku-[^-]+$/.test(key);
+        })
+        .map(([key, value]) => {
+          try {
+            const parsedValue = JSON.parse(value);
+            const matches = key.match(/^(sudoku-[^-]+)/);
+            if (matches?.length) {
+              console.info(matches[1]);
+              return { ...parsedValue, sessionId: matches[1] };
+            }
+          } catch (e) {
+            console.error(e);
+          }
+          return undefined;
+        })
+        .filter((value) => !!value),
+    [type]
+  );
 
   const getValue = useCallback(<T>(): StateResult<T> | undefined => {
     try {
@@ -39,7 +67,7 @@ function useLocalStorage({ type, id }: { type: StateType; id: string }) {
     [getStateKey]
   );
 
-  return { getValue, saveValue };
+  return { listValues, getValue, saveValue };
 }
 
 export { useLocalStorage };

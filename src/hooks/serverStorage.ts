@@ -79,7 +79,6 @@ function useServerStorage({
   const { user, logout } = useContext(UserContext) || {};
   const { fetch, getUser } = useFetch();
   const { isOnline } = useOnline();
-  console.info('online', isOnline);
 
   const isLoggedIn = useCallback(() => {
     if (user) {
