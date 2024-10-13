@@ -179,7 +179,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 
       // Navigate back to previous location
       const restorePathname = sessionStorage.getItem('restorePathname');
-      router.push(
+      router.replace(
         restorePathname && restorePathname !== '/auth' ? restorePathname : '/'
       );
     };
@@ -194,7 +194,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     const state = await (window as any).electronAPI.decrypt(encryptedState);
     await handleUser(await restoreState(state));
     // Redirect to root of app
-    router.push('/');
+    router.replace('/');
   }, [router, restoreState, handleUser]);
 
   React.useEffect(() => {
