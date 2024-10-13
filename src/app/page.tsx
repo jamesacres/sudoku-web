@@ -42,7 +42,7 @@ export default function Home() {
 
     const serverState = async () => {
       const values = await listValues<ServerState>();
-      if (active) {
+      if (active && values) {
         setSessions(values);
       }
     };

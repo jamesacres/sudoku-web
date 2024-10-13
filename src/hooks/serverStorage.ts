@@ -104,7 +104,7 @@ function useServerStorage({
   }, [id, type]);
 
   const listValues = useCallback(async <T>(): Promise<
-    ServerStateResult<T>[]
+    ServerStateResult<T>[] | undefined
   > => {
     if (isOnline && isLoggedIn()) {
       try {
@@ -121,7 +121,7 @@ function useServerStorage({
         console.error(e);
       }
     }
-    return [];
+    return undefined;
   }, [fetch, isLoggedIn, isOnline]);
 
   const getValue = useCallback(async <T>(): Promise<
