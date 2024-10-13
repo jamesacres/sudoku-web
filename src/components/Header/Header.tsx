@@ -1,6 +1,7 @@
 import dynamic from 'next/dynamic';
 const HeaderUser = dynamic(() => import('../HeaderUser'), { ssr: false });
 const HeaderBack = dynamic(() => import('../HeaderBack'), { ssr: false });
+const HeaderOnline = dynamic(() => import('../HeaderOnline'), { ssr: false });
 
 import ThemeSwitch from '../ThemeSwitch';
 
@@ -15,6 +16,7 @@ const Header = () => {
         <div className="flex h-10 items-center">
           <HeaderUser />
           <ThemeSwitch />
+          <HeaderOnline />
         </div>
       </div>
     </nav>

@@ -1,32 +1,49 @@
 'use client';
 import SimpleSudoku from '@/components/SimpleSudoku';
+import { TimerDisplay } from '@/components/TimerDisplay/TimerDisplay';
 import puzzles from '@/data/puzzles/puzzles';
+import { calculateSeconds } from '@/helpers/calculateSeconds';
 import {
   puzzleTextToPuzzle,
   puzzleToPuzzleText,
 } from '@/helpers/puzzleTextToPuzzle';
+import { useLocalStorage } from '@/hooks/localStorage';
 import { ServerStateResult, useServerStorage } from '@/hooks/serverStorage';
 import { Puzzle } from '@/types/puzzle';
-import { ServerState } from '@/types/state';
+import { GameState, ServerState } from '@/types/state';
+import { StateType } from '@/types/StateType';
+import { Timer } from '@/types/timer';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { Camera } from 'react-feather';
 
 const getPuzzle = (
   puzzleId: number
-): { initial: Puzzle<number>; final: Puzzle<number> } => {
+): {
+  initial: Puzzle<number>;
+  final: Puzzle<number>;
+} => {
   return puzzles[puzzleId];
 };
 
 const SessionRow = (session: ServerStateResult<ServerState>) => {
   const initial = puzzleToPuzzleText(session.state.initial);
   const final = puzzleToPuzzleText(session.state.final);
+  const latest =
+    session.state.answerStack[session.state.answerStack.length - 1];
   return (
     <li key={session.sessionId} className="rounded	border-2 border-slate-600">
       <Link href={`/puzzle?initial=${initial}&final=${final}`}>
-        <SimpleSudoku puzzle={puzzleTextToPuzzle(initial)} />
+        <SimpleSudoku
+          initial={puzzleTextToPuzzle(initial)}
+          final={puzzleTextToPuzzle(final)}
+          latest={latest}
+        />
         <button className="mr-2 inline-block w-full bg-blue-500 px-4 py-2 text-white hover:bg-blue-700 disabled:bg-blue-300">
           Continue Game
+          {session.state.timer !== undefined && (
+            <TimerDisplay seconds={calculateSeconds(session.state.timer)} />
+          )}
         </button>
       </Link>
     </li>
@@ -34,16 +51,58 @@ const SessionRow = (session: ServerStateResult<ServerState>) => {
 };
 
 export default function Home() {
-  const { listValues } = useServerStorage();
+  const { listValues: listServerValues } = useServerStorage();
+  const { listValues: listLocalPuzzles } = useLocalStorage({
+    type: StateType.PUZZLE,
+  });
+  const { listValues: listLocalTimers } = useLocalStorage({
+    type: StateType.TIMER,
+  });
   const [sessions, setSessions] = useState<ServerStateResult<ServerState>[]>();
+
+  const mergeSessions = (newSessions: ServerStateResult<ServerState>[]) => {
+    setSessions((previousSessions) => {
+      const mergedSessions = [...newSessions, ...(previousSessions || [])].sort(
+        // Sort newest first
+        ({ updatedAt: a }, { updatedAt: b }) => b.getTime() - a.getTime()
+      );
+      const uniqueSessions = mergedSessions.filter(
+        ({ sessionId }, i) =>
+          // If index greater then filter out duplicate
+          i <=
+          mergedSessions.findIndex((other) => other.sessionId === sessionId)
+      );
+      return uniqueSessions;
+    });
+  };
 
   useEffect(() => {
     let active = true;
 
+    const localState = () => {
+      const localGameStates = listLocalPuzzles<GameState>();
+      const localTimers = listLocalTimers<Timer>();
+      const localSessions: ServerStateResult<ServerState>[] =
+        localGameStates.map((localGameState) => {
+          return {
+            ...localGameState,
+            updatedAt: new Date(localGameState.lastUpdated),
+            state: {
+              ...localGameState.state,
+              timer: localTimers.find(
+                (timer) => timer.sessionId === localGameState.sessionId
+              )?.state,
+            },
+          };
+        });
+      mergeSessions(localSessions);
+    };
+    localState();
+
     const serverState = async () => {
-      const values = await listValues<ServerState>();
-      if (active) {
-        setSessions(values);
+      const values = await listServerValues<ServerState>();
+      if (active && values) {
+        mergeSessions(values);
       }
     };
     serverState();
@@ -51,7 +110,7 @@ export default function Home() {
     return () => {
       active = false;
     };
-  }, [listValues]);
+  }, [listServerValues, listLocalPuzzles, listLocalTimers]);
 
   const inProgress = sessions?.filter((session) => !session.state.completed);
   const completed = sessions?.filter((session) => session.state.completed);

@@ -15,6 +15,7 @@ import { ServerStateResult, useServerStorage } from './serverStorage';
 import { checkCell, checkGrid } from '@/helpers/checkAnswer';
 import { StateType } from '@/types/StateType';
 import { useTimer } from './timer';
+import { calculateSeconds } from '@/helpers/calculateSeconds';
 
 function useGameState({
   final,
@@ -25,7 +26,7 @@ function useGameState({
   initial: Puzzle<number>;
   puzzleId: string;
 }) {
-  const { calculateSeconds, timer, setTimerNewSession } = useTimer({
+  const { timer, setTimerNewSession } = useTimer({
     puzzleId,
   });
 
@@ -33,7 +34,7 @@ function useGameState({
   const timerRef = useRef(timer);
   useEffect(() => {
     timerRef.current = timer;
-  }, [calculateSeconds, timer]);
+  }, [timer]);
 
   const { getValue: getLocalValue, saveValue: saveLocalValue } =
     useLocalStorage({
@@ -299,7 +300,6 @@ function useGameState({
     validation,
     validateCell,
     validateGrid,
-    calculateSeconds,
     timer,
   };
 }

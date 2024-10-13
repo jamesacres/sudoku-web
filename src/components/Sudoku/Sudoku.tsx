@@ -4,8 +4,9 @@ import SudokuBox from '../SudokuBox';
 import { calculateBoxId } from '@/helpers/calculateId';
 import { isInitialCell } from '@/helpers/checkAnswer';
 import SudokuControls from '../SudokuControls';
-import { formatSeconds } from '@/helpers/formatSeconds';
 import { useGameState } from '@/hooks/gameState';
+import { TimerDisplay } from '../TimerDisplay/TimerDisplay';
+import { calculateSeconds } from '@/helpers/calculateSeconds';
 
 const Sudoku = ({
   puzzle: { initial, final, puzzleId },
@@ -27,7 +28,6 @@ const Sudoku = ({
     validation,
     validateCell,
     validateGrid,
-    calculateSeconds,
     timer,
   } = useGameState({
     final,
@@ -39,7 +39,7 @@ const Sudoku = ({
     <div>
       <div className="container mx-auto max-w-screen-sm">
         <div className="">
-          <p>Timer: {formatSeconds(calculateSeconds(timer))}</p>
+          <TimerDisplay seconds={calculateSeconds(timer)} />
         </div>
       </div>
       <div className="flex flex-col items-center lg:flex-row">

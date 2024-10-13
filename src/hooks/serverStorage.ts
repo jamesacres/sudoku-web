@@ -4,6 +4,7 @@ import { useCallback, useContext } from 'react';
 import { useFetch } from './fetch';
 import { UserContext } from '../providers/UserProvider';
 import { StateType } from '@/types/StateType';
+import { useOnline } from './online';
 
 const app = 'sudoku';
 const apiUrl = 'https://api.bubblyclouds.com';
@@ -77,6 +78,7 @@ function useServerStorage({
 }: { type?: StateType; id?: string } = {}) {
   const { user, logout } = useContext(UserContext) || {};
   const { fetch, getUser } = useFetch();
+  const { isOnline } = useOnline();
 
   const isLoggedIn = useCallback(() => {
     if (user) {
@@ -101,9 +103,9 @@ function useServerStorage({
   }, [id, type]);
 
   const listValues = useCallback(async <T>(): Promise<
-    ServerStateResult<T>[]
+    ServerStateResult<T>[] | undefined
   > => {
-    if (isLoggedIn()) {
+    if (isOnline && isLoggedIn()) {
       try {
         console.info('fetching sessions');
         const response = await fetch(
@@ -118,13 +120,13 @@ function useServerStorage({
         console.error(e);
       }
     }
-    return [];
-  }, [fetch, isLoggedIn]);
+    return undefined;
+  }, [fetch, isLoggedIn, isOnline]);
 
   const getValue = useCallback(async <T>(): Promise<
     ServerStateResult<T> | undefined
   > => {
-    if (isLoggedIn()) {
+    if (isOnline && isLoggedIn()) {
       try {
         const stateKey = getStateKey();
         console.info('fetching session', stateKey);
@@ -139,11 +141,11 @@ function useServerStorage({
       }
     }
     return undefined;
-  }, [getStateKey, fetch, isLoggedIn]);
+  }, [getStateKey, fetch, isLoggedIn, isOnline]);
 
   const saveValue = useCallback(
     async <T>(state: T): Promise<ServerStateResult<T> | undefined> => {
-      if (isLoggedIn()) {
+      if (isOnline && isLoggedIn()) {
         try {
           const stateKey = getStateKey();
           console.info('fetching session', stateKey);
@@ -167,7 +169,7 @@ function useServerStorage({
       }
       return undefined;
     },
-    [getStateKey, fetch, isLoggedIn]
+    [getStateKey, fetch, isLoggedIn, isOnline]
   );
 
   return { listValues, getValue, saveValue };

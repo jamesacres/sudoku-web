@@ -10,7 +10,22 @@ import {
 } from 'react-feather';
 import NumberPad from '../NumberPad';
 import NotesToggle from '../NotesToggle';
-import React from 'react';
+import React, { memo } from 'react';
+
+interface Arguments {
+  isInputDisabled: boolean;
+  isValidateCellDisabled: boolean;
+  validateGrid: () => void;
+  validateCell: () => void;
+  isUndoDisabled: boolean;
+  isRedoDisabled: boolean;
+  undo: () => void;
+  redo: () => void;
+  // eslint-disable-next-line no-unused-vars
+  selectNumber: (number: number) => void;
+  isNotesMode: boolean;
+  setIsNotesMode: (_value: boolean) => void;
+}
 
 const SudokuControls = ({
   isInputDisabled,
@@ -24,20 +39,7 @@ const SudokuControls = ({
   selectNumber,
   isNotesMode,
   setIsNotesMode,
-}: {
-  isInputDisabled: boolean;
-  isValidateCellDisabled: boolean;
-  validateGrid: () => void;
-  validateCell: () => void;
-  isUndoDisabled: boolean;
-  isRedoDisabled: boolean;
-  undo: () => void;
-  redo: () => void;
-  // eslint-disable-next-line no-unused-vars
-  selectNumber: (number: number) => void;
-  isNotesMode: boolean;
-  setIsNotesMode: (_value: boolean) => void;
-}) => {
+}: Arguments) => {
   const [showKeyboardHint, setShowKeyboardHint] = React.useState(true);
   return (
     <div className="mb-8 mt-4 pl-0 pr-2 pt-4">
@@ -146,4 +148,11 @@ const SudokuControls = ({
   );
 };
 
-export default SudokuControls;
+// Prevent re-render on timer change
+const MemoisedSudokuControls = memo(function MemoisedSudokuControls(
+  args: Arguments
+) {
+  return SudokuControls(args);
+});
+
+export default MemoisedSudokuControls;

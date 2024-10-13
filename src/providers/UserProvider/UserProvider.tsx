@@ -116,7 +116,10 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
             console.warn(e);
           }
         }
-        if (localStorage.getItem('recoverSession') === 'true') {
+        if (
+          localStorage.getItem('recoverSession') === 'true' &&
+          window.navigator.onLine // only when we're online
+        ) {
           localStorage.setItem('recoverSession', 'false');
           // Redirect to login (hopefully automatically recover auth session)
           console.warn('no user, redirecting to login');
