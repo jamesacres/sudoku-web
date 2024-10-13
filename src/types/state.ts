@@ -15,7 +15,7 @@ export interface GameState {
   completed?: {
     at: string;
     seconds: string;
-  }
+  };
 }
 
 export interface ServerState extends GameState {
