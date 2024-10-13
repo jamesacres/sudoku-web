@@ -33,7 +33,6 @@ function useLocalStorage({ type, id }: { type: StateType; id?: string }) {
             const parsedValue = JSON.parse(value);
             const matches = key.match(/^(sudoku-[^-]+)/);
             if (matches?.length) {
-              console.info(matches[1]);
               return { ...parsedValue, sessionId: matches[1] };
             }
           } catch (e) {

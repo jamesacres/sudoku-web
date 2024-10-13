@@ -24,9 +24,11 @@ function useOnline() {
 
   const forceOffline = useCallback(
     (isForceOffline: boolean) => {
-      setGlobalState({ ...globalState, isForceOffline });
+      setGlobalState((current) => {
+        return { ...current, isForceOffline };
+      });
     },
-    [globalState, setGlobalState]
+    [setGlobalState]
   );
 
   const isOnlineResult = isOnline && !globalState.isForceOffline;
