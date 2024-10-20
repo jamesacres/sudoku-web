@@ -4,9 +4,9 @@ import './globals.css';
 import React from 'react';
 import { Providers } from './providers';
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import { StatusBar } from '@capacitor/status-bar';
 import { Capacitor } from '@capacitor/core';
+import { HintBox } from '@/components/HintBox/HintBox';
 
 if (Capacitor.getPlatform() === 'android') {
   setTimeout(() => {
@@ -41,8 +41,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <Providers>
           <Header />
-          <div className="my-20">{children}</div>
-          <Footer />
+          <div className="mb-24">{children}</div>
         </Providers>
       </body>
     </html>

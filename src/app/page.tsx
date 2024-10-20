@@ -1,7 +1,7 @@
 'use client';
+import Footer from '@/components/Footer';
 import SimpleSudoku from '@/components/SimpleSudoku';
 import { TimerDisplay } from '@/components/TimerDisplay/TimerDisplay';
-import puzzles from '@/data/puzzles/puzzles';
 import { calculateSeconds } from '@/helpers/calculateSeconds';
 import {
   puzzleTextToPuzzle,
@@ -9,21 +9,104 @@ import {
 } from '@/helpers/puzzleTextToPuzzle';
 import { useLocalStorage } from '@/hooks/localStorage';
 import { ServerStateResult, useServerStorage } from '@/hooks/serverStorage';
-import { Puzzle } from '@/types/puzzle';
 import { GameState, ServerState } from '@/types/state';
 import { StateType } from '@/types/StateType';
 import { Timer } from '@/types/timer';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { Camera } from 'react-feather';
+import { Camera, Heart, Plus, UserPlus, Users } from 'react-feather';
 
-const getPuzzle = (
-  puzzleId: number
-): {
-  initial: Puzzle<number>;
-  final: Puzzle<number>;
-} => {
-  return puzzles[puzzleId];
+enum Tab {
+  START_PUZZLE = 'START_PUZZLE',
+  MY_PUZZLES = 'MY_PUZZLES',
+  FRIENDS = 'FRIENDS',
+}
+
+const StartPuzzle = () => {
+  return (
+    <div className="mb-4">
+      <h1 className="mb-2 text-4xl font-extrabold">Start Puzzle</h1>
+      <h2 className="mb-2 text-2xl font-extrabold">Import</h2>
+      <p>
+        Simply point your camera at any sudoku from a puzzle book and solve on
+        your device!
+      </p>
+      <Link
+        href="/import"
+        className="mr-2 mt-2 inline-block rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700 disabled:bg-blue-300"
+      >
+        <Camera className="float-left mr-2" /> Import with camera
+      </Link>
+      <h2 className="mb-2 mt-8 text-2xl font-extrabold">Sudoku of the Day</h2>
+      <p>Solve our Sudoku of the Day!</p>
+      <p>Coming soon!</p>
+      <h2 className="mb-2 mt-8 text-2xl font-extrabold">
+        Puzzles from Friends
+      </h2>
+      <p>Coming soon!</p>
+    </div>
+  );
+};
+const MyPuzzles = (sessions?: ServerStateResult<ServerState>[]) => {
+  const inProgress = sessions?.filter((session) => !session.state.completed);
+  const completed = sessions?.filter((session) => session.state.completed);
+  return (
+    <div className="mb-4">
+      <h1 className="mb-2 text-4xl font-extrabold">My Puzzles</h1>
+      {!!inProgress?.length && (
+        <div className="mb-4">
+          <h2 className="mb-2 text-2xl font-extrabold">In Progress</h2>
+          <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-4">
+            {inProgress?.map((session) => SessionRow(session))}
+          </ul>
+        </div>
+      )}
+      {!!completed?.length && (
+        <div className="mb-4">
+          <h2 className="mb-2 text-2xl font-extrabold">Completed</h2>
+          <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-4">
+            {completed?.map((session) => SessionRow(session))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+};
+const Friends = () => {
+  return (
+    <div className="mb-4">
+      <h1 className="mb-2 text-4xl font-extrabold">Friends</h1>
+      <p className="mb-4">
+        Challenge your friends and family to solve Sudoku puzzles with you!
+      </p>
+      <p className="mb-4">
+        Simply invite them to a party you have created and they can start one of
+        your puzzles. If you didn&apos;t create the party, ask the owner to
+        invite them.
+      </p>
+      <p className="mb-4">
+        We recommend creating more than one party, e.g. one for your family and
+        one for your friends. All party members can see each other&apos;s
+        puzzles and compete.
+      </p>
+
+      <h2 className="mb-2 text-2xl font-extrabold">My Parties</h2>
+      <Link
+        href="/"
+        className="mr-2 mt-2 inline-block rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700 disabled:bg-blue-300"
+      >
+        <Users className="float-left mr-2" /> Create a Party
+      </Link>
+      <h2 className="mb-2">Test Party</h2>
+      <Link
+        href="/"
+        className="mr-2 mt-2 inline-block rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700 disabled:bg-blue-300"
+      >
+        <UserPlus className="float-left mr-2" /> Invite to Party (only if
+        created by user)
+      </Link>
+    </div>
+  );
 };
 
 const SessionRow = (session: ServerStateResult<ServerState>) => {
@@ -51,6 +134,7 @@ const SessionRow = (session: ServerStateResult<ServerState>) => {
 };
 
 export default function Home() {
+  const [tab, setTab] = useState(Tab.START_PUZZLE);
   const { listValues: listServerValues } = useServerStorage();
   const { listValues: listLocalPuzzles } = useLocalStorage({
     type: StateType.PUZZLE,
@@ -112,41 +196,38 @@ export default function Home() {
     };
   }, [listServerValues, listLocalPuzzles, listLocalTimers]);
 
-  const inProgress = sessions?.filter((session) => !session.state.completed);
-  const completed = sessions?.filter((session) => session.state.completed);
-
+  const tabBackground = (thisTab: Tab) =>
+    thisTab === tab ? 'bg-zinc-100 dark:bg-zinc-800' : '';
   return (
-    <div className="container mx-auto px-6">
-      <div className="mb-4">
-        <h1 className="mb-2 text-4xl font-extrabold">Get Started</h1>
-        <p>Simply scan a sudoku from a puzzle book and solve on your device!</p>
-        <Link
-          href="/import"
-          className="mr-2 mt-2 inline-block rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700 disabled:bg-blue-300"
-        >
-          <Camera className="float-left mr-2" /> Import with camera
-        </Link>
-        <p>Or, solve our Sudoku of the Day!</p>
-        <p>TODO</p>
-        <p>Or, solve one of our favourites!</p>
-        <Link href="/puzzle?puzzleId=1">Load Puzzle 1</Link>
+    <>
+      <div className="container mx-auto px-6">
+        {tab === Tab.START_PUZZLE && StartPuzzle()}
+        {tab === Tab.MY_PUZZLES && MyPuzzles(sessions)}
+        {tab === Tab.FRIENDS && Friends()}
       </div>
-      {!!inProgress?.length && (
-        <div className="mb-4">
-          <h1 className="mb-2 text-4xl font-extrabold">In Progress</h1>
-          <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-4">
-            {inProgress?.map((session) => SessionRow(session))}
-          </ul>
-        </div>
-      )}
-      {!!completed?.length && (
-        <div className="mb-4">
-          <h1 className="mb-2 text-4xl font-extrabold">Completed</h1>
-          <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-4">
-            {completed?.map((session) => SessionRow(session))}
-          </ul>
-        </div>
-      )}
-    </div>
+      <Footer>
+        <button
+          onClick={() => setTab(Tab.START_PUZZLE)}
+          className={`group inline-flex flex-col items-center justify-center px-5 ${tabBackground(Tab.START_PUZZLE)}`}
+        >
+          <Plus className="mb-2 h-5 w-5" />
+          <span className="text-center text-sm">Start Puzzle</span>
+        </button>
+        <button
+          onClick={() => setTab(Tab.MY_PUZZLES)}
+          className={`group inline-flex flex-col items-center justify-center px-5 ${tabBackground(Tab.MY_PUZZLES)}`}
+        >
+          <Heart className="mb-2 h-5 w-5" />
+          <span className="text-center text-sm">My Puzzles</span>
+        </button>
+        <button
+          onClick={() => setTab(Tab.FRIENDS)}
+          className={`group inline-flex flex-col items-center justify-center px-5 ${tabBackground(Tab.FRIENDS)}`}
+        >
+          <Users className="mb-2 h-5 w-5" />
+          <span className="text-center text-sm">Friends</span>
+        </button>
+      </Footer>
+    </>
   );
 }

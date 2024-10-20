@@ -11,6 +11,7 @@ import {
 import NumberPad from '../NumberPad';
 import NotesToggle from '../NotesToggle';
 import React, { memo } from 'react';
+import { HintBox } from '../HintBox/HintBox';
 
 interface Arguments {
   isInputDisabled: boolean;
@@ -40,24 +41,13 @@ const SudokuControls = ({
   isNotesMode,
   setIsNotesMode,
 }: Arguments) => {
-  const [showKeyboardHint, setShowKeyboardHint] = React.useState(true);
   return (
     <div className="mb-8 mt-4 pl-0 pr-2 pt-4">
-      {showKeyboardHint ? (
-        <div className="mb-10 hidden text-center text-sm lg:block">
-          <div className="relative inline-block rounded bg-amber-100 p-4 pr-8 text-black">
-            <button>
-              <X
-                className="absolute right-2 top-2"
-                onClick={() => setShowKeyboardHint(false)}
-              />
-            </button>
-            Keyboard: arrow keys, undo, redo, n to toggle notes mode.
-          </div>
-        </div>
-      ) : (
-        <></>
-      )}
+      <div className="hidden lg:block">
+        <HintBox>
+          Keyboard: arrow keys, undo, redo, n to toggle notes mode.
+        </HintBox>
+      </div>
       <div className="flex items-center justify-center text-sm">
         <button
           className="ml-2 mr-2"
