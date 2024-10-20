@@ -15,7 +15,6 @@ import { ServerStateResult, useServerStorage } from './serverStorage';
 import { checkCell, checkGrid } from '@/helpers/checkAnswer';
 import { StateType } from '@/types/StateType';
 import { useTimer } from './timer';
-import { calculateSeconds } from '@/helpers/calculateSeconds';
 
 function useGameState({
   final,
@@ -48,10 +47,11 @@ function useGameState({
     });
   const [isNotesMode, setIsNotesMode] = useState<boolean>(false);
   const [selectedCell, setSelectedCell] = useState<null | string>(null);
-  const [{ answerStack, isRestored }, setAnswerStack] = useState<{
+  const [{ answerStack, isRestored, isDisabled }, setAnswerStack] = useState<{
     answerStack: Puzzle[];
     isRestored?: boolean;
-  }>({ answerStack: [structuredClone(initial)] });
+    isDisabled?: boolean; // disable until heard from server
+  }>({ answerStack: [structuredClone(initial)], isDisabled: true });
   const [redoAnswerStack, setRedoAnswerStack] = useState<Puzzle[]>([]);
 
   const getValue = useCallback((): {
@@ -186,6 +186,7 @@ function useGameState({
       setAnswerStack({
         answerStack: localValue.state.answerStack,
         isRestored: true,
+        isDisabled: true, // disable until heard from server
       });
     }
     serverValuePromise.then((serverValue) => {
@@ -204,9 +205,14 @@ function useGameState({
             isRestored: true,
           });
           setTimerNewSession(serverValue.state.timer);
+          // TODO Update parties list
+          console.info('restored state, TODO Update parties list', serverValue);
+        } else {
+          // Remove disabled flag, heard from server but ignored it
+          setAnswerStack((current) => {
+            return { ...current, isDisabled: undefined };
+          });
         }
-        // TODO Update parties list
-        console.info('restored state, TODO Update parties list', serverValue);
       }
     });
 
@@ -216,7 +222,7 @@ function useGameState({
   }, [puzzleId, getValue, setTimerNewSession]);
   useEffect(() => {
     let active = true;
-    if (!isRestored && answerStack.length > 0) {
+    if (!isDisabled && !isRestored && answerStack.length > 0) {
       const { serverValuePromise } = saveValue({ answerStack, initial, final });
       serverValuePromise.then((serverValue) => {
         if (active) {
@@ -231,7 +237,15 @@ function useGameState({
     return () => {
       active = false;
     };
-  }, [puzzleId, answerStack, saveValue, isRestored, initial, final]);
+  }, [
+    puzzleId,
+    answerStack,
+    saveValue,
+    isRestored,
+    initial,
+    final,
+    isDisabled,
+  ]);
 
   // Handle keyboard
   useEffect(() => {
