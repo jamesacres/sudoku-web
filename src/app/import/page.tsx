@@ -8,13 +8,15 @@ import type {
 } from '../../augmentedReality/Processor';
 import type Processor from '../../augmentedReality/Processor';
 import { useRouter } from 'next/navigation';
+import SimpleSudoku from '@/components/SimpleSudoku';
+import { emptyPuzzle } from '@/types/puzzle';
 
 let processor: Processor | undefined;
 let solver: Solver | undefined;
 
 export default function Home() {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
+  const [_isLoading, setIsLoading] = useState(true);
   const [puzzleStrings, setPuzzleStrings] = useState<
     { initial: string; final: string } | undefined
   >(undefined);
@@ -124,16 +126,36 @@ export default function Home() {
   }, []);
   return (
     <>
-      {isLoading ? 'Loading' : <></>}
-      <video
-        ref={videoRef}
-        className="video-preview"
-        width={videoWidth}
-        height={videoHeight}
-        style={{ width: '100%' }}
-        playsInline
-        muted
-      />
+      <div style={{ height: '100vh', position: 'relative' }}>
+        <video
+          ref={videoRef}
+          className="ml-auto mr-auto aspect-square max-w-xl"
+          width={videoWidth}
+          height={videoHeight}
+          style={{
+            width: '100%',
+            objectFit: 'cover',
+            background: 'black',
+            overflow: 'hidden',
+          }}
+          playsInline
+          muted
+        />
+        <div
+          style={{
+            width: '100%',
+            height: '100%',
+            position: 'absolute',
+            top: 0,
+          }}
+        >
+          <SimpleSudoku
+            final={emptyPuzzle}
+            initial={emptyPuzzle}
+            latest={emptyPuzzle}
+          />
+        </div>
+      </div>
       <Script
         src="/solve.js" // Copyright (c) 2019, Tom Dillon https://github.com/t-dillon/tdoku
         onReady={() => {
