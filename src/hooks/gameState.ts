@@ -114,7 +114,7 @@ function useGameState({
       });
       setRedoAnswerStack([]);
     },
-    [answerStack, initial, final, stopTimer]
+    [answerStack, initial, final, stopTimer, setSelectedCell]
   );
   const setAnswer: SetAnswer = useCallback(
     (value: number | Notes) => {

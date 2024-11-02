@@ -8,7 +8,7 @@ const TimerDisplay = ({
 }: {
   seconds: number;
   countdown?: number;
-  isComplete: boolean;
+  isComplete?: boolean;
 }) => {
   let content;
   if (isComplete) {
