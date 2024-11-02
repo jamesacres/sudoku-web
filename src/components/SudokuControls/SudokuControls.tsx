@@ -6,10 +6,9 @@ import {
   Edit2,
   Grid,
   Square,
-  X,
 } from 'react-feather';
 import NumberPad from '../NumberPad';
-import NotesToggle from '../NotesToggle';
+import Toggle from '../Toggle';
 import React, { memo } from 'react';
 import { HintBox } from '../HintBox/HintBox';
 
@@ -26,6 +25,8 @@ interface Arguments {
   selectNumber: (number: number) => void;
   isNotesMode: boolean;
   setIsNotesMode: (_value: boolean) => void;
+  isMiniNotes: boolean;
+  setIsMiniNotes: (_value: boolean) => void;
 }
 
 const SudokuControls = ({
@@ -40,6 +41,8 @@ const SudokuControls = ({
   selectNumber,
   isNotesMode,
   setIsNotesMode,
+  isMiniNotes,
+  setIsMiniNotes,
 }: Arguments) => {
   return (
     <div className="mb-8 mt-4 pl-0 pr-2 pt-4">
@@ -48,21 +51,41 @@ const SudokuControls = ({
           Keyboard: arrow keys, undo, redo, n to toggle notes mode.
         </HintBox>
       </div>
-      <div className="flex items-center justify-center text-sm">
-        <button
-          className="ml-2 mr-2"
-          onClick={() => setIsNotesMode(!isNotesMode)}
-        >
-          {isNotesMode ? (
-            <Edit className="float-left mr-2" />
-          ) : (
-            <Edit2 className="float-left mr-2" />
-          )}
-          Notes Mode {isNotesMode ? 'On' : 'Off'}
-        </button>
-        <div>
-          <NotesToggle isEnabled={isNotesMode} setEnabled={setIsNotesMode} />
+      <div className="flex gap-4">
+        <div className="flex-grow"></div>
+        <div className="flex items-center justify-center text-sm">
+          <button
+            className="ml-2 mr-2"
+            onClick={() => setIsNotesMode(!isNotesMode)}
+          >
+            {isNotesMode ? (
+              <Edit className="float-left mr-2" />
+            ) : (
+              <Edit2 className="float-left mr-2" />
+            )}
+            Notes Mode {isNotesMode ? 'On' : 'Off'}
+          </button>
+          <div>
+            <Toggle isEnabled={isNotesMode} setEnabled={setIsNotesMode} />
+          </div>
         </div>
+        <div className="flex items-center justify-center text-sm">
+          <button
+            className="ml-2 mr-2"
+            onClick={() => setIsMiniNotes(!isMiniNotes)}
+          >
+            {isMiniNotes ? (
+              <Grid className="float-left mr-2" />
+            ) : (
+              <Square className="float-left mr-2" />
+            )}
+            Mini Notes {isMiniNotes ? 'On' : 'Off'}
+          </button>
+          <div>
+            <Toggle isEnabled={isMiniNotes} setEnabled={setIsMiniNotes} />
+          </div>
+        </div>
+        <div className="flex-grow"></div>
       </div>
       <div className="m-4 flex flex-col items-center justify-center lg:flex-row">
         <div className="mx-auto mt-2" style={{ minWidth: 120 }}>

@@ -18,6 +18,8 @@ const Sudoku = ({
     selectedCell,
     setIsNotesMode,
     isNotesMode,
+    setIsMiniNotes,
+    isMiniNotes,
     undo,
     redo,
     selectNumber,
@@ -65,6 +67,7 @@ const Sudoku = ({
                     initial={
                       initial[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]
                     }
+                    isMiniNotes={isMiniNotes}
                   />
                 );
               })
@@ -90,6 +93,8 @@ const Sudoku = ({
             selectNumber={selectNumber}
             isNotesMode={isNotesMode}
             setIsNotesMode={setIsNotesMode}
+            isMiniNotes={isMiniNotes}
+            setIsMiniNotes={setIsMiniNotes}
           />
         </div>
       </div>

@@ -3,10 +3,12 @@ import { SelectNumber } from '@/types/state';
 
 const SudokuInputNotes = ({
   isSelected,
+  isMiniNotes,
   notes,
   selectNumber,
 }: {
   isSelected: boolean;
+  isMiniNotes: boolean;
   notes: Notes;
   selectNumber: SelectNumber;
 }) => {
@@ -18,9 +20,11 @@ const SudokuInputNotes = ({
           ? 'dark:text-white text-black'
           : 'text-slate-400';
         const boldClass = isChecked ? 'font-bold' : undefined;
-        return isSelected || isChecked ? (
+        return (isSelected && isMiniNotes) || isChecked ? (
           <div
-            onClick={() => selectNumber(value)}
+            onClick={() =>
+              isSelected && isMiniNotes && selectNumber(value, true)
+            }
             className={`flex aspect-square h-full w-full items-center justify-center text-xs md:text-sm ${colorClass} ${boldClass}`}
             key={crypto.randomUUID()}
           >

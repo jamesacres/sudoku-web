@@ -1,6 +1,6 @@
 import { Switch } from '@headlessui/react';
 
-export const NotesToggle = ({
+export const Toggle = ({
   isEnabled,
   setEnabled,
 }: {

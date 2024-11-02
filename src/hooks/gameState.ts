@@ -46,6 +46,7 @@ function useGameState({
       type: StateType.PUZZLE,
     });
   const [isNotesMode, setIsNotesMode] = useState<boolean>(false);
+  const [isMiniNotes, setIsMiniNotes] = useState<boolean>(false);
   const [selectedCell, setSelectedCell] = useState<null | string>(null);
   const [{ answerStack, isRestored, isDisabled }, setAnswerStack] = useState<{
     answerStack: Puzzle[];
@@ -118,8 +119,8 @@ function useGameState({
     [initial, answer, selectedCell, setAnswer]
   );
   const selectNumber: SelectNumber = useCallback(
-    (number: number) => {
-      if (isNotesMode) {
+    (number: number, forceNotes?: boolean) => {
+      if (isNotesMode || forceNotes) {
         toggleNote(number);
       } else {
         setAnswer(number);
@@ -304,6 +305,8 @@ function useGameState({
     selectedCell,
     setIsNotesMode,
     isNotesMode,
+    setIsMiniNotes,
+    isMiniNotes,
     undo,
     redo,
     selectNumber,

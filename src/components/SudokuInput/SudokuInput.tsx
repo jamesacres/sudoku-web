@@ -11,6 +11,7 @@ const SudokuInput = ({
   value,
   validation,
   isInitial,
+  isMiniNotes,
 }: {
   cellId: string;
   selectedCell: string | null;
@@ -19,6 +20,7 @@ const SudokuInput = ({
   value?: number | Notes;
   validation?: boolean;
   isInitial: boolean;
+  isMiniNotes: boolean;
 }) => {
   const isNotesMode = !(value && typeof value === 'number');
   const notes = isNotesMode && typeof value === 'object' ? value : {};
@@ -47,6 +49,7 @@ const SudokuInput = ({
       {isNotesMode ? (
         <SudokuInputNotes
           isSelected={isSelected}
+          isMiniNotes={isMiniNotes}
           notes={notes}
           selectNumber={selectNumber}
         />

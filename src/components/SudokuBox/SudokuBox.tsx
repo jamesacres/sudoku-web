@@ -12,6 +12,7 @@ interface Arguments {
   selectNumber: SelectNumber;
   validation?: PuzzleBox<boolean | undefined>;
   initial: PuzzleBox;
+  isMiniNotes: boolean;
 }
 
 const SudokuBox = ({
@@ -22,6 +23,7 @@ const SudokuBox = ({
   selectNumber,
   validation,
   initial,
+  isMiniNotes,
 }: Arguments) => {
   return (
     <div className="grid aspect-square cursor-pointer grid-cols-3 grid-rows-3 border border-slate-400">
@@ -43,6 +45,7 @@ const SudokuBox = ({
               isInitial={
                 !!initial[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]
               }
+              isMiniNotes={isMiniNotes}
             />
           );
         })

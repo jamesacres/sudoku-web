@@ -2,7 +2,7 @@ import { Notes } from './notes';
 import { Puzzle } from './puzzle';
 import { Timer } from './timer';
 
-export type SelectNumber = (_value: number) => void;
+export type SelectNumber = (_value: number, forceNotes?: boolean) => void;
 
 export type SetSelectedCell = (_cell: string | null) => void;
 
