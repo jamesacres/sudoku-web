@@ -8,7 +8,8 @@ const checkGrid = (
   initial: Puzzle,
   final: Puzzle,
   answer: Puzzle
-): Puzzle<boolean | undefined> => {
+): { validation: Puzzle<boolean | undefined>; isComplete: boolean } => {
+  let isComplete = true;
   const rowOrColumn: PuzzleRowOrColumn[] = [0, 1, 2];
   const validation = emptyValidatation();
   for (const boxX of rowOrColumn) {
@@ -20,12 +21,15 @@ const checkGrid = (
               final[boxX][boxY][cellX][cellY] ===
               answer[boxX][boxY][cellX][cellY];
             validation[boxX][boxY][cellX][cellY] = isValid;
+            if (!isValid) {
+              isComplete = false;
+            }
           }
         }
       }
     }
   }
-  return validation;
+  return { validation, isComplete };
 };
 
 const isInitialCell = (selectedCell: string, initial: Puzzle): boolean => {

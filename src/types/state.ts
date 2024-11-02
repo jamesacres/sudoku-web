@@ -14,7 +14,7 @@ export interface GameState {
   final: Puzzle<number>;
   completed?: {
     at: string;
-    seconds: string;
+    seconds: number;
   };
 }
 

@@ -7,4 +7,5 @@ export interface Timer {
     lastInteraction: string;
   };
   countdown?: number;
+  stopped?: boolean;
 }

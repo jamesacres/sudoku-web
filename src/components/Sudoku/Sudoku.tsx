@@ -33,6 +33,7 @@ const Sudoku = ({
     timer,
     reset,
     reveal,
+    completed,
   } = useGameState({
     final,
     initial,
@@ -47,6 +48,7 @@ const Sudoku = ({
             <TimerDisplay
               seconds={calculateSeconds(timer)}
               countdown={timer?.countdown}
+              isComplete={!!completed}
             />
           </div>
           <div className="ml-auto mr-auto grid max-w-xl grid-cols-3 grid-rows-3 border border-2 border-slate-400 lg:mr-0">
@@ -78,29 +80,31 @@ const Sudoku = ({
           </div>
         </div>
         <div className="container mx-auto basis-3/5">
-          <SudokuControls
-            isInputDisabled={
-              !selectedCell || isInitialCell(selectedCell, initial)
-            }
-            isValidateCellDisabled={
-              !selectedCell ||
-              isInitialCell(selectedCell, initial) ||
-              !selectedAnswer()
-            }
-            validateCell={validateCell}
-            validateGrid={validateGrid}
-            isUndoDisabled={isUndoDisabled}
-            isRedoDisabled={isRedoDisabled}
-            undo={undo}
-            redo={redo}
-            selectNumber={selectNumber}
-            isNotesMode={isNotesMode}
-            setIsNotesMode={setIsNotesMode}
-            isMiniNotes={isMiniNotes}
-            setIsMiniNotes={setIsMiniNotes}
-            reset={reset}
-            reveal={reveal}
-          />
+          {!completed && (
+            <SudokuControls
+              isInputDisabled={
+                !selectedCell || isInitialCell(selectedCell, initial)
+              }
+              isValidateCellDisabled={
+                !selectedCell ||
+                isInitialCell(selectedCell, initial) ||
+                !selectedAnswer()
+              }
+              validateCell={validateCell}
+              validateGrid={validateGrid}
+              isUndoDisabled={isUndoDisabled}
+              isRedoDisabled={isRedoDisabled}
+              undo={undo}
+              redo={redo}
+              selectNumber={selectNumber}
+              isNotesMode={isNotesMode}
+              setIsNotesMode={setIsNotesMode}
+              isMiniNotes={isMiniNotes}
+              setIsMiniNotes={setIsMiniNotes}
+              reset={reset}
+              reveal={reveal}
+            />
+          )}
         </div>
       </div>
     </div>

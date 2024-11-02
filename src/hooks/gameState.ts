@@ -15,6 +15,7 @@ import { ServerStateResult, useServerStorage } from './serverStorage';
 import { checkCell, checkGrid } from '@/helpers/checkAnswer';
 import { StateType } from '@/types/StateType';
 import { useTimer } from './timer';
+import { calculateSeconds } from '@/helpers/calculateSeconds';
 
 function useGameState({
   final,
@@ -25,7 +26,7 @@ function useGameState({
   initial: Puzzle<number>;
   puzzleId: string;
 }) {
-  const { timer, setTimerNewSession } = useTimer({
+  const { timer, setTimerNewSession, stopTimer } = useTimer({
     puzzleId,
   });
 
@@ -47,13 +48,24 @@ function useGameState({
     });
   const [isNotesMode, setIsNotesMode] = useState<boolean>(false);
   const [isMiniNotes, setIsMiniNotes] = useState<boolean>(false);
-  const [selectedCell, setSelectedCell] = useState<null | string>(null);
-  const [{ answerStack, isRestored, isDisabled }, setAnswerStack] = useState<{
-    answerStack: Puzzle[];
-    isRestored?: boolean;
-    isDisabled?: boolean; // disable until heard from server
-  }>({ answerStack: [structuredClone(initial)], isDisabled: true });
+  const [{ answerStack, isRestored, isDisabled, completed }, setAnswerStack] =
+    useState<{
+      answerStack: Puzzle[];
+      isRestored?: boolean;
+      isDisabled?: boolean; // disable until heard from server
+      completed?: GameState['completed'];
+    }>({ answerStack: [structuredClone(initial)], isDisabled: true });
   const [redoAnswerStack, setRedoAnswerStack] = useState<Puzzle[]>([]);
+
+  const [selectedCell, setSelectedCellState] = useState<null | string>(null);
+  const setSelectedCell = useCallback(
+    (selectedCell: string | null) => {
+      if (!completed) {
+        setSelectedCellState(selectedCell);
+      }
+    },
+    [completed]
+  );
 
   const getValue = useCallback((): {
     localValue: { lastUpdated: number; state: GameState } | undefined;
@@ -84,10 +96,25 @@ function useGameState({
   const answer = answerStack[answerStack.length - 1];
   const pushAnswer = useCallback(
     (nextAnswer: Puzzle) => {
-      setAnswerStack({ answerStack: [...answerStack, nextAnswer] });
+      let completed: GameState['completed'] = undefined;
+      if (
+        timerRef.current?.inProgress.lastInteraction &&
+        checkGrid(initial, final, nextAnswer).isComplete
+      ) {
+        stopTimer();
+        completed = {
+          at: timerRef.current.inProgress.lastInteraction,
+          seconds: calculateSeconds(timerRef.current),
+        };
+        setSelectedCell(null);
+      }
+      setAnswerStack({
+        answerStack: [...answerStack, nextAnswer],
+        completed,
+      });
       setRedoAnswerStack([]);
     },
-    [answerStack]
+    [answerStack, initial, final, stopTimer]
   );
   const setAnswer: SetAnswer = useCallback(
     (value: number | Notes) => {
@@ -175,7 +202,7 @@ function useGameState({
     undefined | Puzzle<boolean | undefined>
   >(undefined);
   const validateGrid = useCallback(
-    () => setValidation(checkGrid(initial, final, answer)),
+    () => setValidation(checkGrid(initial, final, answer).validation),
     [initial, final, answer]
   );
   const validateCell = useCallback(
@@ -198,6 +225,7 @@ function useGameState({
         answerStack: localValue.state.answerStack,
         isRestored: true,
         isDisabled: true, // disable until heard from server
+        completed: localValue.state.completed,
       });
     }
     serverValuePromise.then((serverValue) => {
@@ -214,8 +242,11 @@ function useGameState({
           setAnswerStack({
             answerStack: serverValue.state.answerStack,
             isRestored: true,
+            completed: serverValue.state.completed,
           });
-          setTimerNewSession(serverValue.state.timer);
+          if (!serverValue.state.completed) {
+            setTimerNewSession(serverValue.state.timer);
+          }
           // TODO Update parties list
           console.info('restored state, TODO Update parties list', serverValue);
         } else {
@@ -234,7 +265,12 @@ function useGameState({
   useEffect(() => {
     let active = true;
     if (!isDisabled && !isRestored && answerStack.length > 0) {
-      const { serverValuePromise } = saveValue({ answerStack, initial, final });
+      const { serverValuePromise } = saveValue({
+        answerStack,
+        initial,
+        final,
+        completed,
+      });
       serverValuePromise.then((serverValue) => {
         if (active) {
           // TODO Update parties list
@@ -256,11 +292,15 @@ function useGameState({
     initial,
     final,
     isDisabled,
+    completed,
   ]);
 
   // Handle keyboard
   useEffect(() => {
     const keydownHandler = (e: KeyboardEvent) => {
+      if (completed) {
+        return;
+      }
       if (e.key === 'n') {
         setIsNotesMode(!isNotesMode);
         e.preventDefault();
@@ -308,6 +348,7 @@ function useGameState({
     setIsNotesMode,
     undo,
     setSelectedCell,
+    completed,
   ]);
 
   return {
@@ -330,6 +371,7 @@ function useGameState({
     timer,
     reset,
     reveal,
+    completed,
   };
 }
 

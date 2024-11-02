@@ -6,6 +6,9 @@ import { StateType } from '../types/StateType';
 import { Timer } from '../types/timer';
 import { calculateSeconds } from '@/helpers/calculateSeconds';
 
+// eslint-disable-next-line no-undef
+let interval: NodeJS.Timeout;
+
 function useTimer({ puzzleId }: { puzzleId: string }) {
   const isDocumentVisible = useDocumentVisibility();
   const { getValue, saveValue } = useLocalStorage({
@@ -28,15 +31,38 @@ function useTimer({ puzzleId }: { puzzleId: string }) {
         ...timer,
         seconds: calculateSeconds(timer),
         inProgress: { start: now, lastInteraction: now },
-        countdown: COUNTDOWN,
+        ...(timer?.stopped ? undefined : { countdown: COUNTDOWN }),
       };
     });
   }, []);
+
+  const stopTimer = () => {
+    if (interval) {
+      clearInterval(interval);
+    }
+    if (timer) {
+      setTimer((timer) => {
+        if (timer) {
+          return {
+            ...timer,
+            stopped: true,
+          };
+        }
+        return null;
+      });
+    }
+  };
 
   const updateTimer = useCallback(() => {
     const now = new Date().toISOString();
     setTimer((timer) => {
       if (timer) {
+        if (timer.stopped) {
+          if (interval) {
+            clearInterval(interval);
+          }
+          return timer;
+        }
         if (timer.countdown && timer.countdown > 0) {
           return {
             ...timer,
@@ -58,12 +84,13 @@ function useTimer({ puzzleId }: { puzzleId: string }) {
 
   // Force timer to re-render
   useEffect(() => {
-    const interval = setInterval(() => {
+    const thisInterval = setInterval(() => {
       if (isDocumentVisible) {
         updateTimer();
       }
     }, 1000);
-    return () => clearInterval(interval);
+    interval = thisInterval;
+    return () => clearInterval(thisInterval);
   }, [isDocumentVisible, updateTimer]);
 
   useEffect(() => {
@@ -93,6 +120,7 @@ function useTimer({ puzzleId }: { puzzleId: string }) {
   return {
     setTimerNewSession,
     timer,
+    stopTimer,
   };
 }
 
