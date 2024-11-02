@@ -17,8 +17,9 @@ function useTimer({ puzzleId }: { puzzleId: string }) {
   // Timer - calculates time spent on page
 
   const setTimerNewSession = useCallback((restoreTimer?: Timer) => {
+    const COUNTDOWN = 4;
     const nowDate = new Date();
-    nowDate.setSeconds(nowDate.getSeconds() + 4);
+    nowDate.setSeconds(nowDate.getSeconds() + COUNTDOWN);
     const now = nowDate.toISOString();
 
     setTimer((currentTimer) => {
@@ -27,7 +28,7 @@ function useTimer({ puzzleId }: { puzzleId: string }) {
         ...timer,
         seconds: calculateSeconds(timer),
         inProgress: { start: now, lastInteraction: now },
-        countdown: 4,
+        countdown: COUNTDOWN,
       };
     });
   }, []);
