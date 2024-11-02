@@ -33,7 +33,7 @@ const StartPuzzle = () => {
       </p>
       <Link
         href="/import"
-        className="mr-2 mt-2 inline-block rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700 disabled:bg-blue-300"
+        className="mr-2 mt-2 inline-block rounded bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300"
       >
         <Camera className="float-left mr-2" /> Import with camera
       </Link>
@@ -93,14 +93,14 @@ const Friends = () => {
       <h2 className="mb-2 text-2xl font-extrabold">My Parties</h2>
       <Link
         href="/"
-        className="mr-2 mt-2 inline-block rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700 disabled:bg-blue-300"
+        className="mr-2 mt-2 inline-block rounded bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300"
       >
         <Users className="float-left mr-2" /> Create a Party
       </Link>
       <h2 className="mb-2">Test Party</h2>
       <Link
         href="/"
-        className="mr-2 mt-2 inline-block rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700 disabled:bg-blue-300"
+        className="mr-2 mt-2 inline-block rounded bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300"
       >
         <UserPlus className="float-left mr-2" /> Invite to Party (only if
         created by user)
@@ -122,7 +122,7 @@ const SessionRow = (session: ServerStateResult<ServerState>) => {
           final={puzzleTextToPuzzle(final)}
           latest={latest}
         />
-        <button className="mr-2 inline-block w-full bg-blue-500 px-4 py-2 text-white hover:bg-blue-700 disabled:bg-blue-300">
+        <button className="mr-2 inline-block w-full bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300">
           Continue Game
           {session.state.timer !== undefined && (
             <TimerDisplay seconds={calculateSeconds(session.state.timer)} />

@@ -34,7 +34,7 @@ const SudokuInput = ({
     const initialBackgroundClass = isInitial
       ? 'dark:bg-opacity-75 bg-opacity-50'
       : '';
-    backgroundClass = `dark:bg-blue-600 bg-blue-300 ${initialBackgroundClass}`;
+    backgroundClass = `dark:bg-neutral-600 bg-neutral-300 ${initialBackgroundClass}`;
   }
 
   const textClass = isInitial

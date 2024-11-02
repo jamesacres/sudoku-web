@@ -105,7 +105,7 @@ const SudokuControls = ({
             <button
               disabled={isValidateCellDisabled}
               onClick={() => selectNumber(0)}
-              className="mt-2 inline-flex rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700 disabled:bg-blue-300"
+              className="mt-2 inline-flex rounded bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300"
             >
               <Delete className="float-left mr-2" />
               Delete
@@ -119,7 +119,7 @@ const SudokuControls = ({
             <button
               disabled={isUndoDisabled}
               onClick={() => undo()}
-              className="mt-2 rounded-l-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-700 disabled:bg-blue-300"
+              className="mt-2 rounded-l-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300"
             >
               <CornerUpLeft className="float-left mr-2" />
               Undo
@@ -127,7 +127,7 @@ const SudokuControls = ({
             <button
               disabled={isRedoDisabled}
               onClick={() => redo()}
-              className="mt-2 rounded-r-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-700 disabled:bg-blue-300"
+              className="mt-2 rounded-r-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300"
             >
               Redo
               <CornerUpRight className="float-right ml-2" />
@@ -141,16 +141,16 @@ const SudokuControls = ({
             <button
               disabled={isValidateCellDisabled}
               onClick={() => validateCell()}
-              className="mt-2 rounded-l-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-700 disabled:bg-blue-300"
+              className="mt-2 rounded-l-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300"
             >
               <Square className="float-left mr-2" />
             </button>
-            <div className="mt-2 cursor-default bg-blue-500 px-4 py-2 text-white">
+            <div className="mt-2 cursor-default bg-neutral-500 px-4 py-2 text-white">
               Check
             </div>
             <button
               onClick={() => validateGrid()}
-              className="mt-2 rounded-r-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-700"
+              className="mt-2 rounded-r-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700"
             >
               <Grid className="float-right ml-2" />
             </button>
