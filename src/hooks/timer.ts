@@ -17,28 +17,39 @@ function useTimer({ puzzleId }: { puzzleId: string }) {
   // Timer - calculates time spent on page
 
   const setTimerNewSession = useCallback((restoreTimer?: Timer) => {
-    const now = new Date().toISOString();
+    const nowDate = new Date();
+    nowDate.setSeconds(nowDate.getSeconds() + 4);
+    const now = nowDate.toISOString();
+
     setTimer((currentTimer) => {
       const timer = restoreTimer || currentTimer;
       return {
         ...timer,
         seconds: calculateSeconds(timer),
         inProgress: { start: now, lastInteraction: now },
+        countdown: 4,
       };
     });
   }, []);
 
-  const setTimerLastInteraction = useCallback(() => {
+  const updateTimer = useCallback(() => {
     const now = new Date().toISOString();
     setTimer((timer) => {
       if (timer) {
-        return {
-          ...timer,
-          inProgress: {
-            ...timer.inProgress,
-            lastInteraction: now,
-          },
-        };
+        if (timer.countdown && timer.countdown > 0) {
+          return {
+            ...timer,
+            countdown: timer.countdown - 1,
+          };
+        } else {
+          return {
+            ...timer,
+            inProgress: {
+              ...timer.inProgress,
+              lastInteraction: now,
+            },
+          };
+        }
       }
       return null;
     });
@@ -48,11 +59,11 @@ function useTimer({ puzzleId }: { puzzleId: string }) {
   useEffect(() => {
     const interval = setInterval(() => {
       if (isDocumentVisible) {
-        setTimerLastInteraction();
+        updateTimer();
       }
     }, 1000);
     return () => clearInterval(interval);
-  }, [isDocumentVisible, setTimerLastInteraction]);
+  }, [isDocumentVisible, updateTimer]);
 
   useEffect(() => {
     console.info('isDocumentVisible', isDocumentVisible);
@@ -61,9 +72,9 @@ function useTimer({ puzzleId }: { puzzleId: string }) {
       setTimerNewSession();
     } else {
       // Document now invisible, set lastInteraction to now
-      setTimerLastInteraction();
+      updateTimer();
     }
-  }, [isDocumentVisible, setTimerNewSession, setTimerLastInteraction]);
+  }, [isDocumentVisible, setTimerNewSession, updateTimer]);
 
   // Save and Restore state
   useEffect(() => {

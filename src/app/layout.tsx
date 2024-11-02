@@ -6,7 +6,6 @@ import { Providers } from './providers';
 import Header from '@/components/Header';
 import { StatusBar } from '@capacitor/status-bar';
 import { Capacitor } from '@capacitor/core';
-import { HintBox } from '@/components/HintBox/HintBox';
 
 if (Capacitor.getPlatform() === 'android') {
   setTimeout(() => {
