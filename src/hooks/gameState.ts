@@ -102,6 +102,12 @@ function useGameState({
     },
     [initial, answer, selectedCell, pushAnswer]
   );
+
+  const reset = useCallback(() => {
+    setRedoAnswerStack([]);
+    setAnswerStack({ answerStack: [structuredClone(initial)] });
+  }, [initial]);
+
   const toggleNote: ToggleNote = useCallback(
     (value: number) => {
       if (selectedCell) {
@@ -318,6 +324,7 @@ function useGameState({
     validateCell,
     validateGrid,
     timer,
+    reset,
   };
 }
 

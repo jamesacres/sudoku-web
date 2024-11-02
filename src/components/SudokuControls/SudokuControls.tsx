@@ -5,6 +5,7 @@ import {
   Edit,
   Edit2,
   Grid,
+  RefreshCw,
   Square,
 } from 'react-feather';
 import NumberPad from '../NumberPad';
@@ -27,6 +28,7 @@ interface Arguments {
   setIsNotesMode: (_value: boolean) => void;
   isMiniNotes: boolean;
   setIsMiniNotes: (_value: boolean) => void;
+  reset: () => void;
 }
 
 const SudokuControls = ({
@@ -43,6 +45,7 @@ const SudokuControls = ({
   setIsNotesMode,
   isMiniNotes,
   setIsMiniNotes,
+  reset,
 }: Arguments) => {
   return (
     <div className="mb-8 mt-4 pl-0 pr-2 pt-4">
@@ -96,7 +99,7 @@ const SudokuControls = ({
             />
           </div>
         </div>
-        <div className="flex flex-row flex-wrap text-center lg:flex-col">
+        <div className="flex flex-row flex-col flex-wrap text-center">
           <div
             className="mr-2 inline-flex flex-nowrap items-center"
             role="group"
@@ -105,10 +108,19 @@ const SudokuControls = ({
             <button
               disabled={isValidateCellDisabled}
               onClick={() => selectNumber(0)}
-              className="mt-2 inline-flex rounded bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300"
+              className="mt-2 rounded-l-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300"
             >
               <Delete className="float-left mr-2" />
               Delete
+            </button>
+            <button
+              onClick={() => {
+                window.confirm('Are you sure you wish to reset?') && reset();
+              }}
+              className="mt-2 rounded-r-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300"
+            >
+              <RefreshCw className="float-left mr-2" />
+              Reset
             </button>
           </div>
           <div

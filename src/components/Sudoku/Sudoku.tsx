@@ -31,6 +31,7 @@ const Sudoku = ({
     validateCell,
     validateGrid,
     timer,
+    reset,
   } = useGameState({
     final,
     initial,
@@ -96,6 +97,7 @@ const Sudoku = ({
             setIsNotesMode={setIsNotesMode}
             isMiniNotes={isMiniNotes}
             setIsMiniNotes={setIsMiniNotes}
+            reset={reset}
           />
         </div>
       </div>
