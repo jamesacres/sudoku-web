@@ -22,7 +22,7 @@ const HeaderUser = () => {
       <button
         disabled={isLoggingIn}
         onClick={() => login()}
-        className={`${isLoggingIn ? 'cursor-wait' : ''} mr-4 mt-0 inline-block rounded border border-white px-4 py-2 text-sm leading-none text-white hover:border-transparent hover:bg-white hover:text-blue-500`}
+        className={`${isLoggingIn ? 'cursor-wait' : ''} mr-4 mt-0 inline-block rounded bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300`}
       >
         Sign in
       </button>
