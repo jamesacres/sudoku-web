@@ -7,6 +7,7 @@ import {
   Grid,
   RefreshCw,
   Square,
+  Unlock,
 } from 'react-feather';
 import NumberPad from '../NumberPad';
 import Toggle from '../Toggle';
@@ -29,6 +30,7 @@ interface Arguments {
   isMiniNotes: boolean;
   setIsMiniNotes: (_value: boolean) => void;
   reset: () => void;
+  reveal: () => void;
 }
 
 const SudokuControls = ({
@@ -46,6 +48,7 @@ const SudokuControls = ({
   isMiniNotes,
   setIsMiniNotes,
   reset,
+  reveal,
 }: Arguments) => {
   return (
     <div className="mb-8 mt-4 pl-0 pr-2 pt-4">
@@ -165,6 +168,21 @@ const SudokuControls = ({
               className="mt-2 rounded-r-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700"
             >
               <Grid className="float-right ml-2" />
+            </button>
+          </div>
+          <div
+            className="mr-2 inline-flex flex-nowrap items-center"
+            role="group"
+            aria-label="Button group"
+          >
+            <button
+              onClick={() => {
+                window.confirm('Are you sure you wish to reveal?') && reveal();
+              }}
+              className="mt-2 rounded-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300"
+            >
+              <Unlock className="float-left mr-2" />
+              Reveal
             </button>
           </div>
         </div>

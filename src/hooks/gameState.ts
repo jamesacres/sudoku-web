@@ -108,6 +108,10 @@ function useGameState({
     setAnswerStack({ answerStack: [structuredClone(initial)] });
   }, [initial]);
 
+  const reveal = useCallback(() => {
+    pushAnswer(structuredClone(final));
+  }, [pushAnswer, final]);
+
   const toggleNote: ToggleNote = useCallback(
     (value: number) => {
       if (selectedCell) {
@@ -325,6 +329,7 @@ function useGameState({
     validateGrid,
     timer,
     reset,
+    reveal,
   };
 }
 
