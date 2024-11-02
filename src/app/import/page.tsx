@@ -78,6 +78,7 @@ export default function Home() {
         processor.stopVideo();
         processor.setSolver(null);
         processor.off('videoReady', videoReadyListener);
+        processor = undefined;
       }
     };
   }, [videoRef]);
