@@ -127,50 +127,57 @@ export default function Home() {
   }, []);
   return (
     <>
-      <div style={{ height: '100vh', position: 'relative' }}>
-        <video
-          ref={videoRef}
-          className="ml-auto mr-auto aspect-square max-w-xl"
-          width={videoWidth}
-          height={videoHeight}
-          style={{
-            width: '100%',
-            objectFit: 'cover',
-            background: 'black',
-            overflow: 'hidden',
-          }}
-          playsInline
-          muted
-        />
-        <div
-          style={{
-            width: '100%',
-            height: '100%',
-            position: 'absolute',
-            top: 0,
-          }}
-        >
-          <SimpleSudoku
-            final={emptyPuzzle}
-            initial={emptyPuzzle}
-            latest={emptyPuzzle}
+      <div className="container mx-auto max-w-screen-sm">
+        <p className="m-4">
+          Simply point your camera at an unsolved sudoku puzzle and wait for it
+          to be detected.
+        </p>
+        <div style={{ height: '100vh', position: 'relative' }}>
+          <video
+            ref={videoRef}
+            className="aspect-square max-w-xl"
+            width={videoWidth}
+            height={videoHeight}
+            style={{
+              width: '100%',
+              objectFit: 'cover',
+              background: 'black',
+              overflow: 'hidden',
+            }}
+            playsInline
+            muted
           />
+          <div
+            className="aspect-square max-w-xl"
+            style={{
+              width: '100%',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+            }}
+          >
+            <SimpleSudoku
+              final={emptyPuzzle}
+              initial={emptyPuzzle}
+              latest={emptyPuzzle}
+            />
+          </div>
         </div>
-      </div>
-      <Script
-        src="/solve.js" // Copyright (c) 2019, Tom Dillon https://github.com/t-dillon/tdoku
-        onReady={() => {
-          if ((window as any).Module) {
-            if ((window as any).Module.onRuntimeInitialized) {
-              ready();
-            } else {
-              (window as any).Module.onRuntimeInitialized = function () {
+        <Script
+          src="/solve.js" // Copyright (c) 2019, Tom Dillon https://github.com/t-dillon/tdoku
+          onReady={() => {
+            if ((window as any).Module) {
+              if ((window as any).Module.onRuntimeInitialized) {
                 ready();
-              };
+              } else {
+                (window as any).Module.onRuntimeInitialized = function () {
+                  ready();
+                };
+              }
             }
-          }
-        }}
-      />
+          }}
+        />
+      </div>
     </>
   );
 }
