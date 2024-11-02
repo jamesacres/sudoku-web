@@ -54,7 +54,8 @@ const SudokuControls = ({
     <div className="mb-8 mt-4 pl-0 pr-2 pt-4">
       <div className="hidden lg:block">
         <HintBox>
-          Keyboard: arrow keys, undo, redo, n to toggle notes mode.
+          Keyboard: arrow keys, undo, redo, n to toggle notes mode,
+          <br />c to validate cell, g to validate grid.
         </HintBox>
       </div>
       <div className="flex gap-4">
@@ -118,7 +119,9 @@ const SudokuControls = ({
             </button>
             <button
               onClick={() => {
-                window.confirm('Are you sure you wish to reset?') && reset();
+                window.confirm(
+                  'Are you sure you wish to reset the whole grid?'
+                ) && reset();
               }}
               className="mt-2 rounded-r-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300"
             >
@@ -177,7 +180,9 @@ const SudokuControls = ({
           >
             <button
               onClick={() => {
-                window.confirm('Are you sure you wish to reveal?') && reveal();
+                window.confirm(
+                  'Are you sure you wish to reveal the whole grid?'
+                ) && reveal();
               }}
               className="mt-2 rounded-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300"
             >

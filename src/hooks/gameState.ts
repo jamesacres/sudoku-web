@@ -310,6 +310,12 @@ function useGameState({
       } else if (e.key === 'y') {
         redo();
         e.preventDefault();
+      } else if (e.key === 'g') {
+        validateGrid();
+        e.preventDefault();
+      } else if (e.key === 'c') {
+        validateCell();
+        e.preventDefault();
       }
       let currentSelectedCell =
         selectedCell || calculateCellId(calculateBoxId(0, 0), 0, 0);
