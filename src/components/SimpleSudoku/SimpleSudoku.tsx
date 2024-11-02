@@ -39,7 +39,10 @@ const SimpleSudoku = ({
                   const hasCorrectGuess =
                     !initialValue && latestValue && latestValue === finalValue;
                   const hasIncorrectGuess =
-                    !initialValue && latestValue && latestValue !== finalValue;
+                    !initialValue &&
+                    latestValue &&
+                    typeof latestValue === 'number' &&
+                    latestValue !== finalValue;
                   const correctBackground = hasCorrectGuess
                     ? 'bg-green-500'
                     : '';
