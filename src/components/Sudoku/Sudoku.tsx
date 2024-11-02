@@ -41,7 +41,7 @@ const Sudoku = ({
     <div>
       <div className="flex flex-col items-center lg:flex-row">
         <div className="container mx-auto px-4">
-          <div className="ml-auto mr-auto max-w-xl lg:mr-0">
+          <div className="mb-8 ml-auto mr-auto max-w-xl p-4 lg:mr-0">
             <TimerDisplay seconds={calculateSeconds(timer)} />
           </div>
           <div className="ml-auto mr-auto grid max-w-xl grid-cols-3 grid-rows-3 border border-2 border-slate-400 lg:mr-0">
