@@ -15,18 +15,20 @@ interface SessionResponse<T> {
   updatedAt: string;
 }
 
-interface SessionResult<T> {
+export interface SessionResult<T> {
   sessionId: string;
   state: T;
   updatedAt: Date;
 }
 
-interface Parties<T> {
-  [partyId: string]: {
-    memberSessions: {
-      [userId: string]: T;
-    };
+export interface SessionParty<T> {
+  memberSessions: {
+    [userId: string]: T | undefined;
   };
+}
+
+export interface Parties<T> {
+  [partyId: string]: SessionParty<T> | undefined;
 }
 
 interface StateResponse<T> extends SessionResponse<T> {
@@ -35,6 +37,39 @@ interface StateResponse<T> extends SessionResponse<T> {
 
 export interface ServerStateResult<T> extends SessionResult<T> {
   parties?: Parties<SessionResult<T>>;
+}
+
+interface PartyResponse {
+  partyId: string;
+  appId: string;
+  partyName: string;
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface MemberResponse {
+  userId: string;
+  resourceId: string;
+  memberNickname: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface MemberResult
+  extends Omit<MemberResponse, 'createdAt' | 'updatedAt'> {
+  createdAt: Date;
+  updatedAt: Date;
+  isOwner: boolean;
+  isUser: boolean;
+}
+
+export interface PartyResult
+  extends Omit<PartyResponse, 'createdAt' | 'updatedAt'> {
+  createdAt: Date;
+  updatedAt: Date;
+  isOwner: boolean;
+  members: MemberResult[];
 }
 
 const responseToResult = <T>(
@@ -48,12 +83,12 @@ const responseToResult = <T>(
               ...result,
               [partyId]: {
                 memberSessions: Object.entries(
-                  partyResponse.memberSessions
+                  partyResponse!.memberSessions
                 ).reduce((result, [userId, memberSessionResponse]) => {
                   const memberSessionResult: SessionResult<T> = {
                     sessionId: response.sessionId,
-                    state: memberSessionResponse.state,
-                    updatedAt: new Date(memberSessionResponse.updatedAt),
+                    state: memberSessionResponse!.state,
+                    updatedAt: new Date(memberSessionResponse!.updatedAt),
                   };
                   return {
                     ...result,
@@ -172,7 +207,53 @@ function useServerStorage({
     [getStateKey, fetch, isLoggedIn, isOnline]
   );
 
-  return { listValues, getValue, saveValue };
+  const listParties = useCallback(async (): Promise<
+    PartyResult[] | undefined
+  > => {
+    if (isOnline && isLoggedIn()) {
+      try {
+        console.info('fetching parties');
+        const response = await fetch(
+          new Request(`${apiUrl}/parties?app=${app}`)
+        );
+        if (response.ok) {
+          const result: PartyResult[] = [];
+          const partiesResponse = <PartyResponse[]>await response.json();
+          for (const party of partiesResponse) {
+            const memberResponse = await fetch(
+              new Request(`${apiUrl}/members?resourceId=party-${party.partyId}`)
+            );
+            const membersResponse =
+              memberResponse.ok &&
+              <MemberResponse[]>await memberResponse.json();
+            result.push({
+              ...party,
+              createdAt: new Date(party.createdAt),
+              updatedAt: new Date(party.updatedAt),
+              isOwner: party.createdBy === user?.sub,
+              members: membersResponse
+                ? membersResponse.map((member) => {
+                    return {
+                      ...member,
+                      createdAt: new Date(party.createdAt),
+                      updatedAt: new Date(party.updatedAt),
+                      isOwner: member.userId === party.createdBy,
+                      isUser: member.userId === user?.sub,
+                    };
+                  })
+                : [],
+            });
+          }
+          return result;
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    return undefined;
+  }, [fetch, isLoggedIn, isOnline, user]);
+
+  return { listValues, getValue, saveValue, listParties };
 }
 
 export { useServerStorage };

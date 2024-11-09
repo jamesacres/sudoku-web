@@ -7,7 +7,7 @@ import SudokuControls from '../SudokuControls';
 import { useGameState } from '@/hooks/gameState';
 import { TimerDisplay } from '../TimerDisplay/TimerDisplay';
 import { calculateSeconds } from '@/helpers/calculateSeconds';
-import { Share, Sidebar } from 'react-feather';
+import { Sidebar } from 'react-feather';
 import { SudokuSidebar } from '../SudokuSidebar/SudokuSidebar';
 import { useEffect, useState } from 'react';
 
@@ -38,6 +38,7 @@ const Sudoku = ({
     reveal,
     completed,
     setPauseTimer,
+    sessionParties,
   } = useGameState({
     final,
     initial,
@@ -61,6 +62,7 @@ const Sudoku = ({
       <SudokuSidebar
         showSidebar={showSidebar}
         setShowSidebar={setShowSidebar}
+        sessionParties={sessionParties}
       />
 
       <div className="flex flex-col items-center lg:flex-row">

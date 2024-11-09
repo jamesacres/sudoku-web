@@ -1,12 +1,42 @@
-import { Share, X } from 'react-feather';
+import {
+  Parties,
+  PartyResult,
+  SessionResult,
+  useServerStorage,
+} from '@/hooks/serverStorage';
+import { useEffect, useState } from 'react';
+import { Users, X } from 'react-feather';
+import { PartyRow } from '../PartyRow/PartyRow';
+import { ServerState } from '@/types/state';
 
 const SudokuSidebar = ({
   showSidebar,
   setShowSidebar,
+  sessionParties,
 }: {
   showSidebar: boolean;
   setShowSidebar: (showSidebar: boolean) => void;
+  sessionParties: Parties<SessionResult<ServerState>>;
 }) => {
+  const { listParties } = useServerStorage({});
+  const [parties, setParties] = useState<PartyResult[]>([]);
+
+  useEffect(() => {
+    let active = true;
+
+    const serverParties = async () => {
+      const values = await listParties();
+      if (active && values) {
+        setParties(values);
+      }
+    };
+    serverParties();
+
+    return () => {
+      active = false;
+    };
+  }, [listParties]);
+
   return (
     <>
       {showSidebar && (
@@ -38,10 +68,25 @@ const SudokuSidebar = ({
               <X className="float-right ml-2" />
             </button>
           </div>
+          <p className="mb-4">
+            Challenge your friends and family to solve this Sudoku puzzle with
+            you!
+          </p>
           <button className="mt-2 w-full rounded-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700">
-            <Share className="float-left mr-2" />
-            Invite Friend
+            <Users className="float-left mr-2" />
+            Create a Party
           </button>
+          <ul>
+            {parties.map((party) => {
+              return (
+                <PartyRow
+                  key={party.partyId}
+                  party={party}
+                  sessionParty={sessionParties[party.partyId]}
+                />
+              );
+            })}
+          </ul>
         </div>
       </aside>
     </>

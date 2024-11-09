@@ -11,7 +11,12 @@ import {
 } from '@/helpers/calculateId';
 import { GameState, SelectNumber, ServerState, SetAnswer } from '@/types/state';
 import { useLocalStorage } from './localStorage';
-import { ServerStateResult, useServerStorage } from './serverStorage';
+import {
+  Parties,
+  ServerStateResult,
+  SessionResult,
+  useServerStorage,
+} from './serverStorage';
 import { checkCell, checkGrid } from '@/helpers/checkAnswer';
 import { StateType } from '@/types/StateType';
 import { useTimer } from './timer';
@@ -56,6 +61,9 @@ function useGameState({
       completed?: GameState['completed'];
     }>({ answerStack: [structuredClone(initial)], isDisabled: true });
   const [redoAnswerStack, setRedoAnswerStack] = useState<Puzzle[]>([]);
+  const [sessionParties, setSessionParties] = useState<
+    Parties<SessionResult<ServerState>>
+  >({});
 
   const [selectedCell, setSelectedCellState] = useState<null | string>(null);
   const setSelectedCell = useCallback(
@@ -230,6 +238,9 @@ function useGameState({
     }
     serverValuePromise.then((serverValue) => {
       if (active) {
+        if (serverValue?.parties?.length) {
+          setSessionParties(serverValue.parties);
+        }
         if (
           serverValue &&
           (!localValue?.lastUpdated ||
@@ -247,8 +258,6 @@ function useGameState({
           if (!serverValue.state.completed) {
             setTimerNewSession(serverValue.state.timer);
           }
-          // TODO Update parties list
-          console.info('restored state, TODO Update parties list', serverValue);
         } else {
           // Remove disabled flag, heard from server but ignored it
           setAnswerStack((current) => {
@@ -272,12 +281,8 @@ function useGameState({
         completed,
       });
       serverValuePromise.then((serverValue) => {
-        if (active) {
-          // TODO Update parties list
-          console.info(
-            'answerStack updated, TODO Update parties list',
-            serverValue
-          );
+        if (active && serverValue?.parties?.length) {
+          setSessionParties(serverValue.parties);
         }
       });
     }
@@ -381,6 +386,7 @@ function useGameState({
     reveal,
     completed,
     setPauseTimer,
+    sessionParties,
   };
 }
 
