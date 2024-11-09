@@ -26,7 +26,7 @@ function useGameState({
   initial: Puzzle<number>;
   puzzleId: string;
 }) {
-  const { timer, setTimerNewSession, stopTimer } = useTimer({
+  const { timer, setTimerNewSession, stopTimer, setPauseTimer } = useTimer({
     puzzleId,
   });
 
@@ -380,6 +380,7 @@ function useGameState({
     reset,
     reveal,
     completed,
+    setPauseTimer,
   };
 }
 

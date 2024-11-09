@@ -7,6 +7,9 @@ import SudokuControls from '../SudokuControls';
 import { useGameState } from '@/hooks/gameState';
 import { TimerDisplay } from '../TimerDisplay/TimerDisplay';
 import { calculateSeconds } from '@/helpers/calculateSeconds';
+import { Share, Sidebar } from 'react-feather';
+import { SudokuSidebar } from '../SudokuSidebar/SudokuSidebar';
+import { useEffect, useState } from 'react';
 
 const Sudoku = ({
   puzzle: { initial, final, puzzleId },
@@ -34,22 +37,53 @@ const Sudoku = ({
     reset,
     reveal,
     completed,
+    setPauseTimer,
   } = useGameState({
     final,
     initial,
     puzzleId,
   });
+  const [showSidebar, setShowSidebar] = useState(false);
+  useEffect(() => {
+    if (showSidebar) {
+      setPauseTimer(true);
+    } else {
+      setPauseTimer(false);
+    }
+  }, [showSidebar, setPauseTimer]);
 
   return (
     <div>
+      <SudokuSidebar
+        showSidebar={showSidebar}
+        setShowSidebar={setShowSidebar}
+      />
+
       <div className="flex flex-col items-center lg:flex-row">
         <div className="container mx-auto px-4">
-          <div className="mb-8 ml-auto mr-auto max-w-xl p-4 lg:mr-0">
-            <TimerDisplay
-              seconds={calculateSeconds(timer)}
-              countdown={timer?.countdown}
-              isComplete={!!completed}
-            />
+          <div className="ml-auto mr-auto flex max-w-xl p-4 lg:mr-0">
+            <div
+              className="flex-nowrap items-center xl:hidden"
+              role="group"
+              aria-label="Button group"
+            >
+              <button
+                onClick={() => {
+                  setShowSidebar(!showSidebar);
+                }}
+                className="rounded-lg dark:text-white"
+              >
+                <Sidebar className="float-left mr-2" />
+                Friends
+              </button>
+            </div>
+            <div className="flex-grow">
+              <TimerDisplay
+                seconds={calculateSeconds(timer)}
+                countdown={timer?.countdown}
+                isComplete={!!completed}
+              />
+            </div>
           </div>
           <div className="ml-auto mr-auto grid max-w-xl grid-cols-3 grid-rows-3 border border-2 border-slate-400 lg:mr-0">
             {Array.from(Array(3)).map((_, y) =>
