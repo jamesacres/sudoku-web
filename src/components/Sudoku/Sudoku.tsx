@@ -47,8 +47,12 @@ const Sudoku = ({
   useEffect(() => {
     if (showSidebar) {
       setPauseTimer(true);
+      // Stop scroll
+      document.body.classList.add('overflow-y-hidden');
     } else {
       setPauseTimer(false);
+      // Allow scroll
+      document.body.classList.remove('overflow-y-hidden');
     }
   }, [showSidebar, setPauseTimer]);
 
