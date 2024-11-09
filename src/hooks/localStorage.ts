@@ -8,14 +8,29 @@ export interface StateResult<T> {
   state: T;
 }
 
-function useLocalStorage({ type, id }: { type: StateType; id?: string }) {
-  const getStateKey = useCallback(() => {
-    let key = `sudoku-${id}`;
-    if (type !== StateType.PUZZLE) {
-      key = `${key}-${type}`;
-    }
-    return key;
-  }, [id, type]);
+function useLocalStorage({
+  type,
+  id,
+  prefix = 'sudoku-',
+}: {
+  type: StateType;
+  id?: string;
+  prefix?: string;
+}) {
+  const getStateKey = useCallback(
+    (overrideId?: string) => {
+      const thisId = overrideId || id;
+      if (!thisId) {
+        throw Error('id required');
+      }
+      let key = `${prefix}${thisId}`;
+      if (type !== StateType.PUZZLE) {
+        key = `${key}-${type}`;
+      }
+      return key;
+    },
+    [id, type, prefix]
+  );
 
   const listValues = useCallback(
     <T>(): (StateResult<T> & {
@@ -26,12 +41,12 @@ function useLocalStorage({ type, id }: { type: StateType; id?: string }) {
           if (type !== StateType.PUZZLE) {
             return key.endsWith(`-${type}`);
           }
-          return /^sudoku-[^-]+$/.test(key);
+          return RegExp(`^${prefix}[^-]+$`).test(key);
         })
         .map(([key, value]) => {
           try {
             const parsedValue = JSON.parse(value);
-            const matches = key.match(/^(sudoku-[^-]+)/);
+            const matches = key.match(RegExp(`^(${prefix}[^-]+)`));
             if (matches?.length) {
               return { ...parsedValue, sessionId: matches[1] };
             }
@@ -41,32 +56,42 @@ function useLocalStorage({ type, id }: { type: StateType; id?: string }) {
           return undefined;
         })
         .filter((value) => !!value),
-    [type]
+    [type, prefix]
   );
 
-  const getValue = useCallback(<T>(): StateResult<T> | undefined => {
-    try {
-      const savedState = localStorage.getItem(getStateKey());
-      if (savedState) {
-        return JSON.parse(savedState);
+  const getValue = useCallback(
+    <T>({
+      overrideId,
+    }: {
+      overrideId?: string;
+    } = {}): StateResult<T> | undefined => {
+      try {
+        const savedState = localStorage.getItem(getStateKey(overrideId));
+        if (savedState) {
+          return JSON.parse(savedState);
+        }
+      } catch (e) {
+        console.error(e);
       }
-    } catch (e) {
-      console.error(e);
-    }
-    return undefined;
-  }, [getStateKey]);
+      return undefined;
+    },
+    [getStateKey]
+  );
 
   const saveValue = useCallback(
-    <T>(state: T): StateResult<T> => {
+    <T>(
+      state: T,
+      { overrideId }: { overrideId?: string } = {}
+    ): StateResult<T> => {
       const lastUpdated = new Date().getTime();
       const result = { lastUpdated, state };
-      localStorage.setItem(getStateKey(), JSON.stringify(result));
+      localStorage.setItem(getStateKey(overrideId), JSON.stringify(result));
       return result;
     },
     [getStateKey]
   );
 
-  return { listValues, getValue, saveValue };
+  return { prefix, listValues, getValue, saveValue };
 }
 
 export { useLocalStorage };
