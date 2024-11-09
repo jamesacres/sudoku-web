@@ -355,6 +355,8 @@ function useGameState({
     undo,
     setSelectedCell,
     completed,
+    validateCell,
+    validateGrid,
   ]);
 
   return {

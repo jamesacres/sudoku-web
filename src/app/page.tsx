@@ -13,7 +13,7 @@ import { GameState, ServerState } from '@/types/state';
 import { StateType } from '@/types/StateType';
 import { Timer } from '@/types/timer';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Camera, Heart, Plus, UserPlus, Users } from 'react-feather';
 
 enum Tab {
@@ -136,29 +136,68 @@ const SessionRow = (session: ServerStateResult<ServerState>) => {
 export default function Home() {
   const [tab, setTab] = useState(Tab.START_PUZZLE);
   const { listValues: listServerValues } = useServerStorage();
-  const { listValues: listLocalPuzzles } = useLocalStorage({
+  const {
+    prefix,
+    listValues: listLocalPuzzles,
+    saveValue: saveLocalPuzzle,
+  } = useLocalStorage({
     type: StateType.PUZZLE,
   });
-  const { listValues: listLocalTimers } = useLocalStorage({
-    type: StateType.TIMER,
-  });
+  const { listValues: listLocalTimers, saveValue: saveLocalTimer } =
+    useLocalStorage({
+      type: StateType.TIMER,
+    });
   const [sessions, setSessions] = useState<ServerStateResult<ServerState>[]>();
 
-  const mergeSessions = (newSessions: ServerStateResult<ServerState>[]) => {
-    setSessions((previousSessions) => {
-      const mergedSessions = [...newSessions, ...(previousSessions || [])].sort(
-        // Sort newest first
-        ({ updatedAt: a }, { updatedAt: b }) => b.getTime() - a.getTime()
-      );
-      const uniqueSessions = mergedSessions.filter(
-        ({ sessionId }, i) =>
-          // If index greater then filter out duplicate
-          i <=
-          mergedSessions.findIndex((other) => other.sessionId === sessionId)
-      );
-      return uniqueSessions;
-    });
-  };
+  const mergeSessions = useCallback(
+    (newSessions: ServerStateResult<ServerState>[]) => {
+      setSessions((previousSessions) => {
+        if (previousSessions) {
+          // If missing previously, update local with server value
+          const missingLocally = newSessions.filter(
+            (serverValue) =>
+              !previousSessions?.find(
+                (session) => serverValue.sessionId === session.sessionId
+              )
+          );
+          missingLocally.map((serverState) => {
+            const { sessionId: sessionIdWithPrefix, state } = serverState;
+            if (sessionIdWithPrefix.startsWith(prefix) && state) {
+              const sessionId = sessionIdWithPrefix.replace(prefix, '');
+              const { timer: serverTimerState, ...serverGameState } = state;
+              console.info('Saving missing local puzzle', sessionId);
+              saveLocalPuzzle<GameState>(serverGameState, {
+                overrideId: sessionId,
+              });
+              if (serverTimerState) {
+                console.info('Saving missing local timer', sessionId);
+                saveLocalTimer<Timer>(serverTimerState, {
+                  overrideId: sessionId,
+                });
+              }
+            }
+          });
+        }
+
+        // Set sessions to combination of previous local and new server
+        const mergedSessions = [
+          ...newSessions,
+          ...(previousSessions || []),
+        ].sort(
+          // Sort newest first
+          ({ updatedAt: a }, { updatedAt: b }) => b.getTime() - a.getTime()
+        );
+        const uniqueSessions = mergedSessions.filter(
+          ({ sessionId }, i) =>
+            // If index greater then filter out duplicate
+            i <=
+            mergedSessions.findIndex((other) => other.sessionId === sessionId)
+        );
+        return uniqueSessions;
+      });
+    },
+    [prefix, saveLocalPuzzle, saveLocalTimer]
+  );
 
   useEffect(() => {
     let active = true;
@@ -186,6 +225,7 @@ export default function Home() {
     const serverState = async () => {
       const values = await listServerValues<ServerState>();
       if (active && values) {
+        // Merge with local
         mergeSessions(values);
       }
     };
@@ -194,7 +234,7 @@ export default function Home() {
     return () => {
       active = false;
     };
-  }, [listServerValues, listLocalPuzzles, listLocalTimers]);
+  }, [listServerValues, listLocalPuzzles, listLocalTimers, mergeSessions]);
 
   const tabBackground = (thisTab: Tab) =>
     thisTab === tab ? 'bg-zinc-100 dark:bg-zinc-800' : '';
