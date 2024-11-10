@@ -130,7 +130,7 @@ const SudokuSidebar = ({
                 </label>
                 <input
                   id="form-nickname"
-                  className={`${isSaving ? 'cursor-wait' : ''} mr-0 w-full appearance-none rounded-l border-2 border-neutral-500 bg-transparent px-2 py-2 leading-tight text-black focus:outline-none dark:text-white`}
+                  className={`${isSaving ? 'cursor-wait' : ''} mr-0 w-full appearance-none rounded border-2 border-neutral-500 bg-transparent px-2 py-2 leading-tight text-black focus:outline-none dark:text-white`}
                   type="text"
                   placeholder="Nickname"
                   aria-label="Nickname"
