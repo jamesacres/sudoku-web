@@ -1,27 +1,25 @@
-import {
-  Parties,
-  PartyResult,
-  SessionResult,
-  useServerStorage,
-} from '@/hooks/serverStorage';
+import { useServerStorage } from '@/hooks/serverStorage';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { Loader, Users, X } from 'react-feather';
 import { PartyRow } from '../PartyRow/PartyRow';
 import { ServerState } from '@/types/state';
 import { UserContext } from '@/providers/UserProvider';
+import { Parties, Party, Session } from '@/types/serverTypes';
 
 const SudokuSidebar = ({
   showSidebar,
   setShowSidebar,
+  puzzleId,
   sessionParties,
 }: {
   showSidebar: boolean;
   setShowSidebar: (showSidebar: boolean) => void;
-  sessionParties: Parties<SessionResult<ServerState>>;
+  puzzleId: string;
+  sessionParties: Parties<Session<ServerState>>;
 }) => {
   const { user } = useContext(UserContext) || {};
   const { listParties, createParty } = useServerStorage({});
-  const [parties, setParties] = useState<PartyResult[]>([]);
+  const [parties, setParties] = useState<Party[]>([]);
   const [showCreateParty, setShowCreateParty] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [memberNickname, setMemberNickname] = useState(
@@ -178,6 +176,7 @@ const SudokuSidebar = ({
                   <PartyRow
                     key={party.partyId}
                     party={party}
+                    puzzleId={puzzleId}
                     sessionParty={sessionParties[party.partyId]}
                   />
                 );

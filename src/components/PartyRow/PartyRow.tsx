@@ -1,27 +1,21 @@
-import {
-  PartyResult,
-  SessionParty,
-  SessionResult,
-} from '@/hooks/serverStorage';
+import { Party, SessionParty, Session } from '@/types/serverTypes';
 import { ServerState } from '@/types/state';
-import { UserPlus } from 'react-feather';
+import { PartyInviteButton } from '../PartyInviteButton/PartyInviteButton';
 
 const PartyRow = ({
-  party: { partyName, isOwner, members },
+  party: { partyName, isOwner, members, partyId },
+  puzzleId,
   sessionParty,
 }: {
-  party: PartyResult;
-  sessionParty?: SessionParty<SessionResult<ServerState>>;
+  party: Party;
+  puzzleId: string;
+  sessionParty?: SessionParty<Session<ServerState>>;
 }) => {
   return (
     <li>
       <div>
         <h2 className="mt-8 text-xl">{partyName}</h2>
-        {isOwner && (
-          <button className="mt-2 w-full rounded-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300">
-            <UserPlus className="float-left mr-2" /> Invite to Party
-          </button>
-        )}
+        {isOwner && <PartyInviteButton puzzleId={puzzleId} partyId={partyId} />}
         <ul>
           {members.map(({ memberNickname, userId, isOwner, isUser }) => {
             return (

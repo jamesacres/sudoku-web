@@ -11,16 +11,12 @@ import {
 } from '@/helpers/calculateId';
 import { GameState, SelectNumber, ServerState, SetAnswer } from '@/types/state';
 import { useLocalStorage } from './localStorage';
-import {
-  Parties,
-  ServerStateResult,
-  SessionResult,
-  useServerStorage,
-} from './serverStorage';
+import { useServerStorage } from './serverStorage';
 import { checkCell, checkGrid } from '@/helpers/checkAnswer';
 import { StateType } from '@/types/StateType';
 import { useTimer } from './timer';
 import { calculateSeconds } from '@/helpers/calculateSeconds';
+import { Parties, ServerStateResult, Session } from '@/types/serverTypes';
 
 function useGameState({
   final,
@@ -63,7 +59,7 @@ function useGameState({
     }>({ answerStack: [structuredClone(initial)], isDisabled: true });
   const [redoAnswerStack, setRedoAnswerStack] = useState<Puzzle[]>([]);
   const [sessionParties, setSessionParties] = useState<
-    Parties<SessionResult<ServerState>>
+    Parties<Session<ServerState>>
   >({});
 
   const [selectedCell, setSelectedCellState] = useState<null | string>(null);

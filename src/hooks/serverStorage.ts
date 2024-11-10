@@ -5,72 +5,20 @@ import { useFetch } from './fetch';
 import { UserContext } from '../providers/UserProvider';
 import { StateType } from '@/types/StateType';
 import { useOnline } from './online';
+import {
+  MemberResponse,
+  Member,
+  PartyResponse,
+  Party,
+  ServerStateResult,
+  Session,
+  StateResponse,
+  Invite,
+  InviteResponse,
+} from '@/types/serverTypes';
 
 const app = 'sudoku';
 const apiUrl = 'https://api.bubblyclouds.com';
-
-interface SessionResponse<T> {
-  sessionId: string;
-  state: T;
-  updatedAt: string;
-}
-
-export interface SessionResult<T> {
-  sessionId: string;
-  state: T;
-  updatedAt: Date;
-}
-
-export interface SessionParty<T> {
-  memberSessions: {
-    [userId: string]: T | undefined;
-  };
-}
-
-export interface Parties<T> {
-  [partyId: string]: SessionParty<T> | undefined;
-}
-
-interface StateResponse<T> extends SessionResponse<T> {
-  parties: Parties<SessionResponse<T>>;
-}
-
-export interface ServerStateResult<T> extends SessionResult<T> {
-  parties?: Parties<SessionResult<T>>;
-}
-
-interface PartyResponse {
-  partyId: string;
-  appId: string;
-  partyName: string;
-  createdBy: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface MemberResponse {
-  userId: string;
-  resourceId: string;
-  memberNickname: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface MemberResult
-  extends Omit<MemberResponse, 'createdAt' | 'updatedAt'> {
-  createdAt: Date;
-  updatedAt: Date;
-  isOwner: boolean;
-  isUser: boolean;
-}
-
-export interface PartyResult
-  extends Omit<PartyResponse, 'createdAt' | 'updatedAt'> {
-  createdAt: Date;
-  updatedAt: Date;
-  isOwner: boolean;
-  members: MemberResult[];
-}
 
 const responseToResult = <T>(
   response: StateResponse<T>
@@ -85,7 +33,7 @@ const responseToResult = <T>(
                 memberSessions: Object.entries(
                   partyResponse!.memberSessions
                 ).reduce((result, [userId, memberSessionResponse]) => {
-                  const memberSessionResult: SessionResult<T> = {
+                  const memberSessionResult: Session<T> = {
                     sessionId: response.sessionId,
                     state: memberSessionResponse!.state,
                     updatedAt: new Date(memberSessionResponse!.updatedAt),
@@ -208,7 +156,7 @@ function useServerStorage({
   );
 
   const partyResponseToResult = useCallback(
-    (party: PartyResponse, members: MemberResult[]) => {
+    (party: PartyResponse, members: Member[]) => {
       return {
         ...party,
         members,
@@ -233,9 +181,7 @@ function useServerStorage({
     [user]
   );
 
-  const listParties = useCallback(async (): Promise<
-    PartyResult[] | undefined
-  > => {
+  const listParties = useCallback(async (): Promise<Party[] | undefined> => {
     if (isOnline && isLoggedIn()) {
       try {
         console.info('fetching parties');
@@ -243,7 +189,7 @@ function useServerStorage({
           new Request(`${apiUrl}/parties?app=${app}`)
         );
         if (response.ok) {
-          const result: PartyResult[] = [];
+          const result: Party[] = [];
           const partiesResponse = <PartyResponse[]>await response.json();
           for (const party of partiesResponse) {
             const memberResponse = await fetch(
@@ -281,7 +227,7 @@ function useServerStorage({
     }: {
       partyName: string;
       memberNickname: string;
-    }): Promise<PartyResult | undefined> => {
+    }): Promise<Party | undefined> => {
       if (isOnline && isLoggedIn()) {
         try {
           const response = await fetch(
@@ -328,7 +274,60 @@ function useServerStorage({
     ]
   );
 
-  return { listValues, getValue, saveValue, listParties, createParty };
+  const createInvite = useCallback(
+    async ({
+      resourceId,
+      description,
+      sessionId,
+      expiresAt,
+    }: {
+      resourceId: string;
+      description: string;
+      sessionId: string;
+      expiresAt: string;
+    }): Promise<Invite | undefined> => {
+      if (isOnline && isLoggedIn()) {
+        try {
+          const response = await fetch(
+            new Request(`${apiUrl}/invites`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                resourceId,
+                description,
+                sessionId,
+                expiresAt,
+              }),
+            })
+          );
+          if (response.ok) {
+            const inviteResponse = (await response.json()) as InviteResponse;
+            return {
+              ...inviteResponse,
+              expiresAt: new Date(inviteResponse.expiresAt),
+              createdAt: new Date(inviteResponse.createdAt),
+              updatedAt: new Date(inviteResponse.updatedAt),
+            };
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      return undefined;
+    },
+    [fetch, isLoggedIn, isOnline]
+  );
+
+  return {
+    listValues,
+    getValue,
+    saveValue,
+    listParties,
+    createParty,
+    createInvite,
+  };
 }
 
 export { useServerStorage };

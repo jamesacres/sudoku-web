@@ -64,6 +64,7 @@ const Sudoku = ({
       <SudokuSidebar
         showSidebar={showSidebar}
         setShowSidebar={setShowSidebar}
+        puzzleId={puzzleId}
         sessionParties={sessionParties}
       />
 
