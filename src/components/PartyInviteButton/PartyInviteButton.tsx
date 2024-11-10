@@ -37,7 +37,7 @@ const PartyInviteButton = ({
     setIsLoading(false);
 
     if (latestInviteUrl) {
-      navigator.clipboard.writeText(inviteUrl);
+      navigator.clipboard.writeText(latestInviteUrl);
       setShowCopied(true);
       setTimeout(() => {
         setShowCopied(false);
