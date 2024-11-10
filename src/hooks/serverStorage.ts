@@ -207,6 +207,32 @@ function useServerStorage({
     [getStateKey, fetch, isLoggedIn, isOnline]
   );
 
+  const partyResponseToResult = useCallback(
+    (party: PartyResponse, members: MemberResult[]) => {
+      return {
+        ...party,
+        members,
+        createdAt: new Date(party.createdAt),
+        updatedAt: new Date(party.updatedAt),
+        isOwner: party.createdBy === user?.sub,
+      };
+    },
+    [user]
+  );
+
+  const memberResponseToResult = useCallback(
+    (member: MemberResponse, partyCreatedBy?: string) => {
+      return {
+        ...member,
+        createdAt: new Date(member.createdAt),
+        updatedAt: new Date(member.updatedAt),
+        isOwner: member.userId === partyCreatedBy,
+        isUser: member.userId === user?.sub,
+      };
+    },
+    [user]
+  );
+
   const listParties = useCallback(async (): Promise<
     PartyResult[] | undefined
   > => {
@@ -226,23 +252,12 @@ function useServerStorage({
             const membersResponse =
               memberResponse.ok &&
               <MemberResponse[]>await memberResponse.json();
-            result.push({
-              ...party,
-              createdAt: new Date(party.createdAt),
-              updatedAt: new Date(party.updatedAt),
-              isOwner: party.createdBy === user?.sub,
-              members: membersResponse
-                ? membersResponse.map((member) => {
-                    return {
-                      ...member,
-                      createdAt: new Date(party.createdAt),
-                      updatedAt: new Date(party.updatedAt),
-                      isOwner: member.userId === party.createdBy,
-                      isUser: member.userId === user?.sub,
-                    };
-                  })
-                : [],
-            });
+            const members = membersResponse
+              ? membersResponse.map((member) =>
+                  memberResponseToResult(member, party.createdBy)
+                )
+              : [];
+            result.push(partyResponseToResult(party, members));
           }
           return result;
         }
@@ -251,9 +266,69 @@ function useServerStorage({
       }
     }
     return undefined;
-  }, [fetch, isLoggedIn, isOnline, user]);
+  }, [
+    fetch,
+    isLoggedIn,
+    isOnline,
+    memberResponseToResult,
+    partyResponseToResult,
+  ]);
 
-  return { listValues, getValue, saveValue, listParties };
+  const createParty = useCallback(
+    async ({
+      partyName,
+      memberNickname,
+    }: {
+      partyName: string;
+      memberNickname: string;
+    }): Promise<PartyResult | undefined> => {
+      if (isOnline && isLoggedIn()) {
+        try {
+          const response = await fetch(
+            new Request(`${apiUrl}/parties`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                partyName,
+                memberNickname,
+                appId: app,
+              }),
+            })
+          );
+          if (response.ok) {
+            const partyResponse = (await response.json()) as PartyResponse;
+            return partyResponseToResult(partyResponse, [
+              memberResponseToResult(
+                {
+                  memberNickname,
+                  createdAt: partyResponse.createdAt,
+                  resourceId: `party-${partyResponse.partyId}`,
+                  updatedAt: partyResponse.updatedAt,
+                  userId: user?.sub || '',
+                },
+                user?.sub
+              ),
+            ]);
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      return undefined;
+    },
+    [
+      fetch,
+      isLoggedIn,
+      isOnline,
+      memberResponseToResult,
+      partyResponseToResult,
+      user,
+    ]
+  );
+
+  return { listValues, getValue, saveValue, listParties, createParty };
 }
 
 export { useServerStorage };

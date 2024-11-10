@@ -53,6 +53,7 @@ function useGameState({
     });
   const [isNotesMode, setIsNotesMode] = useState<boolean>(false);
   const [isMiniNotes, setIsMiniNotes] = useState<boolean>(false);
+  const [showSidebar, setShowSidebar] = useState(false);
   const [{ answerStack, isRestored, isDisabled, completed }, setAnswerStack] =
     useState<{
       answerStack: Puzzle[];
@@ -303,7 +304,11 @@ function useGameState({
   // Handle keyboard
   useEffect(() => {
     const keydownHandler = (e: KeyboardEvent) => {
-      if (completed) {
+      const insideForm = /^(?:input|textarea|select|button)$/i.test(
+        (<any>e.target)?.tagName
+      );
+      const ignoreKeyboard = completed || showSidebar || insideForm;
+      if (ignoreKeyboard) {
         return;
       }
       if (e.key === 'n') {
@@ -362,6 +367,7 @@ function useGameState({
     completed,
     validateCell,
     validateGrid,
+    showSidebar,
   ]);
 
   return {
@@ -387,6 +393,8 @@ function useGameState({
     completed,
     setPauseTimer,
     sessionParties,
+    showSidebar,
+    setShowSidebar,
   };
 }
 

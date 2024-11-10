@@ -9,7 +9,7 @@ import { TimerDisplay } from '../TimerDisplay/TimerDisplay';
 import { calculateSeconds } from '@/helpers/calculateSeconds';
 import { Sidebar } from 'react-feather';
 import { SudokuSidebar } from '../SudokuSidebar/SudokuSidebar';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 const Sudoku = ({
   puzzle: { initial, final, puzzleId },
@@ -39,12 +39,14 @@ const Sudoku = ({
     completed,
     setPauseTimer,
     sessionParties,
+    showSidebar,
+    setShowSidebar,
   } = useGameState({
     final,
     initial,
     puzzleId,
   });
-  const [showSidebar, setShowSidebar] = useState(false);
+
   useEffect(() => {
     if (showSidebar) {
       setPauseTimer(true);
