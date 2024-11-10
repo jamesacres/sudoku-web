@@ -29,7 +29,7 @@ const PartyInviteButton = ({
         resourceId: `party-${partyId}`,
       });
       if (invite) {
-        latestInviteUrl = `https://sudoku.bubblyclouds.com/invite/${invite.inviteId}`;
+        latestInviteUrl = `https://sudoku.bubblyclouds.com/invite?inviteId=${invite.inviteId}`;
         setInviteUrl(latestInviteUrl);
       }
     }
