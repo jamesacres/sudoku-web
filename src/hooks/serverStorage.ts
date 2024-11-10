@@ -15,6 +15,7 @@ import {
   StateResponse,
   Invite,
   InviteResponse,
+  PublicInvite,
 } from '@/types/serverTypes';
 
 const app = 'sudoku';
@@ -320,6 +321,27 @@ function useServerStorage({
     [fetch, isLoggedIn, isOnline]
   );
 
+  const getPublicInvite = useCallback(
+    async (inviteId: string): Promise<PublicInvite | undefined> => {
+      if (isOnline) {
+        try {
+          const response = await fetch(
+            new Request(`${apiUrl}/invites/${inviteId}`)
+          );
+          if (response.ok) {
+            const publicInviteResponse =
+              (await response.json()) as PublicInvite;
+            return publicInviteResponse;
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      return undefined;
+    },
+    [fetch, isOnline]
+  );
+
   return {
     listValues,
     getValue,
@@ -327,6 +349,7 @@ function useServerStorage({
     listParties,
     createParty,
     createInvite,
+    getPublicInvite,
   };
 }
 

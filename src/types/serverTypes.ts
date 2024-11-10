@@ -77,3 +77,6 @@ export interface Invite
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface PublicInvite
+  extends Pick<Invite, 'description' | 'resourceId' | 'sessionId'> {}

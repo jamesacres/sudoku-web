@@ -5,9 +5,11 @@ import { Check, Copy, Loader } from 'react-feather';
 const PartyInviteButton = ({
   puzzleId,
   partyId,
+  partyName,
 }: {
   puzzleId: string;
   partyId: string;
+  partyName: string;
 }) => {
   const sessionId = `sudoku-${puzzleId}`;
   const [isLoading, setIsLoading] = useState(false);
@@ -25,7 +27,7 @@ const PartyInviteButton = ({
       const invite = await createInvite({
         sessionId,
         expiresAt: expiresAt.toISOString(),
-        description: 'Play Sudoku with me',
+        description: partyName,
         resourceId: `party-${partyId}`,
       });
       if (invite) {

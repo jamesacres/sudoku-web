@@ -15,7 +15,13 @@ const PartyRow = ({
     <li>
       <div>
         <h2 className="mt-8 text-xl">{partyName}</h2>
-        {isOwner && <PartyInviteButton puzzleId={puzzleId} partyId={partyId} />}
+        {isOwner && (
+          <PartyInviteButton
+            puzzleId={puzzleId}
+            partyId={partyId}
+            partyName={partyName}
+          />
+        )}
         <ul>
           {members.map(({ memberNickname, userId, isOwner, isUser }) => {
             return (
