@@ -10,6 +10,7 @@ export default function Invite() {
   const searchParams = useSearchParams();
   const inviteId = searchParams.get('inviteId');
 
+  const { user } = useContext(UserContext) || {};
   const { getPublicInvite } = useServerStorage({});
   const [isLoading, setIsLoading] = useState(true);
   const [publicInvite, setPublicInvite] = useState<PublicInvite | undefined>(
@@ -35,7 +36,6 @@ export default function Invite() {
     };
   }, [getPublicInvite, inviteId]);
 
-  const { user } = useContext(UserContext) || {};
   return (
     <div className="container mx-auto px-4">
       <h1 className="text-2xl">Invite to Play Sudoku</h1>
