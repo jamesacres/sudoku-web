@@ -17,8 +17,14 @@ const iss = 'https://auth.bubblyclouds.com';
 const clientId = isElectron() ? 'bubbly-sudoku-native' : 'bubbly-sudoku';
 const apiUrls = ['https://api.bubblyclouds.com'];
 const authUrls = ['https://auth.bubblyclouds.com'];
+const publicApiPathPatterns = [new RegExp('^/invites/[^/]+$')];
 const tokenUrls = ['/oidc/token'];
 const isApiUrl = (destURL: URL) => apiUrls.includes(destURL.origin);
+const isPublicUrl = (method: string, destURL: URL) =>
+  method === 'GET' &&
+  publicApiPathPatterns.some((path) => {
+    return path.test(destURL.pathname);
+  });
 const isTokenUrl = (destURL: URL) =>
   authUrls.includes(destURL.origin) && tokenUrls.includes(destURL.pathname);
 
@@ -200,7 +206,7 @@ function useFetch() {
             'Authorization',
             `Bearer ${stateRef.current.accessToken}`
           );
-        } else {
+        } else if (!isPublicUrl(request.method, destURL)) {
           console.warn(
             'Resetting state as no access token, and skipping API call'
           );
