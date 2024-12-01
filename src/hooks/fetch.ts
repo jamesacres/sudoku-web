@@ -17,15 +17,21 @@ const iss = 'https://auth.bubblyclouds.com';
 const clientId = isElectron() ? 'bubbly-sudoku-native' : 'bubbly-sudoku';
 const apiUrls = ['https://api.bubblyclouds.com'];
 const authUrls = ['https://auth.bubblyclouds.com'];
+const publicApiPathPatterns = [new RegExp('^/invites/[^/]+$')];
 const tokenUrls = ['/oidc/token'];
 const isApiUrl = (destURL: URL) => apiUrls.includes(destURL.origin);
+const isPublicUrl = (method: string, destURL: URL) =>
+  method === 'GET' &&
+  publicApiPathPatterns.some((path) => {
+    return path.test(destURL.pathname);
+  });
 const isTokenUrl = (destURL: URL) =>
   authUrls.includes(destURL.origin) && tokenUrls.includes(destURL.pathname);
 
 let isRefreshing = false;
 
 function useFetch() {
-  const [state, setState] = useContext(FetchContext)!;
+  const [stateRef, setState] = useContext(FetchContext)!;
 
   const saveState = useCallback(
     async (newState: State, isRestoreState: boolean = false) => {
@@ -111,16 +117,16 @@ function useFetch() {
       // If accessToken is close to expiry, refresh it
       const fifteenMinsMs = 900000;
       if (
-        state.refreshToken &&
-        state.accessExpiry &&
-        new Date(state.accessExpiry).getTime() <=
+        stateRef.current.refreshToken &&
+        stateRef.current.accessExpiry &&
+        new Date(stateRef.current.accessExpiry).getTime() <=
           new Date().getTime() + fifteenMinsMs
       ) {
         console.info('useFetch refreshing token..');
         const params = new URLSearchParams();
         params.set('grant_type', 'refresh_token');
         params.set('client_id', clientId);
-        params.set('refresh_token', state.refreshToken);
+        params.set('refresh_token', stateRef.current.refreshToken);
         const refreshResponse = await fetch(`${iss}/oidc/token`, {
           method: 'POST',
           headers: {
@@ -144,26 +150,26 @@ function useFetch() {
     }
 
     isRefreshing = false;
-  }, [handleTokenSuccess, state]);
+  }, [handleTokenSuccess, stateRef]);
 
   const hasValidUser = useCallback(
     () =>
-      state.user &&
-      state.userExpiry &&
-      state.refreshToken &&
-      state.refreshExpiry &&
-      new Date(state.userExpiry).getTime() > new Date().getTime() &&
-      new Date(state.refreshExpiry).getTime() > new Date().getTime(),
-    [state]
+      stateRef.current.user &&
+      stateRef.current.userExpiry &&
+      stateRef.current.refreshToken &&
+      stateRef.current.refreshExpiry &&
+      new Date(stateRef.current.userExpiry).getTime() > new Date().getTime() &&
+      new Date(stateRef.current.refreshExpiry).getTime() > new Date().getTime(),
+    [stateRef]
   );
 
   const getUser = useCallback((): UserProfile | undefined => {
     console.info('useFetch getUser event received');
     if (hasValidUser()) {
-      return state.user!;
+      return stateRef.current.user!;
     }
     return undefined;
-  }, [hasValidUser, state]);
+  }, [hasValidUser, stateRef]);
 
   const logout = useCallback(async () => {
     console.info('useFetch logout');
@@ -190,14 +196,17 @@ function useFetch() {
       if (isApiUrl(destURL)) {
         console.info('useFetch handleFetch apiUrl');
         // Automatically send auth header to API URLs
-        if (state.accessToken) {
+        if (stateRef.current.accessToken) {
           const { inProgress } = (await checkRefresh()) || {};
           if (inProgress) {
             console.warn('Skipping API call as refresh in progress');
             return new Response(null, { status: 401 });
           }
-          headers.append('Authorization', `Bearer ${state.accessToken}`);
-        } else {
+          headers.append(
+            'Authorization',
+            `Bearer ${stateRef.current.accessToken}`
+          );
+        } else if (!isPublicUrl(request.method, destURL)) {
           console.warn(
             'Resetting state as no access token, and skipping API call'
           );
@@ -231,7 +240,7 @@ function useFetch() {
       }
       return fetch(request);
     },
-    [checkRefresh, handleTokenSuccess, resetState, state]
+    [checkRefresh, handleTokenSuccess, resetState, stateRef]
   );
 
   return {

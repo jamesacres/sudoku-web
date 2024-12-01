@@ -10,6 +10,7 @@ function PuzzlePageComponent() {
   const searchParams = useSearchParams();
   const initial = searchParams.get('initial');
   const final = searchParams.get('final');
+  const redirectUri = `/puzzle?initial=${initial}&final=${final}`;
   const [puzzle, setPuzzle] = useState<{
     initial: Puzzle<number>;
     final: Puzzle<number>;
@@ -28,7 +29,9 @@ function PuzzlePageComponent() {
     })();
   }, [initial, final]);
 
-  return <div>{puzzle && <Sudoku puzzle={puzzle} />}</div>;
+  return (
+    <div>{puzzle && <Sudoku puzzle={puzzle} redirectUri={redirectUri} />}</div>
+  );
 }
 
 export default function PuzzlePage() {

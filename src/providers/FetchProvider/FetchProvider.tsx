@@ -1,6 +1,6 @@
 'use client';
 import { UserProfile } from '@/types/userProfile';
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, { MutableRefObject, useRef } from 'react';
 
 export interface State {
   accessToken: string | null;
@@ -11,21 +11,28 @@ export interface State {
   userExpiry: Date | null;
 }
 
-export const FetchContext = React.createContext<
-  [State, Dispatch<SetStateAction<State>>] | undefined
->(undefined);
+type Value = [MutableRefObject<State>, (state: State) => void];
+
+export const FetchContext = React.createContext<Value | undefined>(undefined);
 
 const FetchProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const value = useState<State>({
+  const initialState = {
     accessToken: null,
     accessExpiry: null,
     refreshToken: null,
     refreshExpiry: null,
     user: null,
     userExpiry: null,
-  });
+  };
+  const stateRef = useRef<State>(initialState);
+
+  const setState = (newState: State) => {
+    stateRef.current = newState;
+  };
+
+  const value: Value = [stateRef, setState];
   return (
     <FetchContext.Provider value={value}>{children}</FetchContext.Provider>
   );

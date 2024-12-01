@@ -8,7 +8,8 @@ import {
   puzzleToPuzzleText,
 } from '@/helpers/puzzleTextToPuzzle';
 import { useLocalStorage } from '@/hooks/localStorage';
-import { ServerStateResult, useServerStorage } from '@/hooks/serverStorage';
+import { useServerStorage } from '@/hooks/serverStorage';
+import { ServerStateResult } from '@/types/serverTypes';
 import { GameState, ServerState } from '@/types/state';
 import { StateType } from '@/types/StateType';
 import { Timer } from '@/types/timer';

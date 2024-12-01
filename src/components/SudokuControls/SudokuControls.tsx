@@ -51,7 +51,7 @@ const SudokuControls = ({
   reveal,
 }: Arguments) => {
   return (
-    <div className="mb-8 mt-4 pl-0 pr-2 pt-4">
+    <div className="mb-8 mt-4 pl-0 pr-2 pt-4 xl:max-w-lg">
       <div className="hidden lg:block">
         <HintBox>
           Keyboard: arrow keys, undo, redo, n to toggle notes mode,
@@ -60,33 +60,33 @@ const SudokuControls = ({
       </div>
       <div className="flex gap-4">
         <div className="flex-grow"></div>
-        <div className="flex items-center justify-center text-sm">
+        <div className="flex items-center justify-start text-sm">
           <button
             className="ml-2 mr-2"
             onClick={() => setIsNotesMode(!isNotesMode)}
           >
             {isNotesMode ? (
-              <Edit className="float-left mr-2" />
+              <Edit className="float-left mr-2" size={16} />
             ) : (
-              <Edit2 className="float-left mr-2" />
+              <Edit2 className="float-left mr-2" size={16} />
             )}
-            Notes Mode {isNotesMode ? 'On' : 'Off'}
+            Notes
           </button>
           <div>
             <Toggle isEnabled={isNotesMode} setEnabled={setIsNotesMode} />
           </div>
         </div>
-        <div className="flex items-center justify-center text-sm">
+        <div className="flex items-center justify-start text-sm">
           <button
             className="ml-2 mr-2"
             onClick={() => setIsMiniNotes(!isMiniNotes)}
           >
             {isMiniNotes ? (
-              <Grid className="float-left mr-2" />
+              <Grid className="float-left mr-2" size={16} />
             ) : (
-              <Square className="float-left mr-2" />
+              <Square className="float-left mr-2" size={16} />
             )}
-            Mini Notes {isMiniNotes ? 'On' : 'Off'}
+            Mini Notes
           </button>
           <div>
             <Toggle isEnabled={isMiniNotes} setEnabled={setIsMiniNotes} />
@@ -94,7 +94,7 @@ const SudokuControls = ({
         </div>
         <div className="flex-grow"></div>
       </div>
-      <div className="m-4 flex flex-col items-center justify-center lg:flex-row">
+      <div className="flex flex-col items-center justify-center lg:flex-row">
         <div className="mx-auto mt-2" style={{ minWidth: 120 }}>
           <div className="square">
             <NumberPad
@@ -103,7 +103,7 @@ const SudokuControls = ({
             />
           </div>
         </div>
-        <div className="flex flex-row flex-col flex-wrap text-center">
+        <div className="mt-2 flex flex-row flex-col flex-wrap text-center">
           <div
             className="mr-2 inline-flex flex-nowrap items-center"
             role="group"

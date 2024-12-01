@@ -11,6 +11,7 @@ let interval: NodeJS.Timeout;
 
 function useTimer({ puzzleId }: { puzzleId: string }) {
   const isDocumentVisible = useDocumentVisibility();
+  const [isPaused, setPauseTimer] = useState(false);
   const { getValue, saveValue } = useLocalStorage({
     id: puzzleId,
     type: StateType.TIMER,
@@ -85,24 +86,24 @@ function useTimer({ puzzleId }: { puzzleId: string }) {
   // Force timer to re-render
   useEffect(() => {
     const thisInterval = setInterval(() => {
-      if (isDocumentVisible) {
+      if (isDocumentVisible && !isPaused) {
         updateTimer();
       }
     }, 1000);
     interval = thisInterval;
     return () => clearInterval(thisInterval);
-  }, [isDocumentVisible, updateTimer]);
+  }, [isDocumentVisible, isPaused, updateTimer]);
 
   useEffect(() => {
-    console.info('isDocumentVisible', isDocumentVisible);
-    if (isDocumentVisible) {
+    console.info('isDocumentVisible', isDocumentVisible, 'isPaused', isPaused);
+    if (isDocumentVisible && !isPaused) {
       // Document now visible, start a new session
       setTimerNewSession();
     } else {
       // Document now invisible, set lastInteraction to now
       updateTimer();
     }
-  }, [isDocumentVisible, setTimerNewSession, updateTimer]);
+  }, [isDocumentVisible, isPaused, setTimerNewSession, updateTimer]);
 
   // Save and Restore state
   useEffect(() => {
@@ -121,6 +122,7 @@ function useTimer({ puzzleId }: { puzzleId: string }) {
     setTimerNewSession,
     timer,
     stopTimer,
+    setPauseTimer,
   };
 }
 

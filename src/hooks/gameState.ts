@@ -11,11 +11,12 @@ import {
 } from '@/helpers/calculateId';
 import { GameState, SelectNumber, ServerState, SetAnswer } from '@/types/state';
 import { useLocalStorage } from './localStorage';
-import { ServerStateResult, useServerStorage } from './serverStorage';
+import { useServerStorage } from './serverStorage';
 import { checkCell, checkGrid } from '@/helpers/checkAnswer';
 import { StateType } from '@/types/StateType';
 import { useTimer } from './timer';
 import { calculateSeconds } from '@/helpers/calculateSeconds';
+import { Parties, ServerStateResult, Session } from '@/types/serverTypes';
 
 function useGameState({
   final,
@@ -26,7 +27,7 @@ function useGameState({
   initial: Puzzle<number>;
   puzzleId: string;
 }) {
-  const { timer, setTimerNewSession, stopTimer } = useTimer({
+  const { timer, setTimerNewSession, stopTimer, setPauseTimer } = useTimer({
     puzzleId,
   });
 
@@ -48,6 +49,7 @@ function useGameState({
     });
   const [isNotesMode, setIsNotesMode] = useState<boolean>(false);
   const [isMiniNotes, setIsMiniNotes] = useState<boolean>(false);
+  const [showSidebar, setShowSidebar] = useState(false);
   const [{ answerStack, isRestored, isDisabled, completed }, setAnswerStack] =
     useState<{
       answerStack: Puzzle[];
@@ -56,6 +58,9 @@ function useGameState({
       completed?: GameState['completed'];
     }>({ answerStack: [structuredClone(initial)], isDisabled: true });
   const [redoAnswerStack, setRedoAnswerStack] = useState<Puzzle[]>([]);
+  const [sessionParties, setSessionParties] = useState<
+    Parties<Session<ServerState>>
+  >({});
 
   const [selectedCell, setSelectedCellState] = useState<null | string>(null);
   const setSelectedCell = useCallback(
@@ -230,6 +235,9 @@ function useGameState({
     }
     serverValuePromise.then((serverValue) => {
       if (active) {
+        if (serverValue?.parties && Object.keys(serverValue?.parties).length) {
+          setSessionParties(serverValue.parties);
+        }
         if (
           serverValue &&
           (!localValue?.lastUpdated ||
@@ -247,8 +255,6 @@ function useGameState({
           if (!serverValue.state.completed) {
             setTimerNewSession(serverValue.state.timer);
           }
-          // TODO Update parties list
-          console.info('restored state, TODO Update parties list', serverValue);
         } else {
           // Remove disabled flag, heard from server but ignored it
           setAnswerStack((current) => {
@@ -272,12 +278,12 @@ function useGameState({
         completed,
       });
       serverValuePromise.then((serverValue) => {
-        if (active) {
-          // TODO Update parties list
-          console.info(
-            'answerStack updated, TODO Update parties list',
-            serverValue
-          );
+        if (
+          active &&
+          serverValue?.parties &&
+          Object.keys(serverValue.parties).length
+        ) {
+          setSessionParties(serverValue.parties);
         }
       });
     }
@@ -298,7 +304,11 @@ function useGameState({
   // Handle keyboard
   useEffect(() => {
     const keydownHandler = (e: KeyboardEvent) => {
-      if (completed) {
+      const insideForm = /^(?:input|textarea|select|button)$/i.test(
+        (<any>e.target)?.tagName
+      );
+      const ignoreKeyboard = completed || showSidebar || insideForm;
+      if (ignoreKeyboard) {
         return;
       }
       if (e.key === 'n') {
@@ -357,6 +367,7 @@ function useGameState({
     completed,
     validateCell,
     validateGrid,
+    showSidebar,
   ]);
 
   return {
@@ -380,6 +391,10 @@ function useGameState({
     reset,
     reveal,
     completed,
+    setPauseTimer,
+    sessionParties,
+    showSidebar,
+    setShowSidebar,
   };
 }
 

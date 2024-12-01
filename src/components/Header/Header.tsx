@@ -11,7 +11,7 @@ import ThemeSwitch from '../ThemeSwitch';
 const Header = () => {
   return (
     <>
-      <nav className="pt-safe fixed left-0 top-0 z-50 flex w-screen flex-wrap items-center justify-between bg-zinc-100 px-6 pb-2 dark:bg-zinc-800">
+      <nav className="pt-safe fixed left-0 top-0 z-50 flex w-screen flex-wrap items-center justify-between bg-zinc-100 px-6 pb-2 drop-shadow-md dark:bg-zinc-800">
         <div className="mr-6 flex flex-shrink-0 items-center dark:text-white">
           <HeaderBack />
         </div>
