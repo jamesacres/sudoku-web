@@ -8,13 +8,15 @@ import { useGameState } from '@/hooks/gameState';
 import { TimerDisplay } from '../TimerDisplay/TimerDisplay';
 import { calculateSeconds } from '@/helpers/calculateSeconds';
 import { Sidebar } from 'react-feather';
-import { SudokuSidebar } from '../SudokuSidebar/SudokuSidebar';
+import SudokuSidebar from '../SudokuSidebar/SudokuSidebar';
 import { useEffect } from 'react';
 
 const Sudoku = ({
   puzzle: { initial, final, puzzleId },
+  redirectUri,
 }: {
   puzzle: { initial: Puzzle<number>; final: Puzzle<number>; puzzleId: string };
+  redirectUri: string;
 }) => {
   const {
     answer,
@@ -65,6 +67,7 @@ const Sudoku = ({
         showSidebar={showSidebar}
         setShowSidebar={setShowSidebar}
         puzzleId={puzzleId}
+        redirectUri={redirectUri}
         sessionParties={sessionParties}
       />
 

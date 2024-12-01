@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useContext } from 'react';
+import { useCallback, useContext, useRef } from 'react';
 import { useFetch } from './fetch';
 import { UserContext } from '../providers/UserProvider';
 import { StateType } from '@/types/StateType';
@@ -17,6 +17,7 @@ import {
   InviteResponse,
   PublicInvite,
 } from '@/types/serverTypes';
+import { UserProfile } from '@/types/userProfile';
 
 const app = 'sudoku';
 const apiUrl = 'https://api.bubblyclouds.com';
@@ -56,13 +57,64 @@ const responseToResult = <T>(
   };
 };
 
+const partyResponseToResult = (
+  party: PartyResponse,
+  members: Member[],
+  user: UserProfile | undefined
+) => {
+  return {
+    ...party,
+    members,
+    createdAt: new Date(party.createdAt),
+    updatedAt: new Date(party.updatedAt),
+    isOwner: party.createdBy === user?.sub,
+  };
+};
+
+const memberResponseToResult = (
+  member: MemberResponse,
+  user: UserProfile | undefined,
+  partyCreatedBy?: string
+) => {
+  return {
+    ...member,
+    createdAt: new Date(member.createdAt),
+    updatedAt: new Date(member.updatedAt),
+    isOwner: member.userId === partyCreatedBy,
+    isUser: member.userId === user?.sub,
+  };
+};
+
 function useServerStorage({
-  type,
-  id,
+  type: initialType,
+  id: initialId,
 }: { type?: StateType; id?: string } = {}) {
+  const state = useRef({
+    id: initialId,
+    type: initialType,
+  });
   const { user, logout } = useContext(UserContext) || {};
   const { fetch, getUser } = useFetch();
   const { isOnline } = useOnline();
+
+  const setIdAndType = ({
+    type: newType,
+    id: newId,
+  }: { type?: StateType; id?: string } = {}) => {
+    state.current.id = newId;
+    state.current.type = newType;
+  };
+  const getStateKey = useCallback(() => {
+    const { id, type } = state.current;
+    if (!(id && type)) {
+      throw Error('Unknown id and type');
+    }
+    let key = `${app}-${id}`;
+    if (type !== StateType.PUZZLE) {
+      key = `${key}-${type}`;
+    }
+    return key;
+  }, []);
 
   const isLoggedIn = useCallback(() => {
     if (user) {
@@ -77,14 +129,6 @@ function useServerStorage({
     console.warn('not logged in');
     return false;
   }, [getUser, logout, user]);
-
-  const getStateKey = useCallback(() => {
-    let key = `${app}-${id}`;
-    if (type !== StateType.PUZZLE) {
-      key = `${key}-${type}`;
-    }
-    return key;
-  }, [id, type]);
 
   const listValues = useCallback(async <T>(): Promise<
     ServerStateResult<T>[] | undefined
@@ -156,32 +200,6 @@ function useServerStorage({
     [getStateKey, fetch, isLoggedIn, isOnline]
   );
 
-  const partyResponseToResult = useCallback(
-    (party: PartyResponse, members: Member[]) => {
-      return {
-        ...party,
-        members,
-        createdAt: new Date(party.createdAt),
-        updatedAt: new Date(party.updatedAt),
-        isOwner: party.createdBy === user?.sub,
-      };
-    },
-    [user]
-  );
-
-  const memberResponseToResult = useCallback(
-    (member: MemberResponse, partyCreatedBy?: string) => {
-      return {
-        ...member,
-        createdAt: new Date(member.createdAt),
-        updatedAt: new Date(member.updatedAt),
-        isOwner: member.userId === partyCreatedBy,
-        isUser: member.userId === user?.sub,
-      };
-    },
-    [user]
-  );
-
   const listParties = useCallback(async (): Promise<Party[] | undefined> => {
     if (isOnline && isLoggedIn()) {
       try {
@@ -201,10 +219,10 @@ function useServerStorage({
               <MemberResponse[]>await memberResponse.json();
             const members = membersResponse
               ? membersResponse.map((member) =>
-                  memberResponseToResult(member, party.createdBy)
+                  memberResponseToResult(member, user, party.createdBy)
                 )
               : [];
-            result.push(partyResponseToResult(party, members));
+            result.push(partyResponseToResult(party, members, user));
           }
           return result;
         }
@@ -213,13 +231,7 @@ function useServerStorage({
       }
     }
     return undefined;
-  }, [
-    fetch,
-    isLoggedIn,
-    isOnline,
-    memberResponseToResult,
-    partyResponseToResult,
-  ]);
+  }, [fetch, isLoggedIn, isOnline, user]);
 
   const createParty = useCallback(
     async ({
@@ -246,18 +258,23 @@ function useServerStorage({
           );
           if (response.ok) {
             const partyResponse = (await response.json()) as PartyResponse;
-            return partyResponseToResult(partyResponse, [
-              memberResponseToResult(
-                {
-                  memberNickname,
-                  createdAt: partyResponse.createdAt,
-                  resourceId: `party-${partyResponse.partyId}`,
-                  updatedAt: partyResponse.updatedAt,
-                  userId: user?.sub || '',
-                },
-                user?.sub
-              ),
-            ]);
+            return partyResponseToResult(
+              partyResponse,
+              [
+                memberResponseToResult(
+                  {
+                    memberNickname,
+                    createdAt: partyResponse.createdAt,
+                    resourceId: `party-${partyResponse.partyId}`,
+                    updatedAt: partyResponse.updatedAt,
+                    userId: user?.sub || '',
+                  },
+                  user,
+                  user?.sub
+                ),
+              ],
+              user
+            );
           }
         } catch (e) {
           console.error(e);
@@ -265,14 +282,7 @@ function useServerStorage({
       }
       return undefined;
     },
-    [
-      fetch,
-      isLoggedIn,
-      isOnline,
-      memberResponseToResult,
-      partyResponseToResult,
-      user,
-    ]
+    [fetch, isLoggedIn, isOnline, user]
   );
 
   const createInvite = useCallback(
@@ -280,11 +290,13 @@ function useServerStorage({
       resourceId,
       description,
       sessionId,
+      redirectUri,
       expiresAt,
     }: {
       resourceId: string;
       description: string;
       sessionId: string;
+      redirectUri: string;
       expiresAt: string;
     }): Promise<Invite | undefined> => {
       if (isOnline && isLoggedIn()) {
@@ -299,6 +311,7 @@ function useServerStorage({
                 resourceId,
                 description,
                 sessionId,
+                redirectUri,
                 expiresAt,
               }),
             })
@@ -342,7 +355,49 @@ function useServerStorage({
     [fetch, isOnline]
   );
 
+  const createMember = useCallback(
+    async ({
+      inviteId,
+      memberNickname,
+    }: {
+      inviteId: string;
+      memberNickname: string;
+    }): Promise<Member | undefined> => {
+      if (isOnline && isLoggedIn()) {
+        try {
+          const response = await fetch(
+            new Request(`${apiUrl}/members`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                inviteId,
+                memberNickname,
+              }),
+            })
+          );
+          if (response.ok) {
+            const memberResponse = (await response.json()) as MemberResponse;
+            return {
+              ...memberResponse,
+              createdAt: new Date(memberResponse.createdAt),
+              updatedAt: new Date(memberResponse.updatedAt),
+              isOwner: false,
+              isUser: true,
+            };
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      return undefined;
+    },
+    [fetch, isLoggedIn, isOnline]
+  );
+
   return {
+    setIdAndType,
     listValues,
     getValue,
     saveValue,
@@ -350,6 +405,7 @@ function useServerStorage({
     createParty,
     createInvite,
     getPublicInvite,
+    createMember,
   };
 }
 

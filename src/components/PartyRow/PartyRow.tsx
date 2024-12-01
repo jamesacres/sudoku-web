@@ -1,14 +1,17 @@
 import { Party, SessionParty, Session } from '@/types/serverTypes';
 import { ServerState } from '@/types/state';
 import { PartyInviteButton } from '../PartyInviteButton/PartyInviteButton';
+import SimpleSudoku from '../SimpleSudoku';
 
 const PartyRow = ({
   party: { partyName, isOwner, members, partyId },
   puzzleId,
+  redirectUri,
   sessionParty,
 }: {
   party: Party;
   puzzleId: string;
+  redirectUri: string;
   sessionParty?: SessionParty<Session<ServerState>>;
 }) => {
   return (
@@ -18,6 +21,7 @@ const PartyRow = ({
         {isOwner && (
           <PartyInviteButton
             puzzleId={puzzleId}
+            redirectUri={redirectUri}
             partyId={partyId}
             partyName={partyName}
           />
@@ -31,6 +35,18 @@ const PartyRow = ({
                 {isUser && ' (you)'}
                 {!isUser && !sessionParty?.memberSessions[userId] && (
                   <p>Not started! Ask them to play</p>
+                )}
+                {!isUser && sessionParty?.memberSessions[userId] && (
+                  <SimpleSudoku
+                    final={sessionParty?.memberSessions[userId].state.final}
+                    initial={sessionParty?.memberSessions[userId].state.initial}
+                    latest={
+                      sessionParty?.memberSessions[userId].state.answerStack[
+                        sessionParty?.memberSessions[userId].state.answerStack
+                          .length - 1
+                      ]
+                    }
+                  />
                 )}
               </li>
             );

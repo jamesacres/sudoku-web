@@ -65,6 +65,7 @@ export interface InviteResponse {
   resourceId: string;
   description?: string;
   sessionId?: string;
+  redirectUri?: string;
   createdBy: string;
   expiresAt: string;
   createdAt: string;
@@ -79,4 +80,7 @@ export interface Invite
 }
 
 export interface PublicInvite
-  extends Pick<Invite, 'description' | 'resourceId' | 'sessionId'> {}
+  extends Pick<
+    Invite,
+    'description' | 'resourceId' | 'sessionId' | 'redirectUri'
+  > {}

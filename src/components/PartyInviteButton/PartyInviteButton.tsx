@@ -4,10 +4,12 @@ import { Check, Copy, Loader } from 'react-feather';
 
 const PartyInviteButton = ({
   puzzleId,
+  redirectUri,
   partyId,
   partyName,
 }: {
   puzzleId: string;
+  redirectUri: string;
   partyId: string;
   partyName: string;
 }) => {
@@ -26,6 +28,7 @@ const PartyInviteButton = ({
       expiresAt.setDate(expiresAt.getDate() + 7);
       const invite = await createInvite({
         sessionId,
+        redirectUri,
         expiresAt: expiresAt.toISOString(),
         description: partyName,
         resourceId: `party-${partyId}`,

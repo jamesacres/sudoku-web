@@ -1,22 +1,26 @@
 import { useServerStorage } from '@/hooks/serverStorage';
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { memo, useCallback, useContext, useEffect, useState } from 'react';
 import { Loader, Users, X } from 'react-feather';
 import { PartyRow } from '../PartyRow/PartyRow';
 import { ServerState } from '@/types/state';
 import { UserContext } from '@/providers/UserProvider';
 import { Parties, Party, Session } from '@/types/serverTypes';
 
+interface Arguments {
+  showSidebar: boolean;
+  setShowSidebar: (showSidebar: boolean) => void;
+  puzzleId: string;
+  redirectUri: string;
+  sessionParties: Parties<Session<ServerState>>;
+}
+
 const SudokuSidebar = ({
   showSidebar,
   setShowSidebar,
   puzzleId,
+  redirectUri,
   sessionParties,
-}: {
-  showSidebar: boolean;
-  setShowSidebar: (showSidebar: boolean) => void;
-  puzzleId: string;
-  sessionParties: Parties<Session<ServerState>>;
-}) => {
+}: Arguments) => {
   const { user } = useContext(UserContext) || {};
   const { listParties, createParty } = useServerStorage({});
   const [parties, setParties] = useState<Party[]>([]);
@@ -177,6 +181,7 @@ const SudokuSidebar = ({
                     key={party.partyId}
                     party={party}
                     puzzleId={puzzleId}
+                    redirectUri={redirectUri}
                     sessionParty={sessionParties[party.partyId]}
                   />
                 );
@@ -188,4 +193,11 @@ const SudokuSidebar = ({
   );
 };
 
-export { SudokuSidebar };
+// Prevent re-render on timer change
+const MemoisedSudokuSidebar = memo(function MemoisedSudokuSidebar(
+  args: Arguments
+) {
+  return SudokuSidebar(args);
+});
+
+export default MemoisedSudokuSidebar;

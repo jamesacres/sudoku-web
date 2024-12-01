@@ -10,18 +10,13 @@ const HeaderUser = () => {
     React.useContext(UserContext) || {};
   const { isOnline } = useOnline();
 
-  const login = () => {
-    if (loginRedirect) {
-      loginRedirect();
-    }
-  };
   return user && logout ? (
     <UserButton user={user} logout={logout} />
   ) : (
     isOnline && (
       <button
         disabled={isLoggingIn}
-        onClick={() => login()}
+        onClick={() => loginRedirect && loginRedirect()}
         className={`${isLoggingIn ? 'cursor-wait' : ''} mr-4 mt-0 inline-block rounded bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300`}
       >
         Sign in

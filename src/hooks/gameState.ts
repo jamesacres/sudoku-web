@@ -235,7 +235,7 @@ function useGameState({
     }
     serverValuePromise.then((serverValue) => {
       if (active) {
-        if (serverValue?.parties?.length) {
+        if (serverValue?.parties && Object.keys(serverValue?.parties).length) {
           setSessionParties(serverValue.parties);
         }
         if (
@@ -278,7 +278,11 @@ function useGameState({
         completed,
       });
       serverValuePromise.then((serverValue) => {
-        if (active && serverValue?.parties?.length) {
+        if (
+          active &&
+          serverValue?.parties &&
+          Object.keys(serverValue.parties).length
+        ) {
           setSessionParties(serverValue.parties);
         }
       });
