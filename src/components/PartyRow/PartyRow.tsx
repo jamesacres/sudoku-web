@@ -38,11 +38,11 @@ const PartyRow = ({
                 )}
                 {!isUser && sessionParty?.memberSessions[userId] && (
                   <SimpleSudoku
-                    final={sessionParty?.memberSessions[userId].state.final}
-                    initial={sessionParty?.memberSessions[userId].state.initial}
+                    final={sessionParty.memberSessions[userId]!.state.final}
+                    initial={sessionParty.memberSessions[userId]!.state.initial}
                     latest={
-                      sessionParty?.memberSessions[userId].state.answerStack[
-                        sessionParty?.memberSessions[userId].state.answerStack
+                      sessionParty.memberSessions[userId]!.state.answerStack[
+                        sessionParty.memberSessions[userId]!.state.answerStack
                           .length - 1
                       ]
                     }
