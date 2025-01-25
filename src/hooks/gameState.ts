@@ -141,7 +141,8 @@ function useGameState({
   const reset = useCallback(() => {
     setRedoAnswerStack([]);
     setAnswerStack({ answerStack: [structuredClone(initial)] });
-  }, [initial]);
+    setTimerNewSession(null);
+  }, [initial, setTimerNewSession]);
 
   const reveal = useCallback(() => {
     pushAnswer(structuredClone(final));
