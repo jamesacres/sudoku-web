@@ -6,13 +6,18 @@ const SimpleSudoku = ({
   initial,
   final,
   latest,
+  transparent,
 }: {
   initial: Puzzle<number>;
   final: Puzzle<number>;
   latest: Puzzle<number | Notes>;
+  transparent?: boolean;
 }) => {
+  const background = transparent ? '' : 'bg-zinc-50 dark:bg-zinc-900';
   return (
-    <div className="mr-auto ml-auto grid max-w-xl grid-cols-3 grid-rows-3 border border-1 border-zinc-900 bg-zinc-50 lg:mr-0 dark:border-zinc-50 dark:bg-zinc-900">
+    <div
+      className={`mr-auto ml-auto grid max-w-xl grid-cols-3 grid-rows-3 border border-1 border-zinc-900 lg:mr-0 dark:border-zinc-50 ${background}`}
+    >
       {Array.from(Array(3)).map((_, y) =>
         Array.from(Array(3)).map((_, x) => {
           const boxId = calculateBoxId(x, y);

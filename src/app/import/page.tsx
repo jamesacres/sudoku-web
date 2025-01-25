@@ -160,6 +160,7 @@ export default function Home() {
               final={emptyPuzzle}
               initial={emptyPuzzle}
               latest={emptyPuzzle}
+              transparent={true}
             />
           </div>
         </div>
