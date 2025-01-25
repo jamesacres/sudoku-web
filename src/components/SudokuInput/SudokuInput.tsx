@@ -36,12 +36,12 @@ const SudokuInput = ({
 
   const textClass = isInitial
     ? 'text-zinc-500 dark:text-zinc-400'
-    : 'text-black dark:text-white';
+    : 'text-zinc-900 dark:text-zinc-50';
 
   return (
     <div
       onClick={(_) => setSelectedCell(cellId)}
-      className={`flex h-full w-full items-center justify-center border border-slate-400 ${backgroundClass}`}
+      className={`flex h-full w-full items-center justify-center border border-zinc-400 ${backgroundClass}`}
     >
       {isNotesMode ? (
         <SudokuInputNotes

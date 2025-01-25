@@ -22,7 +22,7 @@ const ThemeSwitch = () => {
           theme === 'dark' || resolvedTheme === 'dark' ? 'light' : 'dark'
         )
       }
-      className="rounded-full"
+      className="cursor-pointer rounded-full ring-white hover:ring-1"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

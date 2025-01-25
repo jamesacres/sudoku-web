@@ -26,7 +26,7 @@ const SudokuBox = ({
   isMiniNotes,
 }: Arguments) => {
   return (
-    <div className="grid aspect-square cursor-pointer grid-cols-3 grid-rows-3 border border-2 border-black dark:border-white">
+    <div className="grid aspect-square cursor-pointer grid-cols-3 grid-rows-3 border border-2 border-zinc-900 dark:border-zinc-50">
       {Array.from(Array(3)).map((_, y) =>
         Array.from(Array(3)).map((_, x) => {
           const cellId = calculateCellId(boxId, x, y);

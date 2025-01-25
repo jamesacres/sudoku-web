@@ -10,7 +10,9 @@ const HeaderOnline = () => {
   return (
     <button
       onClick={() => {
-        forceOffline(isOnline);
+        (!isOnline ||
+          window.confirm('Are you sure you wish to force offline mode?')) &&
+          forceOffline(isOnline);
       }}
       className="ml-2 h-8 w-8 cursor-pointer rounded-full ring-white hover:ring-1"
     >

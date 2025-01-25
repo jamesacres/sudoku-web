@@ -10,7 +10,11 @@ const HeaderBack = () => {
   return pathname === '/' ? (
     <span className="text-xl font-semibold tracking-tight">Sudoku</span>
   ) : (
-    <button type="button" onClick={() => router.replace('/')}>
+    <button
+      className="cursor-pointer"
+      type="button"
+      onClick={() => router.replace('/')}
+    >
       <ArrowLeft />
     </button>
   );

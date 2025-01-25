@@ -12,14 +12,14 @@ const SimpleSudoku = ({
   latest: Puzzle<number | Notes>;
 }) => {
   return (
-    <div className="mr-auto ml-auto grid max-w-xl grid-cols-3 grid-rows-3 border border-1 border-slate-400 lg:mr-0">
+    <div className="mr-auto ml-auto grid max-w-xl grid-cols-3 grid-rows-3 border border-1 border-zinc-900 bg-zinc-50 lg:mr-0 dark:border-zinc-50 dark:bg-zinc-900">
       {Array.from(Array(3)).map((_, y) =>
         Array.from(Array(3)).map((_, x) => {
           const boxId = calculateBoxId(x, y);
           return (
             <div
               key={boxId}
-              className="grid aspect-square cursor-pointer grid-cols-3 grid-rows-3 border border-slate-400"
+              className="grid aspect-square cursor-pointer grid-cols-3 grid-rows-3 border border-zinc-900 dark:border-zinc-50"
             >
               {Array.from(Array(3)).map((_, celly) =>
                 Array.from(Array(3)).map((_, cellx) => {
@@ -52,7 +52,7 @@ const SimpleSudoku = ({
                   return (
                     <div
                       key={cellId}
-                      className={`flex h-full w-full items-center justify-center border border-slate-400 ${correctBackground} ${incorrectBackground}`}
+                      className={`flex h-full w-full items-center justify-center border border-zinc-400 ${correctBackground} ${incorrectBackground}`}
                     >
                       {initialValue || ''}
                     </div>

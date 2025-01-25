@@ -97,7 +97,7 @@ const Sudoku = ({
               />
             </div>
           </div>
-          <div className="mr-auto ml-auto grid max-w-xl grid-cols-3 grid-rows-3 border border-2 border-slate-400 lg:mr-0">
+          <div className="mr-auto ml-auto grid max-w-xl grid-cols-3 grid-rows-3 border border-2 border-zinc-900 bg-zinc-50 lg:mr-0 dark:border-zinc-50 dark:bg-zinc-900">
             {Array.from(Array(3)).map((_, y) =>
               Array.from(Array(3)).map((_, x) => {
                 const boxId = calculateBoxId(x, y);

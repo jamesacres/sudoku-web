@@ -118,7 +118,7 @@ const SessionRow = (session: ServerStateResult<ServerState>) => {
   return (
     <li
       key={session.sessionId}
-      className="rounded-sm border-2 border-slate-600"
+      className="rounded-sm border-2 border-zinc-600 bg-zinc-800 hover:bg-zinc-700 disabled:bg-zinc-300"
     >
       <Link href={`/puzzle?initial=${initial}&final=${final}`}>
         <SimpleSudoku
@@ -126,12 +126,12 @@ const SessionRow = (session: ServerStateResult<ServerState>) => {
           final={puzzleTextToPuzzle(final)}
           latest={latest}
         />
-        <button className="mr-2 inline-block w-full bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300">
+        <div className="mr-2 inline-block w-full px-4 py-2 text-center text-white">
           Continue Game
           {session.state.timer !== undefined && (
             <TimerDisplay seconds={calculateSeconds(session.state.timer)} />
           )}
-        </button>
+        </div>
       </Link>
     </li>
   );
@@ -252,21 +252,21 @@ export default function Home() {
       <Footer>
         <button
           onClick={() => setTab(Tab.START_PUZZLE)}
-          className={`group inline-flex flex-col items-center justify-center px-5 ${tabBackground(Tab.START_PUZZLE)}`}
+          className={`group inline-flex cursor-pointer flex-col items-center justify-center px-5 ${tabBackground(Tab.START_PUZZLE)}`}
         >
           <Plus className="mb-2 h-5 w-5" />
           <span className="text-center text-sm">Start Puzzle</span>
         </button>
         <button
           onClick={() => setTab(Tab.MY_PUZZLES)}
-          className={`group inline-flex flex-col items-center justify-center px-5 ${tabBackground(Tab.MY_PUZZLES)}`}
+          className={`group inline-flex cursor-pointer flex-col items-center justify-center px-5 ${tabBackground(Tab.MY_PUZZLES)}`}
         >
           <Heart className="mb-2 h-5 w-5" />
           <span className="text-center text-sm">My Puzzles</span>
         </button>
         <button
           onClick={() => setTab(Tab.FRIENDS)}
-          className={`group inline-flex flex-col items-center justify-center px-5 ${tabBackground(Tab.FRIENDS)}`}
+          className={`group inline-flex cursor-pointer flex-col items-center justify-center px-5 ${tabBackground(Tab.FRIENDS)}`}
         >
           <Users className="mb-2 h-5 w-5" />
           <span className="text-center text-sm">Friends</span>
