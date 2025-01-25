@@ -40,6 +40,7 @@ const Sudoku = ({
     reveal,
     completed,
     setPauseTimer,
+    refreshSessionParties,
     sessionParties,
     showSidebar,
     setShowSidebar,
@@ -68,6 +69,7 @@ const Sudoku = ({
         setShowSidebar={setShowSidebar}
         puzzleId={puzzleId}
         redirectUri={redirectUri}
+        refreshSessionParties={refreshSessionParties}
         sessionParties={sessionParties}
       />
 

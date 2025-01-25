@@ -1,6 +1,6 @@
 import { useServerStorage } from '@/hooks/serverStorage';
 import { memo, useCallback, useContext, useEffect, useState } from 'react';
-import { Loader, Users, X } from 'react-feather';
+import { Loader, RefreshCw, Users, X } from 'react-feather';
 import { PartyRow } from '../PartyRow/PartyRow';
 import { ServerState } from '@/types/state';
 import { UserContext } from '@/providers/UserProvider';
@@ -11,6 +11,7 @@ interface Arguments {
   setShowSidebar: (showSidebar: boolean) => void;
   puzzleId: string;
   redirectUri: string;
+  refreshSessionParties: () => Promise<void>;
   sessionParties: Parties<Session<ServerState>>;
 }
 
@@ -19,6 +20,7 @@ const SudokuSidebar = ({
   setShowSidebar,
   puzzleId,
   redirectUri,
+  refreshSessionParties,
   sessionParties,
 }: Arguments) => {
   const { user, loginRedirect } = useContext(UserContext) || {};
@@ -26,6 +28,7 @@ const SudokuSidebar = ({
   const [parties, setParties] = useState<Party[]>([]);
   const [showCreateParty, setShowCreateParty] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [memberNickname, setMemberNickname] = useState(
     user?.given_name || user?.name || ''
   );
@@ -49,6 +52,16 @@ const SudokuSidebar = ({
     },
     [createParty]
   );
+
+  const refreshParties = useCallback(async () => {
+    setIsLoading(true);
+    const values = await listParties();
+    if (values) {
+      setParties(values);
+    }
+    await refreshSessionParties();
+    setIsLoading(false);
+  }, [listParties, refreshSessionParties]);
 
   useEffect(() => {
     let active = true;
@@ -176,22 +189,37 @@ const SudokuSidebar = ({
               </form>
             </div>
           )}
-          <ul>
-            {user &&
-              parties
-                .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-                .map((party) => {
-                  return (
-                    <PartyRow
-                      key={party.partyId}
-                      party={party}
-                      puzzleId={puzzleId}
-                      redirectUri={redirectUri}
-                      sessionParty={sessionParties[party.partyId]}
-                    />
-                  );
-                })}
-          </ul>
+          {user && parties.length && (
+            <>
+              <hr className="my-8" />
+              <h1 className="text-3xl">
+                Parties
+                <button
+                  className={`${isLoading ? 'cursor-wait' : ''} float-right cursor-pointer rounded-lg bg-neutral-500 px-2 py-2 text-sm text-white hover:bg-neutral-700`}
+                  disabled={isLoading}
+                  onClick={() => refreshParties()}
+                >
+                  <RefreshCw className="float-left mr-2" size={20} /> Refresh
+                </button>
+              </h1>
+
+              <ul>
+                {parties
+                  .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+                  .map((party) => {
+                    return (
+                      <PartyRow
+                        key={party.partyId}
+                        party={party}
+                        puzzleId={puzzleId}
+                        redirectUri={redirectUri}
+                        sessionParty={sessionParties[party.partyId]}
+                      />
+                    );
+                  })}
+              </ul>
+            </>
+          )}
         </div>
       </aside>
     </>

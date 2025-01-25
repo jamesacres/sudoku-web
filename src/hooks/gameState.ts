@@ -410,6 +410,14 @@ function useGameState({
     showSidebar,
   ]);
 
+  const refreshSessionParties = async () => {
+    const { serverValuePromise } = getValue() || {};
+    const serverValue = await serverValuePromise;
+    if (serverValue?.parties && Object.keys(serverValue?.parties).length) {
+      setSessionParties(serverValue.parties);
+    }
+  };
+
   return {
     answer,
     selectedCell,
@@ -432,6 +440,7 @@ function useGameState({
     reveal,
     completed,
     setPauseTimer,
+    refreshSessionParties,
     sessionParties,
     showSidebar,
     setShowSidebar,
