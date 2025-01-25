@@ -189,7 +189,7 @@ const SudokuSidebar = ({
               </form>
             </div>
           )}
-          {user && parties.length && (
+          {user && !!parties.length && (
             <>
               <hr className="my-8" />
               <h1 className="text-3xl">
