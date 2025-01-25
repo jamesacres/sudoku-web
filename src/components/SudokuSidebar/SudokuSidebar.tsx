@@ -195,8 +195,8 @@ const SudokuSidebar = ({
               <h1 className="text-3xl">
                 Parties
                 <button
-                  className={`${isLoading ? 'cursor-wait' : ''} float-right cursor-pointer rounded-lg bg-neutral-500 px-2 py-2 text-sm text-white hover:bg-neutral-700`}
-                  disabled={isLoading}
+                  className={`${isLoading || isSaving ? 'cursor-wait' : ''} float-right cursor-pointer rounded-lg bg-neutral-500 px-2 py-2 text-sm text-white hover:bg-neutral-700`}
+                  disabled={isLoading || isSaving}
                   onClick={() => refreshParties()}
                 >
                   <RefreshCw className="float-left mr-2" size={20} /> Refresh
