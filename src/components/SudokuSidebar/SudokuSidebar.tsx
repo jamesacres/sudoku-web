@@ -70,7 +70,7 @@ const SudokuSidebar = ({
     <>
       {showSidebar && (
         <div
-          className="fixed left-0 top-0 z-50 h-full w-full bg-black opacity-50"
+          className="fixed top-0 left-0 z-50 h-full w-full bg-black opacity-50"
           onClick={() => {
             setShowSidebar(!showSidebar);
           }}
@@ -78,7 +78,7 @@ const SudokuSidebar = ({
       )}
       <aside
         id="default-sidebar"
-        className={`fixed left-0 top-0 z-50 h-screen w-60 xl:top-20 ${showSidebar ? '' : '-translate-x-full'} transition-transform xl:translate-x-0`}
+        className={`fixed top-0 left-0 z-50 h-screen w-60 xl:top-20 ${showSidebar ? '' : '-translate-x-full'} transition-transform xl:translate-x-0`}
         aria-label="Sidebar"
       >
         <div className="h-full overflow-y-auto bg-zinc-100 px-3 py-4 drop-shadow-md dark:bg-zinc-800">
@@ -111,7 +111,7 @@ const SudokuSidebar = ({
             </button>
           )}
           {showCreateParty && (
-            <div className="rounded border-2 border-neutral-500 p-2">
+            <div className="rounded-sm border-2 border-neutral-500 p-2">
               <p className="mb-4">
                 We recommend creating more than one party, e.g. one for your
                 family and one for your friends. All party members can see each
@@ -132,7 +132,7 @@ const SudokuSidebar = ({
                 </label>
                 <input
                   id="form-nickname"
-                  className={`${isSaving ? 'cursor-wait' : ''} mr-0 w-full appearance-none rounded border-2 border-neutral-500 bg-transparent px-2 py-2 leading-tight text-black focus:outline-none dark:text-white`}
+                  className={`${isSaving ? 'cursor-wait' : ''} mr-0 w-full appearance-none rounded-sm border-2 border-neutral-500 bg-transparent px-2 py-2 leading-tight text-black focus:outline-hidden dark:text-white`}
                   type="text"
                   placeholder="Nickname"
                   aria-label="Nickname"
@@ -151,7 +151,7 @@ const SudokuSidebar = ({
                 <div className="flex items-center">
                   <input
                     id="form-party-name"
-                    className={`${isSaving ? 'cursor-wait' : ''} mr-0 w-full appearance-none rounded-l border-2 border-neutral-500 bg-transparent px-2 py-2 leading-tight text-black focus:outline-none dark:text-white`}
+                    className={`${isSaving ? 'cursor-wait' : ''} mr-0 w-full appearance-none rounded-l border-2 border-neutral-500 bg-transparent px-2 py-2 leading-tight text-black focus:outline-hidden dark:text-white`}
                     type="text"
                     placeholder="e.g. Family"
                     aria-label="Party name"
@@ -162,7 +162,7 @@ const SudokuSidebar = ({
                     }}
                   />
                   <button
-                    className={`${isSaving ? 'cursor-wait' : ''} flex-shrink-0 rounded-r bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700`}
+                    className={`${isSaving ? 'cursor-wait' : ''} shrink-0 rounded-r bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700`}
                     type="submit"
                     disabled={isSaving}
                   >

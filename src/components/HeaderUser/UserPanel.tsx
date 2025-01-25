@@ -8,7 +8,7 @@ export const UserPanel = ({
   user: UserProfile;
   logout: () => void;
 }) => (
-  <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black/5">
+  <div className="overflow-hidden rounded-lg ring-1 shadow-lg ring-black/5">
     <div className="bg-gray-50 p-4">
       <div className="flow-root rounded-md px-2 py-2">
         <div className="float-left mr-4">
@@ -21,14 +21,14 @@ export const UserPanel = ({
       </div>
     </div>
     <div className="bg-gray-200 p-4">
-      <div className="block flex flex-grow items-center text-gray-600">
+      <div className="block flex grow items-center text-gray-600">
         <button
           onClick={() => logout()}
-          className="rounded bg-gray-200 px-4 py-2 outline outline-1 outline-gray-400 hover:bg-gray-300"
+          className="rounded-sm bg-gray-200 px-4 py-2 outline outline-1 outline-gray-400 hover:bg-gray-300"
         >
           Sign out
         </button>
-        <div className="flex-grow"></div>
+        <div className="grow"></div>
         <a
           href="https://bubblyclouds.com/privacy"
           target="_blank"
@@ -46,7 +46,7 @@ export const UserPanel = ({
       </div>
     </div>
     <div className="m-auto flex flex-wrap items-center justify-between bg-white bg-zinc-700 p-2 text-sm text-white">
-      <div className="mr-6 flex flex-shrink-0 items-center">
+      <div className="mr-6 flex shrink-0 items-center">
         <span className="tracking-tight">
           Powered by{' '}
           <a

@@ -34,14 +34,14 @@ const StartPuzzle = () => {
       </p>
       <Link
         href="/import"
-        className="mr-2 mt-2 inline-block rounded bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300"
+        className="mt-2 mr-2 inline-block rounded-sm bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300"
       >
         <Camera className="float-left mr-2" /> Import with camera
       </Link>
-      <h2 className="mb-2 mt-8 text-2xl font-extrabold">Sudoku of the Day</h2>
+      <h2 className="mt-8 mb-2 text-2xl font-extrabold">Sudoku of the Day</h2>
       <p>Solve our Sudoku of the Day!</p>
       <p>Coming soon!</p>
-      <h2 className="mb-2 mt-8 text-2xl font-extrabold">
+      <h2 className="mt-8 mb-2 text-2xl font-extrabold">
         Puzzles from Friends
       </h2>
       <p>Coming soon!</p>
@@ -94,14 +94,14 @@ const Friends = () => {
       <h2 className="mb-2 text-2xl font-extrabold">My Parties</h2>
       <Link
         href="/"
-        className="mr-2 mt-2 inline-block rounded bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300"
+        className="mt-2 mr-2 inline-block rounded-sm bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300"
       >
         <Users className="float-left mr-2" /> Create a Party
       </Link>
       <h2 className="mb-2">Test Party</h2>
       <Link
         href="/"
-        className="mr-2 mt-2 inline-block rounded bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300"
+        className="mt-2 mr-2 inline-block rounded-sm bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300"
       >
         <UserPlus className="float-left mr-2" /> Invite to Party (only if
         created by user)
@@ -116,7 +116,10 @@ const SessionRow = (session: ServerStateResult<ServerState>) => {
   const latest =
     session.state.answerStack[session.state.answerStack.length - 1];
   return (
-    <li key={session.sessionId} className="rounded	border-2 border-slate-600">
+    <li
+      key={session.sessionId}
+      className="rounded-sm border-2 border-slate-600"
+    >
       <Link href={`/puzzle?initial=${initial}&final=${final}`}>
         <SimpleSudoku
           initial={puzzleTextToPuzzle(initial)}

@@ -119,13 +119,13 @@ function InviteComponent() {
                 <>
                   <div className="mb-4">
                     <label
-                      className="mb-2 mt-4 block text-sm font-bold"
+                      className="mt-4 mb-2 block text-sm font-bold"
                       htmlFor="memberNickname"
                     >
                       What does this group call you? (Nickname)
                     </label>
                     <input
-                      className={`${isJoining ? 'cursor-wait' : ''} inline-block rounded border-2 border-neutral-600 bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 focus:outline-none disabled:bg-neutral-300`}
+                      className={`${isJoining ? 'cursor-wait' : ''} inline-block rounded-sm border-2 border-neutral-600 bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 focus:outline-hidden disabled:bg-neutral-300`}
                       disabled={isJoining}
                       id="memberNickname"
                       type="text"
@@ -139,7 +139,7 @@ function InviteComponent() {
                     onClick={() => {
                       joinParty();
                     }}
-                    className={`${isJoining ? 'cursor-wait' : ''} mt-4 inline-block rounded bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300`}
+                    className={`${isJoining ? 'cursor-wait' : ''} mt-4 inline-block rounded-sm bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300`}
                   >
                     {isJoining ? (
                       <Loader className="animate-spin" />
@@ -152,7 +152,7 @@ function InviteComponent() {
                 <button
                   disabled={isLoggingIn}
                   onClick={() => loginRedirect && loginRedirect()}
-                  className={`${isLoggingIn ? 'cursor-wait' : ''} mr-4 mt-4 inline-block rounded bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300`}
+                  className={`${isLoggingIn ? 'cursor-wait' : ''} mt-4 mr-4 inline-block rounded-sm bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300`}
                 >
                   Sign in to continue
                 </button>

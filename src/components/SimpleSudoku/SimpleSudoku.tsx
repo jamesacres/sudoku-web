@@ -12,7 +12,7 @@ const SimpleSudoku = ({
   latest: Puzzle<number | Notes>;
 }) => {
   return (
-    <div className="border-1 ml-auto mr-auto grid max-w-xl grid-cols-3 grid-rows-3 border border-slate-400 lg:mr-0">
+    <div className="mr-auto ml-auto grid max-w-xl grid-cols-3 grid-rows-3 border border-1 border-slate-400 lg:mr-0">
       {Array.from(Array(3)).map((_, y) =>
         Array.from(Array(3)).map((_, x) => {
           const boxId = calculateBoxId(x, y);
