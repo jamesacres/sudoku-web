@@ -12,15 +12,9 @@ const TimerDisplay = ({
 }) => {
   let content;
   if (isComplete) {
-    content = (
-      <span className="text-xl">👏🎉 {formatSeconds(seconds)} 🎉👏</span>
-    );
+    content = <span>👏🎉 {formatSeconds(seconds)} 🎉👏</span>;
   } else if (countdown) {
-    content = (
-      <span className="text-2xl">
-        {countdown === 1 ? 'GO!' : countdown - 1}
-      </span>
-    );
+    content = <span>{countdown === 1 ? 'GO!' : countdown - 1}</span>;
   } else {
     content = (
       <>

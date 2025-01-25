@@ -91,7 +91,9 @@ const Sudoku = ({
                 Friends
               </button>
             </div>
-            <div className="grow text-right">
+            <div
+              className={`grow text-right ${timer?.countdown || !!completed ? 'text-2xl' : ''}`}
+            >
               <TimerDisplay
                 seconds={calculateSeconds(timer)}
                 countdown={timer?.countdown}

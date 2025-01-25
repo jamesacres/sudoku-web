@@ -2,6 +2,8 @@ import { Party, SessionParty, Session } from '@/types/serverTypes';
 import { ServerState } from '@/types/state';
 import { PartyInviteButton } from '../PartyInviteButton/PartyInviteButton';
 import SimpleSudoku from '../SimpleSudoku';
+import { TimerDisplay } from '../TimerDisplay/TimerDisplay';
+import { calculateSeconds } from '@/helpers/calculateSeconds';
 
 const PartyRow = ({
   party: { partyName, isOwner, members, partyId },
@@ -35,6 +37,16 @@ const PartyRow = ({
                 {isUser && ' (you)'}
                 {!isUser && !sessionParty?.memberSessions[userId] && (
                   <p>Not started! Ask them to play</p>
+                )}
+                {sessionParty?.memberSessions[userId]?.state.timer && (
+                  <TimerDisplay
+                    seconds={calculateSeconds(
+                      sessionParty?.memberSessions[userId]?.state.timer
+                    )}
+                    isComplete={
+                      !!sessionParty?.memberSessions[userId]?.state.completed
+                    }
+                  />
                 )}
                 {!isUser && sessionParty?.memberSessions[userId] && (
                   <div className="mt-2">
