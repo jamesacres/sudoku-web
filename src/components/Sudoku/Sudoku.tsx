@@ -89,7 +89,7 @@ const Sudoku = ({
                 Friends
               </button>
             </div>
-            <div className="flex-grow">
+            <div className="flex-grow text-right">
               <TimerDisplay
                 seconds={calculateSeconds(timer)}
                 countdown={timer?.countdown}
