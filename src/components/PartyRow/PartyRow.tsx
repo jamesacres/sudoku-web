@@ -37,7 +37,7 @@ const PartyRow = ({
                   <p>Not started! Ask them to play</p>
                 )}
                 {!isUser && sessionParty?.memberSessions[userId] && (
-                  <div className="mt-2 text-black dark:text-white">
+                  <div className="mt-2">
                     <SimpleSudoku
                       final={sessionParty.memberSessions[userId]!.state.final}
                       initial={
