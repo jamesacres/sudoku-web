@@ -41,7 +41,7 @@ const PartyRow = ({
                 {sessionParty?.memberSessions[userId]?.state.timer && (
                   <TimerDisplay
                     seconds={calculateSeconds(
-                      sessionParty?.memberSessions[userId]?.state.timer
+                      sessionParty?.memberSessions[userId]?.state.timer!
                     )}
                     isComplete={
                       !!sessionParty?.memberSessions[userId]?.state.completed
