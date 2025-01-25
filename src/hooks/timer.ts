@@ -20,14 +20,14 @@ function useTimer({ puzzleId }: { puzzleId: string }) {
 
   // Timer - calculates time spent on page
 
-  const setTimerNewSession = useCallback((restoreTimer?: Timer) => {
+  const setTimerNewSession = useCallback((restoreTimer?: Timer | null) => {
     const COUNTDOWN = 4;
     const nowDate = new Date();
     nowDate.setSeconds(nowDate.getSeconds() + COUNTDOWN);
     const now = nowDate.toISOString();
 
     setTimer((currentTimer) => {
-      const timer = restoreTimer || currentTimer;
+      const timer = restoreTimer !== undefined ? restoreTimer : currentTimer;
       return {
         ...timer,
         seconds: calculateSeconds(timer),

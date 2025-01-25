@@ -52,25 +52,24 @@ const PartyInviteButton = ({
 
   return (
     <button
-      className="mt-2 w-full rounded-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300"
+      className="mt-2 w-full cursor-pointer rounded-lg bg-neutral-500 px-4 py-2 text-sm text-white hover:bg-neutral-700 disabled:bg-neutral-300"
       onClick={async () => {
         await copyInviteUrl();
       }}
     >
       {showCopied ? (
         <>
-          <Check className="float-left mr-2" /> Copied invite link! Paste in a
-          message to a friend
+          <Check className="float-left mr-2" size={20} /> Copied to clipboard!
         </>
       ) : (
         <>
           {isLoading ? (
             <>
-              <Loader className="animate-spin" />
+              <Loader className="animate-spin" size={20} />
             </>
           ) : (
             <>
-              <Copy className="float-left mr-2" /> Copy Invite URL
+              <Copy className="float-left mr-2" size={20} /> Copy Invite URL
             </>
           )}
         </>

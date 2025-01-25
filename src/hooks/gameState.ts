@@ -2,7 +2,7 @@
 
 import { Puzzle } from '@/types/puzzle';
 import { Notes, ToggleNote } from '@/types/notes';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import {
   calculateBoxId,
   calculateCellId,
@@ -17,6 +17,7 @@ import { StateType } from '@/types/StateType';
 import { useTimer } from './timer';
 import { calculateSeconds } from '@/helpers/calculateSeconds';
 import { Parties, ServerStateResult, Session } from '@/types/serverTypes';
+import { UserContext } from '@/providers/UserProvider';
 
 function useGameState({
   final,
@@ -27,6 +28,8 @@ function useGameState({
   initial: Puzzle<number>;
   puzzleId: string;
 }) {
+  const { user, loginRedirect } = useContext(UserContext) || {};
+
   const { timer, setTimerNewSession, stopTimer, setPauseTimer } = useTimer({
     puzzleId,
   });
@@ -138,7 +141,8 @@ function useGameState({
   const reset = useCallback(() => {
     setRedoAnswerStack([]);
     setAnswerStack({ answerStack: [structuredClone(initial)] });
-  }, [initial]);
+    setTimerNewSession(null);
+  }, [initial, setTimerNewSession]);
 
   const reveal = useCallback(() => {
     pushAnswer(structuredClone(final));
@@ -207,14 +211,19 @@ function useGameState({
     undefined | Puzzle<boolean | undefined>
   >(undefined);
   const validateGrid = useCallback(
-    () => setValidation(checkGrid(initial, final, answer).validation),
-    [initial, final, answer]
+    () =>
+      validation
+        ? setValidation(undefined)
+        : setValidation(checkGrid(initial, final, answer).validation),
+    [initial, final, answer, validation]
   );
   const validateCell = useCallback(
     () =>
       selectedCell &&
-      setValidation(checkCell(selectedCell, initial, final, answer)),
-    [selectedCell, initial, final, answer]
+      (validation
+        ? setValidation(undefined)
+        : setValidation(checkCell(selectedCell, initial, final, answer))),
+    [validation, selectedCell, initial, final, answer]
   );
   useEffect(() => {
     setValidation(undefined);
@@ -226,6 +235,13 @@ function useGameState({
 
     const { localValue, serverValuePromise } = getValue() || {};
     if (localValue) {
+      // If not logged in, force sign in to resume
+      // This will become a premium feature
+      if (!user && loginRedirect) {
+        loginRedirect();
+        return;
+      }
+
       setAnswerStack({
         answerStack: localValue.state.answerStack,
         isRestored: true,
@@ -267,7 +283,7 @@ function useGameState({
     return () => {
       active = false;
     };
-  }, [puzzleId, getValue, setTimerNewSession]);
+  }, [loginRedirect, user, puzzleId, getValue, setTimerNewSession]);
   useEffect(() => {
     let active = true;
     if (!isDisabled && !isRestored && answerStack.length > 0) {
@@ -303,13 +319,30 @@ function useGameState({
 
   // Handle keyboard
   useEffect(() => {
-    const keydownHandler = (e: KeyboardEvent) => {
+    const ignoreKeyboard = (e: KeyboardEvent) => {
       const insideForm = /^(?:input|textarea|select|button)$/i.test(
         (<any>e.target)?.tagName
       );
-      const ignoreKeyboard = completed || showSidebar || insideForm;
-      if (ignoreKeyboard) {
+      return completed || showSidebar || insideForm;
+    };
+    const keyupHandler = (e: KeyboardEvent) => {
+      if (ignoreKeyboard(e)) {
         return;
+      }
+      if (e.key === 'Shift') {
+        // Release shift to disable notes
+        setIsNotesMode(false);
+        e.preventDefault();
+      }
+    };
+    const keydownHandler = (e: KeyboardEvent) => {
+      if (ignoreKeyboard(e)) {
+        return;
+      }
+      if (e.key === 'Shift') {
+        // Hold shift to enable notes
+        setIsNotesMode(true);
+        e.preventDefault();
       }
       if (e.key === 'n') {
         setIsNotesMode(!isNotesMode);
@@ -348,13 +381,21 @@ function useGameState({
       } else if (/[1-9]/.test(e.key)) {
         selectNumber(Number(e.key));
         e.preventDefault();
+      } else if (/Digit[1-9]/.test(e.code)) {
+        // Handle number when shift key pressed
+        selectNumber(Number(e.code.replace('Digit', '')));
+        e.preventDefault();
       }
       if (nextCell) {
         setSelectedCell(nextCell);
       }
     };
     window.addEventListener('keydown', keydownHandler);
-    return () => window.removeEventListener('keydown', keydownHandler);
+    window.addEventListener('keyup', keyupHandler);
+    return () => {
+      window.removeEventListener('keydown', keydownHandler);
+      window.removeEventListener('keyup', keyupHandler);
+    };
   }, [
     isNotesMode,
     redo,
@@ -369,6 +410,14 @@ function useGameState({
     validateGrid,
     showSidebar,
   ]);
+
+  const refreshSessionParties = async () => {
+    const { serverValuePromise } = getValue() || {};
+    const serverValue = await serverValuePromise;
+    if (serverValue?.parties && Object.keys(serverValue?.parties).length) {
+      setSessionParties(serverValue.parties);
+    }
+  };
 
   return {
     answer,
@@ -392,6 +441,7 @@ function useGameState({
     reveal,
     completed,
     setPauseTimer,
+    refreshSessionParties,
     sessionParties,
     showSidebar,
     setShowSidebar,

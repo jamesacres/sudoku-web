@@ -51,18 +51,21 @@ const SudokuControls = ({
   reveal,
 }: Arguments) => {
   return (
-    <div className="mb-8 mt-4 pl-0 pr-2 pt-4 xl:max-w-lg">
+    <div className="mt-4 mb-8 pt-4 pr-2 pl-0 xl:max-w-lg">
       <div className="hidden lg:block">
         <HintBox>
-          Keyboard: arrow keys, undo, redo, n to toggle notes mode,
-          <br />c to validate cell, g to validate grid.
+          Keyboard: arrow keys, undo, redo.
+          <br />
+          Hold shift or press n to toggle notes mode.
+          <br />
+          Press c to validate cell, g to validate grid.
         </HintBox>
       </div>
       <div className="flex gap-4">
-        <div className="flex-grow"></div>
+        <div className="grow"></div>
         <div className="flex items-center justify-start text-sm">
           <button
-            className="ml-2 mr-2"
+            className="mr-2 ml-2 cursor-pointer disabled:cursor-not-allowed"
             onClick={() => setIsNotesMode(!isNotesMode)}
           >
             {isNotesMode ? (
@@ -78,7 +81,7 @@ const SudokuControls = ({
         </div>
         <div className="flex items-center justify-start text-sm">
           <button
-            className="ml-2 mr-2"
+            className="mr-2 ml-2 cursor-pointer disabled:cursor-not-allowed"
             onClick={() => setIsMiniNotes(!isMiniNotes)}
           >
             {isMiniNotes ? (
@@ -92,7 +95,7 @@ const SudokuControls = ({
             <Toggle isEnabled={isMiniNotes} setEnabled={setIsMiniNotes} />
           </div>
         </div>
-        <div className="flex-grow"></div>
+        <div className="grow"></div>
       </div>
       <div className="flex flex-col items-center justify-center lg:flex-row">
         <div className="mx-auto mt-2" style={{ minWidth: 120 }}>
@@ -103,7 +106,7 @@ const SudokuControls = ({
             />
           </div>
         </div>
-        <div className="mt-2 flex flex-row flex-col flex-wrap text-center">
+        <div className="mt-2 flex flex-col flex-row flex-wrap text-center">
           <div
             className="mr-2 inline-flex flex-nowrap items-center"
             role="group"
@@ -112,7 +115,7 @@ const SudokuControls = ({
             <button
               disabled={isValidateCellDisabled}
               onClick={() => selectNumber(0)}
-              className="mt-2 rounded-l-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300"
+              className="mt-2 cursor-pointer rounded-l-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:cursor-not-allowed disabled:bg-neutral-300"
             >
               <Delete className="float-left mr-2" />
               Delete
@@ -123,7 +126,7 @@ const SudokuControls = ({
                   'Are you sure you wish to reset the whole grid?'
                 ) && reset();
               }}
-              className="mt-2 rounded-r-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300"
+              className="mt-2 cursor-pointer rounded-r-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:cursor-not-allowed disabled:bg-neutral-300"
             >
               <RefreshCw className="float-left mr-2" />
               Reset
@@ -137,7 +140,7 @@ const SudokuControls = ({
             <button
               disabled={isUndoDisabled}
               onClick={() => undo()}
-              className="mt-2 rounded-l-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300"
+              className="mt-2 cursor-pointer rounded-l-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:cursor-not-allowed disabled:bg-neutral-300"
             >
               <CornerUpLeft className="float-left mr-2" />
               Undo
@@ -145,7 +148,7 @@ const SudokuControls = ({
             <button
               disabled={isRedoDisabled}
               onClick={() => redo()}
-              className="mt-2 rounded-r-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300"
+              className="mt-2 cursor-pointer rounded-r-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:cursor-not-allowed disabled:bg-neutral-300"
             >
               Redo
               <CornerUpRight className="float-right ml-2" />
@@ -159,7 +162,7 @@ const SudokuControls = ({
             <button
               disabled={isValidateCellDisabled}
               onClick={() => validateCell()}
-              className="mt-2 rounded-l-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300"
+              className="mt-2 cursor-pointer rounded-l-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:cursor-not-allowed disabled:bg-neutral-300"
             >
               <Square className="float-left mr-2" />
             </button>
@@ -168,7 +171,7 @@ const SudokuControls = ({
             </div>
             <button
               onClick={() => validateGrid()}
-              className="mt-2 rounded-r-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700"
+              className="mt-2 cursor-pointer rounded-r-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:cursor-not-allowed"
             >
               <Grid className="float-right ml-2" />
             </button>
@@ -184,7 +187,7 @@ const SudokuControls = ({
                   'Are you sure you wish to reveal the whole grid?'
                 ) && reveal();
               }}
-              className="mt-2 rounded-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300"
+              className="mt-2 cursor-pointer rounded-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:cursor-not-allowed disabled:bg-neutral-300"
             >
               <Unlock className="float-left mr-2" />
               Reveal

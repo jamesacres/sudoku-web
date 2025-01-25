@@ -1,6 +1,6 @@
 import { useServerStorage } from '@/hooks/serverStorage';
 import { memo, useCallback, useContext, useEffect, useState } from 'react';
-import { Loader, Users, X } from 'react-feather';
+import { Loader, RefreshCw, Users, X } from 'react-feather';
 import { PartyRow } from '../PartyRow/PartyRow';
 import { ServerState } from '@/types/state';
 import { UserContext } from '@/providers/UserProvider';
@@ -11,6 +11,7 @@ interface Arguments {
   setShowSidebar: (showSidebar: boolean) => void;
   puzzleId: string;
   redirectUri: string;
+  refreshSessionParties: () => Promise<void>;
   sessionParties: Parties<Session<ServerState>>;
 }
 
@@ -19,13 +20,15 @@ const SudokuSidebar = ({
   setShowSidebar,
   puzzleId,
   redirectUri,
+  refreshSessionParties,
   sessionParties,
 }: Arguments) => {
-  const { user } = useContext(UserContext) || {};
+  const { user, loginRedirect } = useContext(UserContext) || {};
   const { listParties, createParty } = useServerStorage({});
   const [parties, setParties] = useState<Party[]>([]);
   const [showCreateParty, setShowCreateParty] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [memberNickname, setMemberNickname] = useState(
     user?.given_name || user?.name || ''
   );
@@ -50,6 +53,16 @@ const SudokuSidebar = ({
     [createParty]
   );
 
+  const refreshParties = useCallback(async () => {
+    setIsLoading(true);
+    const values = await listParties();
+    if (values) {
+      setParties(values);
+    }
+    await refreshSessionParties();
+    setIsLoading(false);
+  }, [listParties, refreshSessionParties]);
+
   useEffect(() => {
     let active = true;
 
@@ -70,7 +83,7 @@ const SudokuSidebar = ({
     <>
       {showSidebar && (
         <div
-          className="fixed left-0 top-0 z-50 h-full w-full bg-black opacity-50"
+          className="fixed top-0 left-0 z-50 h-full w-full bg-black opacity-50"
           onClick={() => {
             setShowSidebar(!showSidebar);
           }}
@@ -78,7 +91,7 @@ const SudokuSidebar = ({
       )}
       <aside
         id="default-sidebar"
-        className={`fixed left-0 top-0 z-50 h-screen w-60 xl:top-20 ${showSidebar ? '' : '-translate-x-full'} transition-transform xl:translate-x-0`}
+        className={`fixed top-0 left-0 z-50 h-screen w-60 xl:top-20 ${showSidebar ? '' : '-translate-x-full'} transition-transform xl:translate-x-0`}
         aria-label="Sidebar"
       >
         <div className="h-full overflow-y-auto bg-zinc-100 px-3 py-4 drop-shadow-md dark:bg-zinc-800">
@@ -91,7 +104,7 @@ const SudokuSidebar = ({
               onClick={() => {
                 setShowSidebar(!showSidebar);
               }}
-              className="w-full rounded-lg px-4 py-2 text-right dark:text-white"
+              className="w-full cursor-pointer rounded-lg px-4 py-2 text-right dark:text-white"
             >
               Close
               <X className="float-right ml-2" />
@@ -103,15 +116,19 @@ const SudokuSidebar = ({
           </p>
           {!showCreateParty && (
             <button
-              className="mt-2 w-full rounded-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700"
-              onClick={() => setShowCreateParty(true)}
+              className="mt-2 w-full cursor-pointer rounded-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700"
+              onClick={() =>
+                user
+                  ? setShowCreateParty(true)
+                  : loginRedirect && loginRedirect()
+              }
             >
               <Users className="float-left mr-2" />
-              Create a Party
+              Create Party
             </button>
           )}
           {showCreateParty && (
-            <div className="rounded border-2 border-neutral-500 p-2">
+            <div className="rounded-sm border-2 border-neutral-500 p-2">
               <p className="mb-4">
                 We recommend creating more than one party, e.g. one for your
                 family and one for your friends. All party members can see each
@@ -132,7 +149,7 @@ const SudokuSidebar = ({
                 </label>
                 <input
                   id="form-nickname"
-                  className={`${isSaving ? 'cursor-wait' : ''} mr-0 w-full appearance-none rounded border-2 border-neutral-500 bg-transparent px-2 py-2 leading-tight text-black focus:outline-none dark:text-white`}
+                  className={`${isSaving ? 'cursor-wait' : ''} mr-0 w-full appearance-none rounded-sm border-2 border-neutral-500 bg-transparent px-2 py-2 leading-tight text-black focus:outline-hidden dark:text-white`}
                   type="text"
                   placeholder="Nickname"
                   aria-label="Nickname"
@@ -151,7 +168,7 @@ const SudokuSidebar = ({
                 <div className="flex items-center">
                   <input
                     id="form-party-name"
-                    className={`${isSaving ? 'cursor-wait' : ''} mr-0 w-full appearance-none rounded-l border-2 border-neutral-500 bg-transparent px-2 py-2 leading-tight text-black focus:outline-none dark:text-white`}
+                    className={`${isSaving ? 'cursor-wait' : ''} mr-0 w-full appearance-none rounded-l border-2 border-neutral-500 bg-transparent px-2 py-2 leading-tight text-black focus:outline-hidden dark:text-white`}
                     type="text"
                     placeholder="e.g. Family"
                     aria-label="Party name"
@@ -162,7 +179,7 @@ const SudokuSidebar = ({
                     }}
                   />
                   <button
-                    className={`${isSaving ? 'cursor-wait' : ''} flex-shrink-0 rounded-r bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700`}
+                    className={`${isSaving ? 'cursor-wait' : 'cursor-pointer'} shrink-0 rounded-r bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700`}
                     type="submit"
                     disabled={isSaving}
                   >
@@ -172,21 +189,37 @@ const SudokuSidebar = ({
               </form>
             </div>
           )}
-          <ul>
-            {parties
-              .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-              .map((party) => {
-                return (
-                  <PartyRow
-                    key={party.partyId}
-                    party={party}
-                    puzzleId={puzzleId}
-                    redirectUri={redirectUri}
-                    sessionParty={sessionParties[party.partyId]}
-                  />
-                );
-              })}
-          </ul>
+          {user && parties.length && (
+            <>
+              <hr className="my-8" />
+              <h1 className="text-3xl">
+                Parties
+                <button
+                  className={`${isLoading || isSaving ? 'cursor-wait' : ''} float-right cursor-pointer rounded-lg bg-neutral-500 px-2 py-2 text-sm text-white hover:bg-neutral-700`}
+                  disabled={isLoading || isSaving}
+                  onClick={() => refreshParties()}
+                >
+                  <RefreshCw className="float-left mr-2" size={20} /> Refresh
+                </button>
+              </h1>
+
+              <ul>
+                {parties
+                  .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+                  .map((party) => {
+                    return (
+                      <PartyRow
+                        key={party.partyId}
+                        party={party}
+                        puzzleId={puzzleId}
+                        redirectUri={redirectUri}
+                        sessionParty={sessionParties[party.partyId]}
+                      />
+                    );
+                  })}
+              </ul>
+            </>
+          )}
         </div>
       </aside>
     </>

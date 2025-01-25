@@ -31,20 +31,17 @@ const SudokuInput = ({
   if (!isNotesMode && value && validation !== undefined) {
     backgroundClass = validation ? 'bg-green-600' : 'bg-red-600';
   } else if (isSelected) {
-    const initialBackgroundClass = isInitial
-      ? 'dark:bg-opacity-75 bg-opacity-50'
-      : '';
-    backgroundClass = `dark:bg-neutral-600 bg-neutral-300 ${initialBackgroundClass}`;
+    backgroundClass = `dark:bg-neutral-600${isInitial ? '/75' : ''} bg-neutral-300${isInitial ? '/50' : ''}`;
   }
 
   const textClass = isInitial
     ? 'text-zinc-500 dark:text-zinc-400'
-    : 'text-black dark:text-white';
+    : 'text-zinc-900 dark:text-zinc-50';
 
   return (
     <div
       onClick={(_) => setSelectedCell(cellId)}
-      className={`flex h-full w-full items-center justify-center border border-slate-400 ${backgroundClass}`}
+      className={`flex h-full w-full items-center justify-center border border-zinc-400 ${backgroundClass}`}
     >
       {isNotesMode ? (
         <SudokuInputNotes
