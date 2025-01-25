@@ -207,14 +207,19 @@ function useGameState({
     undefined | Puzzle<boolean | undefined>
   >(undefined);
   const validateGrid = useCallback(
-    () => setValidation(checkGrid(initial, final, answer).validation),
-    [initial, final, answer]
+    () =>
+      validation
+        ? setValidation(undefined)
+        : setValidation(checkGrid(initial, final, answer).validation),
+    [initial, final, answer, validation]
   );
   const validateCell = useCallback(
     () =>
       selectedCell &&
-      setValidation(checkCell(selectedCell, initial, final, answer)),
-    [selectedCell, initial, final, answer]
+      (validation
+        ? setValidation(undefined)
+        : setValidation(checkCell(selectedCell, initial, final, answer))),
+    [validation, selectedCell, initial, final, answer]
   );
   useEffect(() => {
     setValidation(undefined);
