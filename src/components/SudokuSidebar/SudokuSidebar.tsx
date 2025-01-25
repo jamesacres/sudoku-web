@@ -21,7 +21,7 @@ const SudokuSidebar = ({
   redirectUri,
   sessionParties,
 }: Arguments) => {
-  const { user } = useContext(UserContext) || {};
+  const { user, loginRedirect } = useContext(UserContext) || {};
   const { listParties, createParty } = useServerStorage({});
   const [parties, setParties] = useState<Party[]>([]);
   const [showCreateParty, setShowCreateParty] = useState(false);
@@ -104,7 +104,11 @@ const SudokuSidebar = ({
           {!showCreateParty && (
             <button
               className="mt-2 w-full cursor-pointer rounded-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700"
-              onClick={() => setShowCreateParty(true)}
+              onClick={() =>
+                user
+                  ? setShowCreateParty(true)
+                  : loginRedirect && loginRedirect()
+              }
             >
               <Users className="float-left mr-2" />
               Create Party
@@ -173,19 +177,20 @@ const SudokuSidebar = ({
             </div>
           )}
           <ul>
-            {parties
-              .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-              .map((party) => {
-                return (
-                  <PartyRow
-                    key={party.partyId}
-                    party={party}
-                    puzzleId={puzzleId}
-                    redirectUri={redirectUri}
-                    sessionParty={sessionParties[party.partyId]}
-                  />
-                );
-              })}
+            {user &&
+              parties
+                .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+                .map((party) => {
+                  return (
+                    <PartyRow
+                      key={party.partyId}
+                      party={party}
+                      puzzleId={puzzleId}
+                      redirectUri={redirectUri}
+                      sessionParty={sessionParties[party.partyId]}
+                    />
+                  );
+                })}
           </ul>
         </div>
       </aside>
