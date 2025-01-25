@@ -2,7 +2,7 @@
 
 import { Puzzle } from '@/types/puzzle';
 import { Notes, ToggleNote } from '@/types/notes';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import {
   calculateBoxId,
   calculateCellId,
@@ -17,6 +17,7 @@ import { StateType } from '@/types/StateType';
 import { useTimer } from './timer';
 import { calculateSeconds } from '@/helpers/calculateSeconds';
 import { Parties, ServerStateResult, Session } from '@/types/serverTypes';
+import { UserContext } from '@/providers/UserProvider';
 
 function useGameState({
   final,
@@ -27,6 +28,8 @@ function useGameState({
   initial: Puzzle<number>;
   puzzleId: string;
 }) {
+  const { user, loginRedirect } = useContext(UserContext) || {};
+
   const { timer, setTimerNewSession, stopTimer, setPauseTimer } = useTimer({
     puzzleId,
   });
@@ -231,6 +234,13 @@ function useGameState({
 
     const { localValue, serverValuePromise } = getValue() || {};
     if (localValue) {
+      // If not logged in, force sign in to resume
+      // This will become a premium feature
+      if (!user && loginRedirect) {
+        loginRedirect();
+        return;
+      }
+
       setAnswerStack({
         answerStack: localValue.state.answerStack,
         isRestored: true,
