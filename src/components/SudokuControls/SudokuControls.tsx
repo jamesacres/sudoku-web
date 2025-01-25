@@ -54,8 +54,11 @@ const SudokuControls = ({
     <div className="mt-4 mb-8 pt-4 pr-2 pl-0 xl:max-w-lg">
       <div className="hidden lg:block">
         <HintBox>
-          Keyboard: arrow keys, undo, redo, n to toggle notes mode,
-          <br />c to validate cell, g to validate grid.
+          Keyboard: arrow keys, undo, redo.
+          <br />
+          Hold shift or press n to toggle notes mode.
+          <br />
+          Press c to validate cell, g to validate grid.
         </HintBox>
       </div>
       <div className="flex gap-4">

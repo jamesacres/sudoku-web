@@ -282,7 +282,7 @@ function useGameState({
     return () => {
       active = false;
     };
-  }, [puzzleId, getValue, setTimerNewSession]);
+  }, [loginRedirect, user, puzzleId, getValue, setTimerNewSession]);
   useEffect(() => {
     let active = true;
     if (!isDisabled && !isRestored && answerStack.length > 0) {
@@ -318,13 +318,30 @@ function useGameState({
 
   // Handle keyboard
   useEffect(() => {
-    const keydownHandler = (e: KeyboardEvent) => {
+    const ignoreKeyboard = (e: KeyboardEvent) => {
       const insideForm = /^(?:input|textarea|select|button)$/i.test(
         (<any>e.target)?.tagName
       );
-      const ignoreKeyboard = completed || showSidebar || insideForm;
-      if (ignoreKeyboard) {
+      return completed || showSidebar || insideForm;
+    };
+    const keyupHandler = (e: KeyboardEvent) => {
+      if (ignoreKeyboard(e)) {
         return;
+      }
+      if (e.key === 'Shift') {
+        // Release shift to disable notes
+        setIsNotesMode(false);
+        e.preventDefault();
+      }
+    };
+    const keydownHandler = (e: KeyboardEvent) => {
+      if (ignoreKeyboard(e)) {
+        return;
+      }
+      if (e.key === 'Shift') {
+        // Hold shift to enable notes
+        setIsNotesMode(true);
+        e.preventDefault();
       }
       if (e.key === 'n') {
         setIsNotesMode(!isNotesMode);
@@ -363,13 +380,21 @@ function useGameState({
       } else if (/[1-9]/.test(e.key)) {
         selectNumber(Number(e.key));
         e.preventDefault();
+      } else if (/Digit[1-9]/.test(e.code)) {
+        // Handle number when shift key pressed
+        selectNumber(Number(e.code.replace('Digit', '')));
+        e.preventDefault();
       }
       if (nextCell) {
         setSelectedCell(nextCell);
       }
     };
     window.addEventListener('keydown', keydownHandler);
-    return () => window.removeEventListener('keydown', keydownHandler);
+    window.addEventListener('keyup', keyupHandler);
+    return () => {
+      window.removeEventListener('keydown', keydownHandler);
+      window.removeEventListener('keyup', keyupHandler);
+    };
   }, [
     isNotesMode,
     redo,
