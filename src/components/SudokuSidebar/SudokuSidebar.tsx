@@ -91,7 +91,7 @@ const SudokuSidebar = ({
               onClick={() => {
                 setShowSidebar(!showSidebar);
               }}
-              className="w-full rounded-lg px-4 py-2 text-right dark:text-white"
+              className="w-full cursor-pointer rounded-lg px-4 py-2 text-right dark:text-white"
             >
               Close
               <X className="float-right ml-2" />
@@ -103,11 +103,11 @@ const SudokuSidebar = ({
           </p>
           {!showCreateParty && (
             <button
-              className="mt-2 w-full rounded-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700"
+              className="mt-2 w-full cursor-pointer rounded-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700"
               onClick={() => setShowCreateParty(true)}
             >
               <Users className="float-left mr-2" />
-              Create a Party
+              Create Party
             </button>
           )}
           {showCreateParty && (
@@ -162,7 +162,7 @@ const SudokuSidebar = ({
                     }}
                   />
                   <button
-                    className={`${isSaving ? 'cursor-wait' : ''} shrink-0 rounded-r bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700`}
+                    className={`${isSaving ? 'cursor-wait' : 'cursor-pointer'} shrink-0 rounded-r bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700`}
                     type="submit"
                     disabled={isSaving}
                   >

@@ -19,7 +19,7 @@ const SimpleSudoku = ({
           return (
             <div
               key={boxId}
-              className="grid aspect-square cursor-pointer grid-cols-3 grid-rows-3 border border-zinc-900 dark:border-zinc-50"
+              className="grid aspect-square grid-cols-3 grid-rows-3 border border-zinc-900 dark:border-zinc-50"
             >
               {Array.from(Array(3)).map((_, celly) =>
                 Array.from(Array(3)).map((_, cellx) => {

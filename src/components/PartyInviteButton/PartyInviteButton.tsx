@@ -52,7 +52,7 @@ const PartyInviteButton = ({
 
   return (
     <button
-      className="mt-2 w-full rounded-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300"
+      className="mt-2 w-full cursor-pointer rounded-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300"
       onClick={async () => {
         await copyInviteUrl();
       }}

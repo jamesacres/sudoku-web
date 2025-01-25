@@ -83,7 +83,7 @@ const Sudoku = ({
                 onClick={() => {
                   setShowSidebar(!showSidebar);
                 }}
-                className="rounded-lg dark:text-white"
+                className="cursor-pointer rounded-lg dark:text-white"
               >
                 <Sidebar className="float-left mr-2" />
                 Friends
