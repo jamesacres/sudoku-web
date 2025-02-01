@@ -8,13 +8,16 @@ import {
   puzzleToPuzzleText,
 } from '@/helpers/puzzleTextToPuzzle';
 import { useLocalStorage } from '@/hooks/localStorage';
+import { useOnline } from '@/hooks/online';
 import { useServerStorage } from '@/hooks/serverStorage';
-import { ServerStateResult } from '@/types/serverTypes';
+import { UserContext } from '@/providers/UserProvider';
+import { Difficulty, ServerStateResult } from '@/types/serverTypes';
 import { GameState, ServerState } from '@/types/state';
 import { StateType } from '@/types/StateType';
 import { Timer } from '@/types/timer';
 import Link from 'next/link';
-import { useCallback, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { Camera, Heart, Plus, UserPlus, Users } from 'react-feather';
 
 enum Tab {
@@ -23,24 +26,79 @@ enum Tab {
   FRIENDS = 'FRIENDS',
 }
 
-const StartPuzzle = () => {
+const StartPuzzle = (
+  isOnline: boolean,
+  isLoading: boolean,
+  openSudokuOfTheDay: (difficulty: Difficulty) => Promise<void>
+) => {
   return (
     <div className="mb-4">
-      <h1 className="mb-2 text-4xl font-extrabold">Start Puzzle</h1>
-      <h2 className="mb-2 text-2xl font-extrabold">Import</h2>
+      <h1 className="text-4xl font-extrabold">Start Puzzle</h1>
+      <p className="mt-4">
+        Feeling competitive? Share puzzles with friends and family and race to
+        the finish!
+      </p>
+
+      <h2 className="mt-8 mb-2 text-2xl font-extrabold">
+        🌱 Sudoku of the Day
+      </h2>
       <p>
-        Simply point your camera at any sudoku from a puzzle book and solve on
-        your device!
+        Challenge yourself daily with our Sudoku of the Day. We publish four new
+        challenges at midnight UTC. Start on level 1, work your way up and
+        challenge your friends!
+      </p>
+      <div className="grid max-w-sm grid-cols-2">
+        <button
+          onClick={() => openSudokuOfTheDay(Difficulty.SIMPLE)}
+          disabled={!isOnline || isLoading}
+          className={`${isLoading ? 'cursor-wait' : !isOnline ? 'cursor-not-allowed' : 'cursor-pointer'} mt-2 mr-2 inline-block rounded-sm bg-green-500 px-4 py-6 text-xl font-bold text-white hover:bg-green-700 disabled:bg-green-300`}
+        >
+          ✏️
+          <br />
+          Level 1
+        </button>
+        <button
+          onClick={() => openSudokuOfTheDay(Difficulty.EASY)}
+          disabled={!isOnline || isLoading}
+          className={`${isLoading ? 'cursor-wait' : !isOnline ? 'cursor-not-allowed' : 'cursor-pointer'} mt-2 mr-2 inline-block cursor-pointer rounded-sm bg-yellow-500 px-4 py-6 text-xl font-bold text-white hover:bg-yellow-700 disabled:bg-yellow-300`}
+        >
+          😎😎
+          <br />
+          Level 2
+        </button>
+        <button
+          onClick={() => openSudokuOfTheDay(Difficulty.INTERMEDIATE)}
+          disabled={!isOnline || isLoading}
+          className={`${isLoading ? 'cursor-wait' : !isOnline ? 'cursor-not-allowed' : 'cursor-pointer'} mt-2 mr-2 inline-block cursor-pointer rounded-sm bg-orange-500 px-4 py-6 text-xl font-bold text-white hover:bg-orange-700 disabled:bg-orange-300`}
+        >
+          🌶️🌶️🌶️
+          <br />
+          Level 3
+        </button>
+        <button
+          onClick={() => openSudokuOfTheDay(Difficulty.EXPERT)}
+          disabled={!isOnline || isLoading}
+          className={`${isLoading ? 'cursor-wait' : !isOnline ? 'cursor-not-allowed' : 'cursor-pointer'} mt-2 mr-2 inline-block cursor-pointer rounded-sm bg-red-500 px-4 py-6 text-xl font-bold text-white hover:bg-red-700 disabled:bg-red-300`}
+        >
+          🔥🔥🔥🔥
+          <br />
+          Level 4
+        </button>
+      </div>
+
+      <h2 className="mt-8 mb-2 text-2xl font-extrabold">📸 Import</h2>
+      <p className="mt-2">
+        Scan an unsolved puzzle in seconds from a newspaper, puzzle book or
+        sudoku website. Solve it in this app, check your work, and challenge
+        your friends!
       </p>
       <Link
         href="/import"
-        className="mt-2 mr-2 inline-block rounded-sm bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300"
+        className="mt-4 mr-2 inline-block rounded-sm bg-blue-500 px-4 py-2 text-white hover:bg-blue-700 disabled:bg-blue-300"
       >
         <Camera className="float-left mr-2" /> Import with camera
       </Link>
-      <h2 className="mt-8 mb-2 text-2xl font-extrabold">Sudoku of the Day</h2>
-      <p>Solve our Sudoku of the Day!</p>
-      <p>Coming soon!</p>
+
       <h2 className="mt-8 mb-2 text-2xl font-extrabold">
         Puzzles from Friends
       </h2>
@@ -139,7 +197,12 @@ const SessionRow = (session: ServerStateResult<ServerState>) => {
 
 export default function Home() {
   const [tab, setTab] = useState(Tab.START_PUZZLE);
-  const { listValues: listServerValues } = useServerStorage();
+  const router = useRouter();
+  const { user, loginRedirect } = useContext(UserContext) || {};
+  const { isOnline } = useOnline();
+  const [isLoading, setIsLoading] = useState(false);
+  const { getSudokuOfTheDay, listValues: listServerValues } =
+    useServerStorage();
   const {
     prefix,
     listValues: listLocalPuzzles,
@@ -240,12 +303,29 @@ export default function Home() {
     };
   }, [listServerValues, listLocalPuzzles, listLocalTimers, mergeSessions]);
 
+  const openSudokuOfTheDay = async (difficulty: Difficulty): Promise<void> => {
+    setIsLoading(true);
+    if (!user) {
+      if (loginRedirect) {
+        loginRedirect();
+      }
+      return;
+    }
+    const result = await getSudokuOfTheDay(difficulty);
+    if (result) {
+      router.push(`/puzzle?initial=${result.initial}&final=${result.final}`);
+      return;
+    }
+    setIsLoading(false);
+  };
+
   const tabBackground = (thisTab: Tab) =>
     thisTab === tab ? 'bg-zinc-100 dark:bg-zinc-800' : '';
   return (
     <>
       <div className="container mx-auto px-6">
-        {tab === Tab.START_PUZZLE && StartPuzzle()}
+        {tab === Tab.START_PUZZLE &&
+          StartPuzzle(isOnline, isLoading, openSudokuOfTheDay)}
         {tab === Tab.MY_PUZZLES && MyPuzzles(sessions)}
         {tab === Tab.FRIENDS && Friends()}
       </div>
