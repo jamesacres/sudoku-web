@@ -282,10 +282,15 @@ function useGameState({
           if (
             localValue?.state &&
             localValue?.lastUpdated &&
-            (serverValue?.updatedAt?.getTime() || 0) < localValue?.lastUpdated
+            (serverValue?.updatedAt?.getTime() || 0) <
+              Math.floor(localValue.lastUpdated / 1000) * 1000
           ) {
             // Server value is behind local! Update the server!
-            console.warn('Server behind local, updating server');
+            console.warn(
+              'Server behind local, updating server',
+              serverValue?.updatedAt?.getTime() || 0,
+              Math.floor(localValue.lastUpdated / 1000) * 1000
+            );
             saveValue(localValue.state);
           }
           // Remove disabled flag, heard from server but ignored it
