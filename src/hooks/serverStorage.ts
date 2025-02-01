@@ -16,6 +16,9 @@ import {
   Invite,
   InviteResponse,
   PublicInvite,
+  SudokuOfTheDay,
+  SudokuOfTheDayResponse,
+  Difficulty,
 } from '@/types/serverTypes';
 import { UserProfile } from '@/types/userProfile';
 
@@ -396,6 +399,32 @@ function useServerStorage({
     [fetch, isLoggedIn, isOnline]
   );
 
+  const getSudokuOfTheDay = useCallback(
+    async (difficulty: Difficulty): Promise<SudokuOfTheDay | undefined> => {
+      if (isOnline && isLoggedIn()) {
+        try {
+          console.info('fetching sudoku of the day', difficulty);
+          const response = await fetch(
+            new Request(`${apiUrl}/sudoku/ofTheDay?difficulty=${difficulty}`)
+          );
+          if (response.ok) {
+            const sudokuOfTheDayResponse =
+              (await response.json()) as SudokuOfTheDayResponse;
+            return {
+              ...sudokuOfTheDayResponse,
+              createdAt: new Date(sudokuOfTheDayResponse.createdAt),
+              updatedAt: new Date(sudokuOfTheDayResponse.updatedAt),
+            };
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      return undefined;
+    },
+    [fetch, isLoggedIn, isOnline]
+  );
+
   return {
     setIdAndType,
     listValues,
@@ -406,6 +435,7 @@ function useServerStorage({
     createInvite,
     getPublicInvite,
     createMember,
+    getSudokuOfTheDay,
   };
 }
 

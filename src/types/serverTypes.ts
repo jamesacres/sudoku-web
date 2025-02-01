@@ -84,3 +84,25 @@ export interface PublicInvite
     Invite,
     'description' | 'resourceId' | 'sessionId' | 'redirectUri'
   > {}
+
+export enum Difficulty {
+  SIMPLE = 'simple',
+  EASY = 'easy',
+  INTERMEDIATE = 'intermediate',
+  EXPERT = 'expert',
+}
+
+export interface SudokuOfTheDayResponse {
+  sudokuId: string;
+  difficulty: Difficulty;
+  initial: string;
+  final: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SudokuOfTheDay
+  extends Omit<SudokuOfTheDayResponse, 'createdAt' | 'updatedAt'> {
+  createdAt: Date;
+  updatedAt: Date;
+}
