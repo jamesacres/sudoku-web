@@ -83,6 +83,12 @@ function useGameState({
     const serverValuePromise = getServerValue<ServerState>();
     return { localValue, serverValuePromise };
   }, [getLocalValue, getServerValue]);
+
+  const shrinkAnswerStack = (answerStack: Puzzle[]): Puzzle[] => {
+    // Only store the last 3 guesses on the server
+    return answerStack.slice(-3);
+  };
+
   const saveValue = useCallback(
     (
       state: GameState
@@ -93,6 +99,7 @@ function useGameState({
       const localValue = saveLocalValue<GameState>(state);
       const serverValuePromise = saveServerValue<ServerState>({
         ...state,
+        answerStack: shrinkAnswerStack(state.answerStack),
         timer: timerRef.current || undefined,
       });
       return { localValue, serverValuePromise };
@@ -272,6 +279,15 @@ function useGameState({
             setTimerNewSession(serverValue.state.timer);
           }
         } else {
+          if (
+            localValue?.state &&
+            localValue?.lastUpdated &&
+            (serverValue?.updatedAt?.getTime() || 0) < localValue?.lastUpdated
+          ) {
+            // Server value is behind local! Update the server!
+            console.warn('Server behind local, updating server');
+            saveValue(localValue.state);
+          }
           // Remove disabled flag, heard from server but ignored it
           setAnswerStack((current) => {
             return { ...current, isDisabled: undefined };
@@ -283,7 +299,7 @@ function useGameState({
     return () => {
       active = false;
     };
-  }, [loginRedirect, user, puzzleId, getValue, setTimerNewSession]);
+  }, [loginRedirect, user, puzzleId, getValue, setTimerNewSession, saveValue]);
   useEffect(() => {
     let active = true;
     if (!isDisabled && !isRestored && answerStack.length > 0) {
