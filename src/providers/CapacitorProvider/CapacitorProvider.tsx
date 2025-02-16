@@ -4,6 +4,7 @@ import { App, URLOpenListenerEvent } from '@capacitor/app';
 import { Capacitor } from '@capacitor/core';
 import { StatusBar } from '@capacitor/status-bar';
 import { useRouter } from 'next/navigation';
+import { Browser } from '@capacitor/browser';
 
 interface CapacitorContextInterface {}
 
@@ -31,6 +32,8 @@ const CapacitorProvider: React.FC<{ children: React.ReactNode }> = ({
         url.host = window.location.host;
         url.port = window.location.port;
         router.push(url.toString());
+        // Close browser if open, e.g. on auth page
+        Browser.close();
       }
     });
   }, [router]);
