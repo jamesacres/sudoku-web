@@ -6,6 +6,7 @@ import { UserProfile } from '@/types/userProfile';
 import { useRouter } from 'next/navigation';
 import { useFetch } from '@/hooks/fetch';
 import React from 'react';
+import { Browser } from '@capacitor/browser';
 
 interface UserContextInterface {
   user?: UserProfile;
@@ -86,6 +87,8 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     const url = `${iss}/oidc/auth?${params.toString()}`;
     if (isElectron()) {
       await openBrowser(url);
+    } else if (isCapacitor()) {
+      await Browser.open({ url });
     } else {
       window.location.href = url;
     }
