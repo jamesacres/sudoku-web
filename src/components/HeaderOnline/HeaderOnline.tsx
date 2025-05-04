@@ -14,12 +14,12 @@ const HeaderOnline = () => {
           window.confirm('Are you sure you wish to force offline mode?')) &&
           forceOffline(isOnline);
       }}
-      className="ml-2 h-8 w-8 cursor-pointer rounded-full ring-white hover:ring-1"
+      className="ml-1 h-8 w-8 cursor-pointer rounded-full bg-gray-100 p-1.5 text-blue-600 transition-colors active:opacity-70 dark:bg-gray-800 dark:text-blue-300"
     >
       {isOnline ? (
-        <Wifi height={32} className="m-auto" />
+        <Wifi className="m-auto h-full w-full" />
       ) : (
-        <WifiOff height={32} className="m-auto" />
+        <WifiOff className="m-auto h-full w-full" />
       )}
     </button>
   );

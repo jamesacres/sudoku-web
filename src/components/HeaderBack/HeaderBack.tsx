@@ -2,20 +2,21 @@
 import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
 
-import { ArrowLeft } from 'react-feather';
+import { ChevronLeft } from 'react-feather';
 
 const HeaderBack = () => {
   const router = useRouter();
   const pathname = usePathname();
   return pathname === '/' ? (
-    <span className="text-xl font-semibold tracking-tight">Sudoku</span>
+    <span className="text-base font-normal tracking-tight opacity-0">Back</span>
   ) : (
     <button
-      className="cursor-pointer"
+      className="flex cursor-pointer items-center text-blue-600 transition-opacity active:opacity-70 dark:text-blue-400"
       type="button"
       onClick={() => router.replace('/')}
     >
-      <ArrowLeft />
+      <ChevronLeft className="h-5 w-5" />
+      <span className="text-base font-normal">Back</span>
     </button>
   );
 };

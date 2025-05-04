@@ -11,20 +11,22 @@ import ThemeSwitch from '../ThemeSwitch';
 const Header = () => {
   return (
     <>
-      <nav className="pt-safe fixed top-0 left-0 z-50 flex w-screen flex-wrap items-center justify-between bg-zinc-200 px-6 pb-2 drop-shadow-md dark:bg-zinc-700">
-        <div className="mr-6 flex shrink-0 items-center dark:text-white">
+      <nav className="fixed top-0 left-0 z-50 flex w-screen flex-wrap items-center justify-between border-b border-zinc-200 bg-white px-4 pt-[env(safe-area-inset-top)] pb-2 dark:border-zinc-600 dark:bg-zinc-900">
+        <div className="mr-4 flex shrink-0 items-center text-blue-600 dark:text-blue-400">
           <HeaderBack />
         </div>
         <div className="block flex grow items-center">
-          <div className="grow"></div>
-          <div className="flex h-10 items-center">
+          <div className="grow text-center font-medium">
+            <span className="text-lg">Sudoku</span>
+          </div>
+          <div className="flex h-12 items-center space-x-2">
             <HeaderUser />
             <ThemeSwitch />
             <HeaderOnline />
           </div>
         </div>
       </nav>
-      <div className="mt-30">
+      <div className="pt-[calc(env(safe-area-inset-top)+3rem)]">
         <HeaderUserHintBox />
       </div>
     </>

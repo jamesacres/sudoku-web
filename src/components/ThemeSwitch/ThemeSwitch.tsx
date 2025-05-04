@@ -22,13 +22,13 @@ const ThemeSwitch = () => {
           theme === 'dark' || resolvedTheme === 'dark' ? 'light' : 'dark'
         )
       }
-      className="cursor-pointer rounded-full ring-white hover:ring-1"
+      className="mx-1 h-8 w-8 cursor-pointer rounded-full bg-gray-100 p-1.5 text-blue-600 transition-colors dark:bg-gray-800 dark:text-blue-300 active:opacity-70"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 20 20"
         fill="currentColor"
-        className="h-8 w-8"
+        className="h-full w-full"
       >
         {mounted && (theme === 'dark' || resolvedTheme === 'dark') ? (
           <path
