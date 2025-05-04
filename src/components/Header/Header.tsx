@@ -19,7 +19,7 @@ const Header = () => {
           <div className="grow text-center font-medium">
             <span className="text-lg">Sudoku</span>
           </div>
-          <div className="flex h-12 items-center space-x-2">
+          <div className="flex h-12 items-center">
             <HeaderUser />
             <ThemeSwitch />
             <HeaderOnline />

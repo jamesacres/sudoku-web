@@ -13,7 +13,7 @@ export const UserButton = ({
 }) => {
   return (
     <Popover className="relative" style={{ height: 32 }}>
-      <Popover.Button className="mr-2 h-8 w-8 cursor-pointer rounded-full bg-blue-100 p-1.5 text-blue-600 transition-colors active:opacity-70 dark:bg-blue-900 dark:text-blue-300">
+      <Popover.Button className="mx-1 h-8 w-8 cursor-pointer rounded-full bg-gray-100 p-1.5 text-blue-600 transition-colors active:opacity-70 dark:bg-gray-800 dark:text-blue-300">
         <User className="m-auto h-full w-full" />
       </Popover.Button>
 

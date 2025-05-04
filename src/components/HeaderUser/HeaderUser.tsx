@@ -17,7 +17,7 @@ const HeaderUser = () => {
       <button
         disabled={isLoggingIn}
         onClick={() => loginRedirect && loginRedirect()}
-        className={`${isLoggingIn ? 'cursor-wait' : ''} mt-0 mr-2 inline-block rounded-full bg-blue-500 px-4 py-1.5 text-sm font-medium text-white transition-opacity active:opacity-70 disabled:bg-blue-300`}
+        className={`${isLoggingIn ? 'cursor-wait' : ''} mx-1 inline-block rounded-full bg-blue-500 px-4 py-1.5 text-sm font-medium text-white transition-opacity active:opacity-70 disabled:bg-blue-300`}
       >
         Sign in
       </button>
