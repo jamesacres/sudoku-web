@@ -22,7 +22,7 @@ const ThemeSwitch = () => {
           theme === 'dark' || resolvedTheme === 'dark' ? 'light' : 'dark'
         )
       }
-      className="mx-1 h-8 w-8 cursor-pointer rounded-full bg-gray-100 p-1.5 text-blue-600 transition-colors dark:bg-gray-800 dark:text-blue-300 active:opacity-70"
+      className="mx-1 h-8 w-8 cursor-pointer rounded-full bg-gray-100 p-1.5 text-blue-600 transition-colors active:opacity-70 dark:bg-gray-800 dark:text-blue-300"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
