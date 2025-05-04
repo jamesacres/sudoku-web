@@ -33,13 +33,13 @@ const StartPuzzle = (
 ) => {
   return (
     <div className="mb-4">
-      <h1 className="text-4xl font-extrabold">Start Puzzle</h1>
+      <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">Start Puzzle</h1>
       <p className="mt-4">
         Feeling competitive? Share puzzles with friends and family and race to
         the finish!
       </p>
 
-      <h2 className="mt-8 mb-2 text-2xl font-extrabold">
+      <h2 className="mt-8 mb-2 text-2xl font-bold bg-gradient-to-r from-green-500 to-teal-400 bg-clip-text text-transparent">
         🌱 Sudoku of the Day
       </h2>
       <p>
@@ -47,46 +47,42 @@ const StartPuzzle = (
         challenges at midnight UTC. Start on level 1, work your way up and
         challenge your friends!
       </p>
-      <div className="grid max-w-sm grid-cols-2">
+      <div className="grid max-w-sm grid-cols-2 gap-3 mt-4">
         <button
           onClick={() => openSudokuOfTheDay(Difficulty.SIMPLE)}
           disabled={!isOnline || isLoading}
-          className={`${isLoading ? 'cursor-wait' : !isOnline ? 'cursor-not-allowed' : 'cursor-pointer'} mt-2 mr-2 inline-block rounded-sm bg-green-500 px-4 py-6 text-xl font-bold text-white hover:bg-green-700 disabled:bg-green-300`}
+          className={`${isLoading ? 'cursor-wait' : !isOnline ? 'cursor-not-allowed' : 'cursor-pointer'} flex flex-col items-center justify-center rounded-2xl bg-gradient-to-b from-green-400 to-green-500 px-4 py-6 text-xl font-bold text-white shadow-md hover:from-green-500 hover:to-green-600 active:from-green-600 active:to-green-700 disabled:opacity-50`}
         >
           ✏️
-          <br />
-          Level 1
+          <span className="mt-2 text-base font-medium">Level 1</span>
         </button>
         <button
           onClick={() => openSudokuOfTheDay(Difficulty.EASY)}
           disabled={!isOnline || isLoading}
-          className={`${isLoading ? 'cursor-wait' : !isOnline ? 'cursor-not-allowed' : 'cursor-pointer'} mt-2 mr-2 inline-block cursor-pointer rounded-sm bg-yellow-500 px-4 py-6 text-xl font-bold text-white hover:bg-yellow-700 disabled:bg-yellow-300`}
+          className={`${isLoading ? 'cursor-wait' : !isOnline ? 'cursor-not-allowed' : 'cursor-pointer'} flex flex-col items-center justify-center rounded-2xl bg-gradient-to-b from-yellow-400 to-yellow-500 px-4 py-6 text-xl font-bold text-white shadow-md hover:from-yellow-500 hover:to-yellow-600 active:from-yellow-600 active:to-yellow-700 disabled:opacity-50`}
         >
           😎😎
-          <br />
-          Level 2
+          <span className="mt-2 text-base font-medium">Level 2</span>
         </button>
         <button
           onClick={() => openSudokuOfTheDay(Difficulty.INTERMEDIATE)}
           disabled={!isOnline || isLoading}
-          className={`${isLoading ? 'cursor-wait' : !isOnline ? 'cursor-not-allowed' : 'cursor-pointer'} mt-2 mr-2 inline-block cursor-pointer rounded-sm bg-orange-500 px-4 py-6 text-xl font-bold text-white hover:bg-orange-700 disabled:bg-orange-300`}
+          className={`${isLoading ? 'cursor-wait' : !isOnline ? 'cursor-not-allowed' : 'cursor-pointer'} flex flex-col items-center justify-center rounded-2xl bg-gradient-to-b from-orange-400 to-orange-500 px-4 py-6 text-xl font-bold text-white shadow-md hover:from-orange-500 hover:to-orange-600 active:from-orange-600 active:to-orange-700 disabled:opacity-50`}
         >
           🌶️🌶️🌶️
-          <br />
-          Level 3
+          <span className="mt-2 text-base font-medium">Level 3</span>
         </button>
         <button
           onClick={() => openSudokuOfTheDay(Difficulty.EXPERT)}
           disabled={!isOnline || isLoading}
-          className={`${isLoading ? 'cursor-wait' : !isOnline ? 'cursor-not-allowed' : 'cursor-pointer'} mt-2 mr-2 inline-block cursor-pointer rounded-sm bg-red-500 px-4 py-6 text-xl font-bold text-white hover:bg-red-700 disabled:bg-red-300`}
+          className={`${isLoading ? 'cursor-wait' : !isOnline ? 'cursor-not-allowed' : 'cursor-pointer'} flex flex-col items-center justify-center rounded-2xl bg-gradient-to-b from-red-400 to-red-500 px-4 py-6 text-xl font-bold text-white shadow-md hover:from-red-500 hover:to-red-600 active:from-red-600 active:to-red-700 disabled:opacity-50`}
         >
           🔥🔥🔥🔥
-          <br />
-          Level 4
+          <span className="mt-2 text-base font-medium">Level 4</span>
         </button>
       </div>
 
-      <h2 className="mt-8 mb-2 text-2xl font-extrabold">📸 Import</h2>
+      <h2 className="mt-8 mb-2 text-2xl font-bold bg-gradient-to-r from-blue-500 to-indigo-400 bg-clip-text text-transparent">📸 Import</h2>
       <p className="mt-2">
         Scan an unsolved puzzle in seconds from a newspaper, puzzle book or
         sudoku website. Solve it in this app, check your work, and challenge
@@ -94,12 +90,12 @@ const StartPuzzle = (
       </p>
       <Link
         href="/import"
-        className="mt-4 mr-2 inline-block rounded-sm bg-blue-500 px-4 py-2 text-white hover:bg-blue-700 disabled:bg-blue-300"
+        className="mt-4 inline-flex items-center justify-center rounded-full bg-gradient-to-r from-blue-400 to-blue-500 px-6 py-3 text-base font-medium text-white shadow-md hover:from-blue-500 hover:to-blue-600 active:from-blue-600 active:to-blue-700"
       >
-        <Camera className="float-left mr-2" /> Import with camera
+        <Camera className="mr-2 h-5 w-5" /> Import with camera
       </Link>
 
-      <h2 className="mt-8 mb-2 text-2xl font-extrabold">
+      <h2 className="mt-8 mb-2 text-2xl font-bold bg-gradient-to-r from-purple-500 to-pink-400 bg-clip-text text-transparent">
         Puzzles from Friends
       </h2>
       <p>Coming soon!</p>
