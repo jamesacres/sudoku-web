@@ -26,7 +26,7 @@ const Header = () => {
           </div>
         </div>
       </nav>
-      <div className="pt-[calc(env(safe-area-inset-top)+3rem)]">
+      <div className="pt-[calc(env(safe-area-inset-top)+5rem)]">
         <HeaderUserHintBox />
       </div>
     </>
