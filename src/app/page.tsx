@@ -33,13 +33,15 @@ const StartPuzzle = (
 ) => {
   return (
     <div className="mb-4">
-      <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">Start Puzzle</h1>
+      <h1 className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-4xl font-bold text-transparent">
+        Start Puzzle
+      </h1>
       <p className="mt-4">
         Feeling competitive? Share puzzles with friends and family and race to
         the finish!
       </p>
 
-      <h2 className="mt-8 mb-2 text-2xl font-bold bg-gradient-to-r from-green-500 to-teal-400 bg-clip-text text-transparent">
+      <h2 className="mt-8 mb-2 bg-gradient-to-r from-green-500 to-teal-400 bg-clip-text text-2xl font-bold text-transparent">
         🌱 Sudoku of the Day
       </h2>
       <p>
@@ -47,7 +49,7 @@ const StartPuzzle = (
         challenges at midnight UTC. Start on level 1, work your way up and
         challenge your friends!
       </p>
-      <div className="grid max-w-sm grid-cols-2 gap-3 mt-4">
+      <div className="mt-4 grid max-w-sm grid-cols-2 gap-3">
         <button
           onClick={() => openSudokuOfTheDay(Difficulty.SIMPLE)}
           disabled={!isOnline || isLoading}
@@ -82,7 +84,9 @@ const StartPuzzle = (
         </button>
       </div>
 
-      <h2 className="mt-8 mb-2 text-2xl font-bold bg-gradient-to-r from-blue-500 to-indigo-400 bg-clip-text text-transparent">📸 Import</h2>
+      <h2 className="mt-8 mb-2 bg-gradient-to-r from-blue-500 to-indigo-400 bg-clip-text text-2xl font-bold text-transparent">
+        📸 Import
+      </h2>
       <p className="mt-2">
         Scan an unsolved puzzle in seconds from a newspaper, puzzle book or
         sudoku website. Solve it in this app, check your work, and challenge
@@ -95,7 +99,7 @@ const StartPuzzle = (
         <Camera className="mr-2 h-5 w-5" /> Import with camera
       </Link>
 
-      <h2 className="mt-8 mb-2 text-2xl font-bold bg-gradient-to-r from-purple-500 to-pink-400 bg-clip-text text-transparent">
+      <h2 className="mt-8 mb-2 bg-gradient-to-r from-purple-500 to-pink-400 bg-clip-text text-2xl font-bold text-transparent">
         Puzzles from Friends
       </h2>
       <p>Coming soon!</p>
