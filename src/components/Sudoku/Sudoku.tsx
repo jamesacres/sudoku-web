@@ -51,23 +51,20 @@ const Sudoku = ({
     puzzleId,
   });
 
-  // Reference to the grid for the explosion animation
+  // Reference to the grid for the celebration animation
   const gridRef = useRef<HTMLDivElement>(null);
 
-  // State to control which animation to show
-  const [animationType, setAnimationType] = useState<
-    'fireworks' | 'explosion' | null
-  >(null);
+  // State to track if animation should be shown
+  const [showAnimation, setShowAnimation] = useState(false);
 
   // Show animation when the puzzle is completed
   useEffect(() => {
     if (completed) {
-      // Set to explosion animation as requested
-      setAnimationType('explosion');
+      setShowAnimation(true);
 
       // Reset animation after it completes
       const timer = setTimeout(() => {
-        setAnimationType(null);
+        setShowAnimation(false);
       }, 4000);
 
       return () => clearTimeout(timer);
@@ -97,13 +94,8 @@ const Sudoku = ({
         sessionParties={sessionParties}
       />
 
-      {/* Display celebration animation when completed */}
       {completed && (
-        <CelebrationAnimation
-          type={animationType}
-          isVisible={!!completed}
-          gridRef={gridRef}
-        />
+        <CelebrationAnimation isVisible={showAnimation} gridRef={gridRef} />
       )}
 
       <div className="flex flex-col items-center lg:flex-row">

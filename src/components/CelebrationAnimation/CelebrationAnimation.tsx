@@ -1,11 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 
-// Types for our animations
-type AnimationType = 'fireworks' | 'explosion' | null;
-
 interface CelebrationAnimationProps {
-  type: AnimationType;
   isVisible: boolean;
   gridRef?: React.RefObject<HTMLDivElement>;
 }
@@ -45,7 +41,6 @@ const RAINBOW_COLORS = [
 ];
 
 const CelebrationAnimation: React.FC<CelebrationAnimationProps> = ({
-  type,
   isVisible,
   gridRef,
 }) => {
@@ -54,9 +49,9 @@ const CelebrationAnimation: React.FC<CelebrationAnimationProps> = ({
 
   const [isAnimating, setIsAnimating] = useState(false);
 
-  // Generate the explosion pieces when the component mounts or when type/isVisible changes
+  // Generate the explosion pieces when the component mounts or when isVisible changes
   useEffect(() => {
-    if (type === 'explosion' && isVisible && gridRef?.current) {
+    if (isVisible && gridRef?.current) {
       const grid = gridRef.current;
 
       // Hide the original grid
@@ -123,7 +118,7 @@ const CelebrationAnimation: React.FC<CelebrationAnimationProps> = ({
           grid.style.visibility = 'visible';
         }
         setIsAnimating(false);
-      }, 3000);
+      }, 3500);
 
       return () => {
         clearTimeout(timer);
@@ -132,15 +127,15 @@ const CelebrationAnimation: React.FC<CelebrationAnimationProps> = ({
         }
       };
     }
-  }, [type, isVisible, gridRef]);
+  }, [isVisible, gridRef]);
 
   if (!isVisible || !isAnimating) return null;
 
-  // Render fireworks animation
-  if (type === 'fireworks') {
-    return (
+  return (
+    <>
+      {/* Fireworks animation */}
       <div className="pointer-events-none fixed inset-0 z-50 overflow-hidden">
-        {Array.from({ length: 15 }).map((_, i) => (
+        {Array.from({ length: 20 }).map((_, i) => (
           <div
             key={i}
             className="absolute h-4 w-4 rounded-full"
@@ -151,7 +146,7 @@ const CelebrationAnimation: React.FC<CelebrationAnimationProps> = ({
                 RAINBOW_COLORS[
                   Math.floor(Math.random() * RAINBOW_COLORS.length)
                 ],
-              animation: `firework-burst 1s ease-out ${Math.random() * 0.5}s forwards`,
+              animation: `firework-burst 1.5s ease-out ${Math.random() * 1.5}s forwards`,
               boxShadow: '0 0 20px 4px currentColor',
             }}
           />
@@ -174,12 +169,8 @@ const CelebrationAnimation: React.FC<CelebrationAnimationProps> = ({
           }
         `}</style>
       </div>
-    );
-  }
 
-  // Render explosion animation
-  if (type === 'explosion') {
-    return (
+      {/* Exploding numbers animation */}
       <div className="pointer-events-none fixed inset-0 z-50 overflow-hidden">
         {explosionPieces.map((piece) => (
           <div
@@ -192,7 +183,7 @@ const CelebrationAnimation: React.FC<CelebrationAnimationProps> = ({
               textShadow: piece.glow,
               width: '40px',
               height: '40px',
-              animation: `number-explode-${piece.id} 2s ease-out ${piece.delay}s forwards`,
+              animation: `number-explode-${piece.id} 2.5s ease-out ${piece.delay}s forwards`,
               transformOrigin: 'center',
               zIndex: 9999,
               transform: `scale(${piece.size})`,
@@ -224,10 +215,8 @@ const CelebrationAnimation: React.FC<CelebrationAnimationProps> = ({
             .join('')}
         `}</style>
       </div>
-    );
-  }
-
-  return null;
+    </>
+  );
 };
 
 export { CelebrationAnimation };
