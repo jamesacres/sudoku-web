@@ -15,7 +15,6 @@ interface Piece {
   directionX: number;
   directionY: number;
   rotation: number;
-  delay: number;
   size: number;
   glow: string;
 }
@@ -104,7 +103,6 @@ const CelebrationAnimation: React.FC<CelebrationAnimationProps> = ({
           directionX: normalizedX,
           directionY: normalizedY,
           rotation: Math.random() * 720 - 360, // -360 to 360 degrees
-          delay: Math.random() * 0.3, // 0 to 0.3 seconds
           size,
           glow,
         });
@@ -118,7 +116,7 @@ const CelebrationAnimation: React.FC<CelebrationAnimationProps> = ({
           grid.style.visibility = 'visible';
         }
         setIsAnimating(false);
-      }, 3500);
+      }, 9000); // Extended to 9 seconds (2 second pause + 7 second animation)
 
       return () => {
         clearTimeout(timer);
@@ -135,7 +133,7 @@ const CelebrationAnimation: React.FC<CelebrationAnimationProps> = ({
     <>
       {/* Fireworks animation */}
       <div className="pointer-events-none fixed inset-0 z-50 overflow-hidden">
-        {Array.from({ length: 20 }).map((_, i) => (
+        {Array.from({ length: 25 }).map((_, i) => (
           <div
             key={i}
             className="absolute h-4 w-4 rounded-full"
@@ -146,7 +144,7 @@ const CelebrationAnimation: React.FC<CelebrationAnimationProps> = ({
                 RAINBOW_COLORS[
                   Math.floor(Math.random() * RAINBOW_COLORS.length)
                 ],
-              animation: `firework-burst 1.5s ease-out ${Math.random() * 1.5}s forwards`,
+              animation: `firework-burst 2s ease-out ${Math.random() * 7}s forwards`,
               boxShadow: '0 0 20px 4px currentColor',
             }}
           />
@@ -183,7 +181,7 @@ const CelebrationAnimation: React.FC<CelebrationAnimationProps> = ({
               textShadow: piece.glow,
               width: '40px',
               height: '40px',
-              animation: `number-explode-${piece.id} 2.5s ease-out ${piece.delay}s forwards`,
+              animation: `number-explode-${piece.id} 7s ease-out forwards`,
               transformOrigin: 'center',
               zIndex: 9999,
               transform: `scale(${piece.size})`,
@@ -202,11 +200,24 @@ const CelebrationAnimation: React.FC<CelebrationAnimationProps> = ({
                 transform: scale(${piece.size}) translate(0, 0) rotate(0);
                 opacity: 1;
               }
-              70% {
-                opacity: 0.8;
+              /* Hold in place for 2 seconds (28.6% of 7 seconds) */
+              28.6% {
+                transform: scale(${piece.size}) translate(0, 0) rotate(0);
+                opacity: 1;
+              }
+              /* Start movement after 2 seconds */
+              35% {
+                transform: scale(${piece.size}) translate(${piece.directionX * 50}px, ${piece.directionY * 50}px) rotate(${piece.rotation * 0.1}deg);
+                opacity: 1;
+              }
+              60% {
+                opacity: 0.9;
+              }
+              85% {
+                opacity: 0.7;
               }
               100% {
-                transform: scale(${piece.size * 1.5}) translate(${piece.directionX * 600}px, ${piece.directionY * 600}px) rotate(${piece.rotation}deg);
+                transform: scale(${piece.size * 1.5}) translate(${piece.directionX * 800}px, ${piece.directionY * 800}px) rotate(${piece.rotation}deg);
                 opacity: 0;
               }
             }

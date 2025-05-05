@@ -62,10 +62,10 @@ const Sudoku = ({
     if (completed) {
       setShowAnimation(true);
 
-      // Reset animation after it completes
+      // Reset animation after it completes - extended to 10 seconds to match the animation duration
       const timer = setTimeout(() => {
         setShowAnimation(false);
-      }, 4000);
+      }, 10000);
 
       return () => clearTimeout(timer);
     }
@@ -94,6 +94,7 @@ const Sudoku = ({
         sessionParties={sessionParties}
       />
 
+      {/* Display celebration animation when completed */}
       {completed && (
         <CelebrationAnimation isVisible={showAnimation} gridRef={gridRef} />
       )}
