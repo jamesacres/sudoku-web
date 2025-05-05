@@ -9,7 +9,8 @@ import { TimerDisplay } from '../TimerDisplay/TimerDisplay';
 import { calculateSeconds } from '@/helpers/calculateSeconds';
 import { Sidebar } from 'react-feather';
 import SudokuSidebar from '../SudokuSidebar/SudokuSidebar';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { CelebrationAnimation } from '../CelebrationAnimation';
 
 const Sudoku = ({
   puzzle: { initial, final, puzzleId },
@@ -50,6 +51,29 @@ const Sudoku = ({
     puzzleId,
   });
 
+  // Reference to the grid for the explosion animation
+  const gridRef = useRef<HTMLDivElement>(null);
+
+  // State to control which animation to show
+  const [animationType, setAnimationType] = useState<
+    'fireworks' | 'explosion' | null
+  >(null);
+
+  // Show animation when the puzzle is completed
+  useEffect(() => {
+    if (completed) {
+      // Set to explosion animation as requested
+      setAnimationType('explosion');
+
+      // Reset animation after it completes
+      const timer = setTimeout(() => {
+        setAnimationType(null);
+      }, 4000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [completed]);
+
   useEffect(() => {
     if (showSidebar) {
       setPauseTimer(true);
@@ -72,6 +96,15 @@ const Sudoku = ({
         refreshSessionParties={refreshSessionParties}
         sessionParties={sessionParties}
       />
+
+      {/* Display celebration animation when completed */}
+      {completed && (
+        <CelebrationAnimation
+          type={animationType}
+          isVisible={!!completed}
+          gridRef={gridRef}
+        />
+      )}
 
       <div className="flex flex-col items-center lg:flex-row">
         <div className="container mx-auto px-4">
@@ -101,7 +134,10 @@ const Sudoku = ({
               />
             </div>
           </div>
-          <div className="mr-auto ml-auto grid max-w-xl grid-cols-3 grid-rows-3 border border-2 border-zinc-900 bg-zinc-50 lg:mr-0 dark:border-zinc-50 dark:bg-zinc-900">
+          <div
+            ref={gridRef}
+            className="relative mr-auto ml-auto grid max-w-xl grid-cols-3 grid-rows-3 border border-2 border-zinc-900 bg-zinc-50 lg:mr-0 dark:border-zinc-50 dark:bg-zinc-900"
+          >
             {Array.from(Array(3)).map((_, y) =>
               Array.from(Array(3)).map((_, x) => {
                 const boxId = calculateBoxId(x, y);
