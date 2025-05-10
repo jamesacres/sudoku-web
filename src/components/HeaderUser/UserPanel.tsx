@@ -40,31 +40,34 @@ export const UserPanel = ({
           </div>
         </div>
         <div className="bg-gray-200 p-4">
-          <div className="block space-y-2">
-            <div className="flex items-center text-gray-600">
-              <button
-                onClick={() => logout()}
-                className="rounded-sm bg-gray-200 px-4 py-2 outline outline-1 outline-gray-400 hover:bg-gray-300"
-              >
-                Sign out
-              </button>
-              <div className="grow"></div>
-              <a
-                href="https://bubblyclouds.com/privacy"
-                target="_blank"
-                className="mr-2 hover:underline"
-              >
-                Privacy
-              </a>
-              <a
-                href="https://bubblyclouds.com/terms"
-                target="_blank"
-                className="hover:underline"
-              >
-                Terms
-              </a>
+          <div className="flex flex-col space-y-4">
+            <div className="flex items-center justify-between text-gray-600">
+              <div>
+                <button
+                  onClick={() => logout()}
+                  className="rounded-sm bg-gray-200 px-4 py-2 outline outline-1 outline-gray-400 hover:bg-gray-300"
+                >
+                  Sign out
+                </button>
+              </div>
+              <div className="flex items-center space-x-2">
+                <a
+                  href="https://bubblyclouds.com/privacy"
+                  target="_blank"
+                  className="hover:underline"
+                >
+                  Privacy
+                </a>
+                <a
+                  href="https://bubblyclouds.com/terms"
+                  target="_blank"
+                  className="hover:underline"
+                >
+                  Terms
+                </a>
+              </div>
             </div>
-            <div className="flex justify-center">
+            <div className="flex items-center justify-between border-t border-gray-300 pt-3">
               <button
                 onClick={() => setIsDeleteDialogOpen(true)}
                 className="text-sm text-red-600 hover:text-red-800 hover:underline"
