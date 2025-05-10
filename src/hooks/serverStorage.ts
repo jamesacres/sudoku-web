@@ -425,6 +425,26 @@ function useServerStorage({
     [fetch, isLoggedIn, isOnline]
   );
 
+  const deleteAccount = useCallback(async (): Promise<boolean> => {
+    if (isOnline && isLoggedIn() && user) {
+      try {
+        console.info('deleting account', user.sub);
+        const response = await fetch(
+          new Request(`${apiUrl}/account`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          })
+        );
+        return response.ok;
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    return false;
+  }, [fetch, isLoggedIn, isOnline, user]);
+
   return {
     setIdAndType,
     listValues,
@@ -436,7 +456,7 @@ function useServerStorage({
     getPublicInvite,
     createMember,
     getSudokuOfTheDay,
+    deleteAccount,
   };
 }
-
 export { useServerStorage };
