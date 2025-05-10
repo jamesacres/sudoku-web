@@ -19,5 +19,7 @@ export const UserAvatar = ({
       className="overflow-hidden rounded-full"
     />
   ) : (
-    <User className="text-white" style={{ height: size, width: size }} />
+    <div className="flex items-center justify-center rounded-full bg-blue-600" style={{ height: size, width: size }}>
+      <User className="text-white" style={{ height: size * 0.6, width: size * 0.6 }} />
+    </div>
   );
