@@ -9,14 +9,17 @@ export const Toggle = ({
 }) => {
   return (
     <Switch
-      data-checked={isEnabled ? isEnabled : undefined}
       checked={isEnabled}
       onChange={setEnabled}
-      className="group data-checked:bg-theme-primary relative flex h-7 w-12 cursor-pointer rounded-full bg-red-700 p-1 transition-colors duration-200 ease-in-out focus:outline-hidden data-focus:outline-1 data-focus:outline-white"
+      className={`relative flex h-7 w-12 cursor-pointer rounded-full p-1 transition-colors duration-200 ease-in-out focus:outline-none ${
+        isEnabled ? 'bg-theme-primary' : 'bg-gray-400 dark:bg-gray-600'
+      }`}
     >
       <span
         aria-hidden="true"
-        className="pointer-events-none inline-block size-5 translate-x-0 rounded-full bg-white ring-0 shadow-lg transition duration-200 ease-in-out group-data-checked:translate-x-5"
+        className={`pointer-events-none inline-block size-5 rounded-full bg-white ring-0 shadow-lg transition duration-200 ease-in-out ${
+          isEnabled ? 'translate-x-5' : 'translate-x-0'
+        }`}
       />
     </Switch>
   );
