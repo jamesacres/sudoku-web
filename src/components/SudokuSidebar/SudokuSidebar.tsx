@@ -94,140 +94,150 @@ const SudokuSidebar = ({
         className={`fixed top-0 left-0 z-50 h-screen w-72 xl:top-20 ${showSidebar ? '' : '-translate-x-full'} transition-transform xl:translate-x-0`}
         aria-label="Sidebar"
       >
-        <div className="h-full overflow-y-auto rounded-r-3xl bg-white/90 px-4 py-5 drop-shadow-lg backdrop-blur-md dark:bg-zinc-900/95">
-          <div
-            className="mb-4 flex-nowrap items-center xl:hidden"
-            role="group"
-            aria-label="Button group"
-          >
-            <button
-              onClick={() => {
-                setShowSidebar(!showSidebar);
-              }}
-              className="text-theme-primary dark:text-theme-primary-light flex w-full cursor-pointer items-center justify-between rounded-full px-4 py-2 text-right"
+        <div className="flex h-full flex-col rounded-r-3xl bg-white/90 drop-shadow-lg backdrop-blur-md dark:bg-zinc-900/95">
+          {/* Fixed Header */}
+          <div className="sticky top-0 z-10 rounded-tr-3xl bg-white/95 px-4 pt-5 pb-3 backdrop-blur-md dark:bg-zinc-900/95">
+            <div
+              className="mb-4 flex-nowrap items-center xl:hidden"
+              role="group"
+              aria-label="Button group"
             >
-              <span className="text-lg font-medium">Friends</span>
-              <X className="ml-2" />
-            </button>
-          </div>
-          <p className="mb-5 text-sm text-gray-600 dark:text-gray-300">
-            Challenge your friends and family to solve this Sudoku puzzle with
-            you!
-          </p>
-          {!showCreateParty && (
-            <button
-              className="bg-theme-primary hover:bg-theme-primary-dark mt-2 flex w-full cursor-pointer items-center justify-center rounded-full px-4 py-3 font-medium text-white transition-colors"
-              onClick={() =>
-                user
-                  ? setShowCreateParty(true)
-                  : loginRedirect && loginRedirect()
-              }
-            >
-              <Users className="mr-2" size={18} />
-              Create Party
-            </button>
-          )}
-          {showCreateParty && (
-            <div className="border-theme-primary/20 mt-4 rounded-2xl border bg-white/50 p-4 shadow-sm backdrop-blur-sm dark:bg-zinc-800/50">
-              <p className="mb-4 text-sm text-gray-600 dark:text-gray-300">
-                We recommend creating more than one party, e.g. one for your
-                family and one for your friends. All party members can see each
-                other&apos;s puzzles and compete.
-              </p>
-              <form
-                className="w-full"
-                onSubmit={(event) => {
-                  event.preventDefault();
-                  saveParty({ memberNickname, partyName });
+              <button
+                onClick={() => {
+                  setShowSidebar(!showSidebar);
                 }}
+                className="text-theme-primary dark:text-theme-primary-light flex w-full cursor-pointer items-center justify-between rounded-full px-4 py-2 text-right"
               >
-                <label
-                  className="my-2 block text-xs font-bold text-gray-700 dark:text-gray-300"
-                  htmlFor="form-nickname"
-                >
-                  What does the party call you?
-                </label>
-                <input
-                  id="form-nickname"
-                  className={`${isSaving ? 'cursor-wait' : ''} focus:ring-theme-primary mr-0 w-full appearance-none rounded-xl border border-gray-300 bg-white/80 px-3 py-2.5 leading-tight text-black backdrop-blur-sm focus:ring-2 dark:border-gray-600 dark:bg-zinc-800/80 dark:text-white`}
-                  type="text"
-                  placeholder="Nickname"
-                  aria-label="Nickname"
-                  disabled={isSaving}
-                  value={memberNickname}
-                  onChange={(event) => {
-                    setMemberNickname(event.target.value);
+                <span className="text-lg font-medium">Friends</span>
+                <X className="ml-2" />
+              </button>
+            </div>
+            <p className="mb-5 text-sm text-gray-600 dark:text-gray-300">
+              Challenge your friends and family to solve this Sudoku puzzle with
+              you!
+            </p>
+            {!showCreateParty && (
+              <button
+                className="bg-theme-primary hover:bg-theme-primary-dark mt-2 flex w-full cursor-pointer items-center justify-center rounded-full px-4 py-3 font-medium text-white transition-colors"
+                onClick={() =>
+                  user
+                    ? setShowCreateParty(true)
+                    : loginRedirect && loginRedirect()
+                }
+              >
+                <Users className="mr-2" size={18} />
+                Create Party
+              </button>
+            )}
+          </div>
+
+          {/* Scrollable Content */}
+          <div className="pb-safe flex-grow overflow-y-auto px-4">
+            {showCreateParty && (
+              <div className="border-theme-primary/20 mt-4 rounded-2xl border bg-white/50 p-4 shadow-sm backdrop-blur-sm dark:bg-zinc-800/50">
+                <p className="mb-4 text-sm text-gray-600 dark:text-gray-300">
+                  We recommend creating more than one party, e.g. one for your
+                  family and one for your friends. All party members can see
+                  each other&apos;s puzzles and compete.
+                </p>
+                <form
+                  className="w-full"
+                  onSubmit={(event) => {
+                    event.preventDefault();
+                    saveParty({ memberNickname, partyName });
                   }}
-                />
-                <label
-                  className="my-2 mt-4 block text-xs font-bold text-gray-700 dark:text-gray-300"
-                  htmlFor="form-party-name"
                 >
-                  What shall we name this party?
-                </label>
-                <div className="flex items-center">
+                  <label
+                    className="my-2 block text-xs font-bold text-gray-700 dark:text-gray-300"
+                    htmlFor="form-nickname"
+                  >
+                    What does the party call you?
+                  </label>
                   <input
-                    id="form-party-name"
+                    id="form-nickname"
                     className={`${isSaving ? 'cursor-wait' : ''} focus:ring-theme-primary mr-0 w-full appearance-none rounded-xl border border-gray-300 bg-white/80 px-3 py-2.5 leading-tight text-black backdrop-blur-sm focus:ring-2 dark:border-gray-600 dark:bg-zinc-800/80 dark:text-white`}
                     type="text"
-                    placeholder="e.g. Family"
-                    aria-label="Party name"
+                    placeholder="Nickname"
+                    aria-label="Nickname"
                     disabled={isSaving}
-                    value={partyName}
+                    value={memberNickname}
                     onChange={(event) => {
-                      setPartyName(event.target.value);
+                      setMemberNickname(event.target.value);
                     }}
                   />
-                </div>
-                <button
-                  className={`${isSaving ? 'cursor-wait' : 'cursor-pointer'} bg-theme-primary hover:bg-theme-primary-dark mt-4 w-full rounded-full px-4 py-2.5 font-medium text-white transition-colors`}
-                  type="submit"
-                  disabled={isSaving}
-                >
-                  {isSaving ? (
-                    <Loader className="mx-auto animate-spin" />
-                  ) : (
-                    'Create Party'
-                  )}
-                </button>
-              </form>
-            </div>
-          )}
-          {user && !!parties.length && (
-            <>
-              <div className="my-6 h-px bg-gray-200 dark:bg-gray-700" />
-              <div className="mb-4 flex items-center justify-between">
-                <h2 className="text-xl font-semibold">Your Parties</h2>
-                <button
-                  className={`${isLoading || isSaving ? 'cursor-wait' : ''} text-theme-primary dark:text-theme-primary-light cursor-pointer rounded-full bg-gray-100 p-2 transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700`}
-                  disabled={isLoading || isSaving}
-                  onClick={() => refreshParties()}
-                  aria-label="Refresh parties"
-                >
-                  <RefreshCw
-                    size={18}
-                    className={`${isLoading ? 'animate-spin' : ''}`}
-                  />
-                </button>
+                  <label
+                    className="my-2 mt-4 block text-xs font-bold text-gray-700 dark:text-gray-300"
+                    htmlFor="form-party-name"
+                  >
+                    What shall we name this party?
+                  </label>
+                  <div className="flex items-center">
+                    <input
+                      id="form-party-name"
+                      className={`${isSaving ? 'cursor-wait' : ''} focus:ring-theme-primary mr-0 w-full appearance-none rounded-xl border border-gray-300 bg-white/80 px-3 py-2.5 leading-tight text-black backdrop-blur-sm focus:ring-2 dark:border-gray-600 dark:bg-zinc-800/80 dark:text-white`}
+                      type="text"
+                      placeholder="e.g. Family"
+                      aria-label="Party name"
+                      disabled={isSaving}
+                      value={partyName}
+                      onChange={(event) => {
+                        setPartyName(event.target.value);
+                      }}
+                    />
+                  </div>
+                  <button
+                    className={`${isSaving ? 'cursor-wait' : 'cursor-pointer'} bg-theme-primary hover:bg-theme-primary-dark mt-4 w-full rounded-full px-4 py-2.5 font-medium text-white transition-colors`}
+                    type="submit"
+                    disabled={isSaving}
+                  >
+                    {isSaving ? (
+                      <Loader className="mx-auto animate-spin" />
+                    ) : (
+                      'Create Party'
+                    )}
+                  </button>
+                </form>
               </div>
+            )}
 
-              <ul className="space-y-4">
-                {parties
-                  .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-                  .map((party) => {
-                    return (
-                      <PartyRow
-                        key={party.partyId}
-                        party={party}
-                        puzzleId={puzzleId}
-                        redirectUri={redirectUri}
-                        sessionParty={sessionParties[party.partyId]}
-                      />
-                    );
-                  })}
-              </ul>
-            </>
-          )}
+            {user && !!parties.length && (
+              <>
+                <div className="my-6 h-px bg-gray-200 dark:bg-gray-700" />
+                <div className="sticky top-0 z-10 mb-4 flex items-center justify-between bg-white/95 py-2 backdrop-blur-md dark:bg-zinc-900/95">
+                  <h2 className="text-xl font-semibold">Your Parties</h2>
+                  <button
+                    className={`${isLoading || isSaving ? 'cursor-wait' : ''} text-theme-primary dark:text-theme-primary-light cursor-pointer rounded-full bg-gray-100 p-2 transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700`}
+                    disabled={isLoading || isSaving}
+                    onClick={() => refreshParties()}
+                    aria-label="Refresh parties"
+                  >
+                    <RefreshCw
+                      size={18}
+                      className={`${isLoading ? 'animate-spin' : ''}`}
+                    />
+                  </button>
+                </div>
+
+                <ul className="space-y-4 pb-16">
+                  {parties
+                    .sort(
+                      (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
+                    )
+                    .map((party) => {
+                      return (
+                        <PartyRow
+                          key={party.partyId}
+                          party={party}
+                          puzzleId={puzzleId}
+                          redirectUri={redirectUri}
+                          sessionParty={sessionParties[party.partyId]}
+                        />
+                      );
+                    })}
+                </ul>
+              </>
+            )}
+          </div>
         </div>
       </aside>
     </>
