@@ -10,7 +10,7 @@ const SimpleSudoku = ({
 }: {
   initial: Puzzle<number>;
   final: Puzzle<number>;
-  latest: Puzzle<number | Notes>;
+  latest: Puzzle<number | Notes> | undefined;
   transparent?: boolean;
 }) => {
   const background = transparent ? '' : 'bg-zinc-50 dark:bg-zinc-900';
@@ -38,7 +38,7 @@ const SimpleSudoku = ({
                       cellx as PuzzleRowOrColumn
                     ][celly as PuzzleRowOrColumn];
                   const latestValue =
-                    latest[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn][
+                    latest?.[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn][
                       cellx as PuzzleRowOrColumn
                     ][celly as PuzzleRowOrColumn];
                   const hasCorrectGuess =

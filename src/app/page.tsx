@@ -11,14 +11,15 @@ import { useLocalStorage } from '@/hooks/localStorage';
 import { useOnline } from '@/hooks/online';
 import { useServerStorage } from '@/hooks/serverStorage';
 import { UserContext } from '@/providers/UserProvider';
-import { Difficulty, ServerStateResult } from '@/types/serverTypes';
+import { Difficulty, Party, ServerStateResult } from '@/types/serverTypes';
 import { GameState, ServerState } from '@/types/state';
 import { StateType } from '@/types/StateType';
 import { Timer } from '@/types/timer';
+import { UserProfile } from '@/types/userProfile';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useContext, useEffect, useState } from 'react';
-import { Camera, Heart, Plus, UserPlus, Users } from 'react-feather';
+import { Camera, ChevronDown, Heart, Loader, Plus, Users } from 'react-feather';
 
 enum Tab {
   START_PUZZLE = 'START_PUZZLE',
@@ -26,71 +27,34 @@ enum Tab {
   FRIENDS = 'FRIENDS',
 }
 
+interface UserSessions {
+  [userId: string]:
+    | {
+        isLoading: boolean;
+        sessions?: ServerStateResult<ServerState>[];
+      }
+    | undefined;
+}
+
 const StartPuzzle = (
   isOnline: boolean,
   isLoading: boolean,
-  openSudokuOfTheDay: (difficulty: Difficulty) => Promise<void>
+  openSudokuOfTheDay: (difficulty: Difficulty) => Promise<void>,
+  friendsList: string[] | undefined,
+  setTab: (tab: Tab) => void
 ) => {
   return (
     <div className="mb-4">
       <h1 className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-4xl font-bold text-transparent">
         New Puzzle
       </h1>
-      <p className="mt-4">
-        Feeling competitive? Share puzzles with friends and family and race to
-        the finish!
-      </p>
-
-      <h2 className="mt-8 mb-2 bg-gradient-to-r from-green-500 to-teal-400 bg-clip-text text-2xl font-bold text-transparent">
-        🌱 Sudoku of the Day
-      </h2>
-      <p>
-        Challenge yourself daily with our Sudoku of the Day. We publish four new
-        challenges at midnight UTC. Start on level 1, work your way up and
-        challenge your friends!
-      </p>
-      <div className="mt-4 grid max-w-sm grid-cols-2 gap-3">
-        <button
-          onClick={() => openSudokuOfTheDay(Difficulty.SIMPLE)}
-          disabled={!isOnline || isLoading}
-          className={`${isLoading ? 'cursor-wait' : !isOnline ? 'cursor-not-allowed' : 'cursor-pointer'} flex flex-col items-center justify-center rounded-2xl bg-gradient-to-b from-green-400 to-green-500 px-4 py-6 text-xl font-bold text-white shadow-md hover:from-green-500 hover:to-green-600 active:from-green-600 active:to-green-700 disabled:opacity-50`}
-        >
-          ✏️
-          <span className="mt-2 text-base font-medium">Level 1</span>
-        </button>
-        <button
-          onClick={() => openSudokuOfTheDay(Difficulty.EASY)}
-          disabled={!isOnline || isLoading}
-          className={`${isLoading ? 'cursor-wait' : !isOnline ? 'cursor-not-allowed' : 'cursor-pointer'} flex flex-col items-center justify-center rounded-2xl bg-gradient-to-b from-yellow-400 to-yellow-500 px-4 py-6 text-xl font-bold text-white shadow-md hover:from-yellow-500 hover:to-yellow-600 active:from-yellow-600 active:to-yellow-700 disabled:opacity-50`}
-        >
-          😎😎
-          <span className="mt-2 text-base font-medium">Level 2</span>
-        </button>
-        <button
-          onClick={() => openSudokuOfTheDay(Difficulty.INTERMEDIATE)}
-          disabled={!isOnline || isLoading}
-          className={`${isLoading ? 'cursor-wait' : !isOnline ? 'cursor-not-allowed' : 'cursor-pointer'} flex flex-col items-center justify-center rounded-2xl bg-gradient-to-b from-orange-400 to-orange-500 px-4 py-6 text-xl font-bold text-white shadow-md hover:from-orange-500 hover:to-orange-600 active:from-orange-600 active:to-orange-700 disabled:opacity-50`}
-        >
-          🌶️🌶️🌶️
-          <span className="mt-2 text-base font-medium">Level 3</span>
-        </button>
-        <button
-          onClick={() => openSudokuOfTheDay(Difficulty.EXPERT)}
-          disabled={!isOnline || isLoading}
-          className={`${isLoading ? 'cursor-wait' : !isOnline ? 'cursor-not-allowed' : 'cursor-pointer'} flex flex-col items-center justify-center rounded-2xl bg-gradient-to-b from-red-400 to-red-500 px-4 py-6 text-xl font-bold text-white shadow-md hover:from-red-500 hover:to-red-600 active:from-red-600 active:to-red-700 disabled:opacity-50`}
-        >
-          🔥🔥🔥🔥
-          <span className="mt-2 text-base font-medium">Level 4</span>
-        </button>
-      </div>
 
       <h2 className="mt-8 mb-2 bg-gradient-to-r from-blue-500 to-indigo-400 bg-clip-text text-2xl font-bold text-transparent">
         📸 Import
       </h2>
       <p className="mt-2">
-        Scan an unsolved puzzle in seconds from a newspaper, puzzle book or
-        sudoku website. Solve it in this app, check your work, and challenge
-        your friends!
+        Scan an unsolved puzzle from a newspaper, puzzle book or sudoku website.
+        Solve it and challenge your friends!
       </p>
       <Link
         href="/import"
@@ -99,10 +63,64 @@ const StartPuzzle = (
         <Camera className="mr-2 h-5 w-5" /> Import with camera
       </Link>
 
+      <h2 className="mt-8 mb-2 bg-gradient-to-r from-green-500 to-teal-400 bg-clip-text text-2xl font-bold text-transparent">
+        🌱 Sudoku of the Day
+      </h2>
+      <p>
+        Challenge yourself daily with our Sudoku of the Day. Start on level 1,
+        work your way up and challenge your friends!
+      </p>
+      <div className="mt-4 grid max-w-sm grid-cols-2 gap-3">
+        <button
+          onClick={() => openSudokuOfTheDay(Difficulty.SIMPLE)}
+          disabled={!isOnline || isLoading}
+          className={`${isLoading ? 'cursor-wait' : !isOnline ? 'cursor-not-allowed' : 'cursor-pointer'} flex flex-col items-center justify-center rounded-full bg-gradient-to-b from-green-400 to-green-500 px-4 py-2 text-xl font-bold text-white shadow-md hover:from-green-500 hover:to-green-600 active:from-green-600 active:to-green-700 disabled:opacity-50`}
+        >
+          ✏️
+          <span className="mt-2 text-base font-medium">Level 1</span>
+        </button>
+        <button
+          onClick={() => openSudokuOfTheDay(Difficulty.EASY)}
+          disabled={!isOnline || isLoading}
+          className={`${isLoading ? 'cursor-wait' : !isOnline ? 'cursor-not-allowed' : 'cursor-pointer'} flex flex-col items-center justify-center rounded-full bg-gradient-to-b from-yellow-400 to-yellow-500 px-4 py-2 text-xl font-bold text-white shadow-md hover:from-yellow-500 hover:to-yellow-600 active:from-yellow-600 active:to-yellow-700 disabled:opacity-50`}
+        >
+          😎😎
+          <span className="mt-2 text-base font-medium">Level 2</span>
+        </button>
+        <button
+          onClick={() => openSudokuOfTheDay(Difficulty.INTERMEDIATE)}
+          disabled={!isOnline || isLoading}
+          className={`${isLoading ? 'cursor-wait' : !isOnline ? 'cursor-not-allowed' : 'cursor-pointer'} flex flex-col items-center justify-center rounded-full bg-gradient-to-b from-orange-400 to-orange-500 px-4 py-2 text-xl font-bold text-white shadow-md hover:from-orange-500 hover:to-orange-600 active:from-orange-600 active:to-orange-700 disabled:opacity-50`}
+        >
+          🌶️🌶️🌶️
+          <span className="mt-2 text-base font-medium">Level 3</span>
+        </button>
+        <button
+          onClick={() => openSudokuOfTheDay(Difficulty.EXPERT)}
+          disabled={!isOnline || isLoading}
+          className={`${isLoading ? 'cursor-wait' : !isOnline ? 'cursor-not-allowed' : 'cursor-pointer'} flex flex-col items-center justify-center rounded-full bg-gradient-to-b from-red-400 to-red-500 px-4 py-2 text-xl font-bold text-white shadow-md hover:from-red-500 hover:to-red-600 active:from-red-600 active:to-red-700 disabled:opacity-50`}
+        >
+          🔥🔥🔥🔥
+          <span className="mt-2 text-base font-medium">Level 4</span>
+        </button>
+      </div>
+
       <h2 className="mt-8 mb-2 bg-gradient-to-r from-purple-500 to-pink-400 bg-clip-text text-2xl font-bold text-transparent">
         Puzzles from Friends
       </h2>
-      <p>Coming soon!</p>
+      <p>
+        Compete against{' '}
+        {friendsList?.length
+          ? friendsList.slice(0, 5).join(', ')
+          : 'your friends'}{' '}
+        and see who is the fastest!
+      </p>
+      <button
+        onClick={() => setTab(Tab.FRIENDS)}
+        className="mt-4 inline-flex cursor-pointer items-center justify-center rounded-full bg-gradient-to-r from-purple-400 to-purple-500 px-6 py-3 text-base font-medium text-white shadow-md hover:from-purple-500 hover:to-purple-600 active:from-purple-600 active:to-purple-700"
+      >
+        <Users className="mr-2 h-5 w-5" /> Play with Friends
+      </button>
     </div>
   );
 };
@@ -116,7 +134,9 @@ const MyPuzzles = (sessions?: ServerStateResult<ServerState>[]) => {
         <div className="mb-4">
           <h2 className="mb-2 text-2xl font-extrabold">In Progress</h2>
           <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-4">
-            {inProgress?.map((session) => SessionRow(session))}
+            {inProgress?.map((session) =>
+              SessionRow({ mySession: session, display: 'my' })
+            )}
           </ul>
         </div>
       )}
@@ -124,55 +144,128 @@ const MyPuzzles = (sessions?: ServerStateResult<ServerState>[]) => {
         <div className="mb-4">
           <h2 className="mb-2 text-2xl font-extrabold">Completed</h2>
           <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-4">
-            {completed?.map((session) => SessionRow(session))}
+            {completed?.map((session) =>
+              SessionRow({ mySession: session, display: 'my' })
+            )}
           </ul>
         </div>
       )}
     </div>
   );
 };
-const Friends = () => {
+const Friends = (
+  user: UserProfile | undefined,
+  parties: Party[] | undefined,
+  expandUser: (partyId: string, userId: string) => void,
+  userSessions: UserSessions,
+  mySessions: ServerStateResult<ServerState>[] | undefined
+) => {
   return (
     <div className="mb-4">
       <h1 className="mb-2 text-4xl font-extrabold">Friends</h1>
       <p className="mb-4">
-        Challenge your friends and family to solve Sudoku puzzles with you!
+        Invite others using the sidebar when solving a puzzle, then come back
+        here to see their own puzzles.
       </p>
       <p className="mb-4">
-        Simply invite them to a party you have created and they can start one of
-        your puzzles. If you didn&apos;t create the party, ask the owner to
-        invite them.
-      </p>
-      <p className="mb-4">
-        We recommend creating more than one party, e.g. one for your family and
-        one for your friends. All party members can see each other&apos;s
-        puzzles and compete.
+        Select a friend below to see and solve their puzzles. Who will be the
+        quickest?
       </p>
 
-      <h2 className="mb-2 text-2xl font-extrabold">My Parties</h2>
-      <Link
-        href="/"
-        className="mt-2 mr-2 inline-block rounded-sm bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300"
-      >
-        <Users className="float-left mr-2" /> Create a Party
-      </Link>
-      <h2 className="mb-2">Test Party</h2>
-      <Link
-        href="/"
-        className="mt-2 mr-2 inline-block rounded-sm bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300"
-      >
-        <UserPlus className="float-left mr-2" /> Invite to Party (only if
-        created by user)
-      </Link>
+      {parties?.length ? (
+        <>
+          <ul className="space-y-4 pb-16">
+            {parties?.map(({ partyId, members, partyName }) => (
+              <li key={partyId}>
+                <div className="rounded-2xl border border-gray-200 bg-white/80 p-4 shadow-sm backdrop-blur-sm dark:border-gray-700 dark:bg-zinc-800/80">
+                  <h3 className="text-theme-primary dark:text-theme-primary-light text-xl font-semibold">
+                    {partyName}
+                  </h3>
+                  <ul className="mt-4 space-y-4">
+                    {members
+                      .filter(({ userId }) => userId !== user?.sub)
+                      .map(({ userId, memberNickname }) => (
+                        <li
+                          key={userId}
+                          className="rounded-xl bg-gray-50 dark:bg-zinc-700/40"
+                        >
+                          <button
+                            className="flex w-full cursor-pointer items-center p-3"
+                            onClick={() => expandUser(partyId, userId)}
+                          >
+                            <span className="mr-2 text-xl">🧍</span>
+                            <span className="font-medium text-gray-800 dark:text-gray-200">
+                              {memberNickname}
+                            </span>
+                            {userSessions[userId]?.isLoading ? (
+                              <Loader className="mr-0 ml-auto animate-spin" />
+                            ) : (
+                              <>
+                                {userSessions[userId]?.sessions ? (
+                                  <></>
+                                ) : (
+                                  <ChevronDown className="mr-0 ml-auto" />
+                                )}
+                              </>
+                            )}
+                          </button>
+                          {userSessions[userId]?.sessions && (
+                            <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-4">
+                              {userSessions[userId]?.sessions?.map(
+                                (userSession) =>
+                                  SessionRow({
+                                    memberSession: userSession,
+                                    mySession: mySessions?.find(
+                                      (session) =>
+                                        session.sessionId ===
+                                        userSession.sessionId
+                                    ),
+                                    display: 'my',
+                                    memberNickname,
+                                  })
+                              )}
+                            </ul>
+                          )}
+                        </li>
+                      ))}
+                  </ul>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </>
+      ) : (
+        <></>
+      )}
     </div>
   );
 };
 
-const SessionRow = (session: ServerStateResult<ServerState>) => {
+const SessionRow = ({
+  mySession,
+  memberSession,
+  display,
+  memberNickname,
+}: {
+  mySession?: ServerStateResult<ServerState>;
+  memberSession?: ServerStateResult<ServerState>;
+  display: 'my' | 'user';
+  memberNickname?: string;
+}) => {
+  const session = mySession || memberSession;
+  if (!session) {
+    return;
+  }
   const initial = puzzleToPuzzleText(session.state.initial);
   const final = puzzleToPuzzleText(session.state.final);
+
+  // Session may be from a friend, display userSession when provided
+  const displaySession = display === 'my' ? mySession : memberSession;
+
   const latest =
-    session.state.answerStack[session.state.answerStack.length - 1];
+    displaySession?.state.answerStack[
+      displaySession?.state.answerStack.length - 1
+    ];
   return (
     <li
       key={session.sessionId}
@@ -185,9 +278,32 @@ const SessionRow = (session: ServerStateResult<ServerState>) => {
           latest={latest}
         />
         <div className="mr-2 inline-block w-full px-4 py-2 text-center text-white">
-          Continue Game
-          {session.state.timer !== undefined && (
-            <TimerDisplay seconds={calculateSeconds(session.state.timer)} />
+          <p>
+            {(mySession?.state.answerStack.length || 0) > 1
+              ? mySession?.state.completed
+                ? 'You Completed!'
+                : 'Continue Game'
+              : 'Start Game'}
+          </p>
+          {memberSession && mySession?.state.timer !== undefined && 'Your time'}
+          {mySession?.state.timer !== undefined && (
+            <TimerDisplay seconds={calculateSeconds(mySession.state.timer)} />
+          )}
+          {memberNickname ? (
+            <p>
+              {(memberSession?.state.answerStack.length || 0) > 1
+                ? memberSession?.state.completed
+                  ? `${memberNickname} Completed!`
+                  : `${memberNickname} in progress`
+                : `${memberNickname} not started`}
+            </p>
+          ) : (
+            <></>
+          )}
+          {memberSession?.state.timer !== undefined && (
+            <TimerDisplay
+              seconds={calculateSeconds(memberSession.state.timer)}
+            />
           )}
         </div>
       </Link>
@@ -201,8 +317,11 @@ export default function Home() {
   const { user, loginRedirect } = useContext(UserContext) || {};
   const { isOnline } = useOnline();
   const [isLoading, setIsLoading] = useState(false);
-  const { getSudokuOfTheDay, listValues: listServerValues } =
-    useServerStorage();
+  const {
+    getSudokuOfTheDay,
+    listParties,
+    listValues: listServerValues,
+  } = useServerStorage();
   const {
     prefix,
     listValues: listLocalPuzzles,
@@ -215,6 +334,8 @@ export default function Home() {
       type: StateType.TIMER,
     });
   const [sessions, setSessions] = useState<ServerStateResult<ServerState>[]>();
+  const [userSessions, setUserSessions] = useState<UserSessions>({});
+  const [parties, setParties] = useState<Party[]>();
 
   const mergeSessions = useCallback(
     (newSessions: ServerStateResult<ServerState>[]) => {
@@ -295,13 +416,62 @@ export default function Home() {
         // Merge with local
         mergeSessions(values);
       }
+      const parties = await listParties();
+      setParties(parties);
     };
     serverState();
 
     return () => {
       active = false;
     };
-  }, [listServerValues, listLocalPuzzles, listLocalTimers, mergeSessions]);
+  }, [
+    listServerValues,
+    listLocalPuzzles,
+    listLocalTimers,
+    mergeSessions,
+    listParties,
+  ]);
+
+  const friendsList = Array.from(
+    new Set(
+      parties
+        ?.map(({ members }) =>
+          members
+            .filter(({ userId }) => userId !== user?.sub)
+            .map(({ memberNickname }) => memberNickname)
+        )
+        .flat()
+    )
+  );
+
+  const expandUser = async (partyId: string, userId: string) => {
+    if (
+      userSessions[userId] &&
+      (userSessions[userId]?.isLoading || userSessions[userId]?.sessions)
+    ) {
+      // Already got sessions
+      return;
+    }
+    setUserSessions({
+      ...userSessions,
+      [userId]: { isLoading: true },
+    });
+    const serverValuesForUser = await listServerValues<ServerState>({
+      partyId,
+      userId,
+    });
+    if (serverValuesForUser) {
+      setUserSessions({
+        ...userSessions,
+        [userId]: { isLoading: false, sessions: serverValuesForUser },
+      });
+    } else {
+      setUserSessions({
+        ...userSessions,
+        [userId]: { isLoading: false },
+      });
+    }
+  };
 
   const openSudokuOfTheDay = async (difficulty: Difficulty): Promise<void> => {
     setIsLoading(true);
@@ -327,9 +497,16 @@ export default function Home() {
     <>
       <div className="container mx-auto px-6">
         {tab === Tab.START_PUZZLE &&
-          StartPuzzle(isOnline, isLoading, openSudokuOfTheDay)}
+          StartPuzzle(
+            isOnline,
+            isLoading,
+            openSudokuOfTheDay,
+            friendsList,
+            setTab
+          )}
         {tab === Tab.MY_PUZZLES && MyPuzzles(sessions)}
-        {tab === Tab.FRIENDS && Friends()}
+        {tab === Tab.FRIENDS &&
+          Friends(user, parties, expandUser, userSessions, sessions)}
       </div>
       <Footer>
         <button
