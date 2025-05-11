@@ -12,7 +12,7 @@ export const Toggle = ({
       data-checked={isEnabled ? isEnabled : undefined}
       checked={isEnabled}
       onChange={setEnabled}
-      className="group relative flex h-7 w-12 cursor-pointer rounded-full bg-red-700 p-1 transition-colors duration-200 ease-in-out focus:outline-hidden data-checked:bg-lime-500 data-focus:outline-1 data-focus:outline-white"
+      className="group data-checked:bg-theme-primary relative flex h-7 w-12 cursor-pointer rounded-full bg-red-700 p-1 transition-colors duration-200 ease-in-out focus:outline-hidden data-focus:outline-1 data-focus:outline-white"
     >
       <span
         aria-hidden="true"

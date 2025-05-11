@@ -11,7 +11,7 @@ const HeaderBack = () => {
     <div className="w-16"></div>
   ) : (
     <button
-      className="flex w-16 cursor-pointer items-center text-blue-600 transition-opacity active:opacity-70 dark:text-blue-400"
+      className="text-theme-primary dark:text-theme-primary-light flex w-16 cursor-pointer items-center transition-opacity active:opacity-70"
       type="button"
       onClick={() => router.replace('/')}
     >

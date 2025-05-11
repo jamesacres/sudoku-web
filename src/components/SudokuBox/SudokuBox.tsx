@@ -28,7 +28,7 @@ const SudokuBox = ({
   return (
     <div
       data-box-id={boxId}
-      className="grid aspect-square cursor-pointer grid-cols-3 grid-rows-3 border border-2 border-zinc-900 dark:border-zinc-50"
+      className="border-theme-primary dark:border-theme-primary-light grid aspect-square cursor-pointer grid-cols-3 grid-rows-3 border border-2"
     >
       {Array.from(Array(3)).map((_, y) =>
         Array.from(Array(3)).map((_, x) => {

@@ -6,13 +6,13 @@ const HeaderUserHintBox = dynamic(() => import('../HeaderUserHintBox'), {
   ssr: false,
 });
 
-import ThemeSwitch from '../ThemeSwitch';
+import ThemeControls from '../ThemeControls';
 
 const Header = () => {
   return (
     <>
       <nav className="fixed top-0 left-0 z-50 flex w-screen flex-wrap items-center justify-between border-b border-zinc-200 bg-white px-4 pt-[env(safe-area-inset-top)] pb-2 dark:border-zinc-600 dark:bg-zinc-900">
-        <div className="mr-4 flex shrink-0 items-center text-blue-600 dark:text-blue-400">
+        <div className="text-theme-primary dark:text-theme-primary-light mr-4 flex shrink-0 items-center">
           <HeaderBack />
         </div>
         <div className="block flex grow items-center">
@@ -21,7 +21,7 @@ const Header = () => {
           </div>
           <div className="flex h-12 items-center">
             <HeaderUser />
-            <ThemeSwitch />
+            <ThemeControls />
             <HeaderOnline />
           </div>
         </div>

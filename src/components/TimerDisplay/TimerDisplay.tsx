@@ -18,7 +18,11 @@ const TimerDisplay = ({
   } else {
     content = (
       <>
-        <Watch className="m-auto inline" size={24} /> {formatSeconds(seconds)}
+        <Watch
+          className="text-theme-primary dark:text-theme-primary-light m-auto inline"
+          size={24}
+        />{' '}
+        {formatSeconds(seconds)}
       </>
     );
   }

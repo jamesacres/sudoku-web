@@ -115,7 +115,7 @@ const SudokuControls = ({
             <button
               disabled={isValidateCellDisabled}
               onClick={() => selectNumber(0)}
-              className="mt-2 cursor-pointer rounded-l-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:cursor-not-allowed disabled:bg-neutral-300"
+              className="bg-theme-primary hover:bg-theme-primary-dark mt-2 cursor-pointer rounded-l-lg px-4 py-2 text-white disabled:cursor-not-allowed disabled:bg-neutral-300"
             >
               <Delete className="float-left mr-2" />
               Delete
@@ -126,7 +126,7 @@ const SudokuControls = ({
                   'Are you sure you wish to reset the whole grid?'
                 ) && reset();
               }}
-              className="mt-2 cursor-pointer rounded-r-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:cursor-not-allowed disabled:bg-neutral-300"
+              className="bg-theme-primary hover:bg-theme-primary-dark mt-2 cursor-pointer rounded-r-lg px-4 py-2 text-white disabled:cursor-not-allowed disabled:bg-neutral-300"
             >
               <RefreshCw className="float-left mr-2" />
               Reset
@@ -140,7 +140,7 @@ const SudokuControls = ({
             <button
               disabled={isUndoDisabled}
               onClick={() => undo()}
-              className="mt-2 cursor-pointer rounded-l-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:cursor-not-allowed disabled:bg-neutral-300"
+              className="bg-theme-primary hover:bg-theme-primary-dark mt-2 cursor-pointer rounded-l-lg px-4 py-2 text-white disabled:cursor-not-allowed disabled:bg-neutral-300"
             >
               <CornerUpLeft className="float-left mr-2" />
               Undo
@@ -148,7 +148,7 @@ const SudokuControls = ({
             <button
               disabled={isRedoDisabled}
               onClick={() => redo()}
-              className="mt-2 cursor-pointer rounded-r-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:cursor-not-allowed disabled:bg-neutral-300"
+              className="bg-theme-primary hover:bg-theme-primary-dark mt-2 cursor-pointer rounded-r-lg px-4 py-2 text-white disabled:cursor-not-allowed disabled:bg-neutral-300"
             >
               Redo
               <CornerUpRight className="float-right ml-2" />
@@ -162,16 +162,16 @@ const SudokuControls = ({
             <button
               disabled={isValidateCellDisabled}
               onClick={() => validateCell()}
-              className="mt-2 cursor-pointer rounded-l-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:cursor-not-allowed disabled:bg-neutral-300"
+              className="bg-theme-primary hover:bg-theme-primary-dark mt-2 cursor-pointer rounded-l-lg px-4 py-2 text-white disabled:cursor-not-allowed disabled:bg-neutral-300"
             >
               <Square className="float-left mr-2" />
             </button>
-            <div className="mt-2 cursor-default bg-neutral-500 px-4 py-2 text-white">
+            <div className="bg-theme-primary mt-2 cursor-default px-4 py-2 text-white">
               Check
             </div>
             <button
               onClick={() => validateGrid()}
-              className="mt-2 cursor-pointer rounded-r-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:cursor-not-allowed"
+              className="bg-theme-primary hover:bg-theme-primary-dark mt-2 cursor-pointer rounded-r-lg px-4 py-2 text-white disabled:cursor-not-allowed"
             >
               <Grid className="float-right ml-2" />
             </button>
@@ -187,7 +187,7 @@ const SudokuControls = ({
                   'Are you sure you wish to reveal the whole grid?'
                 ) && reveal();
               }}
-              className="mt-2 cursor-pointer rounded-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:cursor-not-allowed disabled:bg-neutral-300"
+              className="bg-theme-primary hover:bg-theme-primary-dark mt-2 cursor-pointer rounded-lg px-4 py-2 text-white disabled:cursor-not-allowed disabled:bg-neutral-300"
             >
               <Unlock className="float-left mr-2" />
               Reveal

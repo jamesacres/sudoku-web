@@ -31,7 +31,7 @@ const SudokuInput = ({
   if (!isNotesMode && value && validation !== undefined) {
     backgroundClass = validation ? 'bg-green-600' : 'bg-red-600';
   } else if (isSelected) {
-    backgroundClass = `dark:bg-neutral-600${isInitial ? '/75' : ''} bg-neutral-300${isInitial ? '/50' : ''}`;
+    backgroundClass = `dark:bg-theme-primary-dark/75 bg-theme-primary-lighter${isInitial ? '/50' : ''}`;
   }
 
   const textClass = isInitial

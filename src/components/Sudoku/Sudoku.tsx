@@ -111,7 +111,7 @@ const Sudoku = ({
                 onClick={() => {
                   setShowSidebar(!showSidebar);
                 }}
-                className="cursor-pointer rounded-lg dark:text-white"
+                className="text-theme-primary dark:text-theme-primary-light cursor-pointer rounded-lg"
               >
                 <Sidebar className="float-left mr-2" />
                 Friends
@@ -129,7 +129,7 @@ const Sudoku = ({
           </div>
           <div
             ref={gridRef}
-            className="relative mr-auto ml-auto grid max-w-xl grid-cols-3 grid-rows-3 border border-2 border-zinc-900 bg-zinc-50 lg:mr-0 dark:border-zinc-50 dark:bg-zinc-900"
+            className="border-theme-primary dark:border-theme-primary-light relative mr-auto ml-auto grid max-w-xl grid-cols-3 grid-rows-3 border border-2 bg-zinc-50 lg:mr-0 dark:bg-zinc-900"
           >
             {Array.from(Array(3)).map((_, y) =>
               Array.from(Array(3)).map((_, x) => {

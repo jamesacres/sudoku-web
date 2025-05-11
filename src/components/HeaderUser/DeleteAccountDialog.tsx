@@ -80,7 +80,7 @@ export const DeleteAccountDialog = ({
                   <label className="flex items-center">
                     <input
                       type="checkbox"
-                      className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      className="text-theme-primary focus:ring-theme-primary h-4 w-4 rounded border-gray-300"
                       checked={isConfirmed}
                       onChange={(e) => setIsConfirmed(e.target.checked)}
                     />
@@ -94,7 +94,7 @@ export const DeleteAccountDialog = ({
                 <div className="mt-6 flex justify-end space-x-4">
                   <button
                     type="button"
-                    className="inline-flex justify-center rounded-md border border-transparent bg-gray-100 px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                    className="focus-visible:ring-theme-primary inline-flex justify-center rounded-md border border-transparent bg-gray-100 px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
                     onClick={onClose}
                     disabled={isProcessing}
                   >

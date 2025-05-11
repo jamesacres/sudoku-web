@@ -83,7 +83,7 @@ const SudokuSidebar = ({
     <>
       {showSidebar && (
         <div
-          className="fixed top-0 left-0 z-50 h-full w-full bg-black opacity-50"
+          className="fixed top-0 left-0 z-50 h-full w-full bg-black/30 backdrop-blur-sm"
           onClick={() => {
             setShowSidebar(!showSidebar);
           }}
@@ -91,12 +91,12 @@ const SudokuSidebar = ({
       )}
       <aside
         id="default-sidebar"
-        className={`fixed top-0 left-0 z-50 h-screen w-60 xl:top-20 ${showSidebar ? '' : '-translate-x-full'} transition-transform xl:translate-x-0`}
+        className={`fixed top-0 left-0 z-50 h-screen w-72 xl:top-20 ${showSidebar ? '' : '-translate-x-full'} transition-transform xl:translate-x-0`}
         aria-label="Sidebar"
       >
-        <div className="h-full overflow-y-auto bg-zinc-100 px-3 py-4 drop-shadow-md dark:bg-zinc-800">
+        <div className="h-full overflow-y-auto rounded-r-3xl bg-white/90 px-4 py-5 drop-shadow-lg backdrop-blur-md dark:bg-zinc-900/95">
           <div
-            className="flex-nowrap items-center xl:hidden"
+            className="mb-4 flex-nowrap items-center xl:hidden"
             role="group"
             aria-label="Button group"
           >
@@ -104,52 +104,52 @@ const SudokuSidebar = ({
               onClick={() => {
                 setShowSidebar(!showSidebar);
               }}
-              className="w-full cursor-pointer rounded-lg px-4 py-2 text-right dark:text-white"
+              className="text-theme-primary dark:text-theme-primary-light flex w-full cursor-pointer items-center justify-between rounded-full px-4 py-2 text-right"
             >
-              Close
-              <X className="float-right ml-2" />
+              <span className="text-lg font-medium">Friends</span>
+              <X className="ml-2" />
             </button>
           </div>
-          <p className="mb-4">
+          <p className="mb-5 text-sm text-gray-600 dark:text-gray-300">
             Challenge your friends and family to solve this Sudoku puzzle with
             you!
           </p>
           {!showCreateParty && (
             <button
-              className="mt-2 w-full cursor-pointer rounded-lg bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700"
+              className="bg-theme-primary hover:bg-theme-primary-dark mt-2 flex w-full cursor-pointer items-center justify-center rounded-full px-4 py-3 font-medium text-white transition-colors"
               onClick={() =>
                 user
                   ? setShowCreateParty(true)
                   : loginRedirect && loginRedirect()
               }
             >
-              <Users className="float-left mr-2" />
+              <Users className="mr-2" size={18} />
               Create Party
             </button>
           )}
           {showCreateParty && (
-            <div className="rounded-sm border-2 border-neutral-500 p-2">
-              <p className="mb-4">
+            <div className="border-theme-primary/20 mt-4 rounded-2xl border bg-white/50 p-4 shadow-sm backdrop-blur-sm dark:bg-zinc-800/50">
+              <p className="mb-4 text-sm text-gray-600 dark:text-gray-300">
                 We recommend creating more than one party, e.g. one for your
                 family and one for your friends. All party members can see each
                 other&apos;s puzzles and compete.
               </p>
               <form
-                className="w-full max-w-sm"
+                className="w-full"
                 onSubmit={(event) => {
                   event.preventDefault();
                   saveParty({ memberNickname, partyName });
                 }}
               >
                 <label
-                  className="my-2 block text-xs font-bold"
+                  className="my-2 block text-xs font-bold text-gray-700 dark:text-gray-300"
                   htmlFor="form-nickname"
                 >
                   What does the party call you?
                 </label>
                 <input
                   id="form-nickname"
-                  className={`${isSaving ? 'cursor-wait' : ''} mr-0 w-full appearance-none rounded-sm border-2 border-neutral-500 bg-transparent px-2 py-2 leading-tight text-black focus:outline-hidden dark:text-white`}
+                  className={`${isSaving ? 'cursor-wait' : ''} focus:ring-theme-primary mr-0 w-full appearance-none rounded-xl border border-gray-300 bg-white/80 px-3 py-2.5 leading-tight text-black backdrop-blur-sm focus:ring-2 dark:border-gray-600 dark:bg-zinc-800/80 dark:text-white`}
                   type="text"
                   placeholder="Nickname"
                   aria-label="Nickname"
@@ -160,7 +160,7 @@ const SudokuSidebar = ({
                   }}
                 />
                 <label
-                  className="my-2 block text-xs font-bold"
+                  className="my-2 mt-4 block text-xs font-bold text-gray-700 dark:text-gray-300"
                   htmlFor="form-party-name"
                 >
                   What shall we name this party?
@@ -168,7 +168,7 @@ const SudokuSidebar = ({
                 <div className="flex items-center">
                   <input
                     id="form-party-name"
-                    className={`${isSaving ? 'cursor-wait' : ''} mr-0 w-full appearance-none rounded-l border-2 border-neutral-500 bg-transparent px-2 py-2 leading-tight text-black focus:outline-hidden dark:text-white`}
+                    className={`${isSaving ? 'cursor-wait' : ''} focus:ring-theme-primary mr-0 w-full appearance-none rounded-xl border border-gray-300 bg-white/80 px-3 py-2.5 leading-tight text-black backdrop-blur-sm focus:ring-2 dark:border-gray-600 dark:bg-zinc-800/80 dark:text-white`}
                     type="text"
                     placeholder="e.g. Family"
                     aria-label="Party name"
@@ -178,32 +178,40 @@ const SudokuSidebar = ({
                       setPartyName(event.target.value);
                     }}
                   />
-                  <button
-                    className={`${isSaving ? 'cursor-wait' : 'cursor-pointer'} shrink-0 rounded-r bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700`}
-                    type="submit"
-                    disabled={isSaving}
-                  >
-                    {isSaving ? <Loader className="animate-spin" /> : 'Save'}
-                  </button>
                 </div>
+                <button
+                  className={`${isSaving ? 'cursor-wait' : 'cursor-pointer'} bg-theme-primary hover:bg-theme-primary-dark mt-4 w-full rounded-full px-4 py-2.5 font-medium text-white transition-colors`}
+                  type="submit"
+                  disabled={isSaving}
+                >
+                  {isSaving ? (
+                    <Loader className="mx-auto animate-spin" />
+                  ) : (
+                    'Create Party'
+                  )}
+                </button>
               </form>
             </div>
           )}
           {user && !!parties.length && (
             <>
-              <hr className="my-8" />
-              <h1 className="text-3xl">
-                Parties
+              <div className="my-6 h-px bg-gray-200 dark:bg-gray-700" />
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="text-xl font-semibold">Your Parties</h2>
                 <button
-                  className={`${isLoading || isSaving ? 'cursor-wait' : ''} float-right cursor-pointer rounded-lg bg-neutral-500 px-2 py-2 text-sm text-white hover:bg-neutral-700`}
+                  className={`${isLoading || isSaving ? 'cursor-wait' : ''} text-theme-primary dark:text-theme-primary-light cursor-pointer rounded-full bg-gray-100 p-2 transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700`}
                   disabled={isLoading || isSaving}
                   onClick={() => refreshParties()}
+                  aria-label="Refresh parties"
                 >
-                  <RefreshCw className="float-left mr-2" size={20} /> Refresh
+                  <RefreshCw
+                    size={18}
+                    className={`${isLoading ? 'animate-spin' : ''}`}
+                  />
                 </button>
-              </h1>
+              </div>
 
-              <ul>
+              <ul className="space-y-4">
                 {parties
                   .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
                   .map((party) => {

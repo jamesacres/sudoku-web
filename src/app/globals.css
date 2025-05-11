@@ -32,6 +32,104 @@
   padding-bottom: max(24px, env(safe-area-inset-bottom));
 }
 
+/* Theme color variables */
+:root {
+  --theme-primary: theme(colors.blue.500);
+  --theme-primary-dark: theme(colors.blue.600);
+  --theme-primary-light: theme(colors.blue.400);
+  --theme-primary-lighter: theme(colors.blue.300);
+}
+
+.theme-blue {
+  --theme-primary: theme(colors.blue.500);
+  --theme-primary-dark: theme(colors.blue.600);
+  --theme-primary-light: theme(colors.blue.400);
+  --theme-primary-lighter: theme(colors.blue.300);
+}
+
+.theme-red {
+  --theme-primary: theme(colors.red.500);
+  --theme-primary-dark: theme(colors.red.600);
+  --theme-primary-light: theme(colors.red.400);
+  --theme-primary-lighter: theme(colors.red.300);
+}
+
+.theme-green {
+  --theme-primary: theme(colors.green.500);
+  --theme-primary-dark: theme(colors.green.600);
+  --theme-primary-light: theme(colors.green.400);
+  --theme-primary-lighter: theme(colors.green.300);
+}
+
+.theme-purple {
+  --theme-primary: theme(colors.purple.500);
+  --theme-primary-dark: theme(colors.purple.600);
+  --theme-primary-light: theme(colors.purple.400);
+  --theme-primary-lighter: theme(colors.purple.300);
+}
+
+.theme-amber {
+  --theme-primary: theme(colors.amber.500);
+  --theme-primary-dark: theme(colors.amber.600);
+  --theme-primary-light: theme(colors.amber.400);
+  --theme-primary-lighter: theme(colors.amber.300);
+}
+
+.theme-cyan {
+  --theme-primary: theme(colors.cyan.500);
+  --theme-primary-dark: theme(colors.cyan.600);
+  --theme-primary-light: theme(colors.cyan.400);
+  --theme-primary-lighter: theme(colors.cyan.300);
+}
+
+.theme-pink {
+  --theme-primary: theme(colors.pink.500);
+  --theme-primary-dark: theme(colors.pink.600);
+  --theme-primary-light: theme(colors.pink.400);
+  --theme-primary-lighter: theme(colors.pink.300);
+}
+
+.theme-indigo {
+  --theme-primary: theme(colors.indigo.500);
+  --theme-primary-dark: theme(colors.indigo.600);
+  --theme-primary-light: theme(colors.indigo.400);
+  --theme-primary-lighter: theme(colors.indigo.300);
+}
+
+/* Add themed utility classes */
+@layer utilities {
+  .bg-theme-primary {
+    background-color: var(--theme-primary);
+  }
+  .bg-theme-primary-dark {
+    background-color: var(--theme-primary-dark);
+  }
+  .bg-theme-primary-light {
+    background-color: var(--theme-primary-light);
+  }
+  .bg-theme-primary-lighter {
+    background-color: var(--theme-primary-lighter);
+  }
+  
+  .text-theme-primary {
+    color: var(--theme-primary);
+  }
+  .text-theme-primary-dark {
+    color: var(--theme-primary-dark);
+  }
+  .text-theme-primary-light {
+    color: var(--theme-primary-light);
+  }
+  
+  .border-theme-primary {
+    border-color: var(--theme-primary);
+  }
+  
+  .hover\:bg-theme-primary-dark:hover {
+    background-color: var(--theme-primary-dark);
+  }
+}
+
 @layer base {
   body {
     @apply dark:bg-zinc-800 bg-zinc-100

@@ -20,7 +20,7 @@ export const UserAvatar = ({
     />
   ) : (
     <div
-      className="flex items-center justify-center rounded-full bg-blue-600"
+      className="bg-theme-primary flex items-center justify-center rounded-full"
       style={{ height: size, width: size }}
     >
       <User
