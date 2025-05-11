@@ -23,14 +23,14 @@ export const FriendsTab = ({
 }: FriendsTabProps) => {
   return (
     <div className="mb-4">
-      <h1 className="mb-2 text-4xl font-extrabold">Friends</h1>
+      <h1 className="mb-2 text-4xl font-extrabold">Friends & Challenges</h1>
       <p className="mb-4">
         Invite others using the sidebar when solving a puzzle, then come back
         here to see their own puzzles.
       </p>
       <p className="mb-4">
-        Select a friend below to see and solve their puzzles. Who will be the
-        quickest?
+        Select a friend below to see and solve their puzzles. Compare your
+        completion percentage and see who will be the quickest!
       </p>
 
       {parties?.length ? (
