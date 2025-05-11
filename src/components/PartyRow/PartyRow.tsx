@@ -4,7 +4,7 @@ import { PartyInviteButton } from '../PartyInviteButton/PartyInviteButton';
 import SimpleSudoku from '../SimpleSudoku';
 import { TimerDisplay } from '../TimerDisplay/TimerDisplay';
 import { calculateSeconds } from '@/helpers/calculateSeconds';
-
+import { calculateCompletionPercentage } from '@/helpers/calculateCompletionPercentage';
 const PartyRow = ({
   party: { partyName, isOwner, members, partyId },
   puzzleId,
@@ -36,6 +36,18 @@ const PartyRow = ({
 
         <ul className="mt-4 space-y-4">
           {members.map(({ memberNickname, userId, isOwner, isUser }) => {
+            // Calculate completion percentage if session data exists
+            const memberSession = sessionParty?.memberSessions[userId];
+            const completionPercentage = memberSession
+              ? calculateCompletionPercentage(
+                  memberSession.state.initial,
+                  memberSession.state.final,
+                  memberSession.state.answerStack[
+                    memberSession.state.answerStack.length - 1
+                  ]
+                )
+              : 0;
+
             return (
               <li
                 key={userId}
@@ -65,6 +77,20 @@ const PartyRow = ({
                         !!sessionParty?.memberSessions[userId]?.state.completed
                       }
                     />
+                  </div>
+                )}
+
+                {memberSession && (
+                  <div className="mt-2 flex items-center">
+                    <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-zinc-600">
+                      <div
+                        className="bg-theme-primary dark:bg-theme-primary-light h-full"
+                        style={{ width: `${completionPercentage}%` }}
+                      ></div>
+                    </div>
+                    <span className="ml-2 text-sm font-medium text-gray-600 dark:text-gray-300">
+                      {completionPercentage}%
+                    </span>
                   </div>
                 )}
 
