@@ -19,12 +19,21 @@ import { UserProfile } from '@/types/userProfile';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useContext, useEffect, useState } from 'react';
-import { Camera, Heart, Plus, Users } from 'react-feather';
+import { Camera, ChevronDown, Heart, Loader, Plus, Users } from 'react-feather';
 
 enum Tab {
   START_PUZZLE = 'START_PUZZLE',
   MY_PUZZLES = 'MY_PUZZLES',
   FRIENDS = 'FRIENDS',
+}
+
+interface UserSessions {
+  [userId: string]:
+    | {
+        isLoading: boolean;
+        sessions?: ServerStateResult<ServerState>[];
+      }
+    | undefined;
 }
 
 const StartPuzzle = (
@@ -125,7 +134,7 @@ const MyPuzzles = (sessions?: ServerStateResult<ServerState>[]) => {
         <div className="mb-4">
           <h2 className="mb-2 text-2xl font-extrabold">In Progress</h2>
           <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-4">
-            {inProgress?.map((session) => SessionRow(session))}
+            {inProgress?.map((session) => SessionRow({ mySession: session, display: 'my' }))}
           </ul>
         </div>
       )}
@@ -133,7 +142,7 @@ const MyPuzzles = (sessions?: ServerStateResult<ServerState>[]) => {
         <div className="mb-4">
           <h2 className="mb-2 text-2xl font-extrabold">Completed</h2>
           <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-4">
-            {completed?.map((session) => SessionRow(session))}
+            {completed?.map((session) => SessionRow({ mySession: session, display: 'my' }))}
           </ul>
         </div>
       )}
@@ -142,7 +151,10 @@ const MyPuzzles = (sessions?: ServerStateResult<ServerState>[]) => {
 };
 const Friends = (
   user: UserProfile | undefined,
-  parties: Party[] | undefined
+  parties: Party[] | undefined,
+  expandUser: (partyId: string, userId: string) => void,
+  userSessions: UserSessions,
+  mySessions: ServerStateResult<ServerState>[] | undefined
 ) => {
   return (
     <div className="mb-4">
@@ -171,14 +183,45 @@ const Friends = (
                       .map(({ userId, memberNickname }) => (
                         <li
                           key={userId}
-                          className="rounded-xl bg-gray-50 p-3 dark:bg-zinc-700/40"
+                          className="rounded-xl bg-gray-50 dark:bg-zinc-700/40"
                         >
-                          <div className="flex items-center">
+                          <button
+                            className="flex w-full cursor-pointer items-center p-3"
+                            onClick={() => expandUser(partyId, userId)}
+                          >
                             <span className="mr-2 text-xl">🧍</span>
                             <span className="font-medium text-gray-800 dark:text-gray-200">
                               {memberNickname}
                             </span>
-                          </div>
+                            {userSessions[userId]?.isLoading ? (
+                              <Loader className="mr-0 ml-auto animate-spin" />
+                            ) : (
+                              <>
+                                {userSessions[userId]?.sessions ? (
+                                  <></>
+                                ) : (
+                                  <ChevronDown className="mr-0 ml-auto" />
+                                )}
+                              </>
+                            )}
+                          </button>
+                          {userSessions[userId]?.sessions && (
+                            <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-4">
+                              {userSessions[userId]?.sessions?.map(
+                                (userSession) =>
+                                  SessionRow({
+                                    memberSession: userSession,
+                                    mySession: mySessions?.find(
+                                      (session) =>
+                                        session.sessionId ===
+                                        userSession.sessionId
+                                    ),
+                                    display: 'my',
+                                    memberNickname
+                                  })
+                              )}
+                            </ul>
+                          )}
                         </li>
                       ))}
                   </ul>
@@ -194,11 +237,31 @@ const Friends = (
   );
 };
 
-const SessionRow = (session: ServerStateResult<ServerState>) => {
+const SessionRow = ({
+  mySession,
+  memberSession,
+  display,
+  memberNickname,
+}: {
+  mySession?: ServerStateResult<ServerState>;
+  memberSession?: ServerStateResult<ServerState>;
+  display: 'my' | 'user';
+  memberNickname?: string
+}) => {
+  const session = mySession || memberSession;
+  if (!session) {
+    return;
+  }
   const initial = puzzleToPuzzleText(session.state.initial);
   const final = puzzleToPuzzleText(session.state.final);
+
+  // Session may be from a friend, display userSession when provided
+  const displaySession = display === 'my' ? mySession : memberSession;
+
   const latest =
-    session.state.answerStack[session.state.answerStack.length - 1];
+    displaySession?.state.answerStack[
+      displaySession?.state.answerStack.length - 1
+    ];
   return (
     <li
       key={session.sessionId}
@@ -211,9 +274,14 @@ const SessionRow = (session: ServerStateResult<ServerState>) => {
           latest={latest}
         />
         <div className="mr-2 inline-block w-full px-4 py-2 text-center text-white">
-          Continue Game
-          {session.state.timer !== undefined && (
-            <TimerDisplay seconds={calculateSeconds(session.state.timer)} />
+          <p>{(mySession?.state.answerStack.length || 0) > 1 ? mySession?.state.completed ? 'You Completed!' : 'Continue Game' : 'Start Game'}</p>
+          {memberSession && mySession?.state.timer !== undefined && 'Your time'}
+          {mySession?.state.timer !== undefined && (
+            <TimerDisplay seconds={calculateSeconds(mySession.state.timer)} />
+          )}
+          {memberNickname ? <p>{(memberSession?.state.answerStack.length || 0) > 1 ? memberSession?.state.completed ? `${memberNickname} Completed!` : `${memberNickname} in progress` : `${memberNickname} not started`}</p> : <></>}
+          {memberSession?.state.timer !== undefined && (
+            <TimerDisplay seconds={calculateSeconds(memberSession.state.timer)} />
           )}
         </div>
       </Link>
@@ -244,6 +312,7 @@ export default function Home() {
       type: StateType.TIMER,
     });
   const [sessions, setSessions] = useState<ServerStateResult<ServerState>[]>();
+  const [userSessions, setUserSessions] = useState<UserSessions>({});
   const [parties, setParties] = useState<Party[]>();
 
   const mergeSessions = useCallback(
@@ -353,6 +422,35 @@ export default function Home() {
     )
   );
 
+  const expandUser = async (partyId: string, userId: string) => {
+    if (
+      userSessions[userId] &&
+      (userSessions[userId].isLoading || userSessions[userId].sessions)
+    ) {
+      // Already got sessions
+      return;
+    }
+    setUserSessions({
+      ...userSessions,
+      [userId]: { isLoading: true },
+    });
+    const serverValuesForUser = await listServerValues<ServerState>({
+      partyId,
+      userId,
+    });
+    if (serverValuesForUser) {
+      setUserSessions({
+        ...userSessions,
+        [userId]: { isLoading: false, sessions: serverValuesForUser },
+      });
+    } else {
+      setUserSessions({
+        ...userSessions,
+        [userId]: { isLoading: false },
+      });
+    }
+  };
+
   const openSudokuOfTheDay = async (difficulty: Difficulty): Promise<void> => {
     setIsLoading(true);
     if (!user) {
@@ -385,7 +483,8 @@ export default function Home() {
             setTab
           )}
         {tab === Tab.MY_PUZZLES && MyPuzzles(sessions)}
-        {tab === Tab.FRIENDS && Friends(user, parties)}
+        {tab === Tab.FRIENDS &&
+          Friends(user, parties, expandUser, userSessions, sessions)}
       </div>
       <Footer>
         <button

@@ -78,7 +78,7 @@ const memberResponseToResult = (
   member: MemberResponse,
   user: UserProfile | undefined,
   partyCreatedBy?: string
-) => {
+): Member => {
   return {
     ...member,
     createdAt: new Date(member.createdAt),
@@ -133,26 +133,35 @@ function useServerStorage({
     return false;
   }, [getUser, logout, user]);
 
-  const listValues = useCallback(async <T>(): Promise<
-    ServerStateResult<T>[] | undefined
-  > => {
-    if (isOnline && isLoggedIn()) {
-      try {
-        console.info('fetching sessions');
-        const response = await fetch(
-          new Request(`${apiUrl}/sessions?app=${app}`)
-        );
-        if (response.ok) {
-          return (<StateResponse<T>[]>await response.json()).map((item) =>
-            responseToResult(item)
+  const listValues = useCallback(
+    async <T>({
+      partyId,
+      userId,
+    }: {
+      partyId?: string;
+      userId?: string;
+    } = {}): Promise<ServerStateResult<T>[] | undefined> => {
+      if (isOnline && isLoggedIn()) {
+        try {
+          console.info('fetching sessions', { partyId, userId });
+          const response = await fetch(
+            new Request(
+              `${apiUrl}/sessions?app=${app}${partyId ? `&partyId=${encodeURIComponent(partyId)}` : ''}${userId ? `&userId=${encodeURIComponent(userId)}` : ''}`
+            )
           );
+          if (response.ok) {
+            return (<StateResponse<T>[]>await response.json()).map((item) =>
+              responseToResult(item)
+            );
+          }
+        } catch (e) {
+          console.error(e);
         }
-      } catch (e) {
-        console.error(e);
       }
-    }
-    return undefined;
-  }, [fetch, isLoggedIn, isOnline]);
+      return undefined;
+    },
+    [fetch, isLoggedIn, isOnline]
+  );
 
   const getValue = useCallback(async <T>(): Promise<
     ServerStateResult<T> | undefined
