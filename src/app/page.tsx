@@ -321,8 +321,8 @@ export default function Home() {
 
   const tabBackground = (thisTab: Tab) =>
     thisTab === tab
-      ? 'bg-transparent text-blue-700 dark:text-blue-300 font-semibold'
-      : 'text-zinc-700 dark:text-zinc-300';
+      ? 'bg-transparent text-theme-primary dark:text-theme-primary-light font-semibold'
+      : 'text-gray-500 dark:text-gray-400';
   return (
     <>
       <div className="container mx-auto px-6">
@@ -336,21 +336,21 @@ export default function Home() {
           onClick={() => setTab(Tab.START_PUZZLE)}
           className={`group inline-flex cursor-pointer flex-col items-center justify-center px-5 transition-colors duration-200 active:opacity-70 ${tabBackground(Tab.START_PUZZLE)}`}
         >
-          <Plus className="mb-1 h-6 w-6 text-blue-700 dark:text-blue-300" />
+          <Plus className="text-theme-primary dark:text-theme-primary-light mb-1 h-6 w-6" />
           <span className="text-center text-xs font-medium">New Puzzle</span>
         </button>
         <button
           onClick={() => setTab(Tab.MY_PUZZLES)}
           className={`group inline-flex cursor-pointer flex-col items-center justify-center px-5 transition-colors duration-200 active:opacity-70 ${tabBackground(Tab.MY_PUZZLES)}`}
         >
-          <Heart className="mb-1 h-6 w-6 text-blue-700 dark:text-blue-300" />
+          <Heart className="text-theme-primary dark:text-theme-primary-light mb-1 h-6 w-6" />
           <span className="text-center text-xs font-medium">My Puzzles</span>
         </button>
         <button
           onClick={() => setTab(Tab.FRIENDS)}
           className={`group inline-flex cursor-pointer flex-col items-center justify-center px-5 transition-colors duration-200 active:opacity-70 ${tabBackground(Tab.FRIENDS)}`}
         >
-          <Users className="mb-1 h-6 w-6 text-blue-700 dark:text-blue-300" />
+          <Users className="text-theme-primary dark:text-theme-primary-light mb-1 h-6 w-6" />
           <span className="text-center text-xs font-medium">Friends</span>
         </button>
       </Footer>
