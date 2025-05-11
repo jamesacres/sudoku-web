@@ -92,7 +92,6 @@ export const SessionRow = ({
               </div>
             </div>
           }
-          {memberSession && mySession?.state.timer !== undefined && 'Your time'}
           {mySession?.state.timer !== undefined && (
             <TimerDisplay seconds={calculateSeconds(mySession.state.timer)} />
           )}
