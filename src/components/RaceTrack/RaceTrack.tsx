@@ -2,7 +2,6 @@
 import { Parties, Session } from '@/types/serverTypes';
 import { ServerState } from '@/types/state';
 import { calculateCompletionPercentage } from '@/helpers/calculateCompletionPercentage';
-import { Flag } from 'react-feather';
 import { useMemo } from 'react';
 
 interface RaceTrackProps {
@@ -81,89 +80,147 @@ const RaceTrack = ({
     );
   }, [sessionParties, initial, final, answer, userId]);
 
-  if (allPlayerProgress.length <= 1) {
-    return null; // Don't show race if only one player or no players
-  }
+  // Player colors for different players
+  const playerColors = [
+    // 'bg-red-500', // Mario red - current player
+    'bg-blue-500', // Luigi blue
+    'bg-yellow-500', // Wario yellow
+    'bg-purple-500', // Waluigi purple
+    'bg-pink-500', // Peach pink
+    'bg-green-500', // Yoshi green
+  ];
 
   return (
-    <div className="mx-auto mt-4 mb-6 max-w-xl lg:mr-0">
-      <h3 className="mb-2 flex items-center text-lg font-semibold text-gray-800 dark:text-gray-200">
-        <Flag
-          className="text-theme-primary dark:text-theme-primary-light mr-2"
-          size={16}
-        />
-        Race to the Finish!
-      </h3>
-      <div className="rounded-lg bg-gray-100 p-4 dark:bg-zinc-800">
-        <div className="relative mb-1 h-24">
-          {/* Track */}
-          <div className="absolute inset-x-0 top-12 h-4 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
-            {/* Progress indication - small ticks every 10% */}
-            {[0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map((tick) => (
-              <div
-                key={tick}
-                className="absolute top-0 h-full w-px bg-gray-300 dark:bg-gray-600"
-                style={{ left: `${tick}%` }}
-              >
-                {tick % 20 === 0 && (
-                  <div className="absolute -top-5 left-1/2 -translate-x-1/2 transform text-xs text-gray-500 dark:text-gray-400">
-                    {tick}%
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-
-          {/* Finish flag */}
-          <div className="absolute top-0 right-0 flex h-24 flex-col items-center">
-            <div className="bg-theme-primary dark:bg-theme-primary-light h-16 w-0.5"></div>
-            <div className="text-theme-primary dark:text-theme-primary-light text-xs font-medium">
-              Finish
-            </div>
-          </div>
-
-          {/* Player markers */}
-          {allPlayerProgress.map((player) => (
+    <div className="mx-auto mt-4 mb-4 max-w-xl lg:mr-0">
+      {/* Compact race track design */}
+      <div className="relative">
+        {/* Main track */}
+        <div className="relative h-14 overflow-visible rounded-lg bg-gray-600 dark:bg-gray-800">
+          {/* Track surface with center line */}
+          <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+            {/* Dashed center line */}
             <div
-              key={player.userId}
-              className="absolute top-0 transition-all duration-500 ease-in-out"
+              className="absolute top-1/2 right-16 left-6 h-0.5 -translate-y-1/2 transform bg-white opacity-60"
               style={{
-                left: `${player.percentage}%`,
-                transform: 'translateX(-50%)',
+                backgroundImage:
+                  'repeating-linear-gradient(to right, white 0px, white 6px, transparent 6px, transparent 12px)',
               }}
-            >
-              {/* Flag pole */}
-              <div
-                className={`h-12 w-1 ${
-                  player.isCurrentUser ? 'bg-green-500' : 'bg-blue-500'
-                }`}
-              ></div>
+            ></div>
+          </div>
 
-              {/* Flag */}
-              <div
-                className={`absolute top-1 left-0 h-3 w-4 ${
-                  player.isCurrentUser ? 'bg-green-500' : 'bg-blue-500'
-                }`}
-              ></div>
+          {/* START label inside track */}
+          <div className="absolute top-1/2 left-1 -translate-y-1/2 transform">
+            <span className="rounded bg-green-600 px-1.5 py-0.5 text-xs font-bold text-white">
+              START
+            </span>
+          </div>
 
-              {/* Player info */}
-              <div className="absolute top-14 left-1/2 -translate-x-1/2 transform">
-                <div className="flex flex-col items-center">
-                  <div className="text-xs font-bold whitespace-nowrap">
-                    {player.nickname}
-                  </div>
-                  <div className="text-xs text-gray-600 dark:text-gray-400">
-                    {player.percentage}%
-                  </div>
+          {/* FINISH label and flag inside track */}
+          <div className="absolute top-1/2 right-1 flex -translate-y-1/2 transform items-center">
+            <span className="mr-1 rounded bg-red-600 px-1 py-0.5 text-xs font-bold text-white">
+              FINISH
+            </span>
+            {/* Checkered flag */}
+            <div
+              className="h-3 w-4 border border-gray-800 bg-white"
+              style={{
+                backgroundImage: `
+                  linear-gradient(45deg, black 25%, transparent 25%),
+                  linear-gradient(-45deg, black 25%, transparent 25%),
+                  linear-gradient(45deg, transparent 75%, black 75%),
+                  linear-gradient(-45deg, transparent 75%, black 75%)
+                `,
+                backgroundSize: '2px 2px',
+                backgroundPosition: '0 0, 0 1px, 1px -1px, -1px 0px',
+              }}
+            ></div>
+          </div>
+
+          {/* Progress tick marks */}
+          {[25, 50, 75].map((tick) => (
+            <div
+              key={tick}
+              className="absolute top-0 bottom-0 w-px bg-yellow-400 opacity-40"
+              style={{ left: `${tick}%` }}
+            ></div>
+          ))}
+
+          {/* Player karts */}
+          {allPlayerProgress.map((player, index) => {
+            const colorClass = player.isCurrentUser
+              ? 'bg-red-500' // Always red for current user (Mario)
+              : playerColors[index % playerColors.length];
+
+            // Calculate vertical spacing within the smaller track
+            const trackHeight = 56; // h-14 = 56px
+            const totalPlayers = allPlayerProgress.length;
+            const playerHeight = Math.min(10, trackHeight / totalPlayers);
+            const verticalOffset = index * playerHeight + 4;
+
+            return (
+              <div
+                key={player.userId}
+                className="absolute transform transition-all duration-700 ease-out"
+                style={{
+                  left: `${Math.min(Math.max(player.percentage, 12), 82)}%`, // Keep well within bounds
+                  top: `${verticalOffset}px`,
+                  transform: 'translateX(-50%)',
+                }}
+              >
+                {/* Smaller kart */}
+                <div
+                  className={`h-3 w-5 ${colorClass} relative rounded border border-gray-800 shadow-sm dark:border-gray-200`}
+                >
+                  {/* Tiny wheels */}
+                  <div className="absolute top-0 -left-0.5 h-0.5 w-0.5 rounded-full bg-gray-800 dark:bg-gray-200"></div>
+                  <div className="absolute top-0 -right-0.5 h-0.5 w-0.5 rounded-full bg-gray-800 dark:bg-gray-200"></div>
+                  <div className="absolute bottom-0 -left-0.5 h-0.5 w-0.5 rounded-full bg-gray-800 dark:bg-gray-200"></div>
+                  <div className="absolute -right-0.5 bottom-0 h-0.5 w-0.5 rounded-full bg-gray-800 dark:bg-gray-200"></div>
+
+                  {/* Driver dot */}
+                  <div className="absolute top-0.5 left-1/2 h-1.5 w-1.5 -translate-x-1/2 transform rounded-full bg-yellow-300"></div>
+
+                  {/* Crown for current user */}
+                  {player.isCurrentUser && (
+                    <div className="absolute -top-2 left-1/2 -translate-x-1/2 transform text-xs">
+                      👑
+                    </div>
+                  )}
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
-        {/* Start line */}
-        <div className="ml-1 flex justify-start text-xs text-gray-600 dark:text-gray-400">
-          <span>Start</span>
+        {/* Player legend below track */}
+        <div className="mt-2 space-y-0.5">
+          {allPlayerProgress.map((player, index) => {
+            const colorClass = player.isCurrentUser
+              ? 'bg-red-500'
+              : playerColors[index % playerColors.length];
+
+            return (
+              <div
+                key={`${player.userId}-info`}
+                className="flex items-center justify-between text-xs"
+              >
+                <div className="flex items-center">
+                  <div
+                    className={`mr-2 h-2 w-2 rounded-full ${colorClass}`}
+                  ></div>
+                  <span
+                    className={`font-medium ${player.isCurrentUser ? 'text-red-600 dark:text-red-400' : 'text-gray-700 dark:text-gray-300'}`}
+                  >
+                    {player.nickname}
+                    {player.isCurrentUser && ' 👑'}
+                  </span>
+                </div>
+                <span className="text-gray-500 dark:text-gray-400">
+                  {player.percentage}%
+                </span>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
