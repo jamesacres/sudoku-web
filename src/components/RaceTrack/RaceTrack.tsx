@@ -171,7 +171,7 @@ const RaceTrack = ({
                 key={player.userId}
                 className="absolute transform transition-all duration-700 ease-out"
                 style={{
-                  left: `${Math.min(Math.max(player.percentage, 12), 82)}%`, // Keep well within bounds
+                  left: `${Math.min(Math.max(player.percentage * 0.83 + 12, 12), 95)}%`, // Scale 0-100% to 12-95% of track
                   top: `${verticalOffset}px`,
                   transform: 'translateX(-50%)',
                 }}
