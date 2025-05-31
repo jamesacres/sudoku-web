@@ -97,7 +97,7 @@ const RaceTrack = ({
     <div className="mx-auto mt-4 mb-4 max-w-xl lg:mr-0">
       {/* Compact race track design */}
       <div
-        className="relative"
+        className="relative cursor-pointer"
         onClick={() => onClick && onClick()}
         title="Click to view friends"
       >
