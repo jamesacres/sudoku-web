@@ -2,6 +2,7 @@
 import { Parties, Session } from '@/types/serverTypes';
 import { ServerState } from '@/types/state';
 import { calculateCompletionPercentage } from '@/helpers/calculateCompletionPercentage';
+import { useParties } from '@/hooks/useParties';
 import { useMemo } from 'react';
 
 interface RaceTrackProps {
@@ -28,6 +29,8 @@ const RaceTrack = ({
   userId,
   onClick,
 }: RaceTrackProps) => {
+  const { getNicknameByUserId } = useParties();
+
   // Calculate and collect progress for all unique users
   const allPlayerProgress = useMemo((): PlayerProgress[] => {
     const progressMap: Record<string, PlayerProgress> = {};
@@ -66,9 +69,13 @@ const RaceTrack = ({
               )
             : 0;
 
+          // Get the user's nickname from parties data, fallback to a default
+          const nickname =
+            getNicknameByUserId(memberId) || `Player ${memberId.slice(-4)}`;
+
           progressMap[memberId] = {
             userId: memberId,
-            nickname: 'bob', // TODO move parties into game state to get nickname
+            nickname,
             percentage,
             isCurrentUser: false,
           };
@@ -80,7 +87,7 @@ const RaceTrack = ({
     return Object.values(progressMap).sort(
       (a, b) => b.percentage - a.percentage
     );
-  }, [sessionParties, initial, final, answer, userId]);
+  }, [sessionParties, initial, final, answer, userId, getNicknameByUserId]);
 
   // Player colors for different players
   const playerColors = [
