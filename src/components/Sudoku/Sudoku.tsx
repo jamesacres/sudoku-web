@@ -163,15 +163,13 @@ const Sudoku = ({
           </div>
 
           {/* Race Track Progress */}
-          {Object.keys(sessionParties).length > 0 && (
-            <RaceTrack
-              sessionParties={sessionParties}
-              initial={initial}
-              final={final}
-              answer={answer}
-              userId={user?.sub}
-            />
-          )}
+          <RaceTrack
+            sessionParties={sessionParties}
+            initial={initial}
+            final={final}
+            answer={answer}
+            userId={user?.sub}
+          />
         </div>
         <div className="container mx-auto basis-3/5">
           {!completed && (
