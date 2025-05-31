@@ -4,6 +4,7 @@ import { ServerState } from '@/types/state';
 import { calculateCompletionPercentage } from '@/helpers/calculateCompletionPercentage';
 import { useParties } from '@/hooks/useParties';
 import { useMemo } from 'react';
+import { getPlayerColor, getAllUserIds } from '@/utils/playerColors';
 
 interface RaceTrackProps {
   sessionParties: Parties<Session<ServerState>>;
@@ -29,7 +30,10 @@ const RaceTrack = ({
   userId,
   onClick,
 }: RaceTrackProps) => {
-  const { getNicknameByUserId } = useParties();
+  const { getNicknameByUserId, parties } = useParties();
+
+  // Get consistent ordering of all user IDs for color assignment
+  const allUserIds = useMemo(() => getAllUserIds(parties), [parties]);
 
   // Calculate and collect progress for all unique users
   const allPlayerProgress = useMemo((): PlayerProgress[] => {
@@ -88,16 +92,6 @@ const RaceTrack = ({
       (a, b) => b.percentage - a.percentage
     );
   }, [sessionParties, initial, final, answer, userId, getNicknameByUserId]);
-
-  // Player colors for different players
-  const playerColors = [
-    // 'bg-red-500', // Mario red - current player
-    'bg-blue-500', // Luigi blue
-    'bg-yellow-500', // Wario yellow
-    'bg-purple-500', // Waluigi purple
-    'bg-pink-500', // Peach pink
-    'bg-green-500', // Yoshi green
-  ];
 
   return (
     <div className="mx-auto mt-4 mb-4 max-w-xl lg:mr-0">
@@ -160,9 +154,11 @@ const RaceTrack = ({
 
           {/* Player karts */}
           {allPlayerProgress.map((player, index) => {
-            const colorClass = player.isCurrentUser
-              ? 'bg-red-500' // Always red for current user (Mario)
-              : playerColors[index % playerColors.length];
+            const colorClass = getPlayerColor(
+              player.userId,
+              allUserIds,
+              player.isCurrentUser
+            );
 
             // Calculate vertical spacing within the smaller track
             const trackHeight = 56; // h-14 = 56px
@@ -207,14 +203,12 @@ const RaceTrack = ({
 
         {/* Compact horizontal player legend - lowest to highest percentage */}
         <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
-          {[...allPlayerProgress].reverse().map((player, _index) => {
-            // Get original index for color consistency
-            const originalIndex = allPlayerProgress.findIndex(
-              (p) => p.userId === player.userId
+          {[...allPlayerProgress].reverse().map((player) => {
+            const colorClass = getPlayerColor(
+              player.userId,
+              allUserIds,
+              player.isCurrentUser
             );
-            const colorClass = player.isCurrentUser
-              ? 'bg-red-500'
-              : playerColors[originalIndex % playerColors.length];
 
             return (
               <div

@@ -5,6 +5,10 @@ import SimpleSudoku from '../SimpleSudoku';
 import { TimerDisplay } from '../TimerDisplay/TimerDisplay';
 import { calculateSeconds } from '@/helpers/calculateSeconds';
 import { calculateCompletionPercentage } from '@/helpers/calculateCompletionPercentage';
+import { getPlayerColor, getAllUserIds } from '@/utils/playerColors';
+import { useParties } from '@/hooks/useParties';
+import { useContext } from 'react';
+import { UserContext } from '@/providers/UserProvider';
 const PartyRow = ({
   party: { partyName, isOwner, members, partyId },
   puzzleId,
@@ -16,6 +20,12 @@ const PartyRow = ({
   redirectUri: string;
   sessionParty?: SessionParty<Session<ServerState>>;
 }) => {
+  const { parties } = useParties();
+  const { user } = useContext(UserContext) || {};
+
+  // Get consistent ordering of all user IDs for color assignment
+  const allUserIds = getAllUserIds(parties);
+
   return (
     <li>
       <div className="rounded-2xl border border-gray-200 bg-white/80 p-4 shadow-sm backdrop-blur-sm dark:border-gray-700 dark:bg-zinc-800/80">
@@ -48,6 +58,13 @@ const PartyRow = ({
                 )
               : 0;
 
+            // Get the player color for consistency with RaceTrack
+            const playerColor = getPlayerColor(
+              userId,
+              allUserIds,
+              userId === user?.sub
+            );
+
             return (
               <li
                 key={userId}
@@ -55,6 +72,9 @@ const PartyRow = ({
               >
                 <div className="flex items-center">
                   <span className="mr-2 text-xl">{isOwner ? '👑' : '🧍'}</span>
+                  <div
+                    className={`mr-2 h-3 w-3 rounded-full ${playerColor}`}
+                  ></div>
                   <span className="font-medium text-gray-800 dark:text-gray-200">
                     {memberNickname}
                     {isUser && ' (you)'}
