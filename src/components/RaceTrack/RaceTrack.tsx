@@ -10,6 +10,7 @@ interface RaceTrackProps {
   final: any;
   answer: any;
   userId?: string;
+  onClick?: () => void;
 }
 
 interface PlayerProgress {
@@ -25,6 +26,7 @@ const RaceTrack = ({
   final,
   answer,
   userId,
+  onClick,
 }: RaceTrackProps) => {
   // Calculate and collect progress for all unique users
   const allPlayerProgress = useMemo((): PlayerProgress[] => {
@@ -93,7 +95,11 @@ const RaceTrack = ({
   return (
     <div className="mx-auto mt-4 mb-4 max-w-xl lg:mr-0">
       {/* Compact race track design */}
-      <div className="relative">
+      <div
+        className="relative"
+        onClick={() => onClick && onClick()}
+        title="Click to view friends"
+      >
         {/* Main track */}
         <div className="relative h-14 overflow-visible rounded-lg bg-gray-600 dark:bg-gray-800">
           {/* Track surface with center line */}

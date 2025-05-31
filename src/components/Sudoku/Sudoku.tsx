@@ -169,6 +169,7 @@ const Sudoku = ({
             final={final}
             answer={answer}
             userId={user?.sub}
+            onClick={() => setShowSidebar(true)}
           />
         </div>
         <div className="container mx-auto basis-3/5">
