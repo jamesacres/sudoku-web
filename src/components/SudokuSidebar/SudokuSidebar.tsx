@@ -25,7 +25,6 @@ const SudokuSidebar = ({
 }: Arguments) => {
   const { user, loginRedirect } = useContext(UserContext) || {};
 
-  // Use the new useParties hook for all party management
   const {
     parties,
     isLoading,
