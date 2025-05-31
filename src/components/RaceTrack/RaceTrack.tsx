@@ -192,31 +192,33 @@ const RaceTrack = ({
           })}
         </div>
 
-        {/* Player legend below track */}
-        <div className="mt-2 space-y-0.5">
-          {allPlayerProgress.map((player, index) => {
+        {/* Compact horizontal player legend - lowest to highest percentage */}
+        <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
+          {[...allPlayerProgress].reverse().map((player, _index) => {
+            // Get original index for color consistency
+            const originalIndex = allPlayerProgress.findIndex(
+              (p) => p.userId === player.userId
+            );
             const colorClass = player.isCurrentUser
               ? 'bg-red-500'
-              : playerColors[index % playerColors.length];
+              : playerColors[originalIndex % playerColors.length];
 
             return (
               <div
                 key={`${player.userId}-info`}
-                className="flex items-center justify-between text-xs"
+                className="flex items-center gap-1"
               >
-                <div className="flex items-center">
-                  <div
-                    className={`mr-2 h-2 w-2 rounded-full ${colorClass}`}
-                  ></div>
-                  <span
-                    className={`font-medium ${player.isCurrentUser ? 'text-red-600 dark:text-red-400' : 'text-gray-700 dark:text-gray-300'}`}
-                  >
-                    {player.nickname}
-                    {player.isCurrentUser && ' 👑'}
-                  </span>
-                </div>
+                {/* Color indicator */}
+                <div className={`h-2 w-2 rounded-full ${colorClass}`}></div>
+                {/* Player name with percentage */}
+                <span
+                  className={`font-medium ${player.isCurrentUser ? 'text-red-600 dark:text-red-400' : 'text-gray-700 dark:text-gray-300'}`}
+                >
+                  {player.nickname}
+                  {player.isCurrentUser && ' 👑'}
+                </span>
                 <span className="text-gray-500 dark:text-gray-400">
-                  {player.percentage}%
+                  ({player.percentage}%)
                 </span>
               </div>
             );
