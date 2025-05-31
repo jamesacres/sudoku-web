@@ -1,10 +1,10 @@
-import { useServerStorage } from '@/hooks/serverStorage';
-import { memo, useCallback, useContext, useEffect, useState } from 'react';
+import { memo, useContext } from 'react';
 import { Loader, RefreshCw, Users, X } from 'react-feather';
 import { PartyRow } from '../PartyRow/PartyRow';
 import { ServerState } from '@/types/state';
 import { UserContext } from '@/providers/UserProvider';
-import { Parties, Party, Session } from '@/types/serverTypes';
+import { useParties } from '@/hooks/useParties';
+import { Parties, Session } from '@/types/serverTypes';
 
 interface Arguments {
   showSidebar: boolean;
@@ -24,60 +24,20 @@ const SudokuSidebar = ({
   sessionParties,
 }: Arguments) => {
   const { user, loginRedirect } = useContext(UserContext) || {};
-  const { listParties, createParty } = useServerStorage({});
-  const [parties, setParties] = useState<Party[]>([]);
-  const [showCreateParty, setShowCreateParty] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [memberNickname, setMemberNickname] = useState(
-    user?.given_name || user?.name || ''
-  );
-  const [partyName, setPartyName] = useState('');
 
-  const saveParty = useCallback(
-    async (params: { memberNickname: string; partyName: string }) => {
-      if (params.memberNickname && params.partyName) {
-        setIsSaving(true);
-        const party = await createParty(params);
-        if (party) {
-          setParties((parties) => {
-            return [...parties, party];
-          });
-        }
-        setMemberNickname('');
-        setPartyName('');
-        setShowCreateParty(false);
-        setIsSaving(false);
-      }
-    },
-    [createParty]
-  );
-
-  const refreshParties = useCallback(async () => {
-    setIsLoading(true);
-    const values = await listParties();
-    if (values) {
-      setParties(values);
-    }
-    await refreshSessionParties();
-    setIsLoading(false);
-  }, [listParties, refreshSessionParties]);
-
-  useEffect(() => {
-    let active = true;
-
-    const serverParties = async () => {
-      const values = await listParties();
-      if (active && values) {
-        setParties(values);
-      }
-    };
-    serverParties();
-
-    return () => {
-      active = false;
-    };
-  }, [listParties]);
+  const {
+    parties,
+    isLoading,
+    showCreateParty,
+    setShowCreateParty,
+    isSaving,
+    memberNickname,
+    setMemberNickname,
+    partyName,
+    setPartyName,
+    saveParty,
+    refreshParties,
+  } = useParties({ refreshSessionParties });
 
   return (
     <>

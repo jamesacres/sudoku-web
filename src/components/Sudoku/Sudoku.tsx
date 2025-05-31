@@ -9,8 +9,10 @@ import { TimerDisplay } from '../TimerDisplay/TimerDisplay';
 import { calculateSeconds } from '@/helpers/calculateSeconds';
 import { Sidebar } from 'react-feather';
 import SudokuSidebar from '../SudokuSidebar/SudokuSidebar';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { CelebrationAnimation } from '../CelebrationAnimation';
+import { RaceTrack } from '../RaceTrack';
+import { UserContext } from '@/providers/UserProvider';
 
 const Sudoku = ({
   puzzle: { initial, final, puzzleId },
@@ -19,6 +21,8 @@ const Sudoku = ({
   puzzle: { initial: Puzzle<number>; final: Puzzle<number>; puzzleId: string };
   redirectUri: string;
 }) => {
+  const { user } = useContext(UserContext) || {};
+
   const {
     answer,
     selectedCell,
@@ -157,6 +161,16 @@ const Sudoku = ({
               })
             )}
           </div>
+
+          {/* Race Track Progress */}
+          <RaceTrack
+            sessionParties={sessionParties}
+            initial={initial}
+            final={final}
+            answer={answer}
+            userId={user?.sub}
+            onClick={() => setShowSidebar(true)}
+          />
         </div>
         <div className="container mx-auto basis-3/5">
           {!completed && (

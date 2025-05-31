@@ -1,5 +1,6 @@
 'use client';
 import { calculateSeconds } from '@/helpers/calculateSeconds';
+import { calculateCompletionPercentage } from '@/helpers/calculateCompletionPercentage';
 import {
   puzzleTextToPuzzle,
   puzzleToPuzzleText,
@@ -37,6 +38,26 @@ export const SessionRow = ({
     displaySession?.state.answerStack[
       displaySession?.state.answerStack.length - 1
     ];
+
+  // Calculate completion percentages
+  const myPercentage = mySession
+    ? calculateCompletionPercentage(
+        mySession.state.initial,
+        mySession.state.final,
+        mySession.state.answerStack[mySession.state.answerStack.length - 1]
+      )
+    : 0;
+
+  const friendPercentage = memberSession
+    ? calculateCompletionPercentage(
+        memberSession.state.initial,
+        memberSession.state.final,
+        memberSession.state.answerStack[
+          memberSession.state.answerStack.length - 1
+        ]
+      )
+    : 0;
+
   return (
     <li
       key={session.sessionId}
@@ -56,7 +77,21 @@ export const SessionRow = ({
                 : 'Continue Game'
               : 'Start Game'}
           </p>
-          {memberSession && mySession?.state.timer !== undefined && 'Your time'}
+          {
+            <div className="mt-1 mb-2">
+              <div className="flex items-center justify-center">
+                <div className="h-2 w-3/4 overflow-hidden rounded-full bg-gray-600">
+                  <div
+                    className="h-full bg-green-500"
+                    style={{ width: `${myPercentage}%` }}
+                  ></div>
+                </div>
+                <span className="ml-2 text-sm font-medium text-gray-300">
+                  {myPercentage}%
+                </span>
+              </div>
+            </div>
+          }
           {mySession?.state.timer !== undefined && (
             <TimerDisplay seconds={calculateSeconds(mySession.state.timer)} />
           )}
@@ -70,6 +105,21 @@ export const SessionRow = ({
             </p>
           ) : (
             <></>
+          )}
+          {memberSession && (
+            <div className="mt-1 mb-2">
+              <div className="flex items-center justify-center">
+                <div className="h-2 w-3/4 overflow-hidden rounded-full bg-gray-600">
+                  <div
+                    className="h-full bg-blue-500"
+                    style={{ width: `${friendPercentage}%` }}
+                  ></div>
+                </div>
+                <span className="ml-2 text-sm font-medium text-gray-300">
+                  {friendPercentage}%
+                </span>
+              </div>
+            </div>
           )}
           {memberSession?.state.timer !== undefined && (
             <TimerDisplay

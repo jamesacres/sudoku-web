@@ -4,7 +4,11 @@ import { PartyInviteButton } from '../PartyInviteButton/PartyInviteButton';
 import SimpleSudoku from '../SimpleSudoku';
 import { TimerDisplay } from '../TimerDisplay/TimerDisplay';
 import { calculateSeconds } from '@/helpers/calculateSeconds';
-
+import { calculateCompletionPercentage } from '@/helpers/calculateCompletionPercentage';
+import { getPlayerColor, getAllUserIds } from '@/utils/playerColors';
+import { useParties } from '@/hooks/useParties';
+import { useContext } from 'react';
+import { UserContext } from '@/providers/UserProvider';
 const PartyRow = ({
   party: { partyName, isOwner, members, partyId },
   puzzleId,
@@ -16,6 +20,12 @@ const PartyRow = ({
   redirectUri: string;
   sessionParty?: SessionParty<Session<ServerState>>;
 }) => {
+  const { parties } = useParties();
+  const { user } = useContext(UserContext) || {};
+
+  // Get consistent ordering of all user IDs for color assignment
+  const allUserIds = getAllUserIds(parties);
+
   return (
     <li>
       <div className="rounded-2xl border border-gray-200 bg-white/80 p-4 shadow-sm backdrop-blur-sm dark:border-gray-700 dark:bg-zinc-800/80">
@@ -36,6 +46,25 @@ const PartyRow = ({
 
         <ul className="mt-4 space-y-4">
           {members.map(({ memberNickname, userId, isOwner, isUser }) => {
+            // Calculate completion percentage if session data exists
+            const memberSession = sessionParty?.memberSessions[userId];
+            const completionPercentage = memberSession
+              ? calculateCompletionPercentage(
+                  memberSession.state.initial,
+                  memberSession.state.final,
+                  memberSession.state.answerStack[
+                    memberSession.state.answerStack.length - 1
+                  ]
+                )
+              : 0;
+
+            // Get the player color for consistency with RaceTrack
+            const playerColor = getPlayerColor(
+              userId,
+              allUserIds,
+              userId === user?.sub
+            );
+
             return (
               <li
                 key={userId}
@@ -43,6 +72,9 @@ const PartyRow = ({
               >
                 <div className="flex items-center">
                   <span className="mr-2 text-xl">{isOwner ? '👑' : '🧍'}</span>
+                  <div
+                    className={`mr-2 h-3 w-3 rounded-full ${playerColor}`}
+                  ></div>
                   <span className="font-medium text-gray-800 dark:text-gray-200">
                     {memberNickname}
                     {isUser && ' (you)'}
@@ -65,6 +97,20 @@ const PartyRow = ({
                         !!sessionParty?.memberSessions[userId]?.state.completed
                       }
                     />
+                  </div>
+                )}
+
+                {memberSession && (
+                  <div className="mt-2 flex items-center">
+                    <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-zinc-600">
+                      <div
+                        className="bg-theme-primary dark:bg-theme-primary-light h-full"
+                        style={{ width: `${completionPercentage}%` }}
+                      ></div>
+                    </div>
+                    <span className="ml-2 text-sm font-medium text-gray-600 dark:text-gray-300">
+                      {completionPercentage}%
+                    </span>
                   </div>
                 )}
 
