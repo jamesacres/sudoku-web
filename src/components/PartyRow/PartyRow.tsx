@@ -71,7 +71,6 @@ const PartyRow = ({
                 className="rounded-xl bg-gray-50 p-3 dark:bg-zinc-700/40"
               >
                 <div className="flex items-center">
-                  <span className="mr-2 text-xl">{isOwner ? '👑' : '🧍'}</span>
                   <div
                     className={`mr-2 h-3 w-3 rounded-full ${playerColor}`}
                   ></div>
