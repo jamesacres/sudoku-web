@@ -45,7 +45,7 @@ const PartyRow = ({
         )}
 
         <ul className="mt-4 space-y-4">
-          {members.map(({ memberNickname, userId, isOwner, isUser }) => {
+          {members.map(({ memberNickname, userId, isUser }) => {
             // Calculate completion percentage if session data exists
             const memberSession = sessionParty?.memberSessions[userId];
             const completionPercentage = memberSession
