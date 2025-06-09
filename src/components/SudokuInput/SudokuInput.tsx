@@ -41,7 +41,7 @@ const SudokuInput = ({
   return (
     <div
       onClick={(_) => setSelectedCell(cellId)}
-      className={`flex h-full w-full items-center justify-center border border-zinc-400 ${backgroundClass}`}
+      className={`flex h-full w-full items-center justify-center border border-zinc-300 dark:border-zinc-400 ${backgroundClass}`}
     >
       {isNotesMode ? (
         <SudokuInputNotes

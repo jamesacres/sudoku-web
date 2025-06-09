@@ -23,7 +23,9 @@ export const FriendsTab = ({
 }: FriendsTabProps) => {
   return (
     <div className="mb-4">
-      <h1 className="mb-2 text-4xl font-extrabold">Friends & Challenges</h1>
+      <h1 className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-4xl font-bold text-transparent">
+        Friends & Challenges
+      </h1>
       <p className="mb-4">
         Invite others using the sidebar when solving a puzzle, then come back
         here to see their own puzzles.
