@@ -38,7 +38,7 @@ export const FriendsTab = ({
           <ul className="space-y-4 pb-16">
             {parties?.map(({ partyId, members, partyName }) => (
               <li key={partyId}>
-                <div className="rounded-2xl border border-gray-200 bg-white/80 p-4 shadow-sm backdrop-blur-sm dark:border-gray-700 dark:bg-zinc-800/80">
+                <div className="rounded-2xl border border-stone-200 bg-stone-50/80 p-4 shadow-sm backdrop-blur-sm dark:border-gray-700 dark:bg-zinc-800/80">
                   <h3 className="text-theme-primary dark:text-theme-primary-light text-xl font-semibold">
                     {partyName}
                   </h3>

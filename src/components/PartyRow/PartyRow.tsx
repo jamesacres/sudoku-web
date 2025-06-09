@@ -28,7 +28,7 @@ const PartyRow = ({
 
   return (
     <li>
-      <div className="rounded-2xl border border-gray-200 bg-white/80 p-4 shadow-sm backdrop-blur-sm dark:border-gray-700 dark:bg-zinc-800/80">
+      <div className="rounded-2xl border border-stone-200 bg-stone-50/80 p-4 shadow-sm backdrop-blur-sm dark:border-gray-700 dark:bg-zinc-800/80">
         <h3 className="text-theme-primary dark:text-theme-primary-light text-xl font-semibold">
           {partyName}
         </h3>
@@ -114,7 +114,7 @@ const PartyRow = ({
                 )}
 
                 {!isUser && sessionParty?.memberSessions[userId] && (
-                  <div className="mt-3 rounded-lg bg-white p-2 shadow-sm dark:bg-zinc-800">
+                  <div className="mt-3 rounded-lg bg-stone-50 p-2 shadow-sm dark:bg-zinc-800">
                     <SimpleSudoku
                       final={sessionParty.memberSessions[userId]!.state.final}
                       initial={
