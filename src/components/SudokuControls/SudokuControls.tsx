@@ -51,7 +51,7 @@ const SudokuControls = ({
   reveal,
 }: Arguments) => {
   return (
-    <div className="mt-1 mb-4 px-2 pt-4 xl:max-w-lg">
+    <div className="mt-0 mb-4 px-2 pt-2 xl:max-w-lg">
       <div className="hidden lg:block">
         <HintBox>
           Keyboard: arrow keys, undo, redo.
