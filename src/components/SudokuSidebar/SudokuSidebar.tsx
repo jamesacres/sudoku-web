@@ -56,7 +56,7 @@ const SudokuSidebar = ({
       >
         <div className="flex h-full flex-col rounded-r-3xl bg-stone-50/90 drop-shadow-lg backdrop-blur-md dark:bg-zinc-900/95">
           {/* Fixed Header */}
-          <div className="sticky top-0 z-10 rounded-tr-3xl bg-stone-50/95 px-4 pt-5 pb-3 backdrop-blur-md dark:bg-zinc-900/95">
+          <div className="sticky top-0 z-10 rounded-tr-3xl px-4 pt-5 pb-3 backdrop-blur-md dark:bg-zinc-900/95">
             <div
               className="mb-4 flex-nowrap items-center xl:hidden"
               role="group"
@@ -162,8 +162,8 @@ const SudokuSidebar = ({
 
             {user && !!parties.length && (
               <>
-                <div className="my-6 h-px bg-gray-200 dark:bg-gray-700" />
-                <div className="sticky top-0 z-10 mb-4 flex items-center justify-between bg-stone-50/95 py-2 backdrop-blur-md dark:bg-zinc-900/95">
+                <div className="my-6 h-px bg-stone-300 dark:bg-gray-700" />
+                <div className="sticky top-0 z-10 mb-4 flex items-center justify-between bg-stone-50/25 p-4 py-2 backdrop-blur-md dark:bg-zinc-900/25">
                   <h2 className="text-xl font-semibold">Your Parties</h2>
                   <button
                     className={`${isLoading || isSaving ? 'cursor-wait' : ''} text-theme-primary dark:text-theme-primary-light cursor-pointer rounded-full bg-gray-100 p-2 transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700`}
