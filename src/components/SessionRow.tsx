@@ -61,7 +61,7 @@ export const SessionRow = ({
   return (
     <li
       key={session.sessionId}
-      className="rounded-sm border-2 border-zinc-600 bg-zinc-800 hover:bg-zinc-700 disabled:bg-zinc-300"
+      className="rounded-sm border-2 border-stone-200 bg-stone-50/80 hover:bg-stone-100 disabled:bg-stone-300 dark:border-zinc-600 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:disabled:bg-zinc-300"
     >
       <Link href={`/puzzle?initial=${initial}&final=${final}`}>
         <SimpleSudoku
@@ -69,7 +69,7 @@ export const SessionRow = ({
           final={puzzleTextToPuzzle(final)}
           latest={latest}
         />
-        <div className="mr-2 inline-block w-full px-4 py-2 text-center text-white">
+        <div className="mr-2 inline-block w-full px-4 py-2 text-center text-gray-900 dark:text-white">
           <p>
             {(mySession?.state.answerStack.length || 0) > 1
               ? mySession?.state.completed
@@ -80,13 +80,13 @@ export const SessionRow = ({
           {
             <div className="mt-1 mb-2">
               <div className="flex items-center justify-center">
-                <div className="h-2 w-3/4 overflow-hidden rounded-full bg-gray-600">
+                <div className="h-2 w-3/4 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-600">
                   <div
                     className="h-full bg-green-500"
                     style={{ width: `${myPercentage}%` }}
                   ></div>
                 </div>
-                <span className="ml-2 text-sm font-medium text-gray-300">
+                <span className="ml-2 text-sm font-medium text-gray-600 dark:text-gray-300">
                   {myPercentage}%
                 </span>
               </div>
@@ -109,13 +109,13 @@ export const SessionRow = ({
           {memberSession && (
             <div className="mt-1 mb-2">
               <div className="flex items-center justify-center">
-                <div className="h-2 w-3/4 overflow-hidden rounded-full bg-gray-600">
+                <div className="h-2 w-3/4 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-600">
                   <div
                     className="h-full bg-blue-500"
                     style={{ width: `${friendPercentage}%` }}
                   ></div>
                 </div>
-                <span className="ml-2 text-sm font-medium text-gray-300">
+                <span className="ml-2 text-sm font-medium text-gray-600 dark:text-gray-300">
                   {friendPercentage}%
                 </span>
               </div>

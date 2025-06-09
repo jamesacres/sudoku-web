@@ -2,7 +2,7 @@ import { Children, ReactNode } from 'react';
 
 const Footer = ({ children }: { children: ReactNode }) => {
   return (
-    <nav className="fixed bottom-0 left-0 m-auto mt-3 h-20 w-screen items-center justify-between border-t border-gray-200 bg-white/90 px-6 pb-[env(safe-area-inset-bottom)] text-sm text-black backdrop-blur-md dark:border-gray-700 dark:bg-zinc-900/90 dark:text-white">
+    <nav className="fixed bottom-0 left-0 m-auto mt-3 h-20 w-screen items-center justify-between border-t border-stone-200 bg-stone-50/90 px-6 pb-[env(safe-area-inset-bottom)] text-sm text-black backdrop-blur-md dark:border-gray-700 dark:bg-zinc-900/90 dark:text-white">
       <div
         className={`mx-auto grid h-full max-w-lg grid-cols-${Children.count(children)} font-medium`}
       >

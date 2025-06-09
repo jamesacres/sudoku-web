@@ -28,7 +28,7 @@ const PartyRow = ({
 
   return (
     <li>
-      <div className="rounded-2xl border border-gray-200 bg-white/80 p-4 shadow-sm backdrop-blur-sm dark:border-gray-700 dark:bg-zinc-800/80">
+      <div className="rounded-2xl border border-stone-200 bg-stone-50/80 p-4 shadow-sm backdrop-blur-sm dark:border-gray-700 dark:bg-zinc-800/80">
         <h3 className="text-theme-primary dark:text-theme-primary-light text-xl font-semibold">
           {partyName}
         </h3>
@@ -45,7 +45,7 @@ const PartyRow = ({
         )}
 
         <ul className="mt-4 space-y-4">
-          {members.map(({ memberNickname, userId, isOwner, isUser }) => {
+          {members.map(({ memberNickname, userId, isUser }) => {
             // Calculate completion percentage if session data exists
             const memberSession = sessionParty?.memberSessions[userId];
             const completionPercentage = memberSession
@@ -71,7 +71,6 @@ const PartyRow = ({
                 className="rounded-xl bg-gray-50 p-3 dark:bg-zinc-700/40"
               >
                 <div className="flex items-center">
-                  <span className="mr-2 text-xl">{isOwner ? '👑' : '🧍'}</span>
                   <div
                     className={`mr-2 h-3 w-3 rounded-full ${playerColor}`}
                   ></div>
@@ -115,7 +114,7 @@ const PartyRow = ({
                 )}
 
                 {!isUser && sessionParty?.memberSessions[userId] && (
-                  <div className="mt-3 rounded-lg bg-white p-2 shadow-sm dark:bg-zinc-800">
+                  <div className="mt-3 rounded-lg bg-stone-50 p-2 shadow-sm dark:bg-zinc-800">
                     <SimpleSudoku
                       final={sessionParty.memberSessions[userId]!.state.final}
                       initial={

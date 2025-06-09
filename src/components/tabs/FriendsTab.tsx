@@ -23,7 +23,9 @@ export const FriendsTab = ({
 }: FriendsTabProps) => {
   return (
     <div className="mb-4">
-      <h1 className="mb-2 text-4xl font-extrabold">Friends & Challenges</h1>
+      <h1 className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-4xl font-bold text-transparent">
+        Friends & Challenges
+      </h1>
       <p className="mb-4">
         Invite others using the sidebar when solving a puzzle, then come back
         here to see their own puzzles.
@@ -38,7 +40,7 @@ export const FriendsTab = ({
           <ul className="space-y-4 pb-16">
             {parties?.map(({ partyId, members, partyName }) => (
               <li key={partyId}>
-                <div className="rounded-2xl border border-gray-200 bg-white/80 p-4 shadow-sm backdrop-blur-sm dark:border-gray-700 dark:bg-zinc-800/80">
+                <div className="rounded-2xl border border-stone-200 bg-stone-50/80 p-4 shadow-sm backdrop-blur-sm dark:border-gray-700 dark:bg-zinc-800/80">
                   <h3 className="text-theme-primary dark:text-theme-primary-light text-xl font-semibold">
                     {partyName}
                   </h3>
@@ -71,7 +73,7 @@ export const FriendsTab = ({
                             )}
                           </button>
                           {userSessions[userId]?.sessions && (
-                            <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-4">
+                            <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
                               {userSessions[userId]?.sessions?.map(
                                 (userSession) => (
                                   <SessionRow

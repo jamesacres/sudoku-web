@@ -51,7 +51,7 @@ const SudokuControls = ({
   reveal,
 }: Arguments) => {
   return (
-    <div className="mt-4 mb-8 pt-4 pr-2 pl-0 xl:max-w-lg">
+    <div className="mt-0 mb-4 px-2 pt-2 xl:max-w-lg">
       <div className="hidden lg:block">
         <HintBox>
           Keyboard: arrow keys, undo, redo.
@@ -61,137 +61,107 @@ const SudokuControls = ({
           Press c to validate cell, g to validate grid.
         </HintBox>
       </div>
-      <div className="flex gap-4">
-        <div className="grow"></div>
-        <div className="flex items-center justify-start text-sm">
-          <button
-            className="mr-2 ml-2 cursor-pointer disabled:cursor-not-allowed"
-            onClick={() => setIsNotesMode(!isNotesMode)}
-          >
-            {isNotesMode ? (
-              <Edit className="float-left mr-2" size={16} />
-            ) : (
-              <Edit2 className="float-left mr-2" size={16} />
-            )}
-            Notes
-          </button>
-          <div>
+
+      {/* iOS-style control panel */}
+      <div className="mt-3 rounded-xl border border-stone-200 bg-stone-50/80 p-3 shadow-lg backdrop-blur-md dark:border-gray-700 dark:bg-zinc-800/80">
+        {/* Toggle controls section */}
+        <div className="mb-3 flex justify-center gap-4 border-b border-gray-200 pb-3 dark:border-gray-600">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1 text-xs font-medium text-gray-700 dark:text-gray-300">
+              {isNotesMode ? <Edit size={14} /> : <Edit2 size={14} />}
+              Notes
+            </div>
             <Toggle isEnabled={isNotesMode} setEnabled={setIsNotesMode} />
           </div>
-        </div>
-        <div className="flex items-center justify-start text-sm">
-          <button
-            className="mr-2 ml-2 cursor-pointer disabled:cursor-not-allowed"
-            onClick={() => setIsMiniNotes(!isMiniNotes)}
-          >
-            {isMiniNotes ? (
-              <Grid className="float-left mr-2" size={16} />
-            ) : (
-              <Square className="float-left mr-2" size={16} />
-            )}
-            Mini Notes
-          </button>
-          <div>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1 text-xs font-medium text-gray-700 dark:text-gray-300">
+              {isMiniNotes ? <Grid size={14} /> : <Square size={14} />}
+              Mini
+            </div>
             <Toggle isEnabled={isMiniNotes} setEnabled={setIsMiniNotes} />
           </div>
         </div>
-        <div className="grow"></div>
-      </div>
-      <div className="flex flex-col items-center justify-center lg:flex-row">
-        <div className="mx-auto mt-2" style={{ minWidth: 120 }}>
-          <div className="square">
+
+        {/* Main controls layout */}
+        <div className="flex flex-col items-center gap-3 lg:flex-row">
+          {/* Number pad */}
+          <div className="order-1 flex-shrink-0 lg:order-1">
             <NumberPad
               selectNumber={selectNumber}
               isInputDisabled={isInputDisabled}
             />
           </div>
-        </div>
-        <div className="mt-2 flex flex-col flex-row flex-wrap text-center">
-          <div
-            className="mr-2 inline-flex flex-nowrap items-center"
-            role="group"
-            aria-label="Button group"
-          >
-            <button
-              disabled={isValidateCellDisabled}
-              onClick={() => selectNumber(0)}
-              className="bg-theme-primary hover:bg-theme-primary-dark mt-2 cursor-pointer rounded-l-lg px-4 py-2 text-white disabled:cursor-not-allowed disabled:bg-neutral-300"
-            >
-              <Delete className="float-left mr-2" />
-              Delete
-            </button>
-            <button
-              onClick={() => {
-                window.confirm(
-                  'Are you sure you wish to reset the whole grid?'
-                ) && reset();
-              }}
-              className="bg-theme-primary hover:bg-theme-primary-dark mt-2 cursor-pointer rounded-r-lg px-4 py-2 text-white disabled:cursor-not-allowed disabled:bg-neutral-300"
-            >
-              <RefreshCw className="float-left mr-2" />
-              Reset
-            </button>
-          </div>
-          <div
-            className="mr-2 inline-flex min-w-52 flex-nowrap items-center"
-            role="group"
-            aria-label="Button group"
-          >
-            <button
-              disabled={isUndoDisabled}
-              onClick={() => undo()}
-              className="bg-theme-primary hover:bg-theme-primary-dark mt-2 cursor-pointer rounded-l-lg px-4 py-2 text-white disabled:cursor-not-allowed disabled:bg-neutral-300"
-            >
-              <CornerUpLeft className="float-left mr-2" />
-              Undo
-            </button>
-            <button
-              disabled={isRedoDisabled}
-              onClick={() => redo()}
-              className="bg-theme-primary hover:bg-theme-primary-dark mt-2 cursor-pointer rounded-r-lg px-4 py-2 text-white disabled:cursor-not-allowed disabled:bg-neutral-300"
-            >
-              Redo
-              <CornerUpRight className="float-right ml-2" />
-            </button>
-          </div>
-          <div
-            className="inline-flex items-center"
-            role="group"
-            aria-label="Button group"
-          >
-            <button
-              disabled={isValidateCellDisabled}
-              onClick={() => validateCell()}
-              className="bg-theme-primary hover:bg-theme-primary-dark mt-2 cursor-pointer rounded-l-lg px-4 py-2 text-white disabled:cursor-not-allowed disabled:bg-neutral-300"
-            >
-              <Square className="float-left mr-2" />
-            </button>
-            <div className="bg-theme-primary mt-2 cursor-default px-4 py-2 text-white">
-              Check
+
+          {/* Action buttons - compact layout for mobile */}
+          <div className="order-2 w-full flex-1 lg:order-2 lg:w-auto">
+            <div className="grid grid-cols-3 gap-2">
+              {/* Row 1: Delete, Undo, and Redo */}
+              <button
+                disabled={isValidateCellDisabled}
+                onClick={() => selectNumber(0)}
+                className="flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-gray-100 px-2 py-2.5 text-sm font-medium text-gray-700 transition-all duration-150 hover:bg-gray-200 active:bg-gray-300 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 dark:bg-zinc-700 dark:text-gray-200 dark:hover:bg-zinc-600 dark:active:bg-zinc-500 dark:disabled:bg-zinc-800"
+              >
+                <Delete size={15} />
+                Delete
+              </button>
+              <button
+                disabled={isUndoDisabled}
+                onClick={() => undo()}
+                className="flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-gray-100 px-2 py-2.5 text-sm font-medium text-gray-700 transition-all duration-150 hover:bg-gray-200 active:bg-gray-300 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 dark:bg-zinc-700 dark:text-gray-200 dark:hover:bg-zinc-600 dark:active:bg-zinc-500 dark:disabled:bg-zinc-800"
+              >
+                <CornerUpLeft size={15} />
+                Undo
+              </button>
+              <button
+                disabled={isRedoDisabled}
+                onClick={() => redo()}
+                className="flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-gray-100 px-2 py-2.5 text-sm font-medium text-gray-700 transition-all duration-150 hover:bg-gray-200 active:bg-gray-300 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 dark:bg-zinc-700 dark:text-gray-200 dark:hover:bg-zinc-600 dark:active:bg-zinc-500 dark:disabled:bg-zinc-800"
+              >
+                Redo
+                <CornerUpRight size={15} />
+              </button>
+
+              {/* Row 2: Reset, Check Cell, and Check Grid */}
+              <button
+                onClick={() => {
+                  window.confirm(
+                    'Are you sure you wish to reset the whole grid?'
+                  ) && reset();
+                }}
+                className="flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-gray-100 px-2 py-2.5 text-sm font-medium text-gray-700 transition-all duration-150 hover:bg-gray-200 active:bg-gray-300 dark:bg-zinc-700 dark:text-gray-200 dark:hover:bg-zinc-600 dark:active:bg-zinc-500"
+              >
+                <RefreshCw size={15} />
+                Reset
+              </button>
+              <button
+                disabled={isValidateCellDisabled}
+                onClick={() => validateCell()}
+                className="flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-gray-100 px-2 py-2.5 text-sm font-medium text-gray-700 transition-all duration-150 hover:bg-gray-200 active:bg-gray-300 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 dark:bg-zinc-700 dark:text-gray-200 dark:hover:bg-zinc-600 dark:active:bg-zinc-500 dark:disabled:bg-zinc-800"
+              >
+                <Square size={15} />
+                Cell
+              </button>
+              <button
+                onClick={() => validateGrid()}
+                className="flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-gray-100 px-2 py-2.5 text-sm font-medium text-gray-700 transition-all duration-150 hover:bg-gray-200 active:bg-gray-300 dark:bg-zinc-700 dark:text-gray-200 dark:hover:bg-zinc-600 dark:active:bg-zinc-500"
+              >
+                <Grid size={15} />
+                Grid
+              </button>
+
+              {/* Row 3: Reveal - spans full width */}
+              <button
+                onClick={() => {
+                  window.confirm(
+                    'Are you sure you wish to reveal the whole grid?'
+                  ) && reveal();
+                }}
+                className="col-span-3 flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-gray-100 px-2 py-2.5 text-sm font-medium text-gray-700 transition-all duration-150 hover:bg-gray-200 active:bg-gray-300 dark:bg-zinc-700 dark:text-gray-200 dark:hover:bg-zinc-600 dark:active:bg-zinc-500"
+              >
+                <Unlock size={15} />
+                Reveal
+              </button>
             </div>
-            <button
-              onClick={() => validateGrid()}
-              className="bg-theme-primary hover:bg-theme-primary-dark mt-2 cursor-pointer rounded-r-lg px-4 py-2 text-white disabled:cursor-not-allowed"
-            >
-              <Grid className="float-right ml-2" />
-            </button>
-          </div>
-          <div
-            className="mr-2 inline-flex flex-nowrap items-center"
-            role="group"
-            aria-label="Button group"
-          >
-            <button
-              onClick={() => {
-                window.confirm(
-                  'Are you sure you wish to reveal the whole grid?'
-                ) && reveal();
-              }}
-              className="bg-theme-primary hover:bg-theme-primary-dark mt-2 cursor-pointer rounded-lg px-4 py-2 text-white disabled:cursor-not-allowed disabled:bg-neutral-300"
-            >
-              <Unlock className="float-left mr-2" />
-              Reveal
-            </button>
           </div>
         </div>
       </div>

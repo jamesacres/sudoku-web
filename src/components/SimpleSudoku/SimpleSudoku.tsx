@@ -57,7 +57,7 @@ const SimpleSudoku = ({
                   return (
                     <div
                       key={cellId}
-                      className={`flex h-full w-full items-center justify-center border border-zinc-400 ${correctBackground} ${incorrectBackground}`}
+                      className={`flex h-full w-full items-center justify-center border border-zinc-300 dark:border-zinc-400 ${correctBackground} ${incorrectBackground}`}
                     >
                       {initialValue || ''}
                     </div>

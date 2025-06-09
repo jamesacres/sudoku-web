@@ -94,7 +94,7 @@ const RaceTrack = ({
   }, [sessionParties, initial, final, answer, userId, getNicknameByUserId]);
 
   return (
-    <div className="mx-auto mt-4 mb-4 max-w-xl lg:mr-0">
+    <div className="mx-auto mt-4 mb-0 max-w-xl lg:mr-0">
       {/* Compact race track design */}
       <div
         className="relative cursor-pointer"
@@ -102,9 +102,9 @@ const RaceTrack = ({
         title="Click to view friends"
       >
         {/* Main track */}
-        <div className="relative h-14 overflow-visible rounded-lg bg-gray-600 dark:bg-gray-800">
+        <div className="relative h-14 overflow-visible rounded-lg bg-stone-100 dark:bg-gray-800">
           {/* Track surface with center line */}
-          <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+          <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-stone-200 via-stone-100 to-stone-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
             {/* Dashed center line */}
             <div
               className="absolute top-1/2 right-16 left-6 h-0.5 -translate-y-1/2 transform bg-white opacity-60"

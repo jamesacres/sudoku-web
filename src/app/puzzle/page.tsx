@@ -30,7 +30,9 @@ function PuzzlePageComponent() {
   }, [initial, final]);
 
   return (
-    <div>{puzzle && <Sudoku puzzle={puzzle} redirectUri={redirectUri} />}</div>
+    <div className="-mb-24">
+      {puzzle && <Sudoku puzzle={puzzle} redirectUri={redirectUri} />}
+    </div>
   );
 }
 

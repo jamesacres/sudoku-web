@@ -54,9 +54,9 @@ const SudokuSidebar = ({
         className={`fixed top-0 left-0 z-50 h-screen w-72 xl:top-20 ${showSidebar ? '' : '-translate-x-full'} transition-transform xl:translate-x-0`}
         aria-label="Sidebar"
       >
-        <div className="flex h-full flex-col rounded-r-3xl bg-white/90 drop-shadow-lg backdrop-blur-md dark:bg-zinc-900/95">
+        <div className="flex h-full flex-col rounded-r-3xl bg-stone-50/90 drop-shadow-lg backdrop-blur-md dark:bg-zinc-900/95">
           {/* Fixed Header */}
-          <div className="sticky top-0 z-10 rounded-tr-3xl bg-white/95 px-4 pt-5 pb-3 backdrop-blur-md dark:bg-zinc-900/95">
+          <div className="sticky top-0 z-10 rounded-tr-3xl px-4 pt-5 pb-3 backdrop-blur-md dark:bg-zinc-900/95">
             <div
               className="mb-4 flex-nowrap items-center xl:hidden"
               role="group"
@@ -94,7 +94,7 @@ const SudokuSidebar = ({
           {/* Scrollable Content */}
           <div className="pb-safe flex-grow overflow-y-auto px-4">
             {showCreateParty && (
-              <div className="border-theme-primary/20 mt-4 rounded-2xl border bg-white/50 p-4 shadow-sm backdrop-blur-sm dark:bg-zinc-800/50">
+              <div className="border-theme-primary/20 mt-4 rounded-2xl border bg-stone-50/50 p-4 shadow-sm backdrop-blur-sm dark:bg-zinc-800/50">
                 <p className="mb-4 text-sm text-gray-600 dark:text-gray-300">
                   We recommend creating more than one party, e.g. one for your
                   family and one for your friends. All party members can see
@@ -115,7 +115,7 @@ const SudokuSidebar = ({
                   </label>
                   <input
                     id="form-nickname"
-                    className={`${isSaving ? 'cursor-wait' : ''} focus:ring-theme-primary mr-0 w-full appearance-none rounded-xl border border-gray-300 bg-white/80 px-3 py-2.5 leading-tight text-black backdrop-blur-sm focus:ring-2 dark:border-gray-600 dark:bg-zinc-800/80 dark:text-white`}
+                    className={`${isSaving ? 'cursor-wait' : ''} focus:ring-theme-primary mr-0 w-full appearance-none rounded-xl border border-stone-300 bg-stone-50/80 px-3 py-2.5 leading-tight text-black backdrop-blur-sm focus:ring-2 dark:border-gray-600 dark:bg-zinc-800/80 dark:text-white`}
                     type="text"
                     placeholder="Nickname"
                     aria-label="Nickname"
@@ -134,7 +134,7 @@ const SudokuSidebar = ({
                   <div className="flex items-center">
                     <input
                       id="form-party-name"
-                      className={`${isSaving ? 'cursor-wait' : ''} focus:ring-theme-primary mr-0 w-full appearance-none rounded-xl border border-gray-300 bg-white/80 px-3 py-2.5 leading-tight text-black backdrop-blur-sm focus:ring-2 dark:border-gray-600 dark:bg-zinc-800/80 dark:text-white`}
+                      className={`${isSaving ? 'cursor-wait' : ''} focus:ring-theme-primary mr-0 w-full appearance-none rounded-xl border border-stone-300 bg-stone-50/80 px-3 py-2.5 leading-tight text-black backdrop-blur-sm focus:ring-2 dark:border-gray-600 dark:bg-zinc-800/80 dark:text-white`}
                       type="text"
                       placeholder="e.g. Family"
                       aria-label="Party name"
@@ -162,8 +162,8 @@ const SudokuSidebar = ({
 
             {user && !!parties.length && (
               <>
-                <div className="my-6 h-px bg-gray-200 dark:bg-gray-700" />
-                <div className="sticky top-0 z-10 mb-4 flex items-center justify-between bg-white/95 py-2 backdrop-blur-md dark:bg-zinc-900/95">
+                <div className="my-6 h-px bg-stone-300 dark:bg-gray-700" />
+                <div className="sticky top-0 z-10 mb-4 flex items-center justify-between bg-stone-50/25 p-4 py-2 backdrop-blur-md dark:bg-zinc-900/25">
                   <h2 className="text-xl font-semibold">Your Parties</h2>
                   <button
                     className={`${isLoading || isSaving ? 'cursor-wait' : ''} text-theme-primary dark:text-theme-primary-light cursor-pointer rounded-full bg-gray-100 p-2 transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700`}
