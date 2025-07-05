@@ -11,16 +11,10 @@ function useDocumentVisibility() {
   };
 
   useEffect(() => {
-    window.document.addEventListener(
-      'visibilitychange',
-      handleVisibilityChange
-    );
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
-      window.document.removeEventListener(
-        'visibilitychange',
-        handleVisibilityChange
-      );
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
 
