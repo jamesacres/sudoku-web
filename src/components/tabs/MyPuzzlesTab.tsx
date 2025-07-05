@@ -17,7 +17,7 @@ export const MyPuzzlesTab = ({ sessions }: MyPuzzlesTabProps) => {
         My Puzzles
       </h1>
       <p className="my-4">
-        This page lists puzzles you have played in the past month.
+        This page lists puzzles you have played in the past 30 days.
       </p>
       {!!inProgress?.length && (
         <div className="mb-4">

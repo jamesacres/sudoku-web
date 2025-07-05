@@ -3,6 +3,7 @@ import Footer from '@/components/Footer';
 import StartPuzzleTab from '@/components/tabs/StartPuzzleTab';
 import MyPuzzlesTab from '@/components/tabs/MyPuzzlesTab';
 import FriendsTab from '@/components/tabs/FriendsTab';
+import ActivityWidget from '@/components/ActivityWidget';
 import { useLocalStorage } from '@/hooks/localStorage';
 import { useOnline } from '@/hooks/online';
 import { useServerStorage } from '@/hooks/serverStorage';
@@ -213,6 +214,7 @@ export default function Home() {
   return (
     <>
       <div className="container mx-auto px-6">
+        <ActivityWidget sessions={sessions} />
         {tab === Tab.START_PUZZLE && (
           <StartPuzzleTab
             isOnline={isOnline}
