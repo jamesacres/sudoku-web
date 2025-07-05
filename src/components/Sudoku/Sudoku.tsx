@@ -1,7 +1,7 @@
 'use client';
 import { Puzzle, PuzzleRowOrColumn } from '@/types/puzzle';
 import SudokuBox from '../SudokuBox';
-import { calculateBoxId } from '@/helpers/calculateId';
+import { calculateBoxId, splitCellId } from '@/helpers/calculateId';
 import { isInitialCell } from '@/helpers/checkAnswer';
 import SudokuControls from '../SudokuControls';
 import { useGameState } from '@/hooks/gameState';
@@ -9,7 +9,13 @@ import { TimerDisplay } from '../TimerDisplay/TimerDisplay';
 import { calculateSeconds } from '@/helpers/calculateSeconds';
 import { Sidebar } from 'react-feather';
 import SudokuSidebar from '../SudokuSidebar/SudokuSidebar';
-import { useContext, useEffect, useRef, useState } from 'react';
+import {
+  PointerEvent as ReactPointerEvent,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { CelebrationAnimation } from '../CelebrationAnimation';
 import { RaceTrack } from '../RaceTrack';
 import { UserContext } from '@/providers/UserProvider';
@@ -50,6 +56,8 @@ const Sudoku = ({
     sessionParties,
     showSidebar,
     setShowSidebar,
+    isFocusMode,
+    setIsFocusMode,
   } = useGameState({
     final,
     initial,
@@ -75,6 +83,135 @@ const Sudoku = ({
       return () => clearTimeout(timer);
     }
   }, [completed]);
+
+  // Store the zoom origin to prevent jumps during drag
+  const [zoomOrigin, setZoomOrigin] = useState('center center');
+
+  // State for drag functionality
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [lastPointer, setLastPointer] = useState({ x: 0, y: 0 });
+  const [dragStarted, setDragStarted] = useState(false);
+
+  // Update zoom origin when cell selection changes, but only if not currently dragging
+  useEffect(() => {
+    if (selectedCell && isFocusMode && !isDragging) {
+      // Helper function to calculate zoom transform origin based on selected cell
+      const getZoomOrigin = (cellId: string) => {
+        if (cellId && isFocusMode) {
+          const { box, cell } = splitCellId(cellId);
+          // Calculate the position of the selected cell in the 9x9 grid
+          const totalX = box.x * 3 + cell.x;
+          const totalY = box.y * 3 + cell.y;
+          // Convert to percentage for transform-origin (center of the cell)
+          const originX = ((totalX + 0.5) / 9) * 100;
+          const originY = ((totalY + 0.5) / 9) * 100;
+          return `${originX}% ${originY}%`;
+        }
+        return 'center center';
+      };
+
+      // Add a small delay to allow for smooth transition
+      const timer = setTimeout(() => {
+        setZoomOrigin(getZoomOrigin(selectedCell));
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [selectedCell, isFocusMode, isDragging]);
+
+  // Reset drag offset when zoom mode is disabled or cell changes
+  useEffect(() => {
+    if (!isFocusMode) {
+      setDragOffset({ x: 0, y: 0 });
+      setZoomOrigin('center center');
+    }
+  }, [isFocusMode, selectedCell]);
+
+  // Drag handlers
+  const handleDragStart = (e: ReactPointerEvent) => {
+    if (isFocusMode && selectedCell) {
+      setIsDragging(true);
+      setDragStarted(false);
+      setLastPointer({ x: e.clientX, y: e.clientY });
+    }
+  };
+
+  // Global drag handlers for move and up events
+  useEffect(() => {
+    if (!isDragging) return;
+
+    const handlePointerMove = (e: PointerEvent) => {
+      if (isDragging && isFocusMode && gridRef.current) {
+        const deltaX = e.clientX - lastPointer.x;
+        const deltaY = e.clientY - lastPointer.y;
+        const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+        // Only start actual dragging after moving at least 5 pixels
+        if (!dragStarted && distance > 5) {
+          setDragStarted(true);
+          // Prevent text selection during drag
+          document.body.style.userSelect = 'none';
+        }
+
+        if (dragStarted) {
+          setDragOffset((prev) => {
+            // Reduce movement speed for more controlled dragging
+            const sensitivity = 0.5;
+            const newX = prev.x + deltaX * sensitivity;
+            const newY = prev.y + deltaY * sensitivity;
+
+            // Calculate boundaries based on actual puzzle dimensions and available viewport
+            const gridElement = gridRef.current;
+            if (!gridElement) return { x: newX, y: newY };
+
+            const gridRect = gridElement.getBoundingClientRect();
+
+            // Calculate how much we can move in each direction
+            const scaledWidth = gridRect.width;
+            const scaledHeight = gridRect.height;
+
+            // Simple approach: calculate how much the 1.5x scaled puzzle extends beyond viewport
+            // When scaled 1.5x, the puzzle becomes 50% larger
+            // So we can translate by 25% of the original size in each direction
+            const originalWidth = scaledWidth / 1.5;
+            const originalHeight = scaledHeight / 1.5;
+
+            // Maximum translation to show all edges without going beyond puzzle border
+            const maxOffsetX = originalWidth * 0.25; // 25% of original size
+            const maxOffsetY = originalHeight * 0.25; // 25% of original size
+
+            return {
+              x: Math.max(-maxOffsetX, Math.min(maxOffsetX, newX)),
+              y: Math.max(-maxOffsetY, Math.min(maxOffsetY, newY)),
+            };
+          });
+          e.preventDefault(); // Only prevent default when actually dragging
+        }
+
+        setLastPointer({ x: e.clientX, y: e.clientY });
+      }
+    };
+
+    const handlePointerUp = (e: PointerEvent) => {
+      if (dragStarted) {
+        e.preventDefault();
+        // Restore text selection after drag
+        document.body.style.userSelect = '';
+      }
+      setIsDragging(false);
+      setDragStarted(false);
+    };
+
+    document.addEventListener('pointermove', handlePointerMove);
+    document.addEventListener('pointerup', handlePointerUp);
+
+    return () => {
+      document.removeEventListener('pointermove', handlePointerMove);
+      document.removeEventListener('pointerup', handlePointerUp);
+      // Ensure text selection is restored if component unmounts during drag
+      document.body.style.userSelect = '';
+    };
+  }, [isDragging, isFocusMode, dragStarted, lastPointer]);
 
   useEffect(() => {
     if (showSidebar) {
@@ -132,35 +269,56 @@ const Sudoku = ({
               />
             </div>
           </div>
-          <div
-            ref={gridRef}
-            className="border-theme-primary dark:border-theme-primary-light relative mr-auto ml-auto grid max-w-xl grid-cols-3 grid-rows-3 border border-2 bg-zinc-50 lg:mr-0 dark:bg-zinc-900"
-          >
-            {Array.from(Array(3)).map((_, y) =>
-              Array.from(Array(3)).map((_, x) => {
-                const boxId = calculateBoxId(x, y);
-                return (
-                  <SudokuBox
-                    key={boxId}
-                    boxId={boxId}
-                    selectedCell={selectedCell}
-                    setSelectedCell={setSelectedCell}
-                    answer={
-                      answer[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]
-                    }
-                    selectNumber={selectNumber}
-                    validation={
-                      validation &&
-                      validation[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]
-                    }
-                    initial={
-                      initial[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]
-                    }
-                    isMiniNotes={isMiniNotes}
-                  />
-                );
-              })
-            )}
+          <div className="relative overflow-hidden">
+            <div
+              ref={gridRef}
+              className={`border-theme-primary dark:border-theme-primary-light relative mr-auto ml-auto grid max-w-xl grid-cols-3 grid-rows-3 border border-2 bg-zinc-50 lg:mr-0 dark:bg-zinc-900 ${
+                dragStarted
+                  ? 'cursor-grabbing select-none'
+                  : isFocusMode && selectedCell
+                    ? 'cursor-grab'
+                    : ''
+              } ${dragStarted ? '' : 'transition-all duration-300'}`}
+              style={{
+                transform:
+                  isFocusMode && selectedCell
+                    ? `scale(1.5) translate(${dragOffset.x}px, ${dragOffset.y}px)`
+                    : 'scale(1)',
+                transformOrigin: zoomOrigin,
+                touchAction: isFocusMode ? 'none' : 'auto',
+                userSelect: dragStarted ? 'none' : 'auto',
+              }}
+            >
+              {Array.from(Array(3)).map((_, y) =>
+                Array.from(Array(3)).map((_, x) => {
+                  const boxId = calculateBoxId(x, y);
+                  return (
+                    <SudokuBox
+                      key={boxId}
+                      boxId={boxId}
+                      selectedCell={selectedCell}
+                      setSelectedCell={setSelectedCell}
+                      answer={
+                        answer[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]
+                      }
+                      selectNumber={selectNumber}
+                      validation={
+                        validation &&
+                        validation[x as PuzzleRowOrColumn][
+                          y as PuzzleRowOrColumn
+                        ]
+                      }
+                      initial={
+                        initial[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]
+                      }
+                      isMiniNotes={isMiniNotes}
+                      isFocusMode={isFocusMode}
+                      onDragStart={handleDragStart}
+                    />
+                  );
+                })
+              )}
+            </div>
           </div>
 
           {/* Race Track Progress */}
@@ -200,6 +358,8 @@ const Sudoku = ({
               setIsNotesMode={setIsNotesMode}
               isMiniNotes={isMiniNotes}
               setIsMiniNotes={setIsMiniNotes}
+              isFocusMode={isFocusMode}
+              setIsFocusMode={setIsFocusMode}
               reset={reset}
               reveal={reveal}
             />

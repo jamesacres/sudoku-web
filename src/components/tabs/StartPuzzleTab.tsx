@@ -13,7 +13,6 @@ interface StartPuzzleTabProps {
 }
 
 export const StartPuzzleTab = ({
-  isOnline,
   isLoading,
   openSudokuOfTheDay,
   friendsList,

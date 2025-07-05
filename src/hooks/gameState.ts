@@ -53,6 +53,7 @@ function useGameState({
   const [isNotesMode, setIsNotesMode] = useState<boolean>(false);
   const [isMiniNotes, setIsMiniNotes] = useState<boolean>(false);
   const [showSidebar, setShowSidebar] = useState(false);
+  const [isFocusMode, setIsFocusMode] = useState(false);
   const [{ answerStack, isRestored, isDisabled, completed }, setAnswerStack] =
     useState<{
       answerStack: Puzzle[];
@@ -494,6 +495,8 @@ function useGameState({
     sessionParties,
     showSidebar,
     setShowSidebar,
+    isFocusMode,
+    setIsFocusMode,
   };
 }
 
