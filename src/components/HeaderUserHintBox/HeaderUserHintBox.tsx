@@ -9,8 +9,8 @@ const HeaderUserHintBox = () => {
     <>
       {!user && !isLoggingIn && (
         <HintBox>
-          Signing in enables you to switch devices, and avoid losing your
-          puzzles!
+          Signing in enables you to play sudoku of the day, play with friends,
+          and switch devices with cloud storage for 30 days.
         </HintBox>
       )}
     </>

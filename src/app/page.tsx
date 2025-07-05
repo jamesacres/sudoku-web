@@ -193,7 +193,11 @@ export default function Home() {
   const openSudokuOfTheDay = async (difficulty: Difficulty): Promise<void> => {
     setIsLoading(true);
     if (!user) {
-      if (loginRedirect) {
+      setIsLoading(false);
+      const confirmed = confirm(
+        "You need to sign in to play Sudoku of the Day. Would you like to sign in now?"
+      );
+      if (confirmed && loginRedirect) {
         loginRedirect();
       }
       return;
