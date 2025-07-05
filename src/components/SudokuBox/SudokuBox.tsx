@@ -2,7 +2,7 @@ import { calculateCellId } from '@/helpers/calculateId';
 import SudokuInput from '../SudokuInput';
 import { PuzzleBox, PuzzleRowOrColumn } from '@/types/puzzle';
 import { SelectNumber, SetSelectedCell } from '@/types/state';
-import { memo } from 'react';
+import { memo, PointerEvent } from 'react';
 
 interface Arguments {
   boxId: string;
@@ -13,6 +13,8 @@ interface Arguments {
   validation?: PuzzleBox<boolean | undefined>;
   initial: PuzzleBox;
   isMiniNotes: boolean;
+  isZoomMode?: boolean;
+  onDragStart?: (e: PointerEvent) => void;
 }
 
 const SudokuBox = ({
@@ -24,6 +26,8 @@ const SudokuBox = ({
   validation,
   initial,
   isMiniNotes,
+  isZoomMode,
+  onDragStart,
 }: Arguments) => {
   return (
     <div
@@ -49,6 +53,8 @@ const SudokuBox = ({
                 !!initial[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]
               }
               isMiniNotes={isMiniNotes}
+              isZoomMode={isZoomMode}
+              onDragStart={onDragStart}
             />
           );
         })

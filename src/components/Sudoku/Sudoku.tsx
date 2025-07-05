@@ -13,6 +13,7 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import { CelebrationAnimation } from '../CelebrationAnimation';
 import { RaceTrack } from '../RaceTrack';
 import { UserContext } from '@/providers/UserProvider';
+import { useDrag } from '@/hooks/useDrag';
 
 const Sudoku = ({
   puzzle: { initial, final, puzzleId },
@@ -50,6 +51,8 @@ const Sudoku = ({
     sessionParties,
     showSidebar,
     setShowSidebar,
+    isZoomMode,
+    setIsZoomMode,
   } = useGameState({
     final,
     initial,
@@ -75,6 +78,13 @@ const Sudoku = ({
       return () => clearTimeout(timer);
     }
   }, [completed]);
+
+  // Use drag hook for all drag-related functionality
+  const { dragOffset, dragStarted, zoomOrigin, handleDragStart } = useDrag({
+    isZoomMode,
+    selectedCell,
+    gridRef,
+  });
 
   useEffect(() => {
     if (showSidebar) {
@@ -132,35 +142,55 @@ const Sudoku = ({
               />
             </div>
           </div>
-          <div
-            ref={gridRef}
-            className="border-theme-primary dark:border-theme-primary-light relative mr-auto ml-auto grid max-w-xl grid-cols-3 grid-rows-3 border border-2 bg-zinc-50 lg:mr-0 dark:bg-zinc-900"
-          >
-            {Array.from(Array(3)).map((_, y) =>
-              Array.from(Array(3)).map((_, x) => {
-                const boxId = calculateBoxId(x, y);
-                return (
-                  <SudokuBox
-                    key={boxId}
-                    boxId={boxId}
-                    selectedCell={selectedCell}
-                    setSelectedCell={setSelectedCell}
-                    answer={
-                      answer[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]
-                    }
-                    selectNumber={selectNumber}
-                    validation={
-                      validation &&
-                      validation[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]
-                    }
-                    initial={
-                      initial[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]
-                    }
-                    isMiniNotes={isMiniNotes}
-                  />
-                );
-              })
-            )}
+          <div className="relative overflow-hidden">
+            <div
+              ref={gridRef}
+              className={`border-theme-primary dark:border-theme-primary-light relative mr-auto ml-auto grid max-w-xl grid-cols-3 grid-rows-3 border border-2 bg-zinc-50 lg:mr-0 dark:bg-zinc-900 ${
+                dragStarted
+                  ? 'cursor-grabbing'
+                  : isZoomMode && selectedCell
+                    ? 'cursor-grab'
+                    : ''
+              } ${dragStarted ? '' : 'transition-all duration-300'}`}
+              style={{
+                transform:
+                  isZoomMode && selectedCell
+                    ? `scale(1.5) translate(${dragOffset.x}px, ${dragOffset.y}px)`
+                    : 'scale(1)',
+                transformOrigin: zoomOrigin,
+                touchAction: isZoomMode ? 'none' : 'auto',
+              }}
+            >
+              {Array.from(Array(3)).map((_, y) =>
+                Array.from(Array(3)).map((_, x) => {
+                  const boxId = calculateBoxId(x, y);
+                  return (
+                    <SudokuBox
+                      key={boxId}
+                      boxId={boxId}
+                      selectedCell={selectedCell}
+                      setSelectedCell={setSelectedCell}
+                      answer={
+                        answer[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]
+                      }
+                      selectNumber={selectNumber}
+                      validation={
+                        validation &&
+                        validation[x as PuzzleRowOrColumn][
+                          y as PuzzleRowOrColumn
+                        ]
+                      }
+                      initial={
+                        initial[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]
+                      }
+                      isMiniNotes={isMiniNotes}
+                      isZoomMode={isZoomMode}
+                      onDragStart={handleDragStart}
+                    />
+                  );
+                })
+              )}
+            </div>
           </div>
 
           {/* Race Track Progress */}
@@ -200,6 +230,8 @@ const Sudoku = ({
               setIsNotesMode={setIsNotesMode}
               isMiniNotes={isMiniNotes}
               setIsMiniNotes={setIsMiniNotes}
+              isZoomMode={isZoomMode}
+              setIsZoomMode={setIsZoomMode}
               reset={reset}
               reveal={reveal}
             />

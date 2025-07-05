@@ -1,7 +1,20 @@
-import React from 'react';
+import React, { memo } from 'react';
 import SudokuInputNotes from '../SudokuInputNotes';
 import { Notes } from '@/types/notes';
 import { SelectNumber, SetSelectedCell } from '@/types/state';
+
+interface Arguments {
+  cellId: string;
+  selectedCell: string | null;
+  setSelectedCell: SetSelectedCell;
+  selectNumber: SelectNumber;
+  value?: number | Notes;
+  validation?: boolean;
+  isInitial: boolean;
+  isMiniNotes: boolean;
+  isZoomMode?: boolean;
+  onDragStart?: (e: React.PointerEvent) => void;
+}
 
 const SudokuInput = ({
   cellId,
@@ -12,16 +25,9 @@ const SudokuInput = ({
   validation,
   isInitial,
   isMiniNotes,
-}: {
-  cellId: string;
-  selectedCell: string | null;
-  setSelectedCell: SetSelectedCell;
-  selectNumber: SelectNumber;
-  value?: number | Notes;
-  validation?: boolean;
-  isInitial: boolean;
-  isMiniNotes: boolean;
-}) => {
+  isZoomMode,
+  onDragStart,
+}: Arguments) => {
   const isNotesMode = !(value && typeof value === 'number');
   const notes = isNotesMode && typeof value === 'object' ? value : {};
 
@@ -38,9 +44,20 @@ const SudokuInput = ({
     ? 'text-zinc-500 dark:text-zinc-400'
     : 'text-zinc-900 dark:text-zinc-50';
 
+  const handlePointerDown = (e: React.PointerEvent) => {
+    // Always handle cell selection first
+    setSelectedCell(cellId);
+
+    // If in zoom mode and drag handler is provided, also start drag
+    if (isZoomMode && onDragStart) {
+      onDragStart(e);
+    }
+  };
+
   return (
     <div
-      onClick={(_) => setSelectedCell(cellId)}
+      data-cell-container-id={cellId}
+      onPointerDown={handlePointerDown}
       className={`flex h-full w-full items-center justify-center border border-zinc-300 dark:border-zinc-400 ${backgroundClass}`}
     >
       {isNotesMode ? (
@@ -62,4 +79,9 @@ const SudokuInput = ({
   );
 };
 
-export default SudokuInput;
+// Prevent re-render on timer change
+const MemoisedSudokuInput = memo(function MemoisedSudokuInput(args: Arguments) {
+  return SudokuInput(args);
+});
+
+export default MemoisedSudokuInput;

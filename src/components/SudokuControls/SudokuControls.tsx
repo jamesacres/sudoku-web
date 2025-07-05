@@ -4,6 +4,7 @@ import {
   Delete,
   Edit,
   Edit2,
+  Eye,
   Grid,
   RefreshCw,
   Square,
@@ -30,6 +31,8 @@ interface Arguments {
   setIsNotesMode: (_value: boolean) => void;
   isMiniNotes: boolean;
   setIsMiniNotes: (_value: boolean) => void;
+  isZoomMode: boolean;
+  setIsZoomMode: (_value: boolean) => void;
   reset: () => void;
   reveal: () => void;
 }
@@ -49,6 +52,8 @@ const SudokuControls = ({
   setIsNotesMode,
   isMiniNotes,
   setIsMiniNotes,
+  isZoomMode,
+  setIsZoomMode,
   reset,
   reveal,
 }: Arguments) => {
@@ -151,14 +156,26 @@ const SudokuControls = ({
                 Grid
               </button>
 
-              {/* Row 3: Reveal - spans full width */}
+              {/* Row 3: Zoom Mode and Reveal */}
+              <button
+                disabled={!isZoomMode && isInputDisabled}
+                onClick={() => setIsZoomMode(!isZoomMode)}
+                className={`flex cursor-pointer items-center justify-center gap-1.5 rounded-lg px-2 py-2.5 text-sm font-medium transition-all duration-150 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 dark:disabled:bg-zinc-800 ${
+                  isZoomMode
+                    ? 'bg-theme-primary hover:bg-theme-primary-dark active:bg-theme-primary-darker dark:bg-theme-primary-light dark:hover:bg-theme-primary dark:active:bg-theme-primary-dark text-white dark:text-gray-900'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200 active:bg-gray-300 dark:bg-zinc-700 dark:text-gray-200 dark:hover:bg-zinc-600 dark:active:bg-zinc-500'
+                }`}
+              >
+                <Eye size={15} />
+                Zoom
+              </button>
               <button
                 onClick={() => {
                   window.confirm(
                     'Are you sure you wish to reveal the whole grid?'
                   ) && reveal();
                 }}
-                className="col-span-3 flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-gray-100 px-2 py-2.5 text-sm font-medium text-gray-700 transition-all duration-150 hover:bg-gray-200 active:bg-gray-300 dark:bg-zinc-700 dark:text-gray-200 dark:hover:bg-zinc-600 dark:active:bg-zinc-500"
+                className="col-span-2 flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-gray-100 px-2 py-2.5 text-sm font-medium text-gray-700 transition-all duration-150 hover:bg-gray-200 active:bg-gray-300 dark:bg-zinc-700 dark:text-gray-200 dark:hover:bg-zinc-600 dark:active:bg-zinc-500"
               >
                 <Unlock size={15} />
                 Reveal

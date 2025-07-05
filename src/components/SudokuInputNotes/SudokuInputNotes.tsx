@@ -1,17 +1,20 @@
 import { Notes } from '@/types/notes';
 import { SelectNumber } from '@/types/state';
+import { memo } from 'react';
+
+interface Arguments {
+  isSelected: boolean;
+  isMiniNotes: boolean;
+  notes: Notes;
+  selectNumber: SelectNumber;
+}
 
 const SudokuInputNotes = ({
   isSelected,
   isMiniNotes,
   notes,
   selectNumber,
-}: {
-  isSelected: boolean;
-  isMiniNotes: boolean;
-  notes: Notes;
-  selectNumber: SelectNumber;
-}) => {
+}: Arguments) => {
   return (
     <div className={`grid h-full w-full grid-cols-3 grid-rows-3`}>
       {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((value) => {
@@ -38,4 +41,11 @@ const SudokuInputNotes = ({
   );
 };
 
-export default SudokuInputNotes;
+// Prevent re-render on timer change
+const MemoisedSudokuInputNotes = memo(function MemoisedSudokuInputNotes(
+  args: Arguments
+) {
+  return SudokuInputNotes(args);
+});
+
+export default MemoisedSudokuInputNotes;
