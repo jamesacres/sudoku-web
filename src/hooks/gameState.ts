@@ -319,36 +319,38 @@ function useGameState({
   }, [loginRedirect, user, puzzleId, getValue, setTimerNewSession, saveValue]);
   useEffect(() => {
     let active = true;
-    if (!isDisabled && !isRestored && answerStack.length > 0 && selectedCell) {
-      const currentAnswer = answerStack[answerStack.length - 1];
-      const previousAnswer = answerStack[answerStack.length - 2];
-      const { box, cell } = splitCellId(selectedCell);
-      const enteredValue = currentAnswer[box.x][box.y][cell.x][cell.y];
-      const previousValue =
-        !!previousAnswer && previousAnswer[box.x][box.y][cell.x][cell.y];
-      if (enteredValue !== previousValue) {
-        const correctValue = final[box.x][box.y][cell.x][cell.y];
-        const initialValue = initial[box.x][box.y][cell.x][cell.y];
-        const isCorrect =
-          initialValue !== enteredValue && enteredValue === correctValue;
-
-        if (isCorrect || completed) {
-          const { serverValuePromise } = saveValue({
-            answerStack,
-            initial,
-            final,
-            completed,
-          });
-          serverValuePromise.then((serverValue) => {
-            if (
-              active &&
-              serverValue?.parties &&
-              Object.keys(serverValue.parties).length
-            ) {
-              setSessionParties(serverValue.parties);
-            }
-          });
+    if (!isDisabled && !isRestored && answerStack.length > 0) {
+      let isCorrect;
+      if (!completed && selectedCell) {
+        const currentAnswer = answerStack[answerStack.length - 1];
+        const previousAnswer = answerStack[answerStack.length - 2];
+        const { box, cell } = splitCellId(selectedCell);
+        const enteredValue = currentAnswer[box.x][box.y][cell.x][cell.y];
+        const previousValue =
+          !!previousAnswer && previousAnswer[box.x][box.y][cell.x][cell.y];
+        if (enteredValue !== previousValue) {
+          const correctValue = final[box.x][box.y][cell.x][cell.y];
+          const initialValue = initial[box.x][box.y][cell.x][cell.y];
+          isCorrect =
+            initialValue !== enteredValue && enteredValue === correctValue;
         }
+      }
+      if (isCorrect || completed) {
+        const { serverValuePromise } = saveValue({
+          answerStack,
+          initial,
+          final,
+          completed,
+        });
+        serverValuePromise.then((serverValue) => {
+          if (
+            active &&
+            serverValue?.parties &&
+            Object.keys(serverValue.parties).length
+          ) {
+            setSessionParties(serverValue.parties);
+          }
+        });
       }
     }
     return () => {
