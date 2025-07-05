@@ -195,7 +195,7 @@ export default function Home() {
     if (!user) {
       setIsLoading(false);
       const confirmed = confirm(
-        "You need to sign in to play Sudoku of the Day. Would you like to sign in now?"
+        'You need to sign in to play Sudoku of the Day. Would you like to sign in now?'
       );
       if (confirmed && loginRedirect) {
         loginRedirect();
