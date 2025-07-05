@@ -89,8 +89,6 @@ export const useDrag = ({
         // Only start actual dragging after moving at least 5 pixels
         if (!dragStarted && distance > 5) {
           setDragStarted(true);
-          // Prevent text selection during drag
-          document.body.style.userSelect = 'none';
         }
 
         if (dragStarted) {
@@ -135,8 +133,6 @@ export const useDrag = ({
     const handlePointerUp = (e: PointerEvent) => {
       if (dragStarted) {
         e.preventDefault();
-        // Restore text selection after drag
-        document.body.style.userSelect = '';
       }
       setIsDragging(false);
       setDragStarted(false);
@@ -148,8 +144,6 @@ export const useDrag = ({
     return () => {
       document.removeEventListener('pointermove', handlePointerMove);
       document.removeEventListener('pointerup', handlePointerUp);
-      // Ensure text selection is restored if component unmounts during drag
-      document.body.style.userSelect = '';
     };
   }, [isDragging, isZoomMode, dragStarted, lastPointer, gridRef]);
 

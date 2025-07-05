@@ -147,7 +147,7 @@ const Sudoku = ({
               ref={gridRef}
               className={`border-theme-primary dark:border-theme-primary-light relative mr-auto ml-auto grid max-w-xl grid-cols-3 grid-rows-3 border border-2 bg-zinc-50 lg:mr-0 dark:bg-zinc-900 ${
                 dragStarted
-                  ? 'cursor-grabbing select-none'
+                  ? 'cursor-grabbing'
                   : isZoomMode && selectedCell
                     ? 'cursor-grab'
                     : ''
@@ -159,7 +159,6 @@ const Sudoku = ({
                     : 'scale(1)',
                 transformOrigin: zoomOrigin,
                 touchAction: isZoomMode ? 'none' : 'auto',
-                userSelect: dragStarted ? 'none' : 'auto',
               }}
             >
               {Array.from(Array(3)).map((_, y) =>
