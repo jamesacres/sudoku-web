@@ -35,6 +35,7 @@ const Sudoku = ({
     selectNumber,
     setSelectedCell,
     selectedAnswer,
+    selectedCellHasNotes,
     isUndoDisabled,
     isRedoDisabled,
     validation,
@@ -182,6 +183,11 @@ const Sudoku = ({
                 !selectedCell ||
                 isInitialCell(selectedCell, initial) ||
                 !selectedAnswer()
+              }
+              isDeleteDisabled={
+                !selectedCell ||
+                isInitialCell(selectedCell, initial) ||
+                (!selectedAnswer() && !selectedCellHasNotes())
               }
               validateCell={validateCell}
               validateGrid={validateGrid}

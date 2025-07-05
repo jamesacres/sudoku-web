@@ -173,7 +173,7 @@ function useGameState({
   );
   const selectNumber: SelectNumber = useCallback(
     (number: number, forceNotes?: boolean) => {
-      if (isNotesMode || forceNotes) {
+      if (number !== 0 && (isNotesMode || forceNotes)) {
         toggleNote(number);
       } else {
         setAnswer(number);
@@ -190,6 +190,17 @@ function useGameState({
         return result;
       }
     }
+  }, [answer, selectedCell]);
+
+  const selectedCellHasNotes = useCallback(() => {
+    if (selectedCell) {
+      const { box, cell } = splitCellId(selectedCell);
+      const result = answer[box.x][box.y][cell.x][cell.y];
+      if (typeof result === 'object' && result !== null) {
+        return Object.values(result).some((note) => note === true);
+      }
+    }
+    return false;
   }, [answer, selectedCell]);
 
   // Undo and Redo
@@ -468,6 +479,7 @@ function useGameState({
     selectNumber,
     setSelectedCell,
     selectedAnswer,
+    selectedCellHasNotes,
     isUndoDisabled,
     isRedoDisabled,
     validation,

@@ -17,6 +17,7 @@ import { HintBox } from '../HintBox/HintBox';
 interface Arguments {
   isInputDisabled: boolean;
   isValidateCellDisabled: boolean;
+  isDeleteDisabled: boolean;
   validateGrid: () => void;
   validateCell: () => void;
   isUndoDisabled: boolean;
@@ -36,6 +37,7 @@ interface Arguments {
 const SudokuControls = ({
   isInputDisabled,
   isValidateCellDisabled,
+  isDeleteDisabled,
   validateGrid,
   validateCell,
   isUndoDisabled,
@@ -97,7 +99,7 @@ const SudokuControls = ({
             <div className="grid grid-cols-3 gap-2">
               {/* Row 1: Delete, Undo, and Redo */}
               <button
-                disabled={isValidateCellDisabled}
+                disabled={isDeleteDisabled}
                 onClick={() => selectNumber(0)}
                 className="flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-gray-100 px-2 py-2.5 text-sm font-medium text-gray-700 transition-all duration-150 hover:bg-gray-200 active:bg-gray-300 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 dark:bg-zinc-700 dark:text-gray-200 dark:hover:bg-zinc-600 dark:active:bg-zinc-500 dark:disabled:bg-zinc-800"
               >
