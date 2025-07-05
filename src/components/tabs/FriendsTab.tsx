@@ -28,11 +28,11 @@ export const FriendsTab = ({
       </h1>
       <p className="mb-4">
         Invite others using the sidebar when solving a puzzle, then come back
-        here to see their own puzzles.
+        here to see their recent puzzles.
       </p>
       <p className="mb-4">
-        Select a friend below to see and solve their puzzles. Compare your
-        completion percentage and see who will be the quickest!
+        Select a friend below to see and solve their recent puzzles. Compare
+        your completion percentage and see who will be the quickest!
       </p>
 
       {parties?.length ? (
@@ -73,23 +73,31 @@ export const FriendsTab = ({
                             )}
                           </button>
                           {userSessions[userId]?.sessions && (
-                            <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
-                              {userSessions[userId]?.sessions?.map(
-                                (userSession) => (
-                                  <SessionRow
-                                    key={userSession.sessionId}
-                                    memberSession={userSession}
-                                    mySession={mySessions?.find(
-                                      (session) =>
-                                        session.sessionId ===
-                                        userSession.sessionId
-                                    )}
-                                    display="my"
-                                    memberNickname={memberNickname}
-                                  />
-                                )
+                            <>
+                              {userSessions[userId]?.sessions?.length ? (
+                                <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+                                  {userSessions[userId]?.sessions?.map(
+                                    (userSession) => (
+                                      <SessionRow
+                                        key={userSession.sessionId}
+                                        memberSession={userSession}
+                                        mySession={mySessions?.find(
+                                          (session) =>
+                                            session.sessionId ===
+                                            userSession.sessionId
+                                        )}
+                                        display="my"
+                                        memberNickname={memberNickname}
+                                      />
+                                    )
+                                  )}
+                                </ul>
+                              ) : (
+                                <p className="px-3 pb-3 text-gray-600 dark:text-gray-400">
+                                  No recent puzzles, ask them to play!
+                                </p>
                               )}
-                            </ul>
+                            </>
                           )}
                         </li>
                       ))}

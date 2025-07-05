@@ -16,6 +16,9 @@ export const MyPuzzlesTab = ({ sessions }: MyPuzzlesTabProps) => {
       <h1 className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-4xl font-bold text-transparent">
         My Puzzles
       </h1>
+      <p className="my-4">
+        This page lists puzzles you have played in the past month.
+      </p>
       {!!inProgress?.length && (
         <div className="mb-4">
           <h2 className="mb-2 text-2xl font-extrabold">In Progress</h2>

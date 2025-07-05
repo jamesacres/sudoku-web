@@ -188,7 +188,9 @@ function useServerStorage({
       if (isOnline && isLoggedIn()) {
         try {
           const stateKey = getStateKey();
-          console.info('fetching session', stateKey);
+          console.info('saving session', stateKey);
+          const inOneMonth = new Date();
+          inOneMonth.setDate(inOneMonth.getDate() + 30);
           const response = await fetch(
             new Request(`${apiUrl}/sessions/${stateKey}`, {
               method: 'PATCH',
@@ -197,6 +199,7 @@ function useServerStorage({
               },
               body: JSON.stringify({
                 state,
+                expiresAt: inOneMonth.toISOString(),
               }),
             })
           );

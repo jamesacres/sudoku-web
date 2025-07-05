@@ -32,32 +32,39 @@ function useLocalStorage({
     [id, type, prefix]
   );
 
-  const listValues = useCallback(
-    <T>(): (StateResult<T> & {
-      sessionId: string;
-    })[] =>
-      Object.entries(localStorage)
-        .filter(([key]) => {
-          if (type !== StateType.PUZZLE) {
-            return key.endsWith(`-${type}`);
-          }
-          return RegExp(`^${prefix}[^-]+$`).test(key);
-        })
-        .map(([key, value]) => {
-          try {
-            const parsedValue = JSON.parse(value);
-            const matches = key.match(RegExp(`^(${prefix}[^-]+)`));
-            if (matches?.length) {
-              return { ...parsedValue, sessionId: matches[1] };
+  const listValues = useCallback(<T>(): (StateResult<T> & {
+    sessionId: string;
+  })[] => {
+    const oneMonthAgo = new Date().getTime() - 30 * 24 * 60 * 60 * 1000;
+
+    return Object.entries(localStorage)
+      .filter(([key]) => {
+        if (type !== StateType.PUZZLE) {
+          return key.endsWith(`-${type}`);
+        }
+        return RegExp(`^${prefix}[^-]+$`).test(key);
+      })
+      .map(([key, value]) => {
+        try {
+          const parsedValue = JSON.parse(value);
+          const matches = key.match(RegExp(`^(${prefix}[^-]+)`));
+          if (matches?.length) {
+            if (
+              parsedValue.lastUpdated &&
+              parsedValue.lastUpdated < oneMonthAgo
+            ) {
+              localStorage.removeItem(key);
+              return undefined;
             }
-          } catch (e) {
-            console.error(e);
+            return { ...parsedValue, sessionId: matches[1] };
           }
-          return undefined;
-        })
-        .filter((value) => !!value),
-    [type, prefix]
-  );
+        } catch (e) {
+          console.error(e);
+        }
+        return undefined;
+      })
+      .filter((value) => !!value);
+  }, [type, prefix]);
 
   const getValue = useCallback(
     <T>({

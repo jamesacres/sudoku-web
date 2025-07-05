@@ -119,8 +119,13 @@ export default function Home() {
     const serverState = async () => {
       const values = await listServerValues<ServerState>();
       if (active && values) {
+        // Filter out server sessions older than a month
+        const oneMonthAgo = new Date().getTime() - 30 * 24 * 60 * 60 * 1000;
+        const recentServerSessions = values.filter(
+          (session) => session.updatedAt.getTime() >= oneMonthAgo
+        );
         // Merge with local
-        mergeSessions(values);
+        mergeSessions(recentServerSessions);
       }
       const parties = await listParties();
       setParties(parties);
@@ -167,9 +172,14 @@ export default function Home() {
       userId,
     });
     if (serverValuesForUser) {
+      // Filter out friends' sessions older than a month
+      const oneMonthAgo = new Date().getTime() - 30 * 24 * 60 * 60 * 1000;
+      const recentFriendSessions = serverValuesForUser.filter(
+        (session) => session.updatedAt.getTime() >= oneMonthAgo
+      );
       setUserSessions({
         ...userSessions,
-        [userId]: { isLoading: false, sessions: serverValuesForUser },
+        [userId]: { isLoading: false, sessions: recentFriendSessions },
       });
     } else {
       setUserSessions({
