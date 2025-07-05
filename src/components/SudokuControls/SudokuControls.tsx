@@ -31,8 +31,8 @@ interface Arguments {
   setIsNotesMode: (_value: boolean) => void;
   isMiniNotes: boolean;
   setIsMiniNotes: (_value: boolean) => void;
-  isFocusMode: boolean;
-  setIsFocusMode: (_value: boolean) => void;
+  isZoomMode: boolean;
+  setIsZoomMode: (_value: boolean) => void;
   reset: () => void;
   reveal: () => void;
 }
@@ -52,8 +52,8 @@ const SudokuControls = ({
   setIsNotesMode,
   isMiniNotes,
   setIsMiniNotes,
-  isFocusMode,
-  setIsFocusMode,
+  isZoomMode,
+  setIsZoomMode,
   reset,
   reveal,
 }: Arguments) => {
@@ -158,10 +158,10 @@ const SudokuControls = ({
 
               {/* Row 3: Zoom Mode and Reveal */}
               <button
-                disabled={!isFocusMode && isInputDisabled}
-                onClick={() => setIsFocusMode(!isFocusMode)}
+                disabled={!isZoomMode && isInputDisabled}
+                onClick={() => setIsZoomMode(!isZoomMode)}
                 className={`flex cursor-pointer items-center justify-center gap-1.5 rounded-lg px-2 py-2.5 text-sm font-medium transition-all duration-150 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 dark:disabled:bg-zinc-800 ${
-                  isFocusMode
+                  isZoomMode
                     ? 'bg-theme-primary hover:bg-theme-primary-dark active:bg-theme-primary-darker dark:bg-theme-primary-light dark:hover:bg-theme-primary dark:active:bg-theme-primary-dark text-white dark:text-gray-900'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200 active:bg-gray-300 dark:bg-zinc-700 dark:text-gray-200 dark:hover:bg-zinc-600 dark:active:bg-zinc-500'
                 }`}

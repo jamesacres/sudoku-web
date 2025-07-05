@@ -13,7 +13,7 @@ interface Arguments {
   validation?: PuzzleBox<boolean | undefined>;
   initial: PuzzleBox;
   isMiniNotes: boolean;
-  isFocusMode?: boolean;
+  isZoomMode?: boolean;
   onDragStart?: (e: PointerEvent) => void;
 }
 
@@ -26,7 +26,7 @@ const SudokuBox = ({
   validation,
   initial,
   isMiniNotes,
-  isFocusMode,
+  isZoomMode,
   onDragStart,
 }: Arguments) => {
   return (
@@ -53,7 +53,7 @@ const SudokuBox = ({
                 !!initial[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]
               }
               isMiniNotes={isMiniNotes}
-              isFocusMode={isFocusMode}
+              isZoomMode={isZoomMode}
               onDragStart={onDragStart}
             />
           );

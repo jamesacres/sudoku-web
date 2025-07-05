@@ -56,8 +56,8 @@ const Sudoku = ({
     sessionParties,
     showSidebar,
     setShowSidebar,
-    isFocusMode,
-    setIsFocusMode,
+    isZoomMode,
+    setIsZoomMode,
   } = useGameState({
     final,
     initial,
@@ -95,10 +95,10 @@ const Sudoku = ({
 
   // Update zoom origin when cell selection changes, but only if not currently dragging
   useEffect(() => {
-    if (selectedCell && isFocusMode && !isDragging) {
+    if (selectedCell && isZoomMode && !isDragging) {
       // Helper function to calculate zoom transform origin based on selected cell
       const getZoomOrigin = (cellId: string) => {
-        if (cellId && isFocusMode) {
+        if (cellId && isZoomMode) {
           const { box, cell } = splitCellId(cellId);
           // Calculate the position of the selected cell in the 9x9 grid
           const totalX = box.x * 3 + cell.x;
@@ -117,19 +117,19 @@ const Sudoku = ({
       }, 50);
       return () => clearTimeout(timer);
     }
-  }, [selectedCell, isFocusMode, isDragging]);
+  }, [selectedCell, isZoomMode, isDragging]);
 
   // Reset drag offset when zoom mode is disabled or cell changes
   useEffect(() => {
-    if (!isFocusMode) {
+    if (!isZoomMode) {
       setDragOffset({ x: 0, y: 0 });
       setZoomOrigin('center center');
     }
-  }, [isFocusMode, selectedCell]);
+  }, [isZoomMode, selectedCell]);
 
   // Drag handlers
   const handleDragStart = (e: ReactPointerEvent) => {
-    if (isFocusMode && selectedCell) {
+    if (isZoomMode && selectedCell) {
       setIsDragging(true);
       setDragStarted(false);
       setLastPointer({ x: e.clientX, y: e.clientY });
@@ -141,7 +141,7 @@ const Sudoku = ({
     if (!isDragging) return;
 
     const handlePointerMove = (e: PointerEvent) => {
-      if (isDragging && isFocusMode && gridRef.current) {
+      if (isDragging && isZoomMode && gridRef.current) {
         const deltaX = e.clientX - lastPointer.x;
         const deltaY = e.clientY - lastPointer.y;
         const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
@@ -211,7 +211,7 @@ const Sudoku = ({
       // Ensure text selection is restored if component unmounts during drag
       document.body.style.userSelect = '';
     };
-  }, [isDragging, isFocusMode, dragStarted, lastPointer]);
+  }, [isDragging, isZoomMode, dragStarted, lastPointer]);
 
   useEffect(() => {
     if (showSidebar) {
@@ -275,17 +275,17 @@ const Sudoku = ({
               className={`border-theme-primary dark:border-theme-primary-light relative mr-auto ml-auto grid max-w-xl grid-cols-3 grid-rows-3 border border-2 bg-zinc-50 lg:mr-0 dark:bg-zinc-900 ${
                 dragStarted
                   ? 'cursor-grabbing select-none'
-                  : isFocusMode && selectedCell
+                  : isZoomMode && selectedCell
                     ? 'cursor-grab'
                     : ''
               } ${dragStarted ? '' : 'transition-all duration-300'}`}
               style={{
                 transform:
-                  isFocusMode && selectedCell
+                  isZoomMode && selectedCell
                     ? `scale(1.5) translate(${dragOffset.x}px, ${dragOffset.y}px)`
                     : 'scale(1)',
                 transformOrigin: zoomOrigin,
-                touchAction: isFocusMode ? 'none' : 'auto',
+                touchAction: isZoomMode ? 'none' : 'auto',
                 userSelect: dragStarted ? 'none' : 'auto',
               }}
             >
@@ -312,7 +312,7 @@ const Sudoku = ({
                         initial[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]
                       }
                       isMiniNotes={isMiniNotes}
-                      isFocusMode={isFocusMode}
+                      isZoomMode={isZoomMode}
                       onDragStart={handleDragStart}
                     />
                   );
@@ -358,8 +358,8 @@ const Sudoku = ({
               setIsNotesMode={setIsNotesMode}
               isMiniNotes={isMiniNotes}
               setIsMiniNotes={setIsMiniNotes}
-              isFocusMode={isFocusMode}
-              setIsFocusMode={setIsFocusMode}
+              isZoomMode={isZoomMode}
+              setIsZoomMode={setIsZoomMode}
               reset={reset}
               reveal={reveal}
             />

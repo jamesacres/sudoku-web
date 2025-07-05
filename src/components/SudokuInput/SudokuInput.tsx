@@ -12,7 +12,7 @@ interface Arguments {
   validation?: boolean;
   isInitial: boolean;
   isMiniNotes: boolean;
-  isFocusMode?: boolean;
+  isZoomMode?: boolean;
   onDragStart?: (e: React.PointerEvent) => void;
 }
 
@@ -25,7 +25,7 @@ const SudokuInput = ({
   validation,
   isInitial,
   isMiniNotes,
-  isFocusMode,
+  isZoomMode,
   onDragStart,
 }: Arguments) => {
   const isNotesMode = !(value && typeof value === 'number');
@@ -48,8 +48,8 @@ const SudokuInput = ({
     // Always handle cell selection first
     setSelectedCell(cellId);
 
-    // If in focus mode and drag handler is provided, also start drag
-    if (isFocusMode && onDragStart) {
+    // If in zoom mode and drag handler is provided, also start drag
+    if (isZoomMode && onDragStart) {
       onDragStart(e);
     }
   };
