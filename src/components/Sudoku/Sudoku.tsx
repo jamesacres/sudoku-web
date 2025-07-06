@@ -14,6 +14,7 @@ import { CelebrationAnimation } from '../CelebrationAnimation';
 import { RaceTrack } from '../RaceTrack';
 import { UserContext } from '@/providers/UserProvider';
 import { useDrag } from '@/hooks/useDrag';
+import { KillerSudokuGenerator } from '@/services/killerSudokuGenerator';
 
 const Sudoku = ({
   puzzle: { initial, final, puzzleId },
@@ -23,6 +24,27 @@ const Sudoku = ({
   redirectUri: string;
 }) => {
   const { user } = useContext(UserContext) || {};
+
+  // Killer sudoku conversion state
+  const [isKillerMode, setIsKillerMode] = useState(false);
+  const [killerConversionResult, setKillerConversionResult] =
+    useState<any>(null);
+
+  // Generate killer mode puzzle ID
+  const killerPuzzleId = `${puzzleId}_killer`;
+  const currentPuzzleId = isKillerMode ? killerPuzzleId : puzzleId;
+
+  const gameStateConfig = {
+    final:
+      isKillerMode && killerConversionResult
+        ? killerConversionResult.killerFinal
+        : final,
+    initial:
+      isKillerMode && killerConversionResult
+        ? killerConversionResult.killerInitial
+        : initial,
+    puzzleId: currentPuzzleId,
+  };
 
   const {
     answer,
@@ -53,11 +75,14 @@ const Sudoku = ({
     setShowSidebar,
     isZoomMode,
     setIsZoomMode,
-  } = useGameState({
-    final,
-    initial,
-    puzzleId,
-  });
+  } = useGameState(gameStateConfig);
+
+  // Force reset when switching to killer mode to ensure empty grid
+  useEffect(() => {
+    if (isKillerMode && killerConversionResult) {
+      reset();
+    }
+  }, [isKillerMode, killerConversionResult, reset]);
 
   // Reference to the grid for the celebration animation
   const gridRef = useRef<HTMLDivElement>(null);
@@ -86,6 +111,27 @@ const Sudoku = ({
     gridRef,
   });
 
+  // Handle killer sudoku conversion
+  const handleConvertToKiller = () => {
+    const generator = new KillerSudokuGenerator();
+    const result = generator.convertToKillerSudoku(final);
+
+    if (result.success) {
+      setKillerConversionResult(result);
+      setIsKillerMode(true);
+    } else {
+      console.error('Failed to convert to killer sudoku:', result.error);
+      // Could show an error message to user here
+    }
+  };
+
+  // Handle returning to regular sudoku
+  const handleBackToRegular = () => {
+    setIsKillerMode(false);
+    // Mode switching will automatically load the regular session state
+    // We keep the conversion result in case user wants to switch back
+  };
+
   useEffect(() => {
     if (showSidebar) {
       setPauseTimer(true);
@@ -99,7 +145,7 @@ const Sudoku = ({
   }, [showSidebar, setPauseTimer]);
 
   return (
-    <div>
+    <div key={currentPuzzleId}>
       <SudokuSidebar
         showSidebar={showSidebar}
         setShowSidebar={setShowSidebar}
@@ -181,11 +227,17 @@ const Sudoku = ({
                         ]
                       }
                       initial={
-                        initial[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]
+                        gameStateConfig.initial[x as PuzzleRowOrColumn][
+                          y as PuzzleRowOrColumn
+                        ]
                       }
                       isMiniNotes={isMiniNotes}
                       isZoomMode={isZoomMode}
                       onDragStart={handleDragStart}
+                      // Killer sudoku props
+                      isKillerMode={isKillerMode}
+                      killerCages={killerConversionResult?.cages}
+                      killerCageValidation={new Map()} // TODO: Add validation results
                     />
                   );
                 })
@@ -197,8 +249,8 @@ const Sudoku = ({
           {!completed && (
             <RaceTrack
               sessionParties={sessionParties}
-              initial={initial}
-              final={final}
+              initial={gameStateConfig.initial}
+              final={gameStateConfig.final}
               answer={answer}
               userId={user?.sub}
               onClick={() => setShowSidebar(true)}
@@ -209,16 +261,17 @@ const Sudoku = ({
           {!completed && (
             <SudokuControls
               isInputDisabled={
-                !selectedCell || isInitialCell(selectedCell, initial)
+                !selectedCell ||
+                isInitialCell(selectedCell, gameStateConfig.initial)
               }
               isValidateCellDisabled={
                 !selectedCell ||
-                isInitialCell(selectedCell, initial) ||
+                isInitialCell(selectedCell, gameStateConfig.initial) ||
                 !selectedAnswer()
               }
               isDeleteDisabled={
                 !selectedCell ||
-                isInitialCell(selectedCell, initial) ||
+                isInitialCell(selectedCell, gameStateConfig.initial) ||
                 (!selectedAnswer() && !selectedCellHasNotes())
               }
               validateCell={validateCell}
@@ -236,6 +289,10 @@ const Sudoku = ({
               setIsZoomMode={setIsZoomMode}
               reset={reset}
               reveal={reveal}
+              // Killer sudoku props
+              isKillerMode={isKillerMode}
+              onConvertToKiller={handleConvertToKiller}
+              onBackToRegular={handleBackToRegular}
             />
           )}
         </div>

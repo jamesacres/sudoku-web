@@ -9,6 +9,8 @@ import {
   RefreshCw,
   Square,
   Unlock,
+  Zap,
+  ArrowLeft,
 } from 'react-feather';
 import NumberPad from '../NumberPad';
 import Toggle from '../Toggle';
@@ -35,6 +37,10 @@ interface Arguments {
   setIsZoomMode: (_value: boolean) => void;
   reset: () => void;
   reveal: () => void;
+  // Killer sudoku props
+  isKillerMode?: boolean;
+  onConvertToKiller?: () => void;
+  onBackToRegular?: () => void;
 }
 
 const SudokuControls = ({
@@ -56,6 +62,9 @@ const SudokuControls = ({
   setIsZoomMode,
   reset,
   reveal,
+  isKillerMode = false,
+  onConvertToKiller,
+  onBackToRegular,
 }: Arguments) => {
   return (
     <div className="mt-0 mb-4 px-2 pt-2 xl:max-w-lg">
@@ -182,6 +191,49 @@ const SudokuControls = ({
               </button>
             </div>
           </div>
+        </div>
+
+        {/* Killer Sudoku Mode Section */}
+        <div className="mt-3 border-t border-gray-200 pt-3 dark:border-gray-600">
+          {isKillerMode ? (
+            <div className="flex flex-col gap-2">
+              <div className="text-center">
+                <span className="inline-flex items-center gap-1 rounded-full bg-purple-600 px-3 py-2 text-sm font-bold text-white shadow-lg">
+                  <Zap size={16} />
+                  🔥 KILLER SUDOKU MODE 🔥
+                </span>
+                <p className="mt-2 text-sm font-medium text-purple-600 dark:text-purple-400">
+                  Your regular sudoku progress is saved separately
+                </p>
+              </div>
+              {onBackToRegular && (
+                <button
+                  onClick={onBackToRegular}
+                  className="flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-gray-100 px-3 py-2 text-sm font-medium text-gray-700 transition-all duration-150 hover:bg-gray-200 active:bg-gray-300 dark:bg-zinc-700 dark:text-gray-200 dark:hover:bg-zinc-600 dark:active:bg-zinc-500"
+                >
+                  <ArrowLeft size={15} />
+                  Back to Regular
+                </button>
+              )}
+            </div>
+          ) : (
+            <div className="text-center">
+              {onConvertToKiller && (
+                <div className="flex flex-col gap-2">
+                  <button
+                    onClick={onConvertToKiller}
+                    className="flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-purple-600 px-4 py-2 text-sm font-medium text-white transition-all duration-150 hover:bg-purple-700 active:bg-purple-800 dark:bg-purple-500 dark:hover:bg-purple-600 dark:active:bg-purple-700"
+                  >
+                    <Zap size={15} />
+                    Convert to Killer
+                  </button>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    Switch between modes anytime - progress is saved separately
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

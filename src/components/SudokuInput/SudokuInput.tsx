@@ -2,6 +2,8 @@ import React, { memo } from 'react';
 import SudokuInputNotes from '../SudokuInputNotes';
 import { Notes } from '@/types/notes';
 import { SelectNumber, SetSelectedCell } from '@/types/state';
+import { KillerCage, CellPosition } from '@/types/killer';
+import KillerCageComponent from '../KillerCage';
 
 interface Arguments {
   cellId: string;
@@ -14,6 +16,13 @@ interface Arguments {
   isMiniNotes: boolean;
   isZoomMode?: boolean;
   onDragStart?: (e: React.PointerEvent) => void;
+  // Killer sudoku props
+  killerCage?: KillerCage;
+  cellPosition?: CellPosition;
+  isCageTopLeft?: boolean;
+  isCageValid?: boolean;
+  isCageComplete?: boolean;
+  isKillerMode?: boolean;
 }
 
 const SudokuInput = ({
@@ -27,6 +36,12 @@ const SudokuInput = ({
   isMiniNotes,
   isZoomMode,
   onDragStart,
+  killerCage,
+  cellPosition,
+  isCageTopLeft = false,
+  isCageValid = true,
+  isCageComplete = false,
+  isKillerMode = false,
 }: Arguments) => {
   const isNotesMode = !(value && typeof value === 'number');
   const notes = isNotesMode && typeof value === 'object' ? value : {};
@@ -54,12 +69,8 @@ const SudokuInput = ({
     }
   };
 
-  return (
-    <div
-      data-cell-container-id={cellId}
-      onPointerDown={handlePointerDown}
-      className={`flex h-full w-full items-center justify-center border border-zinc-300 dark:border-zinc-400 ${backgroundClass}`}
-    >
+  const cellContent = (
+    <>
       {isNotesMode ? (
         <SudokuInputNotes
           isSelected={isSelected}
@@ -75,6 +86,42 @@ const SudokuInput = ({
           {!!value && value}
         </div>
       )}
+    </>
+  );
+
+  // Render with killer cage wrapper if in killer mode
+  if (isKillerMode && killerCage && cellPosition) {
+    return (
+      <div
+        data-cell-container-id={cellId}
+        onPointerDown={handlePointerDown}
+        className="h-full w-full"
+      >
+        <KillerCageComponent
+          cage={killerCage}
+          cellPosition={cellPosition}
+          isTopLeft={isCageTopLeft}
+          isValid={isCageValid}
+          isComplete={isCageComplete}
+        >
+          <div
+            className={`flex h-full w-full items-center justify-center ${backgroundClass}`}
+          >
+            {cellContent}
+          </div>
+        </KillerCageComponent>
+      </div>
+    );
+  }
+
+  // Regular sudoku rendering
+  return (
+    <div
+      data-cell-container-id={cellId}
+      onPointerDown={handlePointerDown}
+      className={`flex h-full w-full items-center justify-center border border-zinc-300 dark:border-zinc-400 ${backgroundClass}`}
+    >
+      {cellContent}
     </div>
   );
 };
