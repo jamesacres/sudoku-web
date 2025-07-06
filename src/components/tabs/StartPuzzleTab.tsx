@@ -42,17 +42,17 @@ export const StartPuzzleTab = ({
         🌱 Sudoku of the Day
       </h2>
       <p>
-        Challenge yourself daily with our Sudoku of the Day. Start on level 1,
+        Challenge yourself daily with our Sudoku of the Day. Start on tricky,
         work your way up and challenge your friends!
       </p>
-      <div className="mt-4 grid max-w-sm grid-cols-2 gap-3">
+      <div className="mt-4 grid max-w-sm grid-cols-3 gap-3">
         <button
           onClick={() => openSudokuOfTheDay(Difficulty.SIMPLE)}
           disabled={isLoading}
           className={`${isLoading ? 'cursor-wait' : 'cursor-pointer'} flex flex-col items-center justify-center rounded-full bg-gradient-to-b from-green-400 to-green-500 px-4 py-2 text-xl font-bold text-white shadow-md hover:from-green-500 hover:to-green-600 active:from-green-600 active:to-green-700 disabled:opacity-50`}
         >
           ✏️
-          <span className="mt-2 text-base font-medium">Level 1</span>
+          <span className="mt-2 text-base text-sm font-medium">Tricky</span>
         </button>
         <button
           onClick={() => openSudokuOfTheDay(Difficulty.EASY)}
@@ -60,7 +60,9 @@ export const StartPuzzleTab = ({
           className={`${isLoading ? 'cursor-wait' : 'cursor-pointer'} flex flex-col items-center justify-center rounded-full bg-gradient-to-b from-yellow-400 to-yellow-500 px-4 py-2 text-xl font-bold text-white shadow-md hover:from-yellow-500 hover:to-yellow-600 active:from-yellow-600 active:to-yellow-700 disabled:opacity-50`}
         >
           😎😎
-          <span className="mt-2 text-base font-medium">Level 2</span>
+          <span className="mt-2 text-base text-sm font-medium">
+            Challenging
+          </span>
         </button>
         <button
           onClick={() => openSudokuOfTheDay(Difficulty.INTERMEDIATE)}
@@ -68,15 +70,7 @@ export const StartPuzzleTab = ({
           className={`${isLoading ? 'cursor-wait' : 'cursor-pointer'} flex flex-col items-center justify-center rounded-full bg-gradient-to-b from-orange-400 to-orange-500 px-4 py-2 text-xl font-bold text-white shadow-md hover:from-orange-500 hover:to-orange-600 active:from-orange-600 active:to-orange-700 disabled:opacity-50`}
         >
           🌶️🌶️🌶️
-          <span className="mt-2 text-base font-medium">Level 3</span>
-        </button>
-        <button
-          onClick={() => openSudokuOfTheDay(Difficulty.EXPERT)}
-          disabled={isLoading}
-          className={`${isLoading ? 'cursor-wait' : 'cursor-pointer'} flex flex-col items-center justify-center rounded-full bg-gradient-to-b from-red-400 to-red-500 px-4 py-2 text-xl font-bold text-white shadow-md hover:from-red-500 hover:to-red-600 active:from-red-600 active:to-red-700 disabled:opacity-50`}
-        >
-          🔥🔥🔥🔥
-          <span className="mt-2 text-base font-medium">Level 4</span>
+          <span className="mt-2 text-base text-sm font-medium">Hard</span>
         </button>
       </div>
 
