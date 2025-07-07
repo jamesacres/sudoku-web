@@ -25,7 +25,7 @@ export const UserPanel = ({
 
   return (
     <>
-      <div className="overflow-hidden rounded-lg ring-1 shadow-lg ring-black/5">
+      <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black/5">
         <div className="bg-gray-50 p-4">
           <div className="flow-root rounded-md px-2 py-2">
             <div className="float-left mr-4">
