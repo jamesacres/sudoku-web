@@ -18,16 +18,16 @@
     "lint:fix": "next lint --fix"
   },
   "dependencies": {
-    "@capacitor/android": "^6.1.0",
-    "@capacitor/app": "^6.0.0",
-    "@capacitor/browser": "^6.0.5",
-    "@capacitor/core": "^6.1.0",
-    "@capacitor/ios": "^6.1.0",
-    "@capacitor/status-bar": "^6.0.0",
+    "@capacitor/android": "^7.0.0",
+    "@capacitor/app": "^7.0.0",
+    "@capacitor/browser": "^7.0.0",
+    "@capacitor/core": "^7.0.0",
+    "@capacitor/ios": "^7.0.0",
+    "@capacitor/status-bar": "^7.0.0",
     "@headlessui/react": "^1.7.19",
     "@tensorflow/tfjs": "^4.20.0",
     "@tensorflow/tfjs-backend-wasm": "^4.20.0",
-    "capacitor-secure-storage-plugin": "^0.10.0",
+    "capacitor-secure-storage-plugin": "^0.11.0",
     "mathjs": "^13.0.2",
     "next": "^14.1.0",
     "next-themes": "^0.2.1",
@@ -36,7 +36,7 @@
     "react-feather": "^2.0.10"
   },
   "devDependencies": {
-    "@capacitor/cli": "^6.1.0",
+    "@capacitor/cli": "^7.0.0",
     "@tailwindcss/postcss": "^4.0.0",
     "@types/node": "^20",
     "@types/react": "^18",
