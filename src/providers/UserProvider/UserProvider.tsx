@@ -1,5 +1,5 @@
 'use client';
-import { getCapacitorState, isCapacitor } from '@/helpers/capacitor';
+import { getCapacitorState, isCapacitor, isIOS } from '@/helpers/capacitor';
 import { isElectron, openBrowser } from '@/helpers/electron';
 import { pkce } from '@/helpers/pkce';
 import { UserProfile } from '@/types/userProfile';
@@ -28,6 +28,12 @@ const buildRedirectUri = () => {
     const scheme = 'com.bubblyclouds.sudoku';
     return `${scheme}://-/auth.html`;
   } else if (isCapacitor()) {
+    if (isIOS()) {
+      // iOS needs custom URL scheme to be able to redirect from our browser back
+      const scheme = 'com.bubblyclouds.sudoku';
+      return `${scheme}://-/auth`;
+    }
+    // Android can handle universal link
     // Universal deep link
     return `https://sudoku.bubblyclouds.com/auth`;
   }
@@ -46,7 +52,8 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   const router = useRouter();
 
   const iss = 'https://auth.bubblyclouds.com';
-  const clientId = isElectron() ? 'bubbly-sudoku-native' : 'bubbly-sudoku';
+  const clientId =
+    isElectron() || isIOS() ? 'bubbly-sudoku-native' : 'bubbly-sudoku';
 
   const loginRedirect = React.useCallback(async () => {
     console.info('loginRedirect..');
@@ -88,7 +95,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     if (isElectron()) {
       await openBrowser(url);
     } else if (isCapacitor()) {
-      await Browser.open({ url });
+      await Browser.open({ url, windowName: '_self' });
     } else {
       window.location.href = url;
     }

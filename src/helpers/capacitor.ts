@@ -8,6 +8,8 @@ export enum CapacitorSecureStorage {
 const isCapacitor = (): boolean =>
   ['android', 'ios'].includes(Capacitor.getPlatform());
 
+const isIOS = (): boolean => Capacitor.getPlatform() === 'ios';
+
 const saveCapacitorState = async (state: any) => {
   const value = JSON.stringify(state);
   await SecureStoragePlugin.set({ key: CapacitorSecureStorage.STATE, value });
@@ -20,4 +22,4 @@ const getCapacitorState = async (): Promise<string> => {
   return result.value;
 };
 
-export { isCapacitor, saveCapacitorState, getCapacitorState };
+export { isCapacitor, isIOS, saveCapacitorState, getCapacitorState };
