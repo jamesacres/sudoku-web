@@ -37,22 +37,20 @@ function useTimer({ puzzleId }: { puzzleId: string }) {
     });
   }, []);
 
-  const stopTimer = () => {
+  const stopTimer = useCallback(() => {
     if (interval) {
       clearInterval(interval);
     }
-    if (timer) {
-      setTimer((timer) => {
-        if (timer) {
-          return {
-            ...timer,
-            stopped: true,
-          };
-        }
-        return null;
-      });
-    }
-  };
+    setTimer((timer) => {
+      if (timer) {
+        return {
+          ...timer,
+          stopped: true,
+        };
+      }
+      return null;
+    });
+  }, [setTimer]);
 
   const updateTimer = useCallback(() => {
     const now = new Date().toISOString();

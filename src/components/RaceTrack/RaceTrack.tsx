@@ -3,10 +3,10 @@ import { Parties, Session } from '@/types/serverTypes';
 import { ServerState } from '@/types/state';
 import { calculateCompletionPercentage } from '@/helpers/calculateCompletionPercentage';
 import { useParties } from '@/hooks/useParties';
-import { useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import { getPlayerColor, getAllUserIds } from '@/utils/playerColors';
 
-interface RaceTrackProps {
+interface Arguments {
   sessionParties: Parties<Session<ServerState>>;
   initial: any;
   final: any;
@@ -29,7 +29,7 @@ const RaceTrack = ({
   answer,
   userId,
   onClick,
-}: RaceTrackProps) => {
+}: Arguments) => {
   const { getNicknameByUserId, parties } = useParties();
 
   // Get consistent ordering of all user IDs for color assignment
@@ -236,4 +236,9 @@ const RaceTrack = ({
   );
 };
 
-export default RaceTrack;
+// Prevent re-render on timer change
+const MemoisedRaceTrack = memo(function MemoisedRaceTrack(args: Arguments) {
+  return RaceTrack(args);
+});
+
+export default MemoisedRaceTrack;
