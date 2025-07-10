@@ -85,10 +85,10 @@ function useGameState({
     return { localValue, serverValuePromise };
   }, [getLocalValue, getServerValue]);
 
-  const shrinkAnswerStack = (answerStack: Puzzle[]): Puzzle[] => {
+  const shrinkAnswerStack = useCallback((answerStack: Puzzle[]): Puzzle[] => {
     // Only store the last 3 guesses on the server
     return answerStack.slice(-3);
-  };
+  }, []);
 
   const saveValue = useCallback(
     (
@@ -105,7 +105,7 @@ function useGameState({
       });
       return { localValue, serverValuePromise };
     },
-    [saveLocalValue, saveServerValue, timerRef]
+    [saveLocalValue, saveServerValue, timerRef, shrinkAnswerStack]
   );
 
   // Answers
@@ -462,13 +462,13 @@ function useGameState({
     showSidebar,
   ]);
 
-  const refreshSessionParties = async () => {
+  const refreshSessionParties = useCallback(async () => {
     const { serverValuePromise } = getValue() || {};
     const serverValue = await serverValuePromise;
     if (serverValue?.parties && Object.keys(serverValue?.parties).length) {
       setSessionParties(serverValue.parties);
     }
-  };
+  }, [getValue]);
 
   return {
     answer,

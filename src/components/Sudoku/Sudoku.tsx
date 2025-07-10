@@ -9,11 +9,19 @@ import { TimerDisplay } from '../TimerDisplay/TimerDisplay';
 import { calculateSeconds } from '@/helpers/calculateSeconds';
 import { Sidebar } from 'react-feather';
 import SudokuSidebar from '../SudokuSidebar/SudokuSidebar';
-import { useContext, useEffect, useRef, useState } from 'react';
+import {
+  memo,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { CelebrationAnimation } from '../CelebrationAnimation';
 import { RaceTrack } from '../RaceTrack';
 import { UserContext } from '@/providers/UserProvider';
 import { useDrag } from '@/hooks/useDrag';
+import MemoisedSidebarButton from '../SidebarButton/SidebarButton';
 
 const Sudoku = ({
   puzzle: { initial, final, puzzleId },
@@ -58,6 +66,13 @@ const Sudoku = ({
     initial,
     puzzleId,
   });
+  const friendsOnClick = useCallback(() => {
+    setShowSidebar((showSidebar) => !showSidebar);
+  }, [setShowSidebar]);
+  const raceTrackOnClick = useCallback(
+    () => setShowSidebar(true),
+    [setShowSidebar]
+  );
 
   // Reference to the grid for the celebration animation
   const gridRef = useRef<HTMLDivElement>(null);
@@ -122,15 +137,7 @@ const Sudoku = ({
               role="group"
               aria-label="Button group"
             >
-              <button
-                onClick={() => {
-                  setShowSidebar(!showSidebar);
-                }}
-                className="text-theme-primary dark:text-theme-primary-light cursor-pointer rounded-lg"
-              >
-                <Sidebar className="float-left mr-2" />
-                Friends
-              </button>
+              <MemoisedSidebarButton friendsOnClick={friendsOnClick} />
             </div>
             <div
               className={`grow text-right ${timer?.countdown || !!completed ? 'text-2xl' : ''}`}
@@ -201,7 +208,7 @@ const Sudoku = ({
               final={final}
               answer={answer}
               userId={user?.sub}
-              onClick={() => setShowSidebar(true)}
+              onClick={raceTrackOnClick}
             />
           )}
         </div>
