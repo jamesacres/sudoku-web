@@ -4,7 +4,7 @@ import { Sidebar } from 'react-feather';
 const MemoisedSidebarButton = memo(function MemoisedSidebarButton({
   friendsOnClick,
 }: {
-  friendsOnClick: MouseEventHandler<T>;
+  friendsOnClick: MouseEventHandler;
 }) {
   return (
     <button
