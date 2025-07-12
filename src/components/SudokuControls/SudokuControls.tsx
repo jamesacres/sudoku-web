@@ -1,4 +1,6 @@
 import {
+  ChevronDown,
+  ChevronUp,
   CornerUpLeft,
   CornerUpRight,
   Delete,
@@ -12,7 +14,7 @@ import {
 } from 'react-feather';
 import NumberPad from '../NumberPad';
 import Toggle from '../Toggle';
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
 import { HintBox } from '../HintBox/HintBox';
 
 interface Arguments {
@@ -35,6 +37,7 @@ interface Arguments {
   setIsZoomMode: (_value: boolean) => void;
   reset: () => void;
   reveal: () => void;
+  onAdvancedToggle?: (_expanded: boolean) => void;
 }
 
 const SudokuControls = ({
@@ -56,9 +59,18 @@ const SudokuControls = ({
   setIsZoomMode,
   reset,
   reveal,
+  onAdvancedToggle,
 }: Arguments) => {
+  const [showAdvanced, setShowAdvanced] = useState(false);
+
+  const handleAdvancedToggle = () => {
+    const newState = !showAdvanced;
+    setShowAdvanced(newState);
+    onAdvancedToggle?.(newState);
+  };
+
   return (
-    <div className="mt-0 mb-4 px-2 pt-2 xl:max-w-lg">
+    <div className="mt-0 mb-4 px-2 pt-2 lg:mb-16 xl:max-w-lg">
       <div className="hidden lg:block">
         <HintBox>
           Keyboard: arrow keys, undo, redo.
@@ -127,59 +139,83 @@ const SudokuControls = ({
                 Redo
                 <CornerUpRight size={15} />
               </button>
+            </div>
 
-              {/* Row 2: Reset, Check Cell, and Check Grid */}
+            {/* Advanced controls toggle */}
+            <div className="mt-2 lg:hidden">
               <button
-                onClick={() => {
-                  window.confirm(
-                    'Are you sure you wish to reset the whole grid?'
-                  ) && reset();
-                }}
-                className="flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-gray-100 px-2 py-2.5 text-sm font-medium text-gray-700 transition-all duration-150 hover:bg-gray-200 active:bg-gray-300 dark:bg-zinc-700 dark:text-gray-200 dark:hover:bg-zinc-600 dark:active:bg-zinc-500"
+                onClick={handleAdvancedToggle}
+                className="flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-gray-50 px-2 py-2 text-xs font-medium text-gray-600 transition-all duration-150 hover:bg-gray-100 dark:bg-zinc-800 dark:text-gray-400 dark:hover:bg-zinc-700"
               >
-                <RefreshCw size={15} />
-                Reset
+                {showAdvanced ? (
+                  <ChevronUp size={14} />
+                ) : (
+                  <ChevronDown size={14} />
+                )}
+                {showAdvanced ? 'Hide' : 'More'} Options
               </button>
-              <button
-                disabled={isValidateCellDisabled}
-                onClick={() => validateCell()}
-                className="flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-gray-100 px-2 py-2.5 text-sm font-medium text-gray-700 transition-all duration-150 hover:bg-gray-200 active:bg-gray-300 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 dark:bg-zinc-700 dark:text-gray-200 dark:hover:bg-zinc-600 dark:active:bg-zinc-500 dark:disabled:bg-zinc-800"
-              >
-                <Square size={15} />
-                Cell
-              </button>
-              <button
-                onClick={() => validateGrid()}
-                className="flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-gray-100 px-2 py-2.5 text-sm font-medium text-gray-700 transition-all duration-150 hover:bg-gray-200 active:bg-gray-300 dark:bg-zinc-700 dark:text-gray-200 dark:hover:bg-zinc-600 dark:active:bg-zinc-500"
-              >
-                <Grid size={15} />
-                Grid
-              </button>
+            </div>
 
-              {/* Row 3: Zoom Mode and Reveal */}
-              <button
-                disabled={!isZoomMode && isInputDisabled}
-                onClick={() => setIsZoomMode(!isZoomMode)}
-                className={`flex cursor-pointer items-center justify-center gap-1.5 rounded-lg px-2 py-2.5 text-sm font-medium transition-all duration-150 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 dark:disabled:bg-zinc-800 ${
-                  isZoomMode
-                    ? 'bg-theme-primary hover:bg-theme-primary-dark active:bg-theme-primary-darker dark:bg-theme-primary-light dark:hover:bg-theme-primary dark:active:bg-theme-primary-dark text-white dark:text-gray-900'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200 active:bg-gray-300 dark:bg-zinc-700 dark:text-gray-200 dark:hover:bg-zinc-600 dark:active:bg-zinc-500'
-                }`}
-              >
-                <Eye size={15} />
-                Zoom
-              </button>
-              <button
-                onClick={() => {
-                  window.confirm(
-                    'Are you sure you wish to reveal the whole grid?'
-                  ) && reveal();
-                }}
-                className="col-span-2 flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-gray-100 px-2 py-2.5 text-sm font-medium text-gray-700 transition-all duration-150 hover:bg-gray-200 active:bg-gray-300 dark:bg-zinc-700 dark:text-gray-200 dark:hover:bg-zinc-600 dark:active:bg-zinc-500"
-              >
-                <Unlock size={15} />
-                Reveal
-              </button>
+            {/* Collapsible advanced controls */}
+            <div
+              className={`mt-2 transition-all duration-200 lg:block ${
+                showAdvanced ? 'block' : 'hidden lg:block'
+              }`}
+            >
+              <div className="mb-2 grid grid-cols-3 gap-2">
+                {/* Check Cell, Check Grid, Zoom Mode */}
+                <button
+                  disabled={isValidateCellDisabled}
+                  onClick={() => validateCell()}
+                  className="flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-gray-100 px-2 py-2.5 text-sm font-medium text-gray-700 transition-all duration-150 hover:bg-gray-200 active:bg-gray-300 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 dark:bg-zinc-700 dark:text-gray-200 dark:hover:bg-zinc-600 dark:active:bg-zinc-500 dark:disabled:bg-zinc-800"
+                >
+                  <Square size={15} />
+                  Cell
+                </button>
+                <button
+                  onClick={() => validateGrid()}
+                  className="flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-gray-100 px-2 py-2.5 text-sm font-medium text-gray-700 transition-all duration-150 hover:bg-gray-200 active:bg-gray-300 dark:bg-zinc-700 dark:text-gray-200 dark:hover:bg-zinc-600 dark:active:bg-zinc-500"
+                >
+                  <Grid size={15} />
+                  Grid
+                </button>
+                <button
+                  disabled={!isZoomMode && isInputDisabled}
+                  onClick={() => setIsZoomMode(!isZoomMode)}
+                  className={`flex cursor-pointer items-center justify-center gap-1.5 rounded-lg px-2 py-2.5 text-sm font-medium transition-all duration-150 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 dark:disabled:bg-zinc-800 ${
+                    isZoomMode
+                      ? 'bg-theme-primary hover:bg-theme-primary-dark active:bg-theme-primary-darker dark:bg-theme-primary-light dark:hover:bg-theme-primary dark:active:bg-theme-primary-dark text-white dark:text-gray-900'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 active:bg-gray-300 dark:bg-zinc-700 dark:text-gray-200 dark:hover:bg-zinc-600 dark:active:bg-zinc-500'
+                  }`}
+                >
+                  <Eye size={15} />
+                  Zoom
+                </button>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={() => {
+                    window.confirm(
+                      'Are you sure you wish to reset the whole grid?'
+                    ) && reset();
+                  }}
+                  className="flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-gray-100 px-2 py-2.5 text-sm font-medium text-gray-700 transition-all duration-150 hover:bg-gray-200 active:bg-gray-300 dark:bg-zinc-700 dark:text-gray-200 dark:hover:bg-zinc-600 dark:active:bg-zinc-500"
+                >
+                  <RefreshCw size={15} />
+                  Reset
+                </button>
+                <button
+                  onClick={() => {
+                    window.confirm(
+                      'Are you sure you wish to reveal the whole grid?'
+                    ) && reveal();
+                  }}
+                  className="flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-gray-100 px-2 py-2.5 text-sm font-medium text-gray-700 transition-all duration-150 hover:bg-gray-200 active:bg-gray-300 dark:bg-zinc-700 dark:text-gray-200 dark:hover:bg-zinc-600 dark:active:bg-zinc-500"
+                >
+                  <Unlock size={15} />
+                  Reveal
+                </button>
+              </div>
             </div>
           </div>
         </div>

@@ -94,7 +94,7 @@ const RaceTrack = ({
   }, [sessionParties, initial, final, answer, userId, getNicknameByUserId]);
 
   return (
-    <div className="mx-auto mt-4 mb-0 max-w-xl lg:mr-0">
+    <div className="mx-auto mt-2 mb-2 max-w-xl lg:mt-4 lg:mr-0">
       {/* Compact race track design */}
       <div
         className="relative cursor-pointer"
@@ -102,7 +102,7 @@ const RaceTrack = ({
         title="Click to view friends"
       >
         {/* Main track */}
-        <div className="relative h-14 overflow-visible rounded-lg bg-stone-100 dark:bg-gray-800">
+        <div className="relative h-10 overflow-visible rounded-lg bg-stone-100 lg:h-14 dark:bg-gray-800">
           {/* Track surface with center line */}
           <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-stone-200 via-stone-100 to-stone-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
             {/* Dashed center line */}
@@ -160,11 +160,11 @@ const RaceTrack = ({
               player.isCurrentUser
             );
 
-            // Calculate vertical spacing within the smaller track
-            const trackHeight = 56; // h-14 = 56px
+            // Calculate vertical spacing within the track (responsive)
+            const trackHeight = window.innerWidth >= 1024 ? 56 : 40; // h-14 = 56px, h-10 = 40px
             const totalPlayers = allPlayerProgress.length;
-            const playerHeight = Math.min(10, trackHeight / totalPlayers);
-            const verticalOffset = index * playerHeight + 4;
+            const playerHeight = Math.min(8, trackHeight / totalPlayers);
+            const verticalOffset = index * playerHeight + 2;
 
             return (
               <div
