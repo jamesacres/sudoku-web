@@ -208,7 +208,7 @@ const Sudoku = ({
         {/* Sticky controls for mobile, regular positioning for desktop */}
         <div className="lg:container lg:mx-auto lg:basis-3/5">
           {!completed && (
-            <div className="fixed inset-x-0 bottom-0 z-10 border-t border-gray-200 bg-white/95 backdrop-blur-md lg:relative lg:border-none lg:bg-transparent lg:backdrop-blur-none dark:border-gray-700 dark:bg-zinc-900/95 lg:dark:bg-transparent">
+            <div className="fixed inset-x-0 bottom-0 z-10 lg:relative">
               <SudokuControls
                 isInputDisabled={
                   !selectedCell || isInitialCell(selectedCell, initial)
