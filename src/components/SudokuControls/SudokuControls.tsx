@@ -82,7 +82,7 @@ const SudokuControls = ({
       </div>
 
       {/* iOS-style control panel */}
-      <div className="mt-0 rounded-t-xl bg-white/60 p-3 shadow-lg backdrop-blur-md dark:bg-zinc-900/60">
+      <div className="pb-safe mt-0 rounded-t-xl bg-white/60 p-3 shadow-lg backdrop-blur-md dark:bg-zinc-900/60">
         {/* Toggle controls section */}
         <div className="mb-0 flex justify-center gap-4 border-b border-gray-200 pb-3 lg:mb-3 dark:border-gray-600">
           <div className="flex items-center gap-3">
