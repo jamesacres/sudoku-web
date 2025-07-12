@@ -124,26 +124,27 @@ const Sudoku = ({
 
       <div className="flex flex-col items-center lg:flex-row">
         <div className="container mx-auto px-4 pb-4 lg:pb-0">
-          <div className="mr-auto ml-auto flex max-w-xl px-4 pb-1 lg:mr-0">
-            <div
-              className="flex-nowrap items-center xl:hidden"
-              role="group"
-              aria-label="Button group"
-            >
-              <MemoisedSidebarButton friendsOnClick={friendsOnClick} />
-            </div>
-            <div
-              className={`grow text-right ${timer?.countdown || !!completed ? 'text-2xl' : ''}`}
-            >
-              <TimerDisplay
-                seconds={calculateSeconds(timer)}
-                countdown={timer?.countdown}
-                isComplete={!!completed}
-              />
-            </div>
-          </div>
           <div className="flex h-[calc(58dvh)] flex-col">
             <div className="mt-auto">
+              <div className="mr-auto ml-auto flex max-w-xl px-4 pb-1 lg:mr-0">
+                <div
+                  className="flex-nowrap items-center xl:hidden"
+                  role="group"
+                  aria-label="Button group"
+                >
+                  <MemoisedSidebarButton friendsOnClick={friendsOnClick} />
+                </div>
+                <div
+                  className={`grow text-right ${timer?.countdown || !!completed ? 'text-2xl' : ''}`}
+                >
+                  <TimerDisplay
+                    seconds={calculateSeconds(timer)}
+                    countdown={timer?.countdown}
+                    isComplete={!!completed}
+                  />
+                </div>
+              </div>
+
               <div className="relative overflow-visible lg:overflow-hidden">
                 <div
                   ref={gridRef}
