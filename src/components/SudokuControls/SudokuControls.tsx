@@ -158,8 +158,10 @@ const SudokuControls = ({
 
             {/* Collapsible advanced controls */}
             <div
-              className={`mt-2 transition-all duration-200 lg:block ${
-                showAdvanced ? 'block' : 'hidden lg:block'
+              className={`mt-2 overflow-hidden transition-all duration-300 ease-in-out lg:block ${
+                showAdvanced
+                  ? 'max-h-96 opacity-100'
+                  : 'max-h-0 opacity-0 lg:max-h-96 lg:opacity-100'
               }`}
             >
               <div className="mb-2 grid grid-cols-3 gap-2">
