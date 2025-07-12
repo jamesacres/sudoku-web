@@ -70,7 +70,7 @@ const SudokuControls = ({
   };
 
   return (
-    <div className="mt-0 mb-4 px-2 pt-2 lg:mb-16 xl:max-w-lg">
+    <div className="mt-0 mb-0 px-2 pt-2 lg:mb-16 xl:max-w-lg">
       <div className="hidden lg:block">
         <HintBox>
           Keyboard: arrow keys, undo, redo.
@@ -82,9 +82,9 @@ const SudokuControls = ({
       </div>
 
       {/* iOS-style control panel */}
-      <div className="mt-3 rounded-xl border border-stone-200 bg-stone-50/80 p-3 shadow-lg backdrop-blur-md dark:border-gray-700 dark:bg-zinc-800/80">
+      <div className="pb-safe mt-0 rounded-t-xl bg-white/60 p-3 shadow-lg backdrop-blur-md dark:bg-zinc-900/60">
         {/* Toggle controls section */}
-        <div className="mb-3 flex justify-center gap-4 border-b border-gray-200 pb-3 dark:border-gray-600">
+        <div className="mb-0 flex justify-center gap-4 border-b border-gray-200 pb-3 lg:mb-3 dark:border-gray-600">
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1 text-xs font-medium text-gray-700 dark:text-gray-300">
               {isNotesMode ? <Edit size={14} /> : <Edit2 size={14} />}
@@ -102,7 +102,7 @@ const SudokuControls = ({
         </div>
 
         {/* Main controls layout */}
-        <div className="flex flex-col items-center gap-3 lg:flex-row">
+        <div className="flex flex-col items-center gap-2 lg:flex-row">
           {/* Number pad */}
           <div className="order-1 flex-shrink-0 lg:order-1">
             <NumberPad
@@ -145,7 +145,7 @@ const SudokuControls = ({
             <div className="mt-2 lg:hidden">
               <button
                 onClick={handleAdvancedToggle}
-                className="flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-gray-50 px-2 py-2 text-xs font-medium text-gray-600 transition-all duration-150 hover:bg-gray-100 dark:bg-zinc-800 dark:text-gray-400 dark:hover:bg-zinc-700"
+                className="flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 transition-all duration-150 hover:bg-gray-100 dark:bg-zinc-800 dark:text-gray-400 dark:hover:bg-zinc-700"
               >
                 {showAdvanced ? (
                   <ChevronUp size={14} />
@@ -158,8 +158,10 @@ const SudokuControls = ({
 
             {/* Collapsible advanced controls */}
             <div
-              className={`mt-2 transition-all duration-200 lg:block ${
-                showAdvanced ? 'block' : 'hidden lg:block'
+              className={`mt-2 overflow-hidden transition-all duration-300 ease-in-out lg:block ${
+                showAdvanced
+                  ? 'max-h-96 opacity-100'
+                  : 'max-h-0 opacity-0 lg:max-h-96 lg:opacity-100'
               }`}
             >
               <div className="mb-2 grid grid-cols-3 gap-2">

@@ -94,7 +94,7 @@ const RaceTrack = ({
   }, [sessionParties, initial, final, answer, userId, getNicknameByUserId]);
 
   return (
-    <div className="mx-auto mt-2 mb-2 max-w-xl lg:mt-4 lg:mr-0">
+    <div className="mx-auto mt-2 mb-2 w-full max-w-xl lg:mt-4 lg:mr-0">
       {/* Compact race track design */}
       <div
         className="relative cursor-pointer"

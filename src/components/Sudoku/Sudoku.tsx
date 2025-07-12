@@ -107,7 +107,9 @@ const Sudoku = ({
   }, [showSidebar, setPauseTimer]);
 
   return (
-    <div className={`${showAdvancedControls ? 'pb-90' : 'pb-70'} lg:pb-0`}>
+    <div
+      className={`${showAdvancedControls ? 'pb-90' : 'pb-70'} lg:pb-0 landscape:pb-[calc(130vh)]`}
+    >
       <SudokuSidebar
         showSidebar={showSidebar}
         setShowSidebar={setShowSidebar}
@@ -124,91 +126,100 @@ const Sudoku = ({
 
       <div className="flex flex-col items-center lg:flex-row">
         <div className="container mx-auto px-4 pb-4 lg:pb-0">
-          <div className="mr-auto ml-auto flex max-w-xl px-4 py-2 lg:mr-0">
-            <div
-              className="flex-nowrap items-center xl:hidden"
-              role="group"
-              aria-label="Button group"
-            >
-              <MemoisedSidebarButton friendsOnClick={friendsOnClick} />
-            </div>
-            <div
-              className={`grow text-right ${timer?.countdown || !!completed ? 'text-2xl' : ''}`}
-            >
-              <TimerDisplay
-                seconds={calculateSeconds(timer)}
-                countdown={timer?.countdown}
-                isComplete={!!completed}
-              />
-            </div>
-          </div>
-          <div className="relative overflow-visible lg:overflow-hidden">
-            <div
-              ref={gridRef}
-              className={`border-theme-primary dark:border-theme-primary-light relative mr-auto ml-auto grid max-w-xl grid-cols-3 grid-rows-3 border border-2 bg-zinc-50 lg:mr-0 dark:bg-zinc-900 ${
-                dragStarted
-                  ? 'cursor-grabbing'
-                  : isZoomMode && selectedCell
-                    ? 'cursor-grab'
-                    : ''
-              } ${dragStarted ? '' : 'transition-all duration-300'}`}
-              style={{
-                transform:
-                  isZoomMode && selectedCell
-                    ? `scale(1.5) translate(${dragOffset.x}px, ${dragOffset.y}px)`
-                    : 'scale(1)',
-                transformOrigin: zoomOrigin,
-                touchAction: isZoomMode ? 'none' : 'auto',
-              }}
-            >
-              {Array.from(Array(3)).map((_, y) =>
-                Array.from(Array(3)).map((_, x) => {
-                  const boxId = calculateBoxId(x, y);
-                  return (
-                    <SudokuBox
-                      key={boxId}
-                      boxId={boxId}
-                      selectedCell={selectedCell}
-                      setSelectedCell={setSelectedCell}
-                      answer={
-                        answer[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]
-                      }
-                      selectNumber={selectNumber}
-                      validation={
-                        validation &&
-                        validation[x as PuzzleRowOrColumn][
-                          y as PuzzleRowOrColumn
-                        ]
-                      }
-                      initial={
-                        initial[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]
-                      }
-                      isMiniNotes={isMiniNotes}
-                      isZoomMode={isZoomMode}
-                      onDragStart={handleDragStart}
-                    />
-                  );
-                })
+          <div className="flex h-[calc(58dvh)] flex-col">
+            <div className="mt-auto">
+              <div className="mr-auto ml-auto flex max-w-xl px-4 pb-1 lg:mr-0">
+                <div
+                  className="flex-nowrap items-center xl:hidden"
+                  role="group"
+                  aria-label="Button group"
+                >
+                  <MemoisedSidebarButton friendsOnClick={friendsOnClick} />
+                </div>
+                <div
+                  className={`grow text-right ${timer?.countdown || !!completed ? 'text-2xl' : ''}`}
+                >
+                  <TimerDisplay
+                    seconds={calculateSeconds(timer)}
+                    countdown={timer?.countdown}
+                    isComplete={!!completed}
+                  />
+                </div>
+              </div>
+
+              <div className="relative overflow-visible lg:overflow-hidden">
+                <div
+                  ref={gridRef}
+                  className={`border-theme-primary dark:border-theme-primary-light relative mr-auto ml-auto grid grid-cols-3 grid-rows-3 border border-2 bg-zinc-50 lg:mr-0 lg:max-h-full lg:max-w-xl portrait:max-h-[calc(50dvh)] portrait:max-w-[calc(50dvh)] landscape:max-w-[calc(100dvh)] dark:bg-zinc-900 ${
+                    dragStarted
+                      ? 'cursor-grabbing'
+                      : isZoomMode && selectedCell
+                        ? 'cursor-grab'
+                        : ''
+                  } ${dragStarted ? '' : 'transition-all duration-300'}`}
+                  style={{
+                    transform:
+                      isZoomMode && selectedCell
+                        ? `scale(1.5) translate(${dragOffset.x}px, ${dragOffset.y}px)`
+                        : 'scale(1)',
+                    transformOrigin: zoomOrigin,
+                    touchAction: isZoomMode ? 'none' : 'auto',
+                  }}
+                >
+                  {Array.from(Array(3)).map((_, y) =>
+                    Array.from(Array(3)).map((_, x) => {
+                      const boxId = calculateBoxId(x, y);
+                      return (
+                        <SudokuBox
+                          key={boxId}
+                          boxId={boxId}
+                          selectedCell={selectedCell}
+                          setSelectedCell={setSelectedCell}
+                          answer={
+                            answer[x as PuzzleRowOrColumn][
+                              y as PuzzleRowOrColumn
+                            ]
+                          }
+                          selectNumber={selectNumber}
+                          validation={
+                            validation &&
+                            validation[x as PuzzleRowOrColumn][
+                              y as PuzzleRowOrColumn
+                            ]
+                          }
+                          initial={
+                            initial[x as PuzzleRowOrColumn][
+                              y as PuzzleRowOrColumn
+                            ]
+                          }
+                          isMiniNotes={isMiniNotes}
+                          isZoomMode={isZoomMode}
+                          onDragStart={handleDragStart}
+                        />
+                      );
+                    })
+                  )}
+                </div>
+              </div>
+
+              {/* Race Track Progress */}
+              {!completed && (
+                <RaceTrack
+                  sessionParties={sessionParties}
+                  initial={initial}
+                  final={final}
+                  answer={answer}
+                  userId={user?.sub}
+                  onClick={raceTrackOnClick}
+                />
               )}
             </div>
           </div>
-
-          {/* Race Track Progress */}
-          {!completed && (
-            <RaceTrack
-              sessionParties={sessionParties}
-              initial={initial}
-              final={final}
-              answer={answer}
-              userId={user?.sub}
-              onClick={raceTrackOnClick}
-            />
-          )}
         </div>
         {/* Sticky controls for mobile, regular positioning for desktop */}
         <div className="lg:container lg:mx-auto lg:basis-3/5">
           {!completed && (
-            <div className="fixed inset-x-0 bottom-0 z-10 border-t border-gray-200 bg-white/95 backdrop-blur-md lg:relative lg:border-none lg:bg-transparent lg:backdrop-blur-none dark:border-gray-700 dark:bg-zinc-900/95 lg:dark:bg-transparent">
+            <div className="fixed inset-x-0 bottom-0 z-10 lg:relative">
               <SudokuControls
                 isInputDisabled={
                   !selectedCell || isInitialCell(selectedCell, initial)
