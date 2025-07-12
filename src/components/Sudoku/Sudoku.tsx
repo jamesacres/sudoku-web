@@ -7,16 +7,8 @@ import SudokuControls from '../SudokuControls';
 import { useGameState } from '@/hooks/gameState';
 import { TimerDisplay } from '../TimerDisplay/TimerDisplay';
 import { calculateSeconds } from '@/helpers/calculateSeconds';
-import { Sidebar } from 'react-feather';
 import SudokuSidebar from '../SudokuSidebar/SudokuSidebar';
-import {
-  memo,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { CelebrationAnimation } from '../CelebrationAnimation';
 import { RaceTrack } from '../RaceTrack';
 import { UserContext } from '@/providers/UserProvider';
@@ -79,6 +71,7 @@ const Sudoku = ({
 
   // State to track if animation should be shown
   const [showAnimation, setShowAnimation] = useState(false);
+  const [showAdvancedControls, setShowAdvancedControls] = useState(false);
 
   // Show animation when the puzzle is completed
   useEffect(() => {
@@ -114,7 +107,7 @@ const Sudoku = ({
   }, [showSidebar, setPauseTimer]);
 
   return (
-    <div>
+    <div className={`${showAdvancedControls ? 'pb-90' : 'pb-70'} lg:pb-0`}>
       <SudokuSidebar
         showSidebar={showSidebar}
         setShowSidebar={setShowSidebar}
@@ -130,7 +123,7 @@ const Sudoku = ({
       )}
 
       <div className="flex flex-col items-center lg:flex-row">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 pb-4 lg:pb-0">
           <div className="mr-auto ml-auto flex max-w-xl px-4 py-2 lg:mr-0">
             <div
               className="flex-nowrap items-center xl:hidden"
@@ -149,7 +142,7 @@ const Sudoku = ({
               />
             </div>
           </div>
-          <div className="relative overflow-hidden">
+          <div className="relative overflow-visible lg:overflow-hidden">
             <div
               ref={gridRef}
               className={`border-theme-primary dark:border-theme-primary-light relative mr-auto ml-auto grid max-w-xl grid-cols-3 grid-rows-3 border border-2 bg-zinc-50 lg:mr-0 dark:bg-zinc-900 ${
@@ -212,38 +205,42 @@ const Sudoku = ({
             />
           )}
         </div>
-        <div className="container mx-auto basis-3/5">
+        {/* Sticky controls for mobile, regular positioning for desktop */}
+        <div className="lg:container lg:mx-auto lg:basis-3/5">
           {!completed && (
-            <SudokuControls
-              isInputDisabled={
-                !selectedCell || isInitialCell(selectedCell, initial)
-              }
-              isValidateCellDisabled={
-                !selectedCell ||
-                isInitialCell(selectedCell, initial) ||
-                !selectedAnswer()
-              }
-              isDeleteDisabled={
-                !selectedCell ||
-                isInitialCell(selectedCell, initial) ||
-                (!selectedAnswer() && !selectedCellHasNotes())
-              }
-              validateCell={validateCell}
-              validateGrid={validateGrid}
-              isUndoDisabled={isUndoDisabled}
-              isRedoDisabled={isRedoDisabled}
-              undo={undo}
-              redo={redo}
-              selectNumber={selectNumber}
-              isNotesMode={isNotesMode}
-              setIsNotesMode={setIsNotesMode}
-              isMiniNotes={isMiniNotes}
-              setIsMiniNotes={setIsMiniNotes}
-              isZoomMode={isZoomMode}
-              setIsZoomMode={setIsZoomMode}
-              reset={reset}
-              reveal={reveal}
-            />
+            <div className="fixed inset-x-0 bottom-0 z-10 border-t border-gray-200 bg-white/95 backdrop-blur-md lg:relative lg:border-none lg:bg-transparent lg:backdrop-blur-none dark:border-gray-700 dark:bg-zinc-900/95 lg:dark:bg-transparent">
+              <SudokuControls
+                isInputDisabled={
+                  !selectedCell || isInitialCell(selectedCell, initial)
+                }
+                isValidateCellDisabled={
+                  !selectedCell ||
+                  isInitialCell(selectedCell, initial) ||
+                  !selectedAnswer()
+                }
+                isDeleteDisabled={
+                  !selectedCell ||
+                  isInitialCell(selectedCell, initial) ||
+                  (!selectedAnswer() && !selectedCellHasNotes())
+                }
+                validateCell={validateCell}
+                validateGrid={validateGrid}
+                isUndoDisabled={isUndoDisabled}
+                isRedoDisabled={isRedoDisabled}
+                undo={undo}
+                redo={redo}
+                selectNumber={selectNumber}
+                isNotesMode={isNotesMode}
+                setIsNotesMode={setIsNotesMode}
+                isMiniNotes={isMiniNotes}
+                setIsMiniNotes={setIsMiniNotes}
+                isZoomMode={isZoomMode}
+                setIsZoomMode={setIsZoomMode}
+                reset={reset}
+                reveal={reveal}
+                onAdvancedToggle={setShowAdvancedControls}
+              />
+            </div>
           )}
         </div>
       </div>
