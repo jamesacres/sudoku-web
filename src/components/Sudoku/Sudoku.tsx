@@ -107,7 +107,9 @@ const Sudoku = ({
   }, [showSidebar, setPauseTimer]);
 
   return (
-    <div className={`${showAdvancedControls ? 'pb-90' : 'pb-70'} lg:pb-0`}>
+    <div
+      className={`${showAdvancedControls ? 'pb-90' : 'pb-70'} lg:pb-0 landscape:pb-[calc(130vh)]`}
+    >
       <SudokuSidebar
         showSidebar={showSidebar}
         setShowSidebar={setShowSidebar}
@@ -148,7 +150,7 @@ const Sudoku = ({
               <div className="relative overflow-visible lg:overflow-hidden">
                 <div
                   ref={gridRef}
-                  className={`border-theme-primary dark:border-theme-primary-light relative mr-auto ml-auto grid max-h-[calc(50dvh)] max-w-[calc(50dvh)] grid-cols-3 grid-rows-3 border border-2 bg-zinc-50 lg:mr-0 lg:max-h-full lg:max-w-xl dark:bg-zinc-900 ${
+                  className={`border-theme-primary dark:border-theme-primary-light relative mr-auto ml-auto grid grid-cols-3 grid-rows-3 border border-2 bg-zinc-50 lg:mr-0 lg:max-h-full lg:max-w-xl portrait:max-h-[calc(50dvh)] portrait:max-w-[calc(50dvh)] landscape:max-w-[calc(100dvh)] dark:bg-zinc-900 ${
                     dragStarted
                       ? 'cursor-grabbing'
                       : isZoomMode && selectedCell
