@@ -17,7 +17,7 @@ const Header = () => {
         </div>
         <div className="block flex grow items-center">
           <div className="grow text-center font-medium">
-            <span className="text-lg">Sudoku</span>
+            <span className="text-lg">Sudoku Share</span>
           </div>
           <div className="flex h-12 items-center">
             <HeaderUser />
