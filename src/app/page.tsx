@@ -218,7 +218,9 @@ export default function Home() {
   return (
     <>
       <div className="container mx-auto px-6">
-        <ActivityWidget sessions={sessions} />
+        <div className="flex justify-center">
+          <ActivityWidget sessions={sessions} />
+        </div>
         {tab === Tab.START_PUZZLE && (
           <StartPuzzleTab
             isOnline={isOnline}
