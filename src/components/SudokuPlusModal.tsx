@@ -211,7 +211,7 @@ const SudokuPlusModal = () => {
         <div className="flex-shrink-0 rounded-b-2xl border-t-2 border-gray-300/70 bg-white/95 shadow-[0_-16px_32px_-4px_rgba(0,0,0,0.4)] backdrop-blur-xl dark:border-gray-600/70 dark:bg-gray-900/95">
           <div className="space-y-3 px-6 py-4">
             <button
-              className="w-full rounded-xl bg-blue-500 py-4 font-semibold text-white transition-colors hover:bg-blue-600 active:bg-blue-700"
+              className="w-full cursor-pointer rounded-xl bg-blue-500 py-4 font-semibold text-white transition-colors hover:bg-blue-600 active:bg-blue-700"
               onClick={() => {
                 if (
                   selectedPlan &&
