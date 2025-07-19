@@ -55,35 +55,35 @@ const ActivityWidget = ({ sessions }: ActivityWidgetProps) => {
   const { daysPlayedInThirtyDays, currentStreak } = calculateActivityStats();
 
   return (
-    <div className="mb-6 rounded-2xl border border-stone-200 bg-gradient-to-br from-stone-50/80 to-stone-100/80 p-6 shadow-sm backdrop-blur-sm dark:border-gray-700 dark:from-zinc-800/80 dark:to-zinc-900/80">
-      <h2 className="mb-4 text-xl font-bold text-gray-800 dark:text-white">
+    <div className="mb-3 w-fit rounded-xl border border-stone-200 bg-gradient-to-br from-stone-50/80 to-stone-100/80 p-3 shadow-sm backdrop-blur-sm dark:border-gray-700 dark:from-zinc-800/80 dark:to-zinc-900/80">
+      <h2 className="mb-2 text-lg font-bold text-gray-800 dark:text-white">
         Activity Stats
       </h2>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div className="flex items-center space-x-3">
-          <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/50">
-            <Calendar className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+      <div className="flex gap-6">
+        <div className="flex items-center space-x-2">
+          <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/50">
+            <Calendar className="h-4 w-4 text-blue-600 dark:text-blue-400" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-gray-800 dark:text-white">
+            <p className="text-lg font-bold text-gray-800 dark:text-white">
               {daysPlayedInThirtyDays}
             </p>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-xs text-gray-600 dark:text-gray-400">
               Days played in past 30 days
             </p>
           </div>
         </div>
 
-        <div className="flex items-center space-x-3">
-          <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900/50">
-            <Activity className="h-6 w-6 text-orange-600 dark:text-orange-400" />
+        <div className="flex items-center space-x-2">
+          <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900/50">
+            <Activity className="h-4 w-4 text-orange-600 dark:text-orange-400" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-gray-800 dark:text-white">
+            <p className="text-lg font-bold text-gray-800 dark:text-white">
               {currentStreak}
             </p>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-xs text-gray-600 dark:text-gray-400">
               Day streak
             </p>
           </div>

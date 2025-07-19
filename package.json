@@ -15,7 +15,8 @@
     "start:android": "npm run build:capacitor && npx cap run android",
     "start:ios": "npm run build:capacitor && npx cap run ios",
     "lint": "next lint",
-    "lint:fix": "next lint --fix"
+    "lint:fix": "next lint --fix",
+    "generate:icons": "npx @capacitor/assets generate --iconBackgroundColor '#eeeeee' --iconBackgroundColorDark '#222222' --splashBackgroundColor '#eeeeee' --splashBackgroundColorDark '#111111'"
   },
   "dependencies": {
     "@capacitor/android": "^7.0.0",
@@ -38,6 +39,7 @@
     "react-feather": "^2.0.10"
   },
   "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
     "@capacitor/cli": "^7.0.0",
     "@tailwindcss/postcss": "^4.0.0",
     "@types/node": "^20",

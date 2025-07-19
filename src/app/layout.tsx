@@ -17,8 +17,46 @@ if (Capacitor.getPlatform() === 'android') {
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Sudoku',
-  description: 'Play Sudoku',
+  title: 'Sudoku Share',
+  description:
+    'Play, scan & share sudoku with friends. Daily challenges & cross-device sync!',
+  icons: [
+    {
+      url: '/icons/icon-48.webp',
+      type: 'image/png',
+      sizes: '48x48',
+    },
+    {
+      url: '/icons/icon-72.webp',
+      type: 'image/png',
+      sizes: '72x72',
+    },
+    {
+      url: '/icons/icon-96.webp',
+      type: 'image/png',
+      sizes: '96x96',
+    },
+    {
+      url: '/icons/icon-128.webp',
+      type: 'image/png',
+      sizes: '128x128',
+    },
+    {
+      url: '/icons/icon-192.webp',
+      type: 'image/png',
+      sizes: '192x192',
+    },
+    {
+      url: '/icons/icon-256.webp',
+      type: 'image/png',
+      sizes: '256x256',
+    },
+    {
+      url: '/icons/icon-512.webp',
+      type: 'image/png',
+      sizes: '512x512',
+    },
+  ],
 };
 
 export const viewport: Viewport = {
