@@ -20,7 +20,7 @@ interface RevenueCatContextInterface {
   isLoading: boolean;
   isSubscribed: boolean;
   packages: (WebPackage | CapacitorPackage)[];
-  purchasePackage: (pkg: WebPackage) => Promise<void>;
+  purchasePackage: (pkg: WebPackage | CapacitorPackage) => Promise<void>;
   restorePurchases: () => Promise<void>;
 }
 
