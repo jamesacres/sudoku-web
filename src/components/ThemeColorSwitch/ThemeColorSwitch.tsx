@@ -16,6 +16,18 @@ const ThemeColorSwitch = () => {
     { name: 'cyan', bg: 'bg-cyan-500', hover: 'hover:bg-cyan-600' },
     { name: 'pink', bg: 'bg-pink-500', hover: 'hover:bg-pink-600' },
     { name: 'indigo', bg: 'bg-indigo-500', hover: 'hover:bg-indigo-600' },
+    { name: 'orange', bg: 'bg-orange-500', hover: 'hover:bg-orange-600' },
+    { name: 'teal', bg: 'bg-teal-500', hover: 'hover:bg-teal-600' },
+    { name: 'slate', bg: 'bg-slate-500', hover: 'hover:bg-slate-600' },
+    { name: 'rose', bg: 'bg-rose-500', hover: 'hover:bg-rose-600' },
+    { name: 'emerald', bg: 'bg-emerald-500', hover: 'hover:bg-emerald-600' },
+    { name: 'sky', bg: 'bg-sky-500', hover: 'hover:bg-sky-600' },
+    { name: 'violet', bg: 'bg-violet-500', hover: 'hover:bg-violet-600' },
+    { name: 'lime', bg: 'bg-lime-500', hover: 'hover:bg-lime-600' },
+    { name: 'fuchsia', bg: 'bg-fuchsia-500', hover: 'hover:bg-fuchsia-600' },
+    { name: 'yellow', bg: 'bg-yellow-500', hover: 'hover:bg-yellow-600' },
+    { name: 'stone', bg: 'bg-stone-500', hover: 'hover:bg-stone-600' },
+    { name: 'zinc', bg: 'bg-zinc-500', hover: 'hover:bg-zinc-600' },
   ];
 
   const currentColor = colors.find((c) => c.name === themeColor) || colors[0];
@@ -38,7 +50,7 @@ const ThemeColorSwitch = () => {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 rounded-md bg-white shadow-lg dark:bg-gray-800">
+        <div className="absolute right-0 mt-2 w-42 rounded-md bg-white shadow-lg dark:bg-gray-800">
           <div className="flex flex-wrap gap-2 p-2">
             {colors.map((color) => (
               <button

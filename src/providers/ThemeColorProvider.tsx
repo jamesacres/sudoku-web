@@ -11,7 +11,19 @@ type ThemeColor =
   | 'amber'
   | 'cyan'
   | 'pink'
-  | 'indigo';
+  | 'indigo'
+  | 'orange'
+  | 'teal'
+  | 'slate'
+  | 'rose'
+  | 'emerald'
+  | 'sky'
+  | 'violet'
+  | 'lime'
+  | 'fuchsia'
+  | 'yellow'
+  | 'stone'
+  | 'zinc';
 
 interface ThemeColorContextType {
   themeColor: ThemeColor;
@@ -54,7 +66,19 @@ export function ThemeColorProvider({
       'theme-amber',
       'theme-cyan',
       'theme-pink',
-      'theme-indigo'
+      'theme-indigo',
+      'theme-orange',
+      'theme-teal',
+      'theme-slate',
+      'theme-rose',
+      'theme-emerald',
+      'theme-sky',
+      'theme-violet',
+      'theme-lime',
+      'theme-fuchsia',
+      'theme-yellow',
+      'theme-stone',
+      'theme-zinc'
     );
 
     // Add the new theme color class
@@ -91,6 +115,18 @@ function isValidThemeColor(color: string): boolean {
     'cyan',
     'pink',
     'indigo',
+    'orange',
+    'teal',
+    'slate',
+    'rose',
+    'emerald',
+    'sky',
+    'violet',
+    'lime',
+    'fuchsia',
+    'yellow',
+    'stone',
+    'zinc',
   ];
   return validColors.includes(color as ThemeColor);
 }
