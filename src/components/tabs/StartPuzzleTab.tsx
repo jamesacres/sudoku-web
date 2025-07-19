@@ -3,6 +3,8 @@ import { Difficulty } from '@/types/serverTypes';
 import { Tab } from '@/types/tabs';
 import Link from 'next/link';
 import { Camera, Users } from 'react-feather';
+import { useState } from 'react';
+import SudokuPlusModal from '@/components/SudokuPlusModal';
 
 interface StartPuzzleTabProps {
   isOnline: boolean;
@@ -18,6 +20,7 @@ export const StartPuzzleTab = ({
   friendsList,
   setTab,
 }: StartPuzzleTabProps) => {
+  const [showSudokuPlusModal, setShowSudokuPlusModal] = useState(false);
   return (
     <div className="mb-4">
       <h1 className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-4xl font-bold text-transparent">
@@ -65,14 +68,22 @@ export const StartPuzzleTab = ({
           </span>
         </button>
         <button
-          onClick={() => openSudokuOfTheDay(Difficulty.INTERMEDIATE)}
+          onClick={() => setShowSudokuPlusModal(true)}
           disabled={isLoading}
-          className={`${isLoading ? 'cursor-wait' : 'cursor-pointer'} flex flex-col items-center justify-center rounded-full bg-gradient-to-b from-orange-400 to-orange-500 px-4 py-2 text-xl font-bold text-white shadow-md hover:from-orange-500 hover:to-orange-600 active:from-orange-600 active:to-orange-700 disabled:opacity-50`}
+          className={`${isLoading ? 'cursor-wait' : 'cursor-pointer'} relative flex flex-col items-center justify-center rounded-full bg-gradient-to-b from-orange-400 to-orange-500 px-4 py-2 text-xl font-bold text-white shadow-md hover:from-orange-500 hover:to-orange-600 active:from-orange-600 active:to-orange-700 disabled:opacity-50`}
         >
           🌶️🌶️🌶️
           <span className="mt-2 text-base text-sm font-medium">Hard</span>
+          <span className="absolute -top-1 -right-1 rounded-full bg-yellow-400 px-1.5 py-0.5 text-xs font-bold text-black">
+            +
+          </span>
         </button>
       </div>
+
+      <SudokuPlusModal
+        isOpen={showSudokuPlusModal}
+        onClose={() => setShowSudokuPlusModal(false)}
+      />
 
       <h2 className="mt-8 mb-2 bg-gradient-to-r from-purple-500 to-pink-400 bg-clip-text text-2xl font-bold text-transparent">
         Puzzles from Friends
