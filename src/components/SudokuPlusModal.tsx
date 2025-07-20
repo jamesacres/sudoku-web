@@ -98,7 +98,7 @@ const SudokuPlusModal = () => {
         {/* Close Button */}
         <button
           onClick={hideModal}
-          className="absolute top-4 right-4 z-10 rounded-full p-2 text-gray-400 backdrop-blur-sm transition-all hover:bg-gray-200/80 hover:text-gray-600 dark:hover:bg-gray-700/80 dark:hover:text-gray-300"
+          className="absolute top-4 right-4 z-10 cursor-pointer rounded-full p-2 text-gray-400 backdrop-blur-sm transition-all hover:bg-gray-200/80 hover:text-gray-600 dark:hover:bg-gray-700/80 dark:hover:text-gray-300"
           aria-label="Close modal"
         >
           <X className="h-5 w-5" />
