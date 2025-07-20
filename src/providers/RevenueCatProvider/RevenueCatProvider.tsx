@@ -20,8 +20,16 @@ interface RevenueCatContextInterface {
   isLoading: boolean;
   isSubscribed: boolean;
   packages: (WebPackage | CapacitorPackage)[];
-  purchasePackage: (pkg: WebPackage | CapacitorPackage) => Promise<void>;
+  purchasePackage: (
+    pkg: WebPackage | CapacitorPackage
+  ) => Promise<boolean | void>;
   restorePurchases: () => Promise<void>;
+  subscribeModal: {
+    isOpen: boolean;
+    callback: () => void;
+    showModalIfRequired: (callback: () => void) => void;
+    hideModal: () => void;
+  };
 }
 
 export const RevenueCatContext = React.createContext<
@@ -31,7 +39,7 @@ export const RevenueCatContext = React.createContext<
 const RevenueCatProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const { user } = useContext(UserContext) || {};
+  const { user, loginRedirect } = useContext(UserContext) || {};
   const [isLoading, setIsLoading] = useState(true);
   const [packages, setPackages] = useState<(WebPackage | CapacitorPackage)[]>(
     []
@@ -39,6 +47,26 @@ const RevenueCatProvider: React.FC<{ children: React.ReactNode }> = ({
   const [customerInfo, setCustomerInfo] = useState<
     WebCustomerInfo | CapacitorCustomerInfo | null
   >(null);
+
+  // Modal
+  const [isOpen, setIsOpen] = useState(false);
+  const [callback, setCallback] = useState(() => () => {});
+  const showModalIfRequired = (callback: () => void) => {
+    if (!user) {
+      const confirmed = confirm(
+        'You need to sign in to continue. Would you like to sign in now?'
+      );
+      if (confirmed && loginRedirect) {
+        return loginRedirect();
+      }
+    }
+    if (isSubscribed) {
+      return callback();
+    }
+    setCallback(() => callback);
+    setIsOpen(true);
+  };
+  const hideModal = () => setIsOpen(false);
 
   useEffect(() => {
     if (user) {
@@ -92,7 +120,9 @@ const RevenueCatProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [user]);
 
-  const purchasePackage = async (pkg: WebPackage | CapacitorPackage) => {
+  const purchasePackage = async (
+    pkg: WebPackage | CapacitorPackage
+  ): Promise<boolean | void> => {
     // Keep note of original styles
     const originalHtmlStyle = document
       .querySelector('html')
@@ -114,6 +144,7 @@ const RevenueCatProvider: React.FC<{ children: React.ReactNode }> = ({
           aPackage: pkg as CapacitorPackage,
         });
         setCustomerInfo(customerInfo);
+        return !!customerInfo?.entitlements.active['default'];
       } else if (isElectron()) {
         // Do nothing
       } else {
@@ -123,6 +154,7 @@ const RevenueCatProvider: React.FC<{ children: React.ReactNode }> = ({
             rcPackage: pkg as WebPackage,
           });
         setCustomerInfo(customerInfo);
+        return !!customerInfo?.entitlements.active['default'];
       }
     } catch (error) {
       console.warn(error);
@@ -173,6 +205,12 @@ const RevenueCatProvider: React.FC<{ children: React.ReactNode }> = ({
         packages,
         purchasePackage,
         restorePurchases,
+        subscribeModal: {
+          isOpen,
+          callback,
+          showModalIfRequired,
+          hideModal,
+        },
       }}
     >
       {children}

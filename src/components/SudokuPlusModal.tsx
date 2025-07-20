@@ -3,7 +3,6 @@
 import { isCapacitor } from '@/helpers/capacitor';
 import { isElectron } from '@/helpers/electron';
 import { RevenueCatContext } from '@/providers/RevenueCatProvider';
-import { useSudokuPlusModal } from '@/providers/SudokuPlusModalProvider';
 import { PurchasesPackage as CapacitorPackage } from '@revenuecat/purchases-capacitor';
 import { Package as WebPackage } from '@revenuecat/purchases-js';
 import Image from 'next/image';
@@ -19,13 +18,13 @@ import {
 } from 'react-feather';
 
 const SudokuPlusModal = () => {
-  const { isOpen, hideModal } = useSudokuPlusModal();
   const {
     isLoading,
     isSubscribed,
     packages,
     purchasePackage,
     restorePurchases,
+    subscribeModal: modal,
   } = useContext(RevenueCatContext) || {};
   let monthlyPackage = packages?.find((pkg) =>
     pkg.identifier.includes('monthly')
@@ -55,7 +54,7 @@ const SudokuPlusModal = () => {
     'lifetime'
   );
 
-  if (!isOpen || isLoading || isSubscribed) return null;
+  if (!modal?.isOpen || isLoading || isSubscribed) return null;
 
   const features = [
     {
@@ -90,14 +89,14 @@ const SudokuPlusModal = () => {
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/60 backdrop-blur-md"
-        onClick={hideModal}
+        onClick={modal?.hideModal}
       />
 
       {/* Modal */}
       <div className="relative flex max-h-[90vh] w-full max-w-md flex-col rounded-2xl border border-white/20 bg-white/95 shadow-2xl backdrop-blur-xl dark:border-gray-700/50 dark:bg-gray-900/95">
         {/* Close Button */}
         <button
-          onClick={hideModal}
+          onClick={modal?.hideModal}
           className="absolute top-4 right-4 z-10 cursor-pointer rounded-full p-2 text-gray-400 backdrop-blur-sm transition-all hover:bg-gray-200/80 hover:text-gray-600 dark:hover:bg-gray-700/80 dark:hover:text-gray-300"
           aria-label="Close modal"
         >
@@ -217,18 +216,21 @@ const SudokuPlusModal = () => {
           <div className="space-y-3 px-6 py-4">
             <button
               className="w-full cursor-pointer rounded-xl bg-blue-500 py-4 font-semibold text-white transition-colors hover:bg-blue-600 active:bg-blue-700"
-              onClick={() => {
+              onClick={async () => {
                 if (
                   selectedPlan &&
                   purchasePackage &&
                   lifetimePackage &&
                   monthlyPackage
                 ) {
-                  purchasePackage(
+                  const isSubscribed = await purchasePackage(
                     selectedPlan === 'lifetime'
                       ? lifetimePackage
                       : monthlyPackage
                   );
+                  if (isSubscribed) {
+                    modal.callback();
+                  }
                 }
               }}
             >
@@ -243,7 +245,7 @@ const SudokuPlusModal = () => {
               </button>
               <button
                 className="flex-1 cursor-pointer py-2 text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-300"
-                onClick={hideModal}
+                onClick={modal?.hideModal}
               >
                 Cancel
               </button>

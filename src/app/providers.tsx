@@ -9,7 +9,6 @@ import { PropsWithChildren } from 'react';
 import GlobalStateProvider from '@/providers/GlobalStateProvider';
 import { ThemeColorProvider } from '@/providers/ThemeColorProvider';
 import RevenueCatProvider from '@/providers/RevenueCatProvider';
-import { SudokuPlusModalProvider } from '@/providers/SudokuPlusModalProvider';
 
 export function Providers({ children }: PropsWithChildren) {
   return (
@@ -20,11 +19,7 @@ export function Providers({ children }: PropsWithChildren) {
             <RevenueCatProvider>
               <PartiesProvider>
                 <ThemeProvider attribute="class">
-                  <ThemeColorProvider>
-                    <SudokuPlusModalProvider>
-                      {children}
-                    </SudokuPlusModalProvider>
-                  </ThemeColorProvider>
+                  <ThemeColorProvider>{children}</ThemeColorProvider>
                 </ThemeProvider>
               </PartiesProvider>
             </RevenueCatProvider>
