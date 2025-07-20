@@ -23,7 +23,7 @@ interface RevenueCatContextInterface {
   purchasePackage: (
     pkg: WebPackage | CapacitorPackage
   ) => Promise<boolean | void>;
-  restorePurchases: () => Promise<void>;
+  restorePurchases: () => Promise<boolean | void>;
   subscribeModal: {
     isOpen: boolean;
     callback: () => void;
@@ -190,6 +190,7 @@ const RevenueCatProvider: React.FC<{ children: React.ReactNode }> = ({
         // iOS and Android
         const { customerInfo } = await CapacitorPurchases.restorePurchases();
         setCustomerInfo(customerInfo);
+        return !!customerInfo?.entitlements.active['Plus'];
       }
     } catch (error) {
       console.warn(error);

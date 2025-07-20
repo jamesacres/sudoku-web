@@ -240,7 +240,15 @@ const SudokuPlusModal = () => {
             <div className="flex gap-4">
               <button
                 className="flex-1 cursor-pointer py-2 text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-300"
-                onClick={restorePurchases}
+                onClick={async () => {
+                  if (restorePurchases) {
+                    const isSubscribed = await restorePurchases();
+                    modal.hideModal();
+                    if (isSubscribed) {
+                      modal.callback();
+                    }
+                  }
+                }}
               >
                 Restore purchases
               </button>
