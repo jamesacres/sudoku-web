@@ -20,8 +20,13 @@ import {
 
 const SudokuPlusModal = () => {
   const { isOpen, hideModal } = useSudokuPlusModal();
-  const { isLoading, isSubscribed, packages, purchasePackage } =
-    useContext(RevenueCatContext) || {};
+  const {
+    isLoading,
+    isSubscribed,
+    packages,
+    purchasePackage,
+    restorePurchases,
+  } = useContext(RevenueCatContext) || {};
   let monthlyPackage = packages?.find((pkg) =>
     pkg.identifier.includes('monthly')
   );
@@ -231,13 +236,13 @@ const SudokuPlusModal = () => {
             </button>
             <div className="flex gap-4">
               <button
-                className="flex-1 py-2 text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-300"
-                onClick={hideModal}
+                className="flex-1 cursor-pointer py-2 text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-300"
+                onClick={restorePurchases}
               >
                 Restore purchases
               </button>
               <button
-                className="flex-1 py-2 text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-300"
+                className="flex-1 cursor-pointer py-2 text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-300"
                 onClick={hideModal}
               >
                 Cancel
