@@ -27,10 +27,10 @@ const SudokuPlusModal = () => {
     subscribeModal: modal,
   } = useContext(RevenueCatContext) || {};
   let monthlyPackage = packages?.find((pkg) =>
-    pkg.identifier.includes('monthly')
+    pkg.identifier.toLowerCase().includes('monthly')
   );
   let lifetimePackage = packages?.find((pkg) =>
-    pkg.identifier.includes('lifetime')
+    pkg.identifier.toLowerCase().includes('lifetime')
   );
   let monthlyPriceString;
   let lifetimePriceString;
@@ -228,6 +228,7 @@ const SudokuPlusModal = () => {
                       ? lifetimePackage
                       : monthlyPackage
                   );
+                  modal.hideModal();
                   if (isSubscribed) {
                     modal.callback();
                   }

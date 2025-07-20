@@ -47,6 +47,7 @@ const RevenueCatProvider: React.FC<{ children: React.ReactNode }> = ({
   const [customerInfo, setCustomerInfo] = useState<
     WebCustomerInfo | CapacitorCustomerInfo | null
   >(null);
+  console.info(customerInfo);
 
   // Modal
   const [isOpen, setIsOpen] = useState(false);
@@ -144,7 +145,7 @@ const RevenueCatProvider: React.FC<{ children: React.ReactNode }> = ({
           aPackage: pkg as CapacitorPackage,
         });
         setCustomerInfo(customerInfo);
-        return !!customerInfo?.entitlements.active['default'];
+        return !!customerInfo?.entitlements.active['Plus'];
       } else if (isElectron()) {
         // Do nothing
       } else {
@@ -154,7 +155,7 @@ const RevenueCatProvider: React.FC<{ children: React.ReactNode }> = ({
             rcPackage: pkg as WebPackage,
           });
         setCustomerInfo(customerInfo);
-        return !!customerInfo?.entitlements.active['default'];
+        return !!customerInfo?.entitlements.active['Plus'];
       }
     } catch (error) {
       console.warn(error);
@@ -195,7 +196,7 @@ const RevenueCatProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  const isSubscribed = !!customerInfo?.entitlements.active['default'];
+  const isSubscribed = !!customerInfo?.entitlements.active['Plus'];
 
   return (
     <RevenueCatContext.Provider
