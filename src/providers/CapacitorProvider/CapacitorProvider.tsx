@@ -21,7 +21,7 @@ const CapacitorProvider: React.FC<{ children: React.ReactNode }> = ({
     setTimeout(() => {
       StatusBar.setOverlaysWebView({ overlay: false });
       StatusBar.setBackgroundColor({ color: '#000000' });
-    }, 100);
+    }, 1000);
   }
 
   useEffect(() => {
