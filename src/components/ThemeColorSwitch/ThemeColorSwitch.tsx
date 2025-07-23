@@ -1,10 +1,12 @@
 'use client';
 
 import { useThemeColor } from '@/providers/ThemeColorProvider';
-import { useState } from 'react';
+import { RevenueCatContext } from '@/providers/RevenueCatProvider';
+import { useState, useContext } from 'react';
 
 const ThemeColorSwitch = () => {
   const { themeColor, setThemeColor } = useThemeColor();
+  const { isSubscribed, subscribeModal } = useContext(RevenueCatContext) || {};
   const [isOpen, setIsOpen] = useState(false);
 
   const colors = [
@@ -32,6 +34,22 @@ const ThemeColorSwitch = () => {
 
   const currentColor = colors.find((c) => c.name === themeColor) || colors[0];
 
+  const handleColorClick = (colorName: string) => {
+    const colorIndex = colors.findIndex((c) => c.name === colorName);
+
+    if (colorIndex < 2 || isSubscribed) {
+      // Free colors (first two) or user is subscribed
+      setThemeColor(colorName as any);
+      setIsOpen(false);
+    } else {
+      // Premium color and user not subscribed - show modal with callback
+      subscribeModal?.showModalIfRequired(() => {
+        setThemeColor(colorName as any);
+        setIsOpen(false);
+      });
+    }
+  };
+
   return (
     <div className="relative">
       <button
@@ -52,21 +70,27 @@ const ThemeColorSwitch = () => {
       {isOpen && (
         <div className="absolute right-0 mt-2 w-42 rounded-md bg-white shadow-lg dark:bg-gray-800">
           <div className="flex flex-wrap gap-2 p-2">
-            {colors.map((color) => (
-              <button
-                key={color.name}
-                onClick={() => {
-                  setThemeColor(color.name as any);
-                  setIsOpen(false);
-                }}
-                className={`h-8 w-8 rounded-full ${color.bg} ${color.hover} ${
-                  themeColor === color.name
-                    ? 'ring-2 ring-offset-2 dark:ring-offset-gray-800'
-                    : ''
-                }`}
-                aria-label={`Set theme color to ${color.name}`}
-              />
-            ))}
+            {colors.map((color, index) => {
+              const isPremium = index >= 2 && !isSubscribed;
+              return (
+                <button
+                  key={color.name}
+                  onClick={() => handleColorClick(color.name)}
+                  className={`relative h-8 w-8 rounded-full ${color.bg} ${color.hover} ${
+                    themeColor === color.name
+                      ? 'ring-2 ring-offset-2 dark:ring-offset-gray-800'
+                      : ''
+                  }`}
+                  aria-label={`Set theme color to ${color.name}${isPremium ? ' (Premium)' : ''}`}
+                >
+                  {isPremium && (
+                    <span className="absolute -top-1 -right-1 inline-flex items-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 px-1 py-0.5 text-xs font-semibold text-white shadow-lg">
+                      ✨
+                    </span>
+                  )}
+                </button>
+              );
+            })}
           </div>
         </div>
       )}
