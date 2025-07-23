@@ -39,9 +39,10 @@ export const UserPanel = ({
               </span>
             </span>
             {isSubscribed ? (
-              <span className="mt-2 inline-flex items-center rounded-full bg-gradient-to-r from-green-500 to-emerald-600 px-4 py-2 text-xs font-semibold text-white shadow-lg">
-                <span className="mr-1">✓</span>
+              <span className="mt-2 inline-flex items-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-2 text-xs font-semibold text-white shadow-lg">
+                <span className="mr-1">✨</span>
                 Sudoku Plus
+                <span className="ml-1">✓</span>
               </span>
             ) : (
               <button
