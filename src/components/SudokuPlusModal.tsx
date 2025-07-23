@@ -89,14 +89,20 @@ const SudokuPlusModal = () => {
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/60 backdrop-blur-md"
-        onClick={modal?.hideModal}
+        onClick={() => {
+          modal?.hideModal();
+          modal.cancelCallback();
+        }}
       />
 
       {/* Modal */}
       <div className="relative flex max-h-[90vh] w-full max-w-md flex-col rounded-2xl border border-white/20 bg-white/95 shadow-2xl backdrop-blur-xl dark:border-gray-700/50 dark:bg-gray-900/95">
         {/* Close Button */}
         <button
-          onClick={modal?.hideModal}
+          onClick={() => {
+            modal?.hideModal();
+            modal.cancelCallback();
+          }}
           className="absolute top-4 right-4 z-10 cursor-pointer rounded-full p-2 text-gray-400 backdrop-blur-sm transition-all hover:bg-gray-200/80 hover:text-gray-600 dark:hover:bg-gray-700/80 dark:hover:text-gray-300"
           aria-label="Close modal"
         >
@@ -258,7 +264,10 @@ const SudokuPlusModal = () => {
               </button>
               <button
                 className="flex-1 cursor-pointer py-2 text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-300"
-                onClick={modal?.hideModal}
+                onClick={() => {
+                  modal?.hideModal();
+                  modal.cancelCallback();
+                }}
               >
                 Cancel
               </button>

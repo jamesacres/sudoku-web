@@ -12,8 +12,13 @@ import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { CelebrationAnimation } from '../CelebrationAnimation';
 import { RaceTrack } from '../RaceTrack';
 import { UserContext } from '@/providers/UserProvider';
+import { RevenueCatContext } from '@/providers/RevenueCatProvider';
 import { useDrag } from '@/hooks/useDrag';
 import MemoisedSidebarButton from '../SidebarButton/SidebarButton';
+import {
+  addDailyPuzzleId,
+  getDailyPuzzleCount,
+} from '@/utils/dailyPuzzleCounter';
 
 const Sudoku = ({
   puzzle: { initial, final, puzzleId },
@@ -23,6 +28,7 @@ const Sudoku = ({
   redirectUri: string;
 }) => {
   const { user } = useContext(UserContext) || {};
+  const { isSubscribed, subscribeModal } = useContext(RevenueCatContext) || {};
 
   const {
     answer,
@@ -86,6 +92,29 @@ const Sudoku = ({
       return () => clearTimeout(timer);
     }
   }, [completed]);
+
+  // Add puzzle ID to daily tracking when puzzle starts (countdown begins)
+  useEffect(() => {
+    addDailyPuzzleId(puzzleId);
+  }, [puzzleId]);
+
+  // Handle countdown finishing for subscription modal
+  useEffect(() => {
+    if (timer?.countdown === 1 && !isSubscribed) {
+      if (getDailyPuzzleCount() > 1) {
+        // Countdown just reached "GO!" - show subscription modal after a brief delay
+        setPauseTimer(true);
+        subscribeModal?.showModalIfRequired(
+          () => {
+            setPauseTimer(false);
+          },
+          () => {
+            setPauseTimer(false);
+          }
+        );
+      }
+    }
+  }, [timer?.countdown, isSubscribed, subscribeModal, setPauseTimer]);
 
   // Use drag hook for all drag-related functionality
   const { dragOffset, dragStarted, zoomOrigin, handleDragStart } = useDrag({

@@ -27,7 +27,11 @@ interface RevenueCatContextInterface {
   subscribeModal: {
     isOpen: boolean;
     callback: () => void;
-    showModalIfRequired: (callback: () => void) => void;
+    cancelCallback: () => void;
+    showModalIfRequired: (
+      callback: () => void,
+      cancelCallback?: () => void
+    ) => void;
     hideModal: () => void;
   };
 }
@@ -52,7 +56,11 @@ const RevenueCatProvider: React.FC<{ children: React.ReactNode }> = ({
   // Modal
   const [isOpen, setIsOpen] = useState(false);
   const [callback, setCallback] = useState(() => () => {});
-  const showModalIfRequired = (callback: () => void) => {
+  const [cancelCallback, setCancelCallback] = useState(() => () => {});
+  const showModalIfRequired = (
+    callback: () => void,
+    cancelCallback: () => void = () => {}
+  ) => {
     if (!user) {
       const confirmed = confirm(
         'You need to sign in to continue. Would you like to sign in now?'
@@ -65,6 +73,7 @@ const RevenueCatProvider: React.FC<{ children: React.ReactNode }> = ({
       return callback();
     }
     setCallback(() => callback);
+    setCancelCallback(() => cancelCallback);
     setIsOpen(true);
   };
   const hideModal = () => setIsOpen(false);
@@ -210,6 +219,7 @@ const RevenueCatProvider: React.FC<{ children: React.ReactNode }> = ({
         subscribeModal: {
           isOpen,
           callback,
+          cancelCallback,
           showModalIfRequired,
           hideModal,
         },
