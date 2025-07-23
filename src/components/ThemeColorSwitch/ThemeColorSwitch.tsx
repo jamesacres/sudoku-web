@@ -2,37 +2,160 @@
 
 import { useThemeColor } from '@/providers/ThemeColorProvider';
 import { RevenueCatContext } from '@/providers/RevenueCatProvider';
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 
 const ThemeColorSwitch = () => {
   const { themeColor, setThemeColor } = useThemeColor();
   const { isSubscribed, subscribeModal } = useContext(RevenueCatContext) || {};
   const [isOpen, setIsOpen] = useState(false);
+  const [showRainbow, setShowRainbow] = useState(false);
+  const [rainbowIndex, setRainbowIndex] = useState(0);
 
   const colors = [
-    { name: 'blue', bg: 'bg-blue-500', hover: 'hover:bg-blue-600' },
-    { name: 'red', bg: 'bg-red-500', hover: 'hover:bg-red-600' },
-    { name: 'green', bg: 'bg-green-500', hover: 'hover:bg-green-600' },
-    { name: 'purple', bg: 'bg-purple-500', hover: 'hover:bg-purple-600' },
-    { name: 'amber', bg: 'bg-amber-500', hover: 'hover:bg-amber-600' },
-    { name: 'cyan', bg: 'bg-cyan-500', hover: 'hover:bg-cyan-600' },
-    { name: 'pink', bg: 'bg-pink-500', hover: 'hover:bg-pink-600' },
-    { name: 'indigo', bg: 'bg-indigo-500', hover: 'hover:bg-indigo-600' },
-    { name: 'orange', bg: 'bg-orange-500', hover: 'hover:bg-orange-600' },
-    { name: 'teal', bg: 'bg-teal-500', hover: 'hover:bg-teal-600' },
-    { name: 'slate', bg: 'bg-slate-500', hover: 'hover:bg-slate-600' },
-    { name: 'rose', bg: 'bg-rose-500', hover: 'hover:bg-rose-600' },
-    { name: 'emerald', bg: 'bg-emerald-500', hover: 'hover:bg-emerald-600' },
-    { name: 'sky', bg: 'bg-sky-500', hover: 'hover:bg-sky-600' },
-    { name: 'violet', bg: 'bg-violet-500', hover: 'hover:bg-violet-600' },
-    { name: 'lime', bg: 'bg-lime-500', hover: 'hover:bg-lime-600' },
-    { name: 'fuchsia', bg: 'bg-fuchsia-500', hover: 'hover:bg-fuchsia-600' },
-    { name: 'yellow', bg: 'bg-yellow-500', hover: 'hover:bg-yellow-600' },
-    { name: 'stone', bg: 'bg-stone-500', hover: 'hover:bg-stone-600' },
-    { name: 'zinc', bg: 'bg-zinc-500', hover: 'hover:bg-zinc-600' },
+    {
+      name: 'blue',
+      bg: 'bg-blue-500',
+      hover: 'hover:bg-blue-600',
+      hex: '#3b82f6',
+    },
+    {
+      name: 'red',
+      bg: 'bg-red-500',
+      hover: 'hover:bg-red-600',
+      hex: '#ef4444',
+    },
+    {
+      name: 'green',
+      bg: 'bg-green-500',
+      hover: 'hover:bg-green-600',
+      hex: '#22c55e',
+    },
+    {
+      name: 'purple',
+      bg: 'bg-purple-500',
+      hover: 'hover:bg-purple-600',
+      hex: '#a855f7',
+    },
+    {
+      name: 'amber',
+      bg: 'bg-amber-500',
+      hover: 'hover:bg-amber-600',
+      hex: '#f59e0b',
+    },
+    {
+      name: 'cyan',
+      bg: 'bg-cyan-500',
+      hover: 'hover:bg-cyan-600',
+      hex: '#06b6d4',
+    },
+    {
+      name: 'pink',
+      bg: 'bg-pink-500',
+      hover: 'hover:bg-pink-600',
+      hex: '#ec4899',
+    },
+    {
+      name: 'indigo',
+      bg: 'bg-indigo-500',
+      hover: 'hover:bg-indigo-600',
+      hex: '#6366f1',
+    },
+    {
+      name: 'orange',
+      bg: 'bg-orange-500',
+      hover: 'hover:bg-orange-600',
+      hex: '#f97316',
+    },
+    {
+      name: 'teal',
+      bg: 'bg-teal-500',
+      hover: 'hover:bg-teal-600',
+      hex: '#14b8a6',
+    },
+    {
+      name: 'slate',
+      bg: 'bg-slate-500',
+      hover: 'hover:bg-slate-600',
+      hex: '#64748b',
+    },
+    {
+      name: 'rose',
+      bg: 'bg-rose-500',
+      hover: 'hover:bg-rose-600',
+      hex: '#f43f5e',
+    },
+    {
+      name: 'emerald',
+      bg: 'bg-emerald-500',
+      hover: 'hover:bg-emerald-600',
+      hex: '#10b981',
+    },
+    {
+      name: 'sky',
+      bg: 'bg-sky-500',
+      hover: 'hover:bg-sky-600',
+      hex: '#0ea5e9',
+    },
+    {
+      name: 'violet',
+      bg: 'bg-violet-500',
+      hover: 'hover:bg-violet-600',
+      hex: '#8b5cf6',
+    },
+    {
+      name: 'lime',
+      bg: 'bg-lime-500',
+      hover: 'hover:bg-lime-600',
+      hex: '#84cc16',
+    },
+    {
+      name: 'fuchsia',
+      bg: 'bg-fuchsia-500',
+      hover: 'hover:bg-fuchsia-600',
+      hex: '#d946ef',
+    },
+    {
+      name: 'yellow',
+      bg: 'bg-yellow-500',
+      hover: 'hover:bg-yellow-600',
+      hex: '#eab308',
+    },
+    {
+      name: 'stone',
+      bg: 'bg-stone-500',
+      hover: 'hover:bg-stone-600',
+      hex: '#78716c',
+    },
+    {
+      name: 'zinc',
+      bg: 'bg-zinc-500',
+      hover: 'hover:bg-zinc-600',
+      hex: '#71717a',
+    },
   ];
 
   const currentColor = colors.find((c) => c.name === themeColor) || colors[0];
+
+  // Rainbow animation on app load - cycle through theme colors
+  useEffect(() => {
+    setShowRainbow(true);
+    let colorIndex = 0;
+
+    const colorInterval = setInterval(() => {
+      colorIndex = (colorIndex + 1) % colors.length;
+      setRainbowIndex(colorIndex);
+    }, 200); // Change color every 200ms
+
+    const stopTimer = setTimeout(() => {
+      setShowRainbow(false);
+      clearInterval(colorInterval);
+    }, 3000); // Stop after 3 seconds
+
+    return () => {
+      clearInterval(colorInterval);
+      clearTimeout(stopTimer);
+    };
+  }, []);
 
   const handleColorClick = (colorName: string) => {
     const colorIndex = colors.findIndex((c) => c.name === colorName);
@@ -56,6 +179,13 @@ const ThemeColorSwitch = () => {
         aria-label="Change Theme Color"
         onClick={() => setIsOpen(!isOpen)}
         className={`mx-1 h-8 w-8 cursor-pointer rounded-full p-1.5 transition-colors active:opacity-70 ${currentColor.bg} text-white`}
+        style={
+          showRainbow
+            ? {
+                border: `3px solid ${colors[rainbowIndex].hex}`,
+              }
+            : undefined
+        }
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
