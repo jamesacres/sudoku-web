@@ -116,8 +116,12 @@ const SudokuPlusModal = () => {
               />
             </div>
             <p className="text-gray-600 dark:text-gray-400">
-              Join <span className="font-semibold">Sudoku Plus</span> to{' '}
-              <span className="font-semibold">unlock all features</span>,{' '}
+              Join{' '}
+              <span className="inline-flex items-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 px-3 py-1 text-sm font-semibold text-white shadow-lg">
+                <span className="mr-1">✨</span>Sudoku Plus
+                <span className="ml-1">✨</span>
+              </span>{' '}
+              to <span className="font-semibold">unlock all features</span>,{' '}
               <span className="font-semibold">remove limits</span> and{' '}
               <span className="font-semibold">support development</span> - keep
               it ad free! Your support is much appreciated.

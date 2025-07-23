@@ -1,8 +1,9 @@
 import { UserProfile } from '@/types/userProfile';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { UserAvatar } from './UserAvatar';
 import { useServerStorage } from '@/hooks/serverStorage';
 import { DeleteAccountDialog } from './DeleteAccountDialog';
+import { RevenueCatContext } from '@/providers/RevenueCatProvider';
 
 export const UserPanel = ({
   user,
@@ -13,6 +14,7 @@ export const UserPanel = ({
 }) => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const { deleteAccount } = useServerStorage();
+  const { isSubscribed, subscribeModal } = useContext(RevenueCatContext) || {};
 
   const handleDeleteAccount = async () => {
     const success = await deleteAccount();
@@ -36,7 +38,21 @@ export const UserPanel = ({
                 {user.name}
               </span>
             </span>
-            <span className="block text-sm text-gray-500">Sudoku Pro</span>
+            {isSubscribed ? (
+              <span className="mt-2 inline-flex items-center rounded-full bg-gradient-to-r from-green-500 to-emerald-600 px-4 py-2 text-xs font-semibold text-white shadow-lg">
+                <span className="mr-1">✓</span>
+                Sudoku Plus
+              </span>
+            ) : (
+              <button
+                onClick={() => subscribeModal?.showModalIfRequired(() => {})}
+                className="mt-2 inline-flex items-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-2 text-xs font-semibold text-white shadow-lg transition-all duration-200 hover:scale-105 hover:from-blue-600 hover:to-purple-700 hover:shadow-xl active:scale-95"
+              >
+                <span className="mr-1">✨</span>
+                Upgrade to Plus
+                <span className="ml-1">→</span>
+              </button>
+            )}
           </div>
         </div>
         <div className="bg-gray-200 p-4">
