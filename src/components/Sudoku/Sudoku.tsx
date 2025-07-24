@@ -173,6 +173,17 @@ const Sudoku = ({
         <div className="container mx-auto px-4 pb-4 lg:pb-0">
           <div className="flex h-[calc(58dvh)] flex-col">
             <div className="mt-auto">
+              {/* App Branding Header */}
+              <div className="mr-auto ml-auto max-w-xl px-4 pb-1 lg:mr-0">
+                <div className="text-center">
+                  <span className="inline-flex items-center bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-sm font-semibold text-transparent">
+                    <span className="mr-1">✨</span>
+                    Sudoku Share
+                    <span className="ml-1">✨</span>
+                  </span>
+                </div>
+              </div>
+
               <div className="mr-auto ml-auto flex max-w-xl px-4 pb-1 lg:mr-0">
                 <div
                   className="flex-nowrap items-center xl:hidden"

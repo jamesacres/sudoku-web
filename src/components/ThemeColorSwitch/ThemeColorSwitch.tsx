@@ -211,7 +211,7 @@ const ThemeColorSwitch = () => {
                 <button
                   key={color.name}
                   onClick={() => handleColorClick(color.name)}
-                  className={`relative h-8 w-8 rounded-full ${color.bg} ${color.hover} ${
+                  className={`relative h-8 w-8 cursor-pointer rounded-full ${color.bg} ${color.hover} ${
                     themeColor === color.name
                       ? 'ring-2 ring-offset-2 dark:ring-offset-gray-800'
                       : ''

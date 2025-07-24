@@ -7,7 +7,6 @@ const HeaderUserHintBox = dynamic(() => import('../HeaderUserHintBox'), {
 });
 
 import ThemeControls from '../ThemeControls';
-import HeaderTitle from '../HeaderTitle';
 
 const Header = () => {
   return (
@@ -17,7 +16,7 @@ const Header = () => {
           <HeaderBack />
         </div>
         <div className="block flex grow items-center">
-          <HeaderTitle />
+          <div className="grow text-center font-medium"></div>
           <div className="flex h-12 items-center">
             <HeaderUser />
             <ThemeControls />
