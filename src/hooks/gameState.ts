@@ -27,6 +27,7 @@ import {
   incrementCheckCellCount,
   incrementCheckGridCount,
 } from '@/utils/dailyActionCounter';
+import { SubscriptionContext } from '@/types/subscriptionContext';
 
 function useGameState({
   final,
@@ -168,7 +169,11 @@ function useGameState({
     };
 
     if (subscribeModal) {
-      subscribeModal.showModalIfRequired(performReveal);
+      subscribeModal.showModalIfRequired(
+        performReveal,
+        () => {},
+        SubscriptionContext.REVEAL
+      );
     } else {
       performReveal();
     }
@@ -243,7 +248,11 @@ function useGameState({
       if (isSubscribed || canUseUndo()) {
         performUndo();
       } else if (subscribeModal) {
-        subscribeModal.showModalIfRequired(performUndo);
+        subscribeModal.showModalIfRequired(
+          performUndo,
+          () => {},
+          SubscriptionContext.UNDO
+        );
       }
     }
   }, [
@@ -281,7 +290,11 @@ function useGameState({
     if (isSubscribed || canUseCheckGrid()) {
       performValidateGrid();
     } else if (subscribeModal) {
-      subscribeModal.showModalIfRequired(performValidateGrid);
+      subscribeModal.showModalIfRequired(
+        performValidateGrid,
+        () => {},
+        SubscriptionContext.CHECK_GRID
+      );
     }
   }, [initial, final, answer, validation, subscribeModal, isSubscribed]);
   const validateCell = useCallback(() => {
@@ -300,7 +313,11 @@ function useGameState({
     if (isSubscribed || canUseCheckCell()) {
       performValidateCell();
     } else if (subscribeModal) {
-      subscribeModal.showModalIfRequired(performValidateCell);
+      subscribeModal.showModalIfRequired(
+        performValidateCell,
+        () => {},
+        SubscriptionContext.CHECK_CELL
+      );
     }
   }, [
     validation,

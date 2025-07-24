@@ -20,6 +20,8 @@ import {
   getDailyPuzzleCount,
 } from '@/utils/dailyPuzzleCounter';
 import { useRouter } from 'next/navigation';
+import { SubscriptionContext } from '@/types/subscriptionContext';
+import { DAILY_LIMITS } from '@/config/dailyLimits';
 
 const Sudoku = ({
   puzzle: { initial, final, puzzleId },
@@ -104,7 +106,7 @@ const Sudoku = ({
   // Handle countdown finishing for subscription modal
   useEffect(() => {
     if (timer?.countdown === 1 && !isSubscribed) {
-      if (getDailyPuzzleCount() > 1) {
+      if (getDailyPuzzleCount() > DAILY_LIMITS.PUZZLE) {
         // Countdown just reached "GO!" - show subscription modal after a brief delay
         setPauseTimer(true);
         subscribeModal?.showModalIfRequired(
@@ -116,7 +118,8 @@ const Sudoku = ({
           () => {
             // Navigate to homepage on cancel
             router.replace('/');
-          }
+          },
+          SubscriptionContext.DAILY_PUZZLE_LIMIT
         );
       }
     }

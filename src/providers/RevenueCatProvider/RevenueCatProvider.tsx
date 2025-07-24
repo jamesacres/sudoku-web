@@ -15,6 +15,7 @@ import {
   CustomerInfo as WebCustomerInfo,
 } from '@revenuecat/purchases-js';
 import { UserContext } from '../UserProvider';
+import { SubscriptionContext } from '@/types/subscriptionContext';
 
 interface RevenueCatContextInterface {
   isLoading: boolean;
@@ -28,9 +29,11 @@ interface RevenueCatContextInterface {
     isOpen: boolean;
     callback: () => void;
     cancelCallback: () => void;
+    context?: SubscriptionContext;
     showModalIfRequired: (
       callback: () => void,
-      cancelCallback?: () => void
+      cancelCallback?: () => void,
+      context?: SubscriptionContext
     ) => void;
     hideModal: () => void;
   };
@@ -57,9 +60,13 @@ const RevenueCatProvider: React.FC<{ children: React.ReactNode }> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [callback, setCallback] = useState(() => () => {});
   const [cancelCallback, setCancelCallback] = useState(() => () => {});
+  const [context, setContext] = useState<SubscriptionContext | undefined>(
+    undefined
+  );
   const showModalIfRequired = (
     callback: () => void,
-    cancelCallback: () => void = () => {}
+    cancelCallback: () => void = () => {},
+    modalContext?: SubscriptionContext
   ) => {
     if (!user) {
       const confirmed = confirm(
@@ -76,6 +83,7 @@ const RevenueCatProvider: React.FC<{ children: React.ReactNode }> = ({
     }
     setCallback(() => callback);
     setCancelCallback(() => cancelCallback);
+    setContext(modalContext);
     setIsOpen(true);
   };
   const hideModal = () => setIsOpen(false);
@@ -222,6 +230,7 @@ const RevenueCatProvider: React.FC<{ children: React.ReactNode }> = ({
           isOpen,
           callback,
           cancelCallback,
+          context,
           showModalIfRequired,
           hideModal,
         },

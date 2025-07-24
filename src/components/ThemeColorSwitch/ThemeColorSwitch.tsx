@@ -3,6 +3,7 @@
 import { useThemeColor } from '@/providers/ThemeColorProvider';
 import { RevenueCatContext } from '@/providers/RevenueCatProvider';
 import { useState, useContext, useEffect } from 'react';
+import { SubscriptionContext } from '@/types/subscriptionContext';
 
 const colors = [
   {
@@ -166,10 +167,14 @@ const ThemeColorSwitch = () => {
       setIsOpen(false);
     } else {
       // Premium color and user not subscribed - show modal with callback
-      subscribeModal?.showModalIfRequired(() => {
-        setThemeColor(colorName as any);
-        setIsOpen(false);
-      });
+      subscribeModal?.showModalIfRequired(
+        () => {
+          setThemeColor(colorName as any);
+          setIsOpen(false);
+        },
+        () => {},
+        SubscriptionContext.THEME_COLOR
+      );
     }
   };
 

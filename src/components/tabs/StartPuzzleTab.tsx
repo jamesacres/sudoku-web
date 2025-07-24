@@ -5,6 +5,7 @@ import { Tab } from '@/types/tabs';
 import Link from 'next/link';
 import { useContext } from 'react';
 import { Camera, Users } from 'react-feather';
+import { SubscriptionContext } from '@/types/subscriptionContext';
 
 interface StartPuzzleTabProps {
   isOnline: boolean;
@@ -59,8 +60,10 @@ export const StartPuzzleTab = ({
         </button>
         <button
           onClick={() =>
-            subscribeModal?.showModalIfRequired(() =>
-              openSudokuOfTheDay(Difficulty.EASY)
+            subscribeModal?.showModalIfRequired(
+              () => openSudokuOfTheDay(Difficulty.EASY),
+              () => {},
+              SubscriptionContext.CHALLENGING_DIFFICULTY
             )
           }
           disabled={isLoading}
@@ -78,8 +81,10 @@ export const StartPuzzleTab = ({
         </button>
         <button
           onClick={() =>
-            subscribeModal?.showModalIfRequired(() =>
-              openSudokuOfTheDay(Difficulty.INTERMEDIATE)
+            subscribeModal?.showModalIfRequired(
+              () => openSudokuOfTheDay(Difficulty.INTERMEDIATE),
+              () => {},
+              SubscriptionContext.HARD_DIFFICULTY
             )
           }
           disabled={isLoading}

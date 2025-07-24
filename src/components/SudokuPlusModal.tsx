@@ -16,6 +16,8 @@ import {
   Users,
   Unlock,
 } from 'react-feather';
+import { SubscriptionContext } from '@/types/subscriptionContext';
+import { SUBSCRIPTION_CONTEXT_MESSAGES } from '@/config/subscriptionMessages';
 
 const SudokuPlusModal = () => {
   const {
@@ -26,6 +28,21 @@ const SudokuPlusModal = () => {
     restorePurchases,
     subscribeModal: modal,
   } = useContext(RevenueCatContext) || {};
+
+  const getContextualMessage = (context?: SubscriptionContext) => {
+    if (!context) return null;
+
+    const messageConfig = SUBSCRIPTION_CONTEXT_MESSAGES[context];
+    if (!messageConfig) return null;
+
+    return (
+      <div className={`mb-4 rounded-lg p-3 ${messageConfig.bgColor}`}>
+        <p className={`text-sm ${messageConfig.textColor}`}>
+          {messageConfig.content}
+        </p>
+      </div>
+    );
+  };
   let monthlyPackage = packages?.find((pkg) =>
     pkg.identifier.toLowerCase().includes('monthly')
   );
@@ -133,6 +150,9 @@ const SudokuPlusModal = () => {
               it ad free! Your support is much appreciated.
             </p>
           </div>
+
+          {/* Contextual Message */}
+          <div className="px-6">{getContextualMessage(modal?.context)}</div>
 
           {/* Pricing Options */}
           <div className="mb-6 space-y-3 px-6">

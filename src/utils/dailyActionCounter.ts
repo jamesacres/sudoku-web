@@ -1,4 +1,6 @@
 // Utility to track daily premium action usage (undo, check cell, check grid)
+import { DAILY_LIMITS } from '@/config/dailyLimits';
+
 interface DailyActionData {
   date: string;
   undoCount: number;
@@ -7,13 +9,6 @@ interface DailyActionData {
 }
 
 const STORAGE_KEY = 'daily-action-counter';
-
-// Daily limits for free users
-export const DAILY_LIMITS = {
-  UNDO: 2,
-  CHECK_CELL: 2,
-  CHECK_GRID: 2,
-} as const;
 
 export function getTodayDateString(): string {
   return new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
