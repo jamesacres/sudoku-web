@@ -292,6 +292,7 @@ const Sudoku = ({
                 reset={reset}
                 reveal={reveal}
                 onAdvancedToggle={setShowAdvancedControls}
+                isSubscribed={isSubscribed}
               />
             </div>
           )}

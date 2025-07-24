@@ -20,7 +20,7 @@ export const StartPuzzleTab = ({
   friendsList,
   setTab,
 }: StartPuzzleTabProps) => {
-  const { subscribeModal } = useContext(RevenueCatContext) || {};
+  const { subscribeModal, isSubscribed } = useContext(RevenueCatContext) || {};
   return (
     <div className="mb-4">
       <h1 className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-4xl font-bold text-transparent">
@@ -70,9 +70,11 @@ export const StartPuzzleTab = ({
           <span className="mt-2 text-base text-sm font-medium">
             Challenging
           </span>
-          <span className="absolute -top-1 -right-1 inline-flex items-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 px-2 py-1 text-xs font-semibold text-white shadow-lg">
-            ✨
-          </span>
+          {!isSubscribed && (
+            <span className="absolute -top-1 -right-1 inline-flex items-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 px-2 py-1 text-xs font-semibold text-white shadow-lg">
+              ✨
+            </span>
+          )}
         </button>
         <button
           onClick={() =>
@@ -85,9 +87,11 @@ export const StartPuzzleTab = ({
         >
           🌶️🌶️🌶️
           <span className="mt-2 text-base text-sm font-medium">Hard</span>
-          <span className="absolute -top-1 -right-1 inline-flex items-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 px-2 py-1 text-xs font-semibold text-white shadow-lg">
-            ✨
-          </span>
+          {!isSubscribed && (
+            <span className="absolute -top-1 -right-1 inline-flex items-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 px-2 py-1 text-xs font-semibold text-white shadow-lg">
+              ✨
+            </span>
+          )}
         </button>
       </div>
 

@@ -66,7 +66,7 @@ const RevenueCatProvider: React.FC<{ children: React.ReactNode }> = ({
         'You need to sign in to continue. Would you like to sign in now?'
       );
       if (confirmed && loginRedirect) {
-        return loginRedirect();
+        return loginRedirect({ userInitiated: true });
       } else {
         return cancelCallback();
       }

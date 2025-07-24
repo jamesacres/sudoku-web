@@ -151,7 +151,9 @@ function InviteComponent() {
               ) : (
                 <button
                   disabled={isLoggingIn}
-                  onClick={() => loginRedirect && loginRedirect()}
+                  onClick={() =>
+                    loginRedirect && loginRedirect({ userInitiated: true })
+                  }
                   className={`${isLoggingIn ? 'cursor-wait' : ''} mt-4 mr-4 inline-block rounded-sm bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300`}
                 >
                   Sign in to continue

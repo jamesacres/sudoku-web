@@ -38,6 +38,7 @@ interface Arguments {
   reset: () => void;
   reveal: () => void;
   onAdvancedToggle?: (_expanded: boolean) => void;
+  isSubscribed?: boolean;
 }
 
 const SudokuControls = ({
@@ -60,6 +61,7 @@ const SudokuControls = ({
   reset,
   reveal,
   onAdvancedToggle,
+  isSubscribed,
 }: Arguments) => {
   const [showAdvanced, setShowAdvanced] = useState(false);
 
@@ -126,10 +128,15 @@ const SudokuControls = ({
               <button
                 disabled={isUndoDisabled}
                 onClick={() => undo()}
-                className="flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-gray-100 px-2 py-2.5 text-sm font-medium text-gray-700 transition-all duration-150 hover:bg-gray-200 active:bg-gray-300 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 dark:bg-zinc-700 dark:text-gray-200 dark:hover:bg-zinc-600 dark:active:bg-zinc-500 dark:disabled:bg-zinc-800"
+                className="relative flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-gray-100 px-2 py-2.5 text-sm font-medium text-gray-700 transition-all duration-150 hover:bg-gray-200 active:bg-gray-300 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 dark:bg-zinc-700 dark:text-gray-200 dark:hover:bg-zinc-600 dark:active:bg-zinc-500 dark:disabled:bg-zinc-800"
               >
                 <CornerUpLeft size={15} />
                 Undo
+                {!isSubscribed && (
+                  <span className="absolute -top-1 -right-1 inline-flex items-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 px-1 py-0.5 text-xs font-semibold text-white shadow-lg">
+                    ✨
+                  </span>
+                )}
               </button>
               <button
                 disabled={isRedoDisabled}
@@ -212,10 +219,15 @@ const SudokuControls = ({
                       'Are you sure you wish to reveal the whole grid?'
                     ) && reveal();
                   }}
-                  className="flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-gray-100 px-2 py-2.5 text-sm font-medium text-gray-700 transition-all duration-150 hover:bg-gray-200 active:bg-gray-300 dark:bg-zinc-700 dark:text-gray-200 dark:hover:bg-zinc-600 dark:active:bg-zinc-500"
+                  className="relative flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-gray-100 px-2 py-2.5 text-sm font-medium text-gray-700 transition-all duration-150 hover:bg-gray-200 active:bg-gray-300 dark:bg-zinc-700 dark:text-gray-200 dark:hover:bg-zinc-600 dark:active:bg-zinc-500"
                 >
                   <Unlock size={15} />
                   Reveal
+                  {!isSubscribed && (
+                    <span className="absolute -top-1 -right-1 inline-flex items-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 px-1 py-0.5 text-xs font-semibold text-white shadow-lg">
+                      ✨
+                    </span>
+                  )}
                 </button>
               </div>
             </div>

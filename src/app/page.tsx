@@ -198,7 +198,7 @@ export default function Home() {
         'You need to sign in to continue. Would you like to sign in now?'
       );
       if (confirmed && loginRedirect) {
-        loginRedirect();
+        loginRedirect({ userInitiated: true });
       }
       return;
     }

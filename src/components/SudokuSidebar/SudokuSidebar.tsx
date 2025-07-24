@@ -82,7 +82,7 @@ const SudokuSidebar = ({
                 onClick={() =>
                   user
                     ? setShowCreateParty(true)
-                    : loginRedirect && loginRedirect()
+                    : loginRedirect && loginRedirect({ userInitiated: true })
                 }
               >
                 <Users className="mr-2" size={18} />

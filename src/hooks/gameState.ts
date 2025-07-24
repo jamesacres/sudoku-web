@@ -18,6 +18,7 @@ import { useTimer } from './timer';
 import { calculateSeconds } from '@/helpers/calculateSeconds';
 import { Parties, ServerStateResult, Session } from '@/types/serverTypes';
 import { UserContext } from '@/providers/UserProvider';
+import { RevenueCatContext } from '@/providers/RevenueCatProvider/RevenueCatProvider';
 
 function useGameState({
   final,
@@ -28,7 +29,8 @@ function useGameState({
   initial: Puzzle<number>;
   puzzleId: string;
 }) {
-  const { user, loginRedirect } = useContext(UserContext) || {};
+  const { user } = useContext(UserContext) || {};
+  const { subscribeModal } = useContext(RevenueCatContext) || {};
 
   const { timer, setTimerNewSession, stopTimer, setPauseTimer } = useTimer({
     puzzleId,
@@ -153,8 +155,16 @@ function useGameState({
   }, [initial, setTimerNewSession]);
 
   const reveal = useCallback(() => {
-    pushAnswer(structuredClone(final));
-  }, [pushAnswer, final]);
+    const performReveal = () => {
+      pushAnswer(structuredClone(final));
+    };
+
+    if (subscribeModal) {
+      subscribeModal.showModalIfRequired(performReveal);
+    } else {
+      performReveal();
+    }
+  }, [pushAnswer, final, subscribeModal]);
 
   const toggleNote: ToggleNote = useCallback(
     (value: number) => {
@@ -209,13 +219,21 @@ function useGameState({
   const isUndoDisabled = answerStack.length < 2;
   const undo = useCallback(() => {
     if (!isUndoDisabled) {
-      const lastAnswer = answerStack[answerStack.length - 1];
-      setRedoAnswerStack([...redoAnswerStack, lastAnswer]);
-      setAnswerStack({
-        answerStack: answerStack.slice(0, answerStack.length - 1),
-      });
+      const performUndo = () => {
+        const lastAnswer = answerStack[answerStack.length - 1];
+        setRedoAnswerStack([...redoAnswerStack, lastAnswer]);
+        setAnswerStack({
+          answerStack: answerStack.slice(0, answerStack.length - 1),
+        });
+      };
+
+      if (subscribeModal) {
+        subscribeModal.showModalIfRequired(performUndo);
+      } else {
+        performUndo();
+      }
     }
-  }, [isUndoDisabled, answerStack, redoAnswerStack]);
+  }, [isUndoDisabled, answerStack, redoAnswerStack, subscribeModal]);
   const isRedoDisabled = !redoAnswerStack.length;
   const redo = useCallback(() => {
     if (!isRedoDisabled) {
@@ -254,13 +272,6 @@ function useGameState({
 
     const { localValue, serverValuePromise } = getValue() || {};
     if (localValue) {
-      // If not logged in, force sign in to resume
-      // This will become a premium feature
-      if (!user && loginRedirect) {
-        loginRedirect();
-        return;
-      }
-
       setAnswerStack({
         answerStack: localValue.state.answerStack,
         isRestored: true,
@@ -316,7 +327,7 @@ function useGameState({
     return () => {
       active = false;
     };
-  }, [loginRedirect, user, puzzleId, getValue, setTimerNewSession, saveValue]);
+  }, [user, puzzleId, getValue, setTimerNewSession, saveValue]);
   useEffect(() => {
     let active = true;
     if (!isDisabled && !isRestored && answerStack.length > 0) {
