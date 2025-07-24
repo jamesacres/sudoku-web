@@ -19,6 +19,14 @@ import { calculateSeconds } from '@/helpers/calculateSeconds';
 import { Parties, ServerStateResult, Session } from '@/types/serverTypes';
 import { UserContext } from '@/providers/UserProvider';
 import { RevenueCatContext } from '@/providers/RevenueCatProvider/RevenueCatProvider';
+import {
+  canUseUndo,
+  canUseCheckCell,
+  canUseCheckGrid,
+  incrementUndoCount,
+  incrementCheckCellCount,
+  incrementCheckGridCount,
+} from '@/utils/dailyActionCounter';
 
 function useGameState({
   final,
@@ -30,7 +38,7 @@ function useGameState({
   puzzleId: string;
 }) {
   const { user } = useContext(UserContext) || {};
-  const { subscribeModal } = useContext(RevenueCatContext) || {};
+  const { subscribeModal, isSubscribed } = useContext(RevenueCatContext) || {};
 
   const { timer, setTimerNewSession, stopTimer, setPauseTimer } = useTimer({
     puzzleId,
@@ -225,15 +233,26 @@ function useGameState({
         setAnswerStack({
           answerStack: answerStack.slice(0, answerStack.length - 1),
         });
+        // Increment daily counter only for non-subscribers
+        if (!isSubscribed) {
+          incrementUndoCount();
+        }
       };
 
-      if (subscribeModal) {
-        subscribeModal.showModalIfRequired(performUndo);
-      } else {
+      // Check if user has free uses left or is subscribed
+      if (isSubscribed || canUseUndo()) {
         performUndo();
+      } else if (subscribeModal) {
+        subscribeModal.showModalIfRequired(performUndo);
       }
     }
-  }, [isUndoDisabled, answerStack, redoAnswerStack, subscribeModal]);
+  }, [
+    isUndoDisabled,
+    answerStack,
+    redoAnswerStack,
+    subscribeModal,
+    isSubscribed,
+  ]);
   const isRedoDisabled = !redoAnswerStack.length;
   const redo = useCallback(() => {
     if (!isRedoDisabled) {
@@ -247,21 +266,51 @@ function useGameState({
   const [validation, setValidation] = useState<
     undefined | Puzzle<boolean | undefined>
   >(undefined);
-  const validateGrid = useCallback(
-    () =>
+  const validateGrid = useCallback(() => {
+    const performValidateGrid = () => {
       validation
         ? setValidation(undefined)
-        : setValidation(checkGrid(initial, final, answer).validation),
-    [initial, final, answer, validation]
-  );
-  const validateCell = useCallback(
-    () =>
+        : setValidation(checkGrid(initial, final, answer).validation);
+      // Increment daily counter only for non-subscribers
+      if (!isSubscribed) {
+        incrementCheckGridCount();
+      }
+    };
+
+    // Check if user has free uses left or is subscribed
+    if (isSubscribed || canUseCheckGrid()) {
+      performValidateGrid();
+    } else if (subscribeModal) {
+      subscribeModal.showModalIfRequired(performValidateGrid);
+    }
+  }, [initial, final, answer, validation, subscribeModal, isSubscribed]);
+  const validateCell = useCallback(() => {
+    const performValidateCell = () => {
       selectedCell &&
-      (validation
-        ? setValidation(undefined)
-        : setValidation(checkCell(selectedCell, initial, final, answer))),
-    [validation, selectedCell, initial, final, answer]
-  );
+        (validation
+          ? setValidation(undefined)
+          : setValidation(checkCell(selectedCell, initial, final, answer)));
+      // Increment daily counter only for non-subscribers
+      if (!isSubscribed) {
+        incrementCheckCellCount();
+      }
+    };
+
+    // Check if user has free uses left or is subscribed
+    if (isSubscribed || canUseCheckCell()) {
+      performValidateCell();
+    } else if (subscribeModal) {
+      subscribeModal.showModalIfRequired(performValidateCell);
+    }
+  }, [
+    validation,
+    selectedCell,
+    initial,
+    final,
+    answer,
+    subscribeModal,
+    isSubscribed,
+  ]);
   useEffect(() => {
     setValidation(undefined);
   }, [answer, selectedCell]);

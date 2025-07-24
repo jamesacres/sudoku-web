@@ -16,6 +16,11 @@ import NumberPad from '../NumberPad';
 import Toggle from '../Toggle';
 import React, { memo, useState } from 'react';
 import { HintBox } from '../HintBox/HintBox';
+import {
+  canUseUndo,
+  canUseCheckCell,
+  canUseCheckGrid,
+} from '@/utils/dailyActionCounter';
 
 interface Arguments {
   isInputDisabled: boolean;
@@ -72,7 +77,7 @@ const SudokuControls = ({
   };
 
   return (
-    <div className="mt-0 mb-0 px-2 pt-2 lg:mb-16 xl:max-w-lg">
+    <div className="mt-0 mb-0 overflow-visible px-2 pt-2 lg:mb-16 xl:max-w-lg">
       <div className="hidden lg:block">
         <HintBox>
           Keyboard: arrow keys, undo, redo.
@@ -84,7 +89,7 @@ const SudokuControls = ({
       </div>
 
       {/* iOS-style control panel */}
-      <div className="pb-safe mt-0 rounded-t-xl bg-white/60 p-3 shadow-lg backdrop-blur-md dark:bg-zinc-900/60">
+      <div className="pb-safe mt-0 overflow-visible rounded-t-xl bg-white/60 p-3 shadow-lg backdrop-blur-md dark:bg-zinc-900/60">
         {/* Toggle controls section */}
         <div className="mb-0 flex justify-center gap-4 border-b border-gray-200 pb-3 lg:mb-3 dark:border-gray-600">
           <div className="flex items-center gap-3">
@@ -104,7 +109,7 @@ const SudokuControls = ({
         </div>
 
         {/* Main controls layout */}
-        <div className="flex flex-col items-center gap-2 lg:flex-row">
+        <div className="flex flex-col items-center gap-2 overflow-visible lg:flex-row">
           {/* Number pad */}
           <div className="order-1 flex-shrink-0 lg:order-1">
             <NumberPad
@@ -114,8 +119,8 @@ const SudokuControls = ({
           </div>
 
           {/* Action buttons - compact layout for mobile */}
-          <div className="order-2 w-full flex-1 lg:order-2 lg:w-auto">
-            <div className="grid grid-cols-3 gap-2">
+          <div className="order-2 w-full flex-1 overflow-visible lg:order-2 lg:w-auto">
+            <div className="grid grid-cols-3 gap-2 overflow-visible">
               {/* Row 1: Delete, Undo, and Redo */}
               <button
                 disabled={isDeleteDisabled}
@@ -132,8 +137,8 @@ const SudokuControls = ({
               >
                 <CornerUpLeft size={15} />
                 Undo
-                {!isSubscribed && (
-                  <span className="absolute -top-1 -right-1 inline-flex items-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 px-1 py-0.5 text-xs font-semibold text-white shadow-lg">
+                {!isSubscribed && !isUndoDisabled && !canUseUndo() && (
+                  <span className="absolute -top-1 -right-1 z-10 inline-flex items-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 px-1 py-0.5 text-xs font-semibold text-white shadow-lg">
                     ✨
                   </span>
                 )}
@@ -165,28 +170,40 @@ const SudokuControls = ({
 
             {/* Collapsible advanced controls */}
             <div
-              className={`mt-2 overflow-hidden transition-all duration-300 ease-in-out lg:block ${
+              className={`mt-2 overflow-visible transition-all duration-300 ease-in-out lg:block ${
                 showAdvanced
                   ? 'max-h-96 opacity-100'
                   : 'max-h-0 opacity-0 lg:max-h-96 lg:opacity-100'
               }`}
             >
-              <div className="mb-2 grid grid-cols-3 gap-2">
+              <div className="mb-2 grid grid-cols-3 gap-2 overflow-visible">
                 {/* Check Cell, Check Grid, Zoom Mode */}
                 <button
                   disabled={isValidateCellDisabled}
                   onClick={() => validateCell()}
-                  className="flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-gray-100 px-2 py-2.5 text-sm font-medium text-gray-700 transition-all duration-150 hover:bg-gray-200 active:bg-gray-300 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 dark:bg-zinc-700 dark:text-gray-200 dark:hover:bg-zinc-600 dark:active:bg-zinc-500 dark:disabled:bg-zinc-800"
+                  className="relative flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-gray-100 px-2 py-2.5 text-sm font-medium text-gray-700 transition-all duration-150 hover:bg-gray-200 active:bg-gray-300 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 dark:bg-zinc-700 dark:text-gray-200 dark:hover:bg-zinc-600 dark:active:bg-zinc-500 dark:disabled:bg-zinc-800"
                 >
                   <Square size={15} />
                   Cell
+                  {!isSubscribed &&
+                    !isValidateCellDisabled &&
+                    !canUseCheckCell() && (
+                      <span className="absolute -top-1 -right-1 z-10 inline-flex items-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 px-1 py-0.5 text-xs font-semibold text-white shadow-lg">
+                        ✨
+                      </span>
+                    )}
                 </button>
                 <button
                   onClick={() => validateGrid()}
-                  className="flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-gray-100 px-2 py-2.5 text-sm font-medium text-gray-700 transition-all duration-150 hover:bg-gray-200 active:bg-gray-300 dark:bg-zinc-700 dark:text-gray-200 dark:hover:bg-zinc-600 dark:active:bg-zinc-500"
+                  className="relative flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-gray-100 px-2 py-2.5 text-sm font-medium text-gray-700 transition-all duration-150 hover:bg-gray-200 active:bg-gray-300 dark:bg-zinc-700 dark:text-gray-200 dark:hover:bg-zinc-600 dark:active:bg-zinc-500"
                 >
                   <Grid size={15} />
                   Grid
+                  {!isSubscribed && !canUseCheckGrid() && (
+                    <span className="absolute -top-1 -right-1 z-10 inline-flex items-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 px-1 py-0.5 text-xs font-semibold text-white shadow-lg">
+                      ✨
+                    </span>
+                  )}
                 </button>
                 <button
                   disabled={!isZoomMode && isInputDisabled}
@@ -201,7 +218,7 @@ const SudokuControls = ({
                   Zoom
                 </button>
               </div>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-2 overflow-visible">
                 <button
                   onClick={() => {
                     window.confirm(
@@ -224,7 +241,7 @@ const SudokuControls = ({
                   <Unlock size={15} />
                   Reveal
                   {!isSubscribed && (
-                    <span className="absolute -top-1 -right-1 inline-flex items-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 px-1 py-0.5 text-xs font-semibold text-white shadow-lg">
+                    <span className="absolute -top-1 -right-1 z-10 inline-flex items-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 px-1 py-0.5 text-xs font-semibold text-white shadow-lg">
                       ✨
                     </span>
                   )}

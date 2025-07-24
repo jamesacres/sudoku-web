@@ -70,7 +70,7 @@ const SudokuPlusModal = () => {
     {
       icon: <RotateCcw className="h-6 w-6" />,
       title: 'Unlimited undo, check and reveal',
-      description: 'Remove undo, check and reveal limits',
+      description: 'Remove daily undo, check and reveal limits',
     },
     {
       icon: <Droplet className="h-6 w-6" />,
