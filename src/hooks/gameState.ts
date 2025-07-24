@@ -493,6 +493,7 @@ function useGameState({
     reveal,
     completed,
     setPauseTimer,
+    setTimerNewSession,
     refreshSessionParties,
     sessionParties,
     showSidebar,

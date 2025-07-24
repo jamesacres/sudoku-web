@@ -67,6 +67,8 @@ const RevenueCatProvider: React.FC<{ children: React.ReactNode }> = ({
       );
       if (confirmed && loginRedirect) {
         return loginRedirect();
+      } else {
+        return cancelCallback();
       }
     }
     if (isSubscribed) {

@@ -19,6 +19,7 @@ import {
   addDailyPuzzleId,
   getDailyPuzzleCount,
 } from '@/utils/dailyPuzzleCounter';
+import { useRouter } from 'next/navigation';
 
 const Sudoku = ({
   puzzle: { initial, final, puzzleId },
@@ -27,6 +28,7 @@ const Sudoku = ({
   puzzle: { initial: Puzzle<number>; final: Puzzle<number>; puzzleId: string };
   redirectUri: string;
 }) => {
+  const router = useRouter();
   const { user } = useContext(UserContext) || {};
   const { isSubscribed, subscribeModal } = useContext(RevenueCatContext) || {};
 
@@ -53,6 +55,7 @@ const Sudoku = ({
     reveal,
     completed,
     setPauseTimer,
+    setTimerNewSession,
     refreshSessionParties,
     sessionParties,
     showSidebar,
@@ -106,15 +109,25 @@ const Sudoku = ({
         setPauseTimer(true);
         subscribeModal?.showModalIfRequired(
           () => {
+            // Count down and resume
+            setTimerNewSession();
             setPauseTimer(false);
           },
           () => {
-            setPauseTimer(false);
+            // Navigate to homepage on cancel
+            router.replace('/');
           }
         );
       }
     }
-  }, [timer?.countdown, isSubscribed, subscribeModal, setPauseTimer]);
+  }, [
+    router,
+    timer?.countdown,
+    isSubscribed,
+    subscribeModal,
+    setPauseTimer,
+    setTimerNewSession,
+  ]);
 
   // Use drag hook for all drag-related functionality
   const { dragOffset, dragStarted, zoomOrigin, handleDragStart } = useDrag({
