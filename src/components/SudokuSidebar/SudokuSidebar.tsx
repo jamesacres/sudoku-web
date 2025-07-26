@@ -76,8 +76,8 @@ const SudokuSidebar = ({
               </button>
             </div>
             <p className="mb-5 text-sm text-gray-600 dark:text-gray-300">
-              Challenge your friends and family to solve this Sudoku puzzle with
-              you!
+              Challenge your friends and family to a race, who can solve it in
+              the fastest time?
             </p>
             {!showCreateParty && (
               <button

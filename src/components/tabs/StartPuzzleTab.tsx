@@ -27,7 +27,6 @@ export const StartPuzzleTab = ({
       <h1 className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-4xl font-bold text-transparent">
         New Puzzle
       </h1>
-
       <h2 className="mt-8 mb-2 bg-gradient-to-r from-blue-500 to-indigo-400 bg-clip-text text-2xl font-bold text-transparent">
         📸 Import
       </h2>
@@ -41,7 +40,6 @@ export const StartPuzzleTab = ({
       >
         <Camera className="mr-2 h-5 w-5" /> Import with camera
       </Link>
-
       <h2 className="mt-8 mb-2 bg-gradient-to-r from-green-500 to-teal-400 bg-clip-text text-2xl font-bold text-transparent">
         🌱 Sudoku of the Day
       </h2>
@@ -99,7 +97,6 @@ export const StartPuzzleTab = ({
           )}
         </button>
       </div>
-
       <h2 className="mt-8 mb-2 bg-gradient-to-r from-purple-500 to-pink-400 bg-clip-text text-2xl font-bold text-transparent">
         Puzzles from Friends
       </h2>

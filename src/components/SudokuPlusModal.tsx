@@ -15,6 +15,7 @@ import {
   Droplet,
   Users,
   Unlock,
+  Watch,
 } from 'react-feather';
 import { SubscriptionContext } from '@/types/subscriptionContext';
 import { SUBSCRIPTION_CONTEXT_MESSAGES } from '@/config/subscriptionMessages';
@@ -75,14 +76,19 @@ const SudokuPlusModal = () => {
 
   const features = [
     {
-      icon: <Unlock className="h-6 w-6" />,
-      title: 'Unlock all sudoku of the day levels',
-      description: 'Play all difficulty levels',
+      icon: <Calendar className="h-6 w-6" />,
+      title: '🏁 Unlimited play and race',
+      description: 'Race friends in real-time more than once a day',
     },
     {
-      icon: <Calendar className="h-6 w-6" />,
-      title: 'Unlimited play and scan',
-      description: 'Remove daily play and scan limits',
+      icon: <Watch className="h-6 w-6" />,
+      title: 'Create unlimited racing parties',
+      description: 'Host private competitions with friends and family',
+    },
+    {
+      icon: <Unlock className="h-6 w-6" />,
+      title: 'All difficulty levels unlocked',
+      description: 'Master every challenge',
     },
     {
       icon: <RotateCcw className="h-6 w-6" />,
@@ -92,7 +98,7 @@ const SudokuPlusModal = () => {
     {
       icon: <Droplet className="h-6 w-6" />,
       title: 'All themes unlocked',
-      description: 'Choose your preferred theme colour',
+      description: 'Personalise your racing experience',
     },
     {
       icon: <Users className="h-6 w-6" />,
@@ -145,10 +151,9 @@ const SudokuPlusModal = () => {
                 <span className="mr-1">✨</span>Sudoku Plus
                 <span className="ml-1">✨</span>
               </span>{' '}
-              to <span className="font-semibold">unlock all features</span>,{' '}
-              <span className="font-semibold">remove limits</span> and{' '}
-              <span className="font-semibold">support development</span> - keep
-              it ad free! Your support is much appreciated.
+              to <span className="font-semibold">remove all speed limits</span>!{' '}
+              Challenge friends, climb leaderboards, and improve your solving
+              speed. Keep it ad free! Your support is much appreciated.
             </p>
           </div>
 
