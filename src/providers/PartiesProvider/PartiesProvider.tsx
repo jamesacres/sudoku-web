@@ -172,9 +172,11 @@ const PartiesProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const loadParties = async () => {
       console.info('loadParties');
+      setIsLoading(true);
       const values = await listParties();
       if (active && values) {
         setParties(values);
+        setIsLoading(false);
       }
     };
 

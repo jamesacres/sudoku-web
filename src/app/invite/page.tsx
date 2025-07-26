@@ -2,6 +2,7 @@
 import { useServerStorage } from '@/hooks/serverStorage';
 import { UserContext } from '@/providers/UserProvider';
 import { RevenueCatContext } from '@/providers/RevenueCatProvider';
+import { useParties } from '@/hooks/useParties';
 import { PublicInvite } from '@/types/serverTypes';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useCallback, useContext, useEffect, useState } from 'react';
@@ -16,15 +17,18 @@ function InviteComponent() {
   const router = useRouter();
   const { isLoggingIn, user, loginRedirect } = useContext(UserContext) || {};
   const { isSubscribed, subscribeModal } = useContext(RevenueCatContext) || {};
-  const { getPublicInvite, createMember, listParties } = useServerStorage({});
-  const [isLoading, setIsLoading] = useState(true);
+  const { getPublicInvite, createMember } = useServerStorage({});
+  const { parties: userParties, isLoading: partiesLoading } = useParties({});
+  const [inviteLoading, setInviteLoading] = useState(true);
   const [publicInvite, setPublicInvite] = useState<PublicInvite | undefined>(
     undefined
   );
   const name = user ? user?.given_name || user?.name : '';
   const [memberNickname, setMemberNickname] = useState(name || '');
   const [isJoining, setIsJoining] = useState(false);
-  const [userParties, setUserParties] = useState<any[]>([]);
+
+  // Combined loading state - wait for both invite and parties
+  const isLoading = inviteLoading || partiesLoading;
 
   const redirect = useCallback(
     (redirectUri: string | undefined) => {
@@ -39,18 +43,18 @@ function InviteComponent() {
   );
 
   const isAlreadyAMember = useCallback(
-    async (partyId: string) => {
-      const parties = await listParties();
-      const party = parties?.find((party) => party.partyId === partyId);
+    (partyId: string) => {
+      // Use the already loaded parties
+      const party = userParties.find((party) => party.partyId === partyId);
       return !!party;
     },
-    [listParties]
+    [userParties]
   );
 
   const checkIfMemberAndRedirect = useCallback(
-    async (publicInvite: PublicInvite) => {
+    (publicInvite: PublicInvite) => {
       const partyId = publicInvite.resourceId.replace('party-', '');
-      if (await isAlreadyAMember(partyId)) {
+      if (isAlreadyAMember(partyId)) {
         // They're a member! redirect to the game
         redirect(publicInvite?.redirectUri);
         return true;
@@ -60,41 +64,42 @@ function InviteComponent() {
     [isAlreadyAMember, redirect]
   );
 
+  // Load invite data (only after parties are loaded to ensure membership check works)
   useEffect(() => {
     let active = true;
+
+    // Don't proceed until parties are loaded
+    if (partiesLoading) return;
 
     if (inviteId && !publicInvite) {
       const serverPromise = async () => {
         const publicInvite = await getPublicInvite(inviteId);
         if (active && publicInvite) {
           // Check if they are already a member, and redirect if so
-          if (!(await checkIfMemberAndRedirect(publicInvite))) {
+          if (!checkIfMemberAndRedirect(publicInvite)) {
             // Otherwise, show invite page
             setPublicInvite(publicInvite);
-            setIsLoading(false);
           }
+        }
+        if (active) {
+          setInviteLoading(false);
         }
       };
       serverPromise();
+    } else if (!inviteId) {
+      setInviteLoading(false);
     }
 
     return () => {
       active = false;
     };
-  }, [getPublicInvite, inviteId, publicInvite, checkIfMemberAndRedirect]);
-
-  // Load user's existing parties
-  useEffect(() => {
-    const loadUserParties = async () => {
-      if (user) {
-        const parties = await listParties();
-        if (parties) {
-          setUserParties(parties);
-        }
-      }
-    };
-    loadUserParties();
-  }, [user, listParties]);
+  }, [
+    getPublicInvite,
+    inviteId,
+    publicInvite,
+    checkIfMemberAndRedirect,
+    partiesLoading,
+  ]);
 
   const performJoinParty = async () => {
     try {
