@@ -1,6 +1,5 @@
 'use client';
 import Footer from '@/components/Footer';
-import StartPuzzleTab from '@/components/tabs/StartPuzzleTab';
 import MyPuzzlesTab from '@/components/tabs/MyPuzzlesTab';
 import FriendsTab from '@/components/tabs/FriendsTab';
 import ActivityWidget from '@/components/ActivityWidget';
@@ -8,6 +7,7 @@ import { useLocalStorage } from '@/hooks/localStorage';
 import { useOnline } from '@/hooks/online';
 import { useServerStorage } from '@/hooks/serverStorage';
 import { UserContext } from '@/providers/UserProvider';
+import { RevenueCatContext } from '@/providers/RevenueCatProvider';
 import { useParties } from '@/hooks/useParties';
 import { Difficulty, ServerStateResult } from '@/types/serverTypes';
 import { GameState, ServerState } from '@/types/state';
@@ -15,15 +15,30 @@ import { StateType } from '@/types/StateType';
 import { Timer } from '@/types/timer';
 import { Tab } from '@/types/tabs';
 import { UserSessions } from '@/types/userSessions';
+import { SubscriptionContext } from '@/types/subscriptionContext';
 import { useRouter } from 'next/navigation';
 import { useCallback, useContext, useEffect, useState } from 'react';
-import { Heart, Plus, Users } from 'react-feather';
+import {
+  Users,
+  Calendar,
+  Star,
+  Zap,
+  Award,
+  RotateCcw,
+  Droplet,
+  UserPlus,
+  CheckCircle,
+  Lock,
+  Camera,
+} from 'react-feather';
+import Link from 'next/link';
 
 export default function Home() {
   const [tab, setTab] = useState(Tab.START_PUZZLE);
   const router = useRouter();
   const { user, loginRedirect } = useContext(UserContext) || {};
-  const { isOnline } = useOnline();
+  const { isSubscribed, subscribeModal } = useContext(RevenueCatContext) || {};
+  useOnline();
   const [isLoading, setIsLoading] = useState(false);
   const { getSudokuOfTheDay, listValues: listServerValues } =
     useServerStorage();
@@ -201,58 +216,406 @@ export default function Home() {
     setIsLoading(false);
   };
 
+  const premiumFeatures = [
+    {
+      icon: Calendar,
+      title: 'Unlimited play and race',
+      description: 'Race friends in real-time more than once a day',
+      isPremium: !isSubscribed,
+    },
+    {
+      icon: UserPlus,
+      title: 'Create unlimited racing parties',
+      description: 'Host private competitions with friends and family',
+      isPremium: !isSubscribed,
+    },
+    {
+      icon: Award,
+      title: 'All difficulty levels unlocked',
+      description: 'Master every challenge',
+      isPremium: !isSubscribed,
+    },
+    {
+      icon: RotateCcw,
+      title: 'Unlimited undo, check and reveal',
+      description: 'Remove daily undo, check and reveal limits',
+      isPremium: !isSubscribed,
+    },
+    {
+      icon: Droplet,
+      title: 'All themes unlocked',
+      description: 'Personalise your racing experience',
+      isPremium: !isSubscribed,
+    },
+    {
+      icon: Users,
+      title: 'Unlimited party management',
+      description:
+        'Create and join as many parties as you like. Remove members from your party.',
+      isPremium: !isSubscribed,
+    },
+  ];
+
+  const handlePremiumFeatureClick = (context?: SubscriptionContext) => {
+    if (!isSubscribed) {
+      subscribeModal?.showModalIfRequired(
+        () => {},
+        () => {},
+        context
+      );
+    }
+  };
+
   const tabBackground = (thisTab: Tab) =>
     thisTab === tab
       ? 'bg-transparent text-theme-primary dark:text-theme-primary-light font-semibold'
       : 'text-gray-500 dark:text-gray-400';
 
+  const handleTabChange = (newTab: Tab) => {
+    setTab(newTab);
+    // Scroll to top when changing tabs
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Calculate daily streak from sessions
+  const calculateDailyStreak = useCallback(() => {
+    if (!sessions || sessions.length === 0) return 0;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const sessionDates = sessions
+      .map((session) => {
+        const date = new Date(session.updatedAt);
+        date.setHours(0, 0, 0, 0);
+        return date.getTime();
+      })
+      .filter((date, index, array) => array.indexOf(date) === index) // Remove duplicates
+      .sort((a, b) => b - a); // Sort newest first
+
+    let streak = 0;
+    let currentDate = today.getTime();
+
+    for (const sessionDate of sessionDates) {
+      if (sessionDate === currentDate) {
+        streak++;
+        currentDate -= 24 * 60 * 60 * 1000; // Go back one day
+      } else if (sessionDate === currentDate + 24 * 60 * 60 * 1000) {
+        // Session from yesterday, continue streak
+        streak++;
+        currentDate = sessionDate - 24 * 60 * 60 * 1000;
+      } else {
+        break; // Gap in streak
+      }
+    }
+
+    return streak;
+  }, [sessions]);
+
+  const dailyStreak = calculateDailyStreak();
+
   return (
     <>
-      <div className="container mx-auto px-6">
-        <div className="flex justify-center">
-          <ActivityWidget sessions={sessions} />
+      {tab === Tab.START_PUZZLE ? (
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+          {/* Racing Hero Section */}
+          <div className="pt-safe relative overflow-hidden bg-gradient-to-r from-blue-600 to-purple-600 px-6">
+            <div className="absolute inset-0 bg-black/10"></div>
+            <div className="relative z-10 container mx-auto py-12 text-center text-white">
+              <div className="mb-6 flex justify-center">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
+                  <Zap className="h-8 w-8 text-white" />
+                </div>
+              </div>
+              <h1 className="mb-4 text-4xl font-bold">Ready to Race? 🏎️</h1>
+              <p className="mb-8 text-xl opacity-90">
+                Challenge friends, climb leaderboards, and improve your Sudoku
+                solving speed
+              </p>
+
+              {/* Daily Streak Section */}
+              <div className="mb-8">
+                <div className="rounded-2xl bg-white/10 p-6 backdrop-blur-sm">
+                  <div className="text-center">
+                    <div className="mb-3 flex justify-center">
+                      <div className="text-4xl">🔥</div>
+                    </div>
+                    <div className="mb-2">
+                      <span className="text-3xl font-bold text-white">
+                        {dailyStreak}
+                      </span>
+                      <span className="ml-2 text-lg text-white/80">
+                        day streak
+                      </span>
+                    </div>
+                    <p className="mb-4 text-sm text-white/70">
+                      {dailyStreak === 0
+                        ? 'Start your racing streak today!'
+                        : dailyStreak === 1
+                          ? 'Great start! Keep it going tomorrow!'
+                          : 'Keep racing daily to maintain your streak!'}
+                    </p>
+
+                    {/* Streak Progress - Show last 7 days */}
+                    <div className="flex justify-center space-x-2">
+                      {Array.from({ length: 7 }, (_, index) => {
+                        const dayOffset = 6 - index; // 6, 5, 4, 3, 2, 1, 0 (today)
+                        const hasActivity = dayOffset < dailyStreak;
+                        return (
+                          <div
+                            key={index}
+                            className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold ${
+                              hasActivity
+                                ? 'bg-orange-400 text-white'
+                                : 'bg-white/20 text-white/40'
+                            }`}
+                          >
+                            {hasActivity ? '🔥' : '○'}
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    <div className="mt-4 text-xs text-white/60">
+                      {dailyStreak >= 100 && '⭐ Century champion! '}
+                      {dailyStreak >= 30 &&
+                        dailyStreak < 100 &&
+                        '🏆 Monthly master! '}
+                      {dailyStreak >= 7 &&
+                        dailyStreak < 30 &&
+                        '🎉 Week warrior! '}
+                      {dailyStreak > 0 && (
+                        <>
+                          Next milestone:{' '}
+                          {dailyStreak < 7
+                            ? '7 days'
+                            : dailyStreak < 30
+                              ? '30 days'
+                              : '100 days'}
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Racing Action Buttons */}
+              <div className="space-y-6">
+                {/* Daily Racing Challenges */}
+                <div className="rounded-2xl bg-white/10 p-6 backdrop-blur-sm">
+                  <h3 className="mb-3 text-xl font-bold text-white">
+                    🏁 Daily Racing Challenges
+                  </h3>
+                  <p className="mb-4 text-white/80">
+                    Choose your difficulty and race against the clock and your
+                    friends!
+                  </p>
+                  <div className="grid grid-cols-3 gap-3">
+                    <button
+                      onClick={() => openSudokuOfTheDay(Difficulty.SIMPLE)}
+                      disabled={isLoading}
+                      className={`${
+                        isLoading ? 'cursor-wait' : 'cursor-pointer'
+                      } flex flex-col items-center justify-center rounded-xl bg-white/20 p-4 font-bold text-white backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/30 disabled:opacity-50`}
+                    >
+                      <span className="mb-2 text-2xl">⚡</span>
+                      <span className="text-sm">Tricky</span>
+                    </button>
+                    <button
+                      onClick={() =>
+                        subscribeModal?.showModalIfRequired(
+                          () => openSudokuOfTheDay(Difficulty.EASY),
+                          () => {},
+                          SubscriptionContext.CHALLENGING_DIFFICULTY
+                        )
+                      }
+                      disabled={isLoading}
+                      className={`${
+                        isLoading ? 'cursor-wait' : 'cursor-pointer'
+                      } relative flex flex-col items-center justify-center rounded-xl bg-white/20 p-4 font-bold text-white backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/30 disabled:opacity-50`}
+                    >
+                      <span className="mb-2 text-2xl">🔥</span>
+                      <span className="text-sm">Challenging</span>
+                      {!isSubscribed && (
+                        <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-yellow-400 text-xs">
+                          ✨
+                        </span>
+                      )}
+                    </button>
+                    <button
+                      onClick={() =>
+                        subscribeModal?.showModalIfRequired(
+                          () => openSudokuOfTheDay(Difficulty.INTERMEDIATE),
+                          () => {},
+                          SubscriptionContext.HARD_DIFFICULTY
+                        )
+                      }
+                      disabled={isLoading}
+                      className={`${
+                        isLoading ? 'cursor-wait' : 'cursor-pointer'
+                      } relative flex flex-col items-center justify-center rounded-xl bg-white/20 p-4 font-bold text-white backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/30 disabled:opacity-50`}
+                    >
+                      <span className="mb-2 text-2xl">🚀</span>
+                      <span className="text-sm">Hard</span>
+                      {!isSubscribed && (
+                        <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-yellow-400 text-xs">
+                          ✨
+                        </span>
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Import Racing Challenge */}
+                <div className="rounded-2xl bg-white/10 p-6 backdrop-blur-sm">
+                  <h3 className="mb-3 text-xl font-bold text-white">
+                    📸 Import & Race
+                  </h3>
+                  <p className="mb-4 text-white/80">
+                    Scan and share an unsolved puzzle from a book to race
+                    against the clock and your friends!
+                  </p>
+                  <Link
+                    href="/import"
+                    className="inline-flex items-center justify-center rounded-full bg-white/20 px-6 py-3 font-medium text-white backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/30"
+                  >
+                    <Camera className="mr-2 h-5 w-5" />
+                    Import Puzzle
+                  </Link>
+                </div>
+
+                {/* Friends Racing */}
+                <div className="rounded-2xl bg-white/10 p-6 backdrop-blur-sm">
+                  <h3 className="mb-3 text-xl font-bold text-white">
+                    👥 Team Racing
+                  </h3>
+                  <p className="mb-4 text-white/80">
+                    Race against{' '}
+                    {friendsList?.length
+                      ? friendsList.slice(0, 3).join(', ')
+                      : 'your racing team'}{' '}
+                    and climb the leaderboard!
+                  </p>
+                  <button
+                    onClick={() => handleTabChange(Tab.FRIENDS)}
+                    className="inline-flex items-center justify-center rounded-full bg-white/20 px-6 py-3 font-medium text-white backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/30"
+                  >
+                    <Users className="mr-2 h-5 w-5" />
+                    View Racing Teams
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Racing track decoration */}
+            <div className="absolute right-0 bottom-0 left-0 h-2 bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-400"></div>
+          </div>
+
+          {/* Premium Features Section */}
+          <div className="container mx-auto px-6 py-8">
+            <div className="mb-8">
+              <h2 className="mb-2 text-center text-2xl font-bold text-gray-900 dark:text-white">
+                🏁 Premium Features
+              </h2>
+              <p className="text-center text-gray-600 dark:text-gray-400">
+                Unlock the full Sudoku Share experience
+              </p>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {premiumFeatures.map((feature, index) => (
+                <div
+                  key={index}
+                  className={`group relative rounded-2xl border-2 bg-white/80 p-6 shadow-lg backdrop-blur-xl transition-all hover:scale-105 hover:shadow-xl dark:bg-gray-800/80 ${
+                    feature.isPremium
+                      ? 'cursor-pointer border-yellow-200 hover:border-yellow-300 dark:border-yellow-600'
+                      : 'border-green-200 dark:border-green-600'
+                  }`}
+                  onClick={() => {
+                    if (feature.isPremium) {
+                      handlePremiumFeatureClick();
+                    }
+                  }}
+                >
+                  {feature.isPremium && (
+                    <div className="absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg">
+                      <Star className="h-3 w-3" />
+                    </div>
+                  )}
+
+                  <div className="mb-4 flex items-center">
+                    <div
+                      className={`flex h-12 w-12 items-center justify-center rounded-xl ${
+                        feature.isPremium
+                          ? 'bg-gradient-to-br from-blue-500 to-purple-600 text-white'
+                          : 'bg-gradient-to-br from-green-500 to-green-600 text-white'
+                      }`}
+                    >
+                      <feature.icon className="h-6 w-6" />
+                    </div>
+                    <div className="ml-4 flex-1">
+                      {feature.isPremium ? (
+                        <Lock className="float-right h-4 w-4 text-gray-400" />
+                      ) : (
+                        <CheckCircle className="float-right h-4 w-4 text-green-500" />
+                      )}
+                    </div>
+                  </div>
+
+                  <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
+                    {feature.title}
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {feature.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Bottom padding to ensure content doesn't get hidden behind footer */}
+          <div className="pb-24"></div>
         </div>
-        {tab === Tab.START_PUZZLE && (
-          <StartPuzzleTab
-            isOnline={isOnline}
-            isLoading={isLoading}
-            openSudokuOfTheDay={openSudokuOfTheDay}
-            friendsList={friendsList}
-            setTab={setTab}
-          />
-        )}
-        {tab === Tab.MY_PUZZLES && <MyPuzzlesTab sessions={sessions} />}
-        {tab === Tab.FRIENDS && (
-          <FriendsTab
-            user={user}
-            parties={parties}
-            expandUser={expandUser}
-            userSessions={userSessions}
-            mySessions={sessions}
-          />
-        )}
-      </div>
+      ) : (
+        <div className="pt-safe min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+          <div className="container mx-auto px-6 pb-24">
+            <div className="flex justify-center">
+              <ActivityWidget sessions={sessions} />
+            </div>
+            {tab === Tab.MY_PUZZLES && <MyPuzzlesTab sessions={sessions} />}
+            {tab === Tab.FRIENDS && (
+              <FriendsTab
+                user={user}
+                parties={parties}
+                expandUser={expandUser}
+                userSessions={userSessions}
+                mySessions={sessions}
+              />
+            )}
+          </div>
+        </div>
+      )}
       <Footer>
         <button
-          onClick={() => setTab(Tab.START_PUZZLE)}
+          onClick={() => handleTabChange(Tab.START_PUZZLE)}
           className={`group inline-flex cursor-pointer flex-col items-center justify-center px-5 transition-colors duration-200 active:opacity-70 ${tabBackground(Tab.START_PUZZLE)}`}
         >
-          <Plus className="text-theme-primary dark:text-theme-primary-light mb-1 h-6 w-6" />
-          <span className="text-center text-xs font-medium">New Puzzle</span>
+          <Zap className="text-theme-primary dark:text-theme-primary-light mb-1 h-6 w-6" />
+          <span className="text-center text-xs font-medium">Start Race</span>
         </button>
         <button
-          onClick={() => setTab(Tab.MY_PUZZLES)}
+          onClick={() => handleTabChange(Tab.MY_PUZZLES)}
           className={`group inline-flex cursor-pointer flex-col items-center justify-center px-5 transition-colors duration-200 active:opacity-70 ${tabBackground(Tab.MY_PUZZLES)}`}
         >
-          <Heart className="text-theme-primary dark:text-theme-primary-light mb-1 h-6 w-6" />
+          <Award className="text-theme-primary dark:text-theme-primary-light mb-1 h-6 w-6" />
           <span className="text-center text-xs font-medium">My Puzzles</span>
         </button>
         <button
-          onClick={() => setTab(Tab.FRIENDS)}
+          onClick={() => handleTabChange(Tab.FRIENDS)}
           className={`group inline-flex cursor-pointer flex-col items-center justify-center px-5 transition-colors duration-200 active:opacity-70 ${tabBackground(Tab.FRIENDS)}`}
         >
           <Users className="text-theme-primary dark:text-theme-primary-light mb-1 h-6 w-6" />
-          <span className="text-center text-xs font-medium">Friends</span>
+          <span className="text-center text-xs font-medium">Racing Teams</span>
         </button>
       </Footer>
     </>
