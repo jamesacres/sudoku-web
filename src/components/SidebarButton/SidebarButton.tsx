@@ -12,7 +12,7 @@ const MemoisedSidebarButton = memo(function MemoisedSidebarButton({
       className="text-theme-primary dark:text-theme-primary-light cursor-pointer rounded-lg"
     >
       <Sidebar className="float-left mr-2" />
-      Friends
+      Races
     </button>
   );
 });

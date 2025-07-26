@@ -32,6 +32,7 @@ import {
   Camera,
 } from 'react-feather';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Home() {
   const [tab, setTab] = useState(Tab.START_PUZZLE);
@@ -321,34 +322,42 @@ export default function Home() {
           {/* Racing Hero Section */}
           <div className="pt-safe relative overflow-hidden bg-gradient-to-r from-blue-600 to-purple-600 px-6">
             <div className="absolute inset-0 bg-black/10"></div>
-            <div className="relative z-10 container mx-auto py-12 text-center text-white">
-              <div className="mb-6 flex justify-center">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
-                  <Zap className="h-8 w-8 text-white" />
+            <div className="relative z-10 container mx-auto max-w-4xl py-4 text-center text-white md:py-6">
+              <div className="mb-3 flex justify-center md:mb-4">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm md:h-20 md:w-20">
+                  <Image
+                    src="/icons/icon-512.webp"
+                    alt="Sudoku Share Logo"
+                    width={64}
+                    height={64}
+                    className="h-10 w-10 md:h-12 md:w-12"
+                  />
                 </div>
               </div>
-              <h1 className="mb-4 text-4xl font-bold">Ready to Race? 🏎️</h1>
-              <p className="mb-8 text-xl opacity-90">
-                Challenge friends, climb leaderboards, and improve your Sudoku
-                solving speed
+              <h1 className="mb-3 text-3xl font-bold md:mb-4 md:text-4xl">
+                Ready to Race? 🏎️
+              </h1>
+              <p className="mb-6 text-lg opacity-90 md:mb-8 md:text-xl">
+                Share the challenge! Invite friends to race and see who&apos;s
+                the fastest Sudoku solver 🏁
               </p>
 
               {/* Daily Streak Section */}
-              <div className="mb-8">
-                <div className="rounded-2xl bg-white/10 p-6 backdrop-blur-sm">
+              <div className="mb-6 md:mb-8">
+                <div className="mx-auto max-w-md rounded-2xl border border-white/20 bg-purple-600/20 p-4 backdrop-blur-sm md:p-6">
                   <div className="text-center">
-                    <div className="mb-3 flex justify-center">
-                      <div className="text-4xl">🔥</div>
+                    <div className="mb-2 flex justify-center md:mb-3">
+                      <div className="text-3xl md:text-4xl">🔥</div>
                     </div>
                     <div className="mb-2">
-                      <span className="text-3xl font-bold text-white">
+                      <span className="text-2xl font-bold text-white md:text-3xl">
                         {dailyStreak}
                       </span>
-                      <span className="ml-2 text-lg text-white/80">
+                      <span className="ml-2 text-base text-white/80 md:text-lg">
                         day streak
                       </span>
                     </div>
-                    <p className="mb-4 text-sm text-white/70">
+                    <p className="mb-3 text-xs text-white/70 md:mb-4 md:text-sm">
                       {dailyStreak === 0
                         ? 'Start your racing streak today!'
                         : dailyStreak === 1
@@ -357,14 +366,14 @@ export default function Home() {
                     </p>
 
                     {/* Streak Progress - Show last 7 days */}
-                    <div className="flex justify-center space-x-2">
+                    <div className="flex justify-center space-x-1 md:space-x-2">
                       {Array.from({ length: 7 }, (_, index) => {
                         const dayOffset = 6 - index; // 6, 5, 4, 3, 2, 1, 0 (today)
                         const hasActivity = dayOffset < dailyStreak;
                         return (
                           <div
                             key={index}
-                            className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold ${
+                            className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold md:h-8 md:w-8 md:text-sm ${
                               hasActivity
                                 ? 'bg-orange-400 text-white'
                                 : 'bg-white/20 text-white/40'
@@ -376,7 +385,7 @@ export default function Home() {
                       })}
                     </div>
 
-                    <div className="mt-4 text-xs text-white/60">
+                    <div className="mt-3 text-xs text-white/60 md:mt-4">
                       {dailyStreak >= 100 && '⭐ Century champion! '}
                       {dailyStreak >= 30 &&
                         dailyStreak < 100 &&
@@ -400,26 +409,28 @@ export default function Home() {
               </div>
 
               {/* Racing Action Buttons */}
-              <div className="space-y-6">
-                {/* Daily Racing Challenges */}
-                <div className="rounded-2xl bg-white/10 p-6 backdrop-blur-sm">
-                  <h3 className="mb-3 text-xl font-bold text-white">
-                    🏁 Daily Racing Challenges
+              <div className="mx-auto max-w-4xl">
+                {/* Daily Challenges - Full Width */}
+                <div className="mb-4 rounded-2xl bg-white/10 p-4 backdrop-blur-sm md:mb-6 md:p-6">
+                  <h3 className="mb-2 text-lg font-bold text-white md:mb-3 md:text-xl">
+                    🏁 Daily Challenges
                   </h3>
-                  <p className="mb-4 text-white/80">
-                    Choose your difficulty and race against the clock and your
+                  <p className="mb-3 text-sm text-white/80 md:mb-4 md:text-base">
+                    Choose your difficulty - race against the clock and your
                     friends!
                   </p>
-                  <div className="grid grid-cols-3 gap-3">
+                  <div className="grid grid-cols-3 gap-2 md:gap-3">
                     <button
                       onClick={() => openSudokuOfTheDay(Difficulty.SIMPLE)}
                       disabled={isLoading}
                       className={`${
                         isLoading ? 'cursor-wait' : 'cursor-pointer'
-                      } flex flex-col items-center justify-center rounded-xl bg-white/20 p-4 font-bold text-white backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/30 disabled:opacity-50`}
+                      } flex flex-col items-center justify-center rounded-xl bg-white/20 p-3 font-bold text-white backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/30 disabled:opacity-50 md:p-4`}
                     >
-                      <span className="mb-2 text-2xl">⚡</span>
-                      <span className="text-sm">Tricky</span>
+                      <span className="mb-1 text-xl md:mb-2 md:text-2xl">
+                        ⚡
+                      </span>
+                      <span className="text-xs md:text-sm">Tricky</span>
                     </button>
                     <button
                       onClick={() =>
@@ -432,10 +443,12 @@ export default function Home() {
                       disabled={isLoading}
                       className={`${
                         isLoading ? 'cursor-wait' : 'cursor-pointer'
-                      } relative flex flex-col items-center justify-center rounded-xl bg-white/20 p-4 font-bold text-white backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/30 disabled:opacity-50`}
+                      } relative flex flex-col items-center justify-center rounded-xl bg-white/20 p-3 font-bold text-white backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/30 disabled:opacity-50 md:p-4`}
                     >
-                      <span className="mb-2 text-2xl">🔥</span>
-                      <span className="text-sm">Challenging</span>
+                      <span className="mb-1 text-xl md:mb-2 md:text-2xl">
+                        🔥
+                      </span>
+                      <span className="text-xs md:text-sm">Challenging</span>
                       {!isSubscribed && (
                         <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-yellow-400 text-xs">
                           ✨
@@ -453,10 +466,12 @@ export default function Home() {
                       disabled={isLoading}
                       className={`${
                         isLoading ? 'cursor-wait' : 'cursor-pointer'
-                      } relative flex flex-col items-center justify-center rounded-xl bg-white/20 p-4 font-bold text-white backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/30 disabled:opacity-50`}
+                      } relative flex flex-col items-center justify-center rounded-xl bg-white/20 p-3 font-bold text-white backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/30 disabled:opacity-50 md:p-4`}
                     >
-                      <span className="mb-2 text-2xl">🚀</span>
-                      <span className="text-sm">Hard</span>
+                      <span className="mb-1 text-xl md:mb-2 md:text-2xl">
+                        🚀
+                      </span>
+                      <span className="text-xs md:text-sm">Hard</span>
                       {!isSubscribed && (
                         <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-yellow-400 text-xs">
                           ✨
@@ -466,43 +481,46 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Import Racing Challenge */}
-                <div className="rounded-2xl bg-white/10 p-6 backdrop-blur-sm">
-                  <h3 className="mb-3 text-xl font-bold text-white">
-                    📸 Import & Race
-                  </h3>
-                  <p className="mb-4 text-white/80">
-                    Scan and share an unsolved puzzle from a book to race
-                    against the clock and your friends!
-                  </p>
-                  <Link
-                    href="/import"
-                    className="inline-flex items-center justify-center rounded-full bg-white/20 px-6 py-3 font-medium text-white backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/30"
-                  >
-                    <Camera className="mr-2 h-5 w-5" />
-                    Import Puzzle
-                  </Link>
-                </div>
+                {/* Import & Friends in 2-column grid on desktop */}
+                <div className="grid gap-4 md:grid-cols-2 md:gap-6">
+                  {/* Import Racing Challenge */}
+                  <div className="rounded-2xl bg-white/15 p-4 backdrop-blur-sm md:p-6">
+                    <h3 className="mb-2 text-lg font-bold text-white md:mb-3 md:text-xl">
+                      📸 Import Puzzle
+                    </h3>
+                    <p className="mb-3 text-sm text-white/80 md:mb-4 md:text-base">
+                      Scan and share an unsolved puzzle from a book - race
+                      against the clock and your friends!
+                    </p>
+                    <Link
+                      href="/import"
+                      className="inline-flex items-center justify-center rounded-full bg-white/20 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/30 md:px-6 md:py-3 md:text-base"
+                    >
+                      <Camera className="mr-2 h-4 w-4 md:h-5 md:w-5" />
+                      Import Puzzle
+                    </Link>
+                  </div>
 
-                {/* Friends Racing */}
-                <div className="rounded-2xl bg-white/10 p-6 backdrop-blur-sm">
-                  <h3 className="mb-3 text-xl font-bold text-white">
-                    👥 Team Racing
-                  </h3>
-                  <p className="mb-4 text-white/80">
-                    Race against{' '}
-                    {friendsList?.length
-                      ? friendsList.slice(0, 3).join(', ')
-                      : 'your racing team'}{' '}
-                    and climb the leaderboard!
-                  </p>
-                  <button
-                    onClick={() => handleTabChange(Tab.FRIENDS)}
-                    className="inline-flex items-center justify-center rounded-full bg-white/20 px-6 py-3 font-medium text-white backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/30"
-                  >
-                    <Users className="mr-2 h-5 w-5" />
-                    View Racing Teams
-                  </button>
+                  {/* Friends Racing */}
+                  <div className="rounded-2xl bg-white/8 p-4 backdrop-blur-sm md:p-6">
+                    <h3 className="mb-2 text-lg font-bold text-white md:mb-3 md:text-xl">
+                      👥 Team Racing
+                    </h3>
+                    <p className="mb-3 text-sm text-white/80 md:mb-4 md:text-base">
+                      Race against{' '}
+                      {friendsList?.length
+                        ? friendsList.slice(0, 3).join(', ')
+                        : 'your racing team'}{' '}
+                      and climb the leaderboard!
+                    </p>
+                    <button
+                      onClick={() => handleTabChange(Tab.FRIENDS)}
+                      className="inline-flex items-center justify-center rounded-full bg-white/20 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/30 md:px-6 md:py-3 md:text-base"
+                    >
+                      <Users className="mr-2 h-4 w-4 md:h-5 md:w-5" />
+                      View Racing Teams
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -512,21 +530,21 @@ export default function Home() {
           </div>
 
           {/* Premium Features Section */}
-          <div className="container mx-auto px-6 py-8">
-            <div className="mb-8">
-              <h2 className="mb-2 text-center text-2xl font-bold text-gray-900 dark:text-white">
+          <div className="container mx-auto max-w-6xl px-6 py-6 md:py-8">
+            <div className="mb-6 md:mb-8">
+              <h2 className="mb-2 text-center text-xl font-bold text-gray-900 md:text-2xl dark:text-white">
                 🏁 Premium Features
               </h2>
-              <p className="text-center text-gray-600 dark:text-gray-400">
+              <p className="text-center text-sm text-gray-600 md:text-base dark:text-gray-400">
                 Unlock the full Sudoku Share experience
               </p>
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-3 sm:grid-cols-2 md:gap-4 lg:grid-cols-3">
               {premiumFeatures.map((feature, index) => (
                 <div
                   key={index}
-                  className={`group relative rounded-2xl border-2 bg-white/80 p-6 shadow-lg backdrop-blur-xl transition-all hover:scale-105 hover:shadow-xl dark:bg-gray-800/80 ${
+                  className={`group relative rounded-2xl border-2 bg-white/80 p-4 shadow-lg backdrop-blur-xl transition-all hover:scale-105 hover:shadow-xl md:p-6 dark:bg-gray-800/80 ${
                     feature.isPremium
                       ? 'cursor-pointer border-yellow-200 hover:border-yellow-300 dark:border-yellow-600'
                       : 'border-green-200 dark:border-green-600'
@@ -543,17 +561,17 @@ export default function Home() {
                     </div>
                   )}
 
-                  <div className="mb-4 flex items-center">
+                  <div className="mb-3 flex items-center md:mb-4">
                     <div
-                      className={`flex h-12 w-12 items-center justify-center rounded-xl ${
+                      className={`flex h-10 w-10 items-center justify-center rounded-xl md:h-12 md:w-12 ${
                         feature.isPremium
                           ? 'bg-gradient-to-br from-blue-500 to-purple-600 text-white'
                           : 'bg-gradient-to-br from-green-500 to-green-600 text-white'
                       }`}
                     >
-                      <feature.icon className="h-6 w-6" />
+                      <feature.icon className="h-5 w-5 md:h-6 md:w-6" />
                     </div>
-                    <div className="ml-4 flex-1">
+                    <div className="ml-3 flex-1 md:ml-4">
                       {feature.isPremium ? (
                         <Lock className="float-right h-4 w-4 text-gray-400" />
                       ) : (
@@ -562,10 +580,10 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
+                  <h3 className="mb-2 text-base font-semibold text-gray-900 md:text-lg dark:text-white">
                     {feature.title}
                   </h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <p className="text-xs text-gray-600 md:text-sm dark:text-gray-400">
                     {feature.description}
                   </p>
                 </div>
@@ -578,7 +596,7 @@ export default function Home() {
         </div>
       ) : (
         <div className="pt-safe min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-          <div className="container mx-auto px-6 pb-24">
+          <div className="container mx-auto max-w-4xl px-6 pb-24">
             <div className="flex justify-center">
               <ActivityWidget sessions={sessions} />
             </div>

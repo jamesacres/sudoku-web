@@ -71,7 +71,7 @@ const SudokuSidebar = ({
                 }}
                 className="text-theme-primary dark:text-theme-primary-light flex w-full cursor-pointer items-center justify-between rounded-full px-4 py-2 text-right"
               >
-                <span className="text-lg font-medium">Friends</span>
+                <span className="text-lg font-medium">Races</span>
                 <X className="ml-2" />
               </button>
             </div>
@@ -101,7 +101,7 @@ const SudokuSidebar = ({
                 }}
               >
                 <Users className="mr-2" size={18} />
-                Create Party
+                Create Racing Team
                 {parties.length > 0 && !isSubscribed && (
                   <span className="absolute -top-1 -right-1 z-10 inline-flex h-4 w-4 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-[8px] font-semibold text-white shadow-lg">
                     ✨
@@ -117,8 +117,8 @@ const SudokuSidebar = ({
               <div className="border-theme-primary/20 mt-4 rounded-2xl border bg-stone-50/50 p-4 shadow-sm backdrop-blur-sm dark:bg-zinc-800/50">
                 <p className="mb-4 text-sm text-gray-600 dark:text-gray-300">
                   {parties.length === 0
-                    ? "We recommend creating your first party for your family or friend group. All party members can see each other's puzzles and compete."
-                    : "Give your party a name and your nickname. All party members can see each other's puzzles and compete."}
+                    ? "We recommend creating your first team for your family or friend group. All members can see each other's puzzles and compete."
+                    : "All members can see each other's puzzles and compete."}
                 </p>
                 <form
                   className="w-full"
@@ -131,7 +131,7 @@ const SudokuSidebar = ({
                     className="my-2 block text-xs font-bold text-gray-700 dark:text-gray-300"
                     htmlFor="form-nickname"
                   >
-                    What does the party call you?
+                    What do the team members call you?
                   </label>
                   <input
                     id="form-nickname"
@@ -149,7 +149,7 @@ const SudokuSidebar = ({
                     className="my-2 mt-4 block text-xs font-bold text-gray-700 dark:text-gray-300"
                     htmlFor="form-party-name"
                   >
-                    What shall we name this party?
+                    What shall we name this team?
                   </label>
                   <div className="flex items-center">
                     <input
@@ -173,7 +173,7 @@ const SudokuSidebar = ({
                     {isSaving ? (
                       <Loader className="mx-auto animate-spin" />
                     ) : (
-                      'Create Party'
+                      'Create Racing Team'
                     )}
                   </button>
                 </form>
@@ -184,7 +184,7 @@ const SudokuSidebar = ({
               <>
                 <div className="my-6 h-px bg-stone-300 dark:bg-gray-700" />
                 <div className="sticky top-0 z-10 mb-4 flex items-center justify-between bg-stone-50/25 p-4 py-2 backdrop-blur-md dark:bg-zinc-900/25">
-                  <h2 className="text-xl font-semibold">Your Parties</h2>
+                  <h2 className="text-xl font-semibold">Racing Teams</h2>
                   <button
                     className={`${isLoading || isSaving ? 'cursor-wait' : ''} text-theme-primary dark:text-theme-primary-light cursor-pointer rounded-full bg-gray-100 p-2 transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700`}
                     disabled={isLoading || isSaving}

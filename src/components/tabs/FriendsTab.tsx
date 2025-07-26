@@ -27,13 +27,17 @@ export const FriendsTab = ({
         Racing Teams
       </h1>
       <p className="my-4">
-        Invite others using the sidebar when solving a puzzle, then come back
-        here to see their recent puzzles.
+        💡 Send your friends an invite link from the Races sidebar when solving
+        a puzzle.
       </p>
-      <p className="mb-4">
-        Select a friend below to see and solve their recent puzzles. Compare
-        your completion percentage and see who will be the quickest!
-      </p>
+      {parties?.length && (
+        <>
+          <p className="mb-4">
+            Select a friend below to see and solve their recent puzzles. Race to
+            be the quickest!
+          </p>
+        </>
+      )}
 
       {parties?.length ? (
         <>
@@ -75,7 +79,7 @@ export const FriendsTab = ({
                           {userSessions[userId]?.sessions && (
                             <>
                               {userSessions[userId]?.sessions?.length ? (
-                                <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+                                <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
                                   {userSessions[userId]?.sessions?.map(
                                     (userSession) => (
                                       <SessionRow
