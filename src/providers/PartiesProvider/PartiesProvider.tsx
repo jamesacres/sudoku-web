@@ -176,8 +176,8 @@ const PartiesProvider: React.FC<{ children: React.ReactNode }> = ({
       const values = await listParties();
       if (active && values) {
         setParties(values);
-        setIsLoading(false);
       }
+      setIsLoading(false);
     };
 
     loadParties();
