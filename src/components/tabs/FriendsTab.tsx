@@ -30,7 +30,7 @@ export const FriendsTab = ({
         💡 Send your friends an invite link from the Races sidebar when solving
         a puzzle.
       </p>
-      {parties?.length && (
+      {parties?.length !== 0 && (
         <>
           <p className="mb-4">
             Select a friend below to see and solve their recent puzzles. Race to
