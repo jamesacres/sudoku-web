@@ -74,8 +74,7 @@ const RaceTrack = ({
             : 0;
 
           // Get the user's nickname from parties data, fallback to a default
-          const nickname =
-            getNicknameByUserId(memberId) || `Player ${memberId.slice(-4)}`;
+          const nickname = getNicknameByUserId(memberId) || ``;
 
           progressMap[memberId] = {
             userId: memberId,

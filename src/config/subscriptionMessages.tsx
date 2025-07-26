@@ -113,8 +113,21 @@ export const SUBSCRIPTION_CONTEXT_MESSAGES: Record<
     textColor: 'text-purple-800 dark:text-purple-200',
     content: (
       <>
-        👥 <strong>Removing members from your party is a premium feature!</strong>{' '}
-        Subscribe to unlock advanced party management features including member removal.
+        👥{' '}
+        <strong>Removing members from your party is a premium feature!</strong>{' '}
+        Subscribe to unlock advanced party management features including member
+        removal.
+      </>
+    ),
+  },
+  [SubscriptionContext.MULTIPLE_PARTIES]: {
+    bgColor: 'bg-blue-50 dark:bg-blue-900/20',
+    textColor: 'text-blue-800 dark:text-blue-200',
+    content: (
+      <>
+        🏘️ <strong>Multiple parties is a premium feature!</strong> Free users
+        can have one party. Subscribe to create and join unlimited parties for
+        family, friends, and more.
       </>
     ),
   },

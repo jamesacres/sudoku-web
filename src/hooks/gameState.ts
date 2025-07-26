@@ -412,7 +412,8 @@ function useGameState({
             initialValue !== enteredValue && enteredValue === correctValue;
         }
       }
-      if (isCorrect || completed) {
+      const isFirstLoad = answerStack.length === 1;
+      if (isCorrect || completed || isFirstLoad) {
         const { serverValuePromise } = saveValue({
           answerStack,
           initial,

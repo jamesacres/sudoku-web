@@ -4,7 +4,8 @@ import { UserContext } from '@/providers/UserProvider';
 import { PublicInvite } from '@/types/serverTypes';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useCallback, useContext, useEffect, useState } from 'react';
-import { Loader } from 'react-feather';
+import { Loader, Users, Star } from 'react-feather';
+import Image from 'next/image';
 
 function InviteComponent() {
   const searchParams = useSearchParams();
@@ -95,76 +96,154 @@ function InviteComponent() {
   };
 
   return (
-    <div className="container mx-auto px-4">
-      <h1 className="text-2xl">👋 Hi{name ? ` ${name}` : ''}!</h1>
-      {isLoading ? (
-        <Loader className="mt-4 animate-spin" />
-      ) : (
-        <>
-          {publicInvite ? (
+    <div className="pt-safe min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      <div className="flex min-h-screen items-center justify-center px-4 py-8">
+        <div className="w-full max-w-md">
+          {isLoading ? (
+            <div className="text-center">
+              <div className="mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-full bg-white/80 shadow-xl backdrop-blur-lg dark:bg-gray-800/80">
+                <Loader className="h-8 w-8 animate-spin text-blue-600" />
+              </div>
+              <p className="text-lg font-medium text-gray-600 dark:text-gray-300">
+                Loading invitation...
+              </p>
+            </div>
+          ) : (
             <>
-              <p className="mt-4">
-                Join my party{' '}
-                <span className="mt-2 text-xl font-bold">
-                  {publicInvite.description}
-                </span>{' '}
-                and solve my Sudoku puzzle!
-              </p>
-              <p className="mt-4">
-                Any other puzzles you and party members play in future will also
-                be shared with your group.
-              </p>
-              <p className="mt-4">Happy puzzling! 🎉</p>
-              {user ? (
-                <>
-                  <div className="mb-4">
-                    <label
-                      className="mt-4 mb-2 block text-sm font-bold"
-                      htmlFor="memberNickname"
-                    >
-                      What does this group call you? (Nickname)
-                    </label>
-                    <input
-                      className={`${isJoining ? 'cursor-wait' : ''} inline-block rounded-sm border-2 border-neutral-600 bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 focus:outline-hidden disabled:bg-neutral-300`}
-                      disabled={isJoining}
-                      id="memberNickname"
-                      type="text"
-                      placeholder="Nickname"
-                      value={memberNickname}
-                      onChange={(e) => setMemberNickname(e.target.value)}
-                    />
+              {publicInvite ? (
+                <div className="rounded-3xl bg-white/80 p-8 shadow-2xl backdrop-blur-xl dark:bg-gray-800/80">
+                  {/* Header with app icon */}
+                  <div className="mb-8 text-center">
+                    <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 shadow-lg">
+                      <Image
+                        src="/icons/icon-512.webp"
+                        alt="Sudoku Icon"
+                        width={48}
+                        height={48}
+                        className="rounded-xl"
+                      />
+                    </div>
+                    <h1 className="mb-2 text-3xl font-bold text-gray-900 dark:text-white">
+                      👋 Hi{name ? ` ${name}` : ''}!
+                    </h1>
+                    <div className="inline-flex items-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-2 text-sm font-semibold text-white shadow-lg">
+                      <Star className="mr-2 h-4 w-4" />
+                      You&apos;re Invited!
+                      <Star className="ml-2 h-4 w-4" />
+                    </div>
                   </div>
-                  <button
-                    disabled={isJoining}
-                    onClick={() => {
-                      joinParty();
-                    }}
-                    className={`${isJoining ? 'cursor-wait' : ''} mt-4 inline-block rounded-sm bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300`}
-                  >
-                    {isJoining ? (
-                      <Loader className="animate-spin" />
-                    ) : (
-                      'Join Party'
-                    )}
-                  </button>
-                </>
+
+                  {/* Invitation content */}
+                  <div className="mb-8 text-center">
+                    <p className="mb-4 text-lg text-gray-700 dark:text-gray-300">
+                      Join the party{' '}
+                      <span className="inline-flex items-center rounded-full bg-gradient-to-r from-blue-100 to-purple-100 px-3 py-1 text-lg font-bold text-blue-800 dark:from-blue-900/50 dark:to-purple-900/50 dark:text-blue-200">
+                        <Users className="mr-2 h-5 w-5" />
+                        {publicInvite.description}
+                      </span>
+                    </p>
+                    <p className="mb-4 text-gray-600 dark:text-gray-400">
+                      Solve Sudoku puzzles together and see each other&apos;s
+                      progress in real-time!
+                    </p>
+                    <div className="rounded-2xl bg-gradient-to-r from-blue-50 to-purple-50 p-4 dark:from-blue-900/20 dark:to-purple-900/20">
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        💡 <strong>Pro tip:</strong> All future puzzles you play
+                        will be shared with your party members for friendly
+                        competition!
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Join form or sign in */}
+                  {user ? (
+                    <div className="space-y-6">
+                      <div>
+                        <label
+                          className="mb-3 block text-sm font-semibold text-gray-700 dark:text-gray-300"
+                          htmlFor="memberNickname"
+                        >
+                          What should we call you?
+                        </label>
+                        <input
+                          className={`${
+                            isJoining ? 'cursor-wait' : ''
+                          } w-full rounded-2xl border-2 border-gray-200 bg-white/50 px-4 py-4 text-gray-900 backdrop-blur-sm transition-all focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 focus:outline-none disabled:bg-gray-100 dark:border-gray-600 dark:bg-gray-700/50 dark:text-white dark:focus:border-blue-400`}
+                          disabled={isJoining}
+                          id="memberNickname"
+                          type="text"
+                          placeholder="Enter your nickname"
+                          value={memberNickname}
+                          onChange={(e) => setMemberNickname(e.target.value)}
+                        />
+                      </div>
+                      <button
+                        disabled={isJoining || !memberNickname.trim()}
+                        onClick={() => {
+                          joinParty();
+                        }}
+                        className={`${
+                          isJoining ? 'cursor-wait' : ''
+                        } w-full transform rounded-2xl bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-4 font-bold text-white shadow-lg transition-all hover:scale-105 hover:from-blue-600 hover:to-purple-700 hover:shadow-xl active:scale-95 disabled:from-gray-400 disabled:to-gray-500 disabled:hover:scale-100`}
+                      >
+                        {isJoining ? (
+                          <div className="flex items-center justify-center">
+                            <Loader className="mr-2 h-5 w-5 animate-spin" />
+                            Joining Party...
+                          </div>
+                        ) : (
+                          <div className="flex cursor-pointer items-center justify-center">
+                            <Users className="mr-2 h-5 w-5" />
+                            Join the Fun! 🎉
+                          </div>
+                        )}
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="text-center">
+                      <button
+                        disabled={isLoggingIn}
+                        onClick={() =>
+                          loginRedirect &&
+                          loginRedirect({ userInitiated: true })
+                        }
+                        className={`${
+                          isLoggingIn ? 'cursor-wait' : ''
+                        } w-full transform rounded-2xl bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-4 font-bold text-white shadow-lg transition-all hover:scale-105 hover:from-blue-600 hover:to-purple-700 hover:shadow-xl active:scale-95 disabled:from-gray-400 disabled:to-gray-500`}
+                      >
+                        {isLoggingIn ? (
+                          <div className="flex items-center justify-center">
+                            <Loader className="mr-2 h-5 w-5 animate-spin" />
+                            Signing in...
+                          </div>
+                        ) : (
+                          <div className="flex cursor-pointer items-center justify-center">
+                            <Star className="mr-2 h-5 w-5" />
+                            Sign in to Continue
+                          </div>
+                        )}
+                      </button>
+                    </div>
+                  )}
+                </div>
               ) : (
-                <button
-                  disabled={isLoggingIn}
-                  onClick={() =>
-                    loginRedirect && loginRedirect({ userInitiated: true })
-                  }
-                  className={`${isLoggingIn ? 'cursor-wait' : ''} mt-4 mr-4 inline-block rounded-sm bg-neutral-500 px-4 py-2 text-white hover:bg-neutral-700 disabled:bg-neutral-300`}
-                >
-                  Sign in to continue
-                </button>
+                <div className="rounded-3xl bg-white/80 p-8 text-center shadow-2xl backdrop-blur-xl dark:bg-gray-800/80">
+                  <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-red-100 dark:bg-red-900/20">
+                    <span className="text-3xl">⏰</span>
+                  </div>
+                  <h2 className="mb-4 text-2xl font-bold text-gray-900 dark:text-white">
+                    Invitation Expired
+                  </h2>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    This invitation link is no longer valid. Please ask your
+                    friend for a new invite!
+                  </p>
+                </div>
               )}
             </>
-          ) : (
-            <p className="mt-4">Invite has expired</p>
           )}
-        </>
-      )}
+        </div>
+      </div>
     </div>
   );
 }

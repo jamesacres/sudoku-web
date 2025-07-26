@@ -150,7 +150,7 @@ const PartyRow = ({
                     >
                       <UserMinus className="h-3 w-3" />
                       {!isSubscribed && (
-                        <span className="absolute -top-0.5 -right-0.5 z-10 inline-flex items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 w-3 h-3 text-[6px] font-semibold text-white shadow-lg">
+                        <span className="absolute -top-0.5 -right-0.5 z-10 inline-flex h-3 w-3 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-[6px] font-semibold text-white shadow-lg">
                           ✨
                         </span>
                       )}

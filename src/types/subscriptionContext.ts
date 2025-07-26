@@ -12,4 +12,5 @@ export enum SubscriptionContext {
   HARD_DIFFICULTY = 'hardDifficulty',
   DAILY_PUZZLE_LIMIT = 'dailyPuzzleLimit',
   REMOVE_MEMBER = 'removeMember',
+  MULTIPLE_PARTIES = 'multipleParties',
 }
