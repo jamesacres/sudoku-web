@@ -31,7 +31,7 @@ interface PartiesContextInterface {
   }) => Promise<Party | undefined>;
   refreshParties: (
     refreshSessionParties?: () => Promise<void>
-  ) => Promise<void>;
+  ) => Promise<Party[] | undefined>;
   getNicknameByUserId: (userId: string) => string | null;
   leaveParty: (partyId: string) => Promise<boolean>;
   removeMember: (partyId: string, userId: string) => Promise<boolean>;
@@ -97,6 +97,7 @@ const PartiesProvider: React.FC<{ children: React.ReactNode }> = ({
         await refreshSessionParties();
       }
       setIsLoading(false);
+      return values;
     },
     [listParties]
   );

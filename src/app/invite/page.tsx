@@ -18,7 +18,11 @@ function InviteComponent() {
   const { isLoggingIn, user, loginRedirect } = useContext(UserContext) || {};
   const { isSubscribed, subscribeModal } = useContext(RevenueCatContext) || {};
   const { getPublicInvite, createMember } = useServerStorage({});
-  const { parties: userParties, isLoading: partiesLoading } = useParties({});
+  const {
+    parties: userParties,
+    isLoading: partiesLoading,
+    refreshParties,
+  } = useParties({});
   const [inviteLoading, setInviteLoading] = useState(true);
   const [publicInvite, setPublicInvite] = useState<PublicInvite | undefined>(
     undefined
@@ -103,13 +107,47 @@ function InviteComponent() {
 
   const performJoinParty = async () => {
     try {
-      if (!isJoining && inviteId) {
+      if (!isJoining && inviteId && publicInvite) {
         setIsJoining(true);
         await createMember({
           memberNickname,
           inviteId,
         });
-        redirect(publicInvite?.redirectUri);
+
+        // Extract party ID from invite resource ID
+        const partyId = publicInvite.resourceId.replace('party-', '');
+
+        // Retry logic to verify party membership
+        const maxRetries = 10;
+        const retryDelay = 500; // 500ms
+        let retryCount = 0;
+
+        while (retryCount < maxRetries) {
+          const refreshedParties = await refreshParties();
+
+          // Check if user is now a member of the party
+          const isNowMember = refreshedParties?.some(
+            (party) =>
+              party.partyId === partyId &&
+              party.members.some((member) => member.isUser)
+          );
+
+          if (isNowMember) {
+            // Success! User is now a member, redirect
+            redirect(publicInvite.redirectUri);
+            return;
+          }
+
+          retryCount++;
+          if (retryCount < maxRetries) {
+            // Wait before retrying
+            await new Promise((resolve) => setTimeout(resolve, retryDelay));
+          }
+        }
+
+        // If we get here, max retries reached without finding membership
+        console.warn('Failed to verify party membership after joining');
+        redirect(publicInvite.redirectUri);
       }
     } catch (e) {
       console.error(e);

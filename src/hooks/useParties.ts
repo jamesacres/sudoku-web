@@ -32,7 +32,7 @@ export function useParties({
 
   // Wrap refreshParties to include the optional refreshSessionParties callback
   const refreshParties = async () => {
-    await contextRefreshParties(refreshSessionParties);
+    return contextRefreshParties(refreshSessionParties);
   };
 
   return {
