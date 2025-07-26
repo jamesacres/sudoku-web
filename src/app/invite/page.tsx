@@ -1,11 +1,13 @@
 'use client';
 import { useServerStorage } from '@/hooks/serverStorage';
 import { UserContext } from '@/providers/UserProvider';
+import { RevenueCatContext } from '@/providers/RevenueCatProvider';
 import { PublicInvite } from '@/types/serverTypes';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useCallback, useContext, useEffect, useState } from 'react';
 import { Loader, Users, Star } from 'react-feather';
 import Image from 'next/image';
+import { SubscriptionContext } from '@/types/subscriptionContext';
 
 function InviteComponent() {
   const searchParams = useSearchParams();
@@ -13,6 +15,7 @@ function InviteComponent() {
 
   const router = useRouter();
   const { isLoggingIn, user, loginRedirect } = useContext(UserContext) || {};
+  const { isSubscribed, subscribeModal } = useContext(RevenueCatContext) || {};
   const { getPublicInvite, createMember, listParties } = useServerStorage({});
   const [isLoading, setIsLoading] = useState(true);
   const [publicInvite, setPublicInvite] = useState<PublicInvite | undefined>(
@@ -21,6 +24,7 @@ function InviteComponent() {
   const name = user ? user?.given_name || user?.name : '';
   const [memberNickname, setMemberNickname] = useState(name || '');
   const [isJoining, setIsJoining] = useState(false);
+  const [userParties, setUserParties] = useState<any[]>([]);
 
   const redirect = useCallback(
     (redirectUri: string | undefined) => {
@@ -79,7 +83,20 @@ function InviteComponent() {
     };
   }, [getPublicInvite, inviteId, publicInvite, checkIfMemberAndRedirect]);
 
-  const joinParty = async () => {
+  // Load user's existing parties
+  useEffect(() => {
+    const loadUserParties = async () => {
+      if (user) {
+        const parties = await listParties();
+        if (parties) {
+          setUserParties(parties);
+        }
+      }
+    };
+    loadUserParties();
+  }, [user, listParties]);
+
+  const performJoinParty = async () => {
     try {
       if (!isJoining && inviteId) {
         setIsJoining(true);
@@ -92,6 +109,19 @@ function InviteComponent() {
     } catch (e) {
       console.error(e);
       setIsJoining(false);
+    }
+  };
+
+  const joinParty = () => {
+    // Check if user already has parties and is not subscribed
+    if (userParties.length > 0 && !isSubscribed) {
+      subscribeModal?.showModalIfRequired(
+        performJoinParty,
+        () => {},
+        SubscriptionContext.MULTIPLE_PARTIES
+      );
+    } else {
+      performJoinParty();
     }
   };
 
@@ -179,12 +209,10 @@ function InviteComponent() {
                       </div>
                       <button
                         disabled={isJoining || !memberNickname.trim()}
-                        onClick={() => {
-                          joinParty();
-                        }}
+                        onClick={joinParty}
                         className={`${
                           isJoining ? 'cursor-wait' : ''
-                        } w-full transform rounded-2xl bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-4 font-bold text-white shadow-lg transition-all hover:scale-105 hover:from-blue-600 hover:to-purple-700 hover:shadow-xl active:scale-95 disabled:from-gray-400 disabled:to-gray-500 disabled:hover:scale-100`}
+                        } relative w-full transform rounded-2xl bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-4 font-bold text-white shadow-lg transition-all hover:scale-105 hover:from-blue-600 hover:to-purple-700 hover:shadow-xl active:scale-95 disabled:from-gray-400 disabled:to-gray-500 disabled:hover:scale-100`}
                       >
                         {isJoining ? (
                           <div className="flex items-center justify-center">
@@ -196,6 +224,11 @@ function InviteComponent() {
                             <Users className="mr-2 h-5 w-5" />
                             Join the Fun! 🎉
                           </div>
+                        )}
+                        {userParties.length > 0 && !isSubscribed && (
+                          <span className="absolute -top-1 -right-1 z-10 inline-flex h-4 w-4 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-[8px] font-semibold text-white shadow-lg">
+                            ✨
+                          </span>
                         )}
                       </button>
                     </div>
