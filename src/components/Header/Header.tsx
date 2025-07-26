@@ -2,12 +2,8 @@ import dynamic from 'next/dynamic';
 const HeaderUser = dynamic(() => import('../HeaderUser'), { ssr: false });
 const HeaderBack = dynamic(() => import('../HeaderBack'), { ssr: false });
 const HeaderOnline = dynamic(() => import('../HeaderOnline'), { ssr: false });
-const HeaderUserHintBox = dynamic(() => import('../HeaderUserHintBox'), {
-  ssr: false,
-});
 
 import ThemeControls from '../ThemeControls';
-import HeaderTitle from '../HeaderTitle';
 
 const Header = () => {
   return (
@@ -17,7 +13,7 @@ const Header = () => {
           <HeaderBack />
         </div>
         <div className="block flex grow items-center">
-          <HeaderTitle />
+          <div className="grow text-center font-medium"></div>
           <div className="flex h-12 items-center">
             <HeaderUser />
             <ThemeControls />
@@ -25,9 +21,7 @@ const Header = () => {
           </div>
         </div>
       </nav>
-      <div className="pt-[calc(env(safe-area-inset-top)+4rem)]">
-        <HeaderUserHintBox />
-      </div>
+      <div className="pt-[calc(env(safe-area-inset-top)+4rem)]"></div>
     </>
   );
 };

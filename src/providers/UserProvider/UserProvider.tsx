@@ -1,5 +1,5 @@
 'use client';
-import { getCapacitorState, isCapacitor, isIOS } from '@/helpers/capacitor';
+import { getCapacitorState, isCapacitor } from '@/helpers/capacitor';
 import { isElectron, openBrowser } from '@/helpers/electron';
 import { pkce } from '@/helpers/pkce';
 import { UserProfile } from '@/types/userProfile';
@@ -10,7 +10,7 @@ import { Browser } from '@capacitor/browser';
 
 interface UserContextInterface {
   user?: UserProfile;
-  loginRedirect: () => Promise<void>;
+  loginRedirect: (config: { userInitiated: boolean }) => Promise<void>;
   isLoggingIn: boolean;
   isInitialised: boolean;
   logout: () => void;
@@ -28,14 +28,9 @@ const buildRedirectUri = () => {
     const scheme = 'com.bubblyclouds.sudoku';
     return `${scheme}://-/auth.html`;
   } else if (isCapacitor()) {
-    if (isIOS()) {
-      // iOS needs custom URL scheme to be able to redirect from our browser back
-      const scheme = 'com.bubblyclouds.sudoku';
-      return `${scheme}://-/auth`;
-    }
-    // Android can handle universal link
-    // Universal deep link
-    return `https://sudoku.bubblyclouds.com/auth`;
+    // iOS/Android needs custom URL scheme to be able to redirect from our browser back
+    const scheme = 'com.bubblyclouds.sudoku';
+    return `${scheme}://-/auth`;
   }
   return `${window.location.origin}/auth`;
 };
@@ -53,53 +48,64 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const iss = 'https://auth.bubblyclouds.com';
   const clientId =
-    isElectron() || isIOS() ? 'bubbly-sudoku-native' : 'bubbly-sudoku';
+    isElectron() || isCapacitor() ? 'bubbly-sudoku-native' : 'bubbly-sudoku';
 
-  const loginRedirect = React.useCallback(async () => {
-    console.info('loginRedirect..');
-    setIsLoggingIn(true);
-    sessionStorage.setItem(
-      'restorePathname',
-      `${window.location.pathname}${window.location.search}`
-    );
+  const loginRedirect = React.useCallback(
+    async ({ userInitiated }: { userInitiated: boolean }) => {
+      console.info('loginRedirect..');
+      setIsLoggingIn(true);
+      sessionStorage.setItem(
+        'restorePathname',
+        `${window.location.pathname}${window.location.search}`
+      );
 
-    const state = window.crypto.randomUUID();
-    sessionStorage.setItem('state', state);
+      const state = window.crypto.randomUUID();
+      sessionStorage.setItem('state', state);
 
-    const { codeChallenge, codeVerifier, codeChallengeMethod } = await pkce();
-    sessionStorage.setItem('code_verifier', codeVerifier);
+      const { codeChallenge, codeVerifier, codeChallengeMethod } = await pkce();
+      sessionStorage.setItem('code_verifier', codeVerifier);
 
-    const redirectUri = buildRedirectUri();
-    const scope = [
-      'openid',
-      'profile',
-      'offline_access',
-      'parties.write',
-      'members.write',
-      'invites.write',
-      'sessions.write',
-    ];
-    const resource = 'https://api.bubblyclouds.com';
+      const redirectUri = buildRedirectUri();
+      const scope = [
+        'openid',
+        'profile',
+        'offline_access',
+        'parties.write',
+        'members.write',
+        'invites.write',
+        'sessions.write',
+      ];
+      const resource = 'https://api.bubblyclouds.com';
 
-    const params = new URLSearchParams();
-    params.set('state', state);
-    params.set('redirect_uri', redirectUri);
-    params.set('client_id', clientId);
-    params.set('response_type', 'code');
-    params.set('scope', scope.join(' '));
-    params.set('code_challenge', codeChallenge);
-    params.set('code_challenge_method', codeChallengeMethod);
-    params.set('resource', resource);
+      const params = new URLSearchParams();
+      params.set('state', state);
+      params.set('redirect_uri', redirectUri);
+      params.set('client_id', clientId);
+      params.set('response_type', 'code');
+      params.set('scope', scope.join(' '));
+      params.set('code_challenge', codeChallenge);
+      params.set('code_challenge_method', codeChallengeMethod);
+      params.set('resource', resource);
+      if (userInitiated) {
+        params.set('prompt', 'consent');
+      }
 
-    const url = `${iss}/oidc/auth?${params.toString()}`;
-    if (isElectron()) {
-      await openBrowser(url);
-    } else if (isCapacitor()) {
-      await Browser.open({ url, windowName: '_self' });
-    } else {
-      window.location.href = url;
-    }
-  }, [clientId]);
+      const url = `${iss}/oidc/auth?${params.toString()}`;
+      if (isElectron()) {
+        await openBrowser(url);
+      } else if (isCapacitor()) {
+        await Browser.open({ url, windowName: '_self' });
+      } else {
+        window.location.href = url;
+      }
+
+      // Remove is logging in after 10 seconds in case of error
+      setTimeout(() => {
+        setIsLoggingIn(false);
+      }, 10000);
+    },
+    [clientId]
+  );
 
   const handleUser = React.useCallback(
     async (user?: UserProfile, isRestoreState: boolean = false) => {
@@ -133,7 +139,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
           localStorage.setItem('recoverSession', 'false');
           // Redirect to login (hopefully automatically recover auth session)
           console.warn('no user, redirecting to login');
-          await loginRedirect();
+          await loginRedirect({ userInitiated: false });
         }
       }
     },

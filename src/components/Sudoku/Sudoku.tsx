@@ -12,8 +12,16 @@ import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { CelebrationAnimation } from '../CelebrationAnimation';
 import { RaceTrack } from '../RaceTrack';
 import { UserContext } from '@/providers/UserProvider';
+import { RevenueCatContext } from '@/providers/RevenueCatProvider';
 import { useDrag } from '@/hooks/useDrag';
 import MemoisedSidebarButton from '../SidebarButton/SidebarButton';
+import {
+  addDailyPuzzleId,
+  getDailyPuzzleCount,
+} from '@/utils/dailyPuzzleCounter';
+import { useRouter } from 'next/navigation';
+import { SubscriptionContext } from '@/types/subscriptionContext';
+import { DAILY_LIMITS } from '@/config/dailyLimits';
 
 const Sudoku = ({
   puzzle: { initial, final, puzzleId },
@@ -22,7 +30,9 @@ const Sudoku = ({
   puzzle: { initial: Puzzle<number>; final: Puzzle<number>; puzzleId: string };
   redirectUri: string;
 }) => {
+  const router = useRouter();
   const { user } = useContext(UserContext) || {};
+  const { isSubscribed, subscribeModal } = useContext(RevenueCatContext) || {};
 
   const {
     answer,
@@ -47,6 +57,7 @@ const Sudoku = ({
     reveal,
     completed,
     setPauseTimer,
+    setTimerNewSession,
     refreshSessionParties,
     sessionParties,
     showSidebar,
@@ -86,6 +97,40 @@ const Sudoku = ({
       return () => clearTimeout(timer);
     }
   }, [completed]);
+
+  // Add puzzle ID to daily tracking when puzzle starts (countdown begins)
+  useEffect(() => {
+    addDailyPuzzleId(puzzleId);
+  }, [puzzleId]);
+
+  // Handle countdown finishing for subscription modal
+  useEffect(() => {
+    if (timer?.countdown === 1 && !isSubscribed) {
+      if (getDailyPuzzleCount() > DAILY_LIMITS.PUZZLE) {
+        // Countdown just reached "GO!" - show subscription modal after a brief delay
+        setPauseTimer(true);
+        subscribeModal?.showModalIfRequired(
+          () => {
+            // Count down and resume
+            setTimerNewSession();
+            setPauseTimer(false);
+          },
+          () => {
+            // Navigate to homepage on cancel
+            router.replace('/');
+          },
+          SubscriptionContext.DAILY_PUZZLE_LIMIT
+        );
+      }
+    }
+  }, [
+    router,
+    timer?.countdown,
+    isSubscribed,
+    subscribeModal,
+    setPauseTimer,
+    setTimerNewSession,
+  ]);
 
   // Use drag hook for all drag-related functionality
   const { dragOffset, dragStarted, zoomOrigin, handleDragStart } = useDrag({
@@ -128,6 +173,17 @@ const Sudoku = ({
         <div className="container mx-auto px-4 pb-4 lg:pb-0">
           <div className="flex h-[calc(58dvh)] flex-col">
             <div className="mt-auto">
+              {/* App Branding Header */}
+              <div className="mr-auto ml-auto max-w-xl px-4 pb-1 lg:mr-0">
+                <div className="text-center">
+                  <span className="inline-flex items-center bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-sm font-semibold text-transparent">
+                    <span className="mr-1">✨</span>
+                    Sudoku Share
+                    <span className="ml-1">✨</span>
+                  </span>
+                </div>
+              </div>
+
               <div className="mr-auto ml-auto flex max-w-xl px-4 pb-1 lg:mr-0">
                 <div
                   className="flex-nowrap items-center xl:hidden"
@@ -250,6 +306,7 @@ const Sudoku = ({
                 reset={reset}
                 reveal={reveal}
                 onAdvancedToggle={setShowAdvancedControls}
+                isSubscribed={isSubscribed}
               />
             </div>
           )}

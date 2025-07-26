@@ -21,14 +21,14 @@ const CapacitorProvider: React.FC<{ children: React.ReactNode }> = ({
     setTimeout(() => {
       StatusBar.setOverlaysWebView({ overlay: false });
       StatusBar.setBackgroundColor({ color: '#000000' });
-    }, 100);
+    }, 1000);
   }
 
   useEffect(() => {
     App.addListener('appUrlOpen', (event: URLOpenListenerEvent) => {
       if (event.url) {
         // For auth and other links
-        // Note this is also used for the iOS auth redirect with custom url schemes
+        // Note this is also used for the iOS/Android auth redirect with custom url schemes
         // com.bubblyclouds.sudoku://-/auth
         // capacitor://localhost/auth
         // In addition to https://sudoku.bubblyclouds.com/auth

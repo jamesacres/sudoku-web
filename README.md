@@ -34,3 +34,12 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+## Test iOS
+
+To test purchases:
+* Create developer sandbox accounts
+* Edit scheme select StoreKit configuration SyncedProducts.storekit OR test on an actual device with it disabled
+* Delete app then login with sandbox email to ensure no subscription logged
+* When prompted login to apple account with sandbox email, from settings might be able to switch this
+

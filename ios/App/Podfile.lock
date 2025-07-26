@@ -11,6 +11,12 @@ PODS:
     - SwiftKeychainWrapper
   - CapacitorStatusBar (7.0.1):
     - Capacitor
+  - PurchasesHybridCommon (15.0.0):
+    - RevenueCat (= 5.33.0)
+  - RevenueCat (5.33.0)
+  - RevenuecatPurchasesCapacitor (11.0.0):
+    - Capacitor
+    - PurchasesHybridCommon (= 15.0.0)
   - SwiftKeychainWrapper (4.0.1)
 
 DEPENDENCIES:
@@ -20,9 +26,12 @@ DEPENDENCIES:
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
   - CapacitorSecureStoragePlugin (from `../../node_modules/capacitor-secure-storage-plugin`)
   - "CapacitorStatusBar (from `../../node_modules/@capacitor/status-bar`)"
+  - "RevenuecatPurchasesCapacitor (from `../../node_modules/@revenuecat/purchases-capacitor`)"
 
 SPEC REPOS:
   trunk:
+    - PurchasesHybridCommon
+    - RevenueCat
     - SwiftKeychainWrapper
 
 EXTERNAL SOURCES:
@@ -38,6 +47,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/capacitor-secure-storage-plugin"
   CapacitorStatusBar:
     :path: "../../node_modules/@capacitor/status-bar"
+  RevenuecatPurchasesCapacitor:
+    :path: "../../node_modules/@revenuecat/purchases-capacitor"
 
 SPEC CHECKSUMS:
   Capacitor: 78ad32d4b0d9dfa25402eb8b0ac46c2b8a4696b8
@@ -46,8 +57,11 @@ SPEC CHECKSUMS:
   CapacitorCordova: 34618fa1b14b6b091fd60a7658f7654044ae8d8a
   CapacitorSecureStoragePlugin: 450d402026ee3bcc018fa206504d9c0572fee78d
   CapacitorStatusBar: 6e7af040d8fc4dd655999819625cae9c2d74c36f
+  PurchasesHybridCommon: 18b65ad813f50460d4af7e033abb5cc44a686a6f
+  RevenueCat: 9fd6fc0ea8a22fd9d11242feb298f3bb6f9f86db
+  RevenuecatPurchasesCapacitor: f6c2e988a785b401dc7ff75836d688abc65a0db7
   SwiftKeychainWrapper: 807ba1d63c33a7d0613288512399cd1eda1e470c
 
-PODFILE CHECKSUM: eff4af7be8c81c14d16d50079ebeffcc4cafe2ca
+PODFILE CHECKSUM: 518626d431b6974dace449e0606b7566c7257cdd
 
 COCOAPODS: 1.16.2

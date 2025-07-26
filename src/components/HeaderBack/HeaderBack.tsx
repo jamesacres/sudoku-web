@@ -8,7 +8,11 @@ const HeaderBack = () => {
   const router = useRouter();
   const pathname = usePathname();
   return pathname === '/' ? (
-    <div className="w-16"></div>
+    <div className="flex items-center">
+      <span className="inline-flex items-center bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-sm font-semibold text-transparent">
+        Sudoku Share
+      </span>
+    </div>
   ) : (
     <button
       className="text-theme-primary dark:text-theme-primary-light flex w-16 cursor-pointer items-center transition-opacity active:opacity-70"

@@ -8,6 +8,7 @@ import { ThemeProvider } from 'next-themes';
 import { PropsWithChildren } from 'react';
 import GlobalStateProvider from '@/providers/GlobalStateProvider';
 import { ThemeColorProvider } from '@/providers/ThemeColorProvider';
+import RevenueCatProvider from '@/providers/RevenueCatProvider';
 
 export function Providers({ children }: PropsWithChildren) {
   return (
@@ -15,11 +16,13 @@ export function Providers({ children }: PropsWithChildren) {
       <FetchProvider>
         <CapacitorProvider>
           <UserProvider>
-            <PartiesProvider>
-              <ThemeProvider attribute="class">
-                <ThemeColorProvider>{children}</ThemeColorProvider>
-              </ThemeProvider>
-            </PartiesProvider>
+            <RevenueCatProvider>
+              <PartiesProvider>
+                <ThemeProvider attribute="class">
+                  <ThemeColorProvider>{children}</ThemeColorProvider>
+                </ThemeProvider>
+              </PartiesProvider>
+            </RevenueCatProvider>
           </UserProvider>
         </CapacitorProvider>
       </FetchProvider>

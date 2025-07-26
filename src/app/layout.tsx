@@ -6,6 +6,7 @@ import { Providers } from './providers';
 import Header from '@/components/Header';
 import { StatusBar } from '@capacitor/status-bar';
 import { Capacitor } from '@capacitor/core';
+import SudokuPlusModal from '@/components/SudokuPlusModal';
 
 if (Capacitor.getPlatform() === 'android') {
   setTimeout(() => {
@@ -79,6 +80,7 @@ export default function RootLayout({
         <Providers>
           <Header />
           <div className="mb-24">{children}</div>
+          <SudokuPlusModal />
         </Providers>
       </body>
     </html>

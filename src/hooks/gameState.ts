@@ -18,6 +18,16 @@ import { useTimer } from './timer';
 import { calculateSeconds } from '@/helpers/calculateSeconds';
 import { Parties, ServerStateResult, Session } from '@/types/serverTypes';
 import { UserContext } from '@/providers/UserProvider';
+import { RevenueCatContext } from '@/providers/RevenueCatProvider/RevenueCatProvider';
+import {
+  canUseUndo,
+  canUseCheckCell,
+  canUseCheckGrid,
+  incrementUndoCount,
+  incrementCheckCellCount,
+  incrementCheckGridCount,
+} from '@/utils/dailyActionCounter';
+import { SubscriptionContext } from '@/types/subscriptionContext';
 
 function useGameState({
   final,
@@ -28,7 +38,8 @@ function useGameState({
   initial: Puzzle<number>;
   puzzleId: string;
 }) {
-  const { user, loginRedirect } = useContext(UserContext) || {};
+  const { user } = useContext(UserContext) || {};
+  const { subscribeModal, isSubscribed } = useContext(RevenueCatContext) || {};
 
   const { timer, setTimerNewSession, stopTimer, setPauseTimer } = useTimer({
     puzzleId,
@@ -153,8 +164,20 @@ function useGameState({
   }, [initial, setTimerNewSession]);
 
   const reveal = useCallback(() => {
-    pushAnswer(structuredClone(final));
-  }, [pushAnswer, final]);
+    const performReveal = () => {
+      pushAnswer(structuredClone(final));
+    };
+
+    if (subscribeModal) {
+      subscribeModal.showModalIfRequired(
+        performReveal,
+        () => {},
+        SubscriptionContext.REVEAL
+      );
+    } else {
+      performReveal();
+    }
+  }, [pushAnswer, final, subscribeModal]);
 
   const toggleNote: ToggleNote = useCallback(
     (value: number) => {
@@ -209,13 +232,36 @@ function useGameState({
   const isUndoDisabled = answerStack.length < 2;
   const undo = useCallback(() => {
     if (!isUndoDisabled) {
-      const lastAnswer = answerStack[answerStack.length - 1];
-      setRedoAnswerStack([...redoAnswerStack, lastAnswer]);
-      setAnswerStack({
-        answerStack: answerStack.slice(0, answerStack.length - 1),
-      });
+      const performUndo = () => {
+        const lastAnswer = answerStack[answerStack.length - 1];
+        setRedoAnswerStack([...redoAnswerStack, lastAnswer]);
+        setAnswerStack({
+          answerStack: answerStack.slice(0, answerStack.length - 1),
+        });
+        // Increment daily counter only for non-subscribers
+        if (!isSubscribed) {
+          incrementUndoCount();
+        }
+      };
+
+      // Check if user has free uses left or is subscribed
+      if (isSubscribed || canUseUndo()) {
+        performUndo();
+      } else if (subscribeModal) {
+        subscribeModal.showModalIfRequired(
+          performUndo,
+          () => {},
+          SubscriptionContext.UNDO
+        );
+      }
     }
-  }, [isUndoDisabled, answerStack, redoAnswerStack]);
+  }, [
+    isUndoDisabled,
+    answerStack,
+    redoAnswerStack,
+    subscribeModal,
+    isSubscribed,
+  ]);
   const isRedoDisabled = !redoAnswerStack.length;
   const redo = useCallback(() => {
     if (!isRedoDisabled) {
@@ -229,21 +275,59 @@ function useGameState({
   const [validation, setValidation] = useState<
     undefined | Puzzle<boolean | undefined>
   >(undefined);
-  const validateGrid = useCallback(
-    () =>
+  const validateGrid = useCallback(() => {
+    const performValidateGrid = () => {
       validation
         ? setValidation(undefined)
-        : setValidation(checkGrid(initial, final, answer).validation),
-    [initial, final, answer, validation]
-  );
-  const validateCell = useCallback(
-    () =>
+        : setValidation(checkGrid(initial, final, answer).validation);
+      // Increment daily counter only for non-subscribers
+      if (!isSubscribed) {
+        incrementCheckGridCount();
+      }
+    };
+
+    // Check if user has free uses left or is subscribed
+    if (isSubscribed || canUseCheckGrid()) {
+      performValidateGrid();
+    } else if (subscribeModal) {
+      subscribeModal.showModalIfRequired(
+        performValidateGrid,
+        () => {},
+        SubscriptionContext.CHECK_GRID
+      );
+    }
+  }, [initial, final, answer, validation, subscribeModal, isSubscribed]);
+  const validateCell = useCallback(() => {
+    const performValidateCell = () => {
       selectedCell &&
-      (validation
-        ? setValidation(undefined)
-        : setValidation(checkCell(selectedCell, initial, final, answer))),
-    [validation, selectedCell, initial, final, answer]
-  );
+        (validation
+          ? setValidation(undefined)
+          : setValidation(checkCell(selectedCell, initial, final, answer)));
+      // Increment daily counter only for non-subscribers
+      if (!isSubscribed) {
+        incrementCheckCellCount();
+      }
+    };
+
+    // Check if user has free uses left or is subscribed
+    if (isSubscribed || canUseCheckCell()) {
+      performValidateCell();
+    } else if (subscribeModal) {
+      subscribeModal.showModalIfRequired(
+        performValidateCell,
+        () => {},
+        SubscriptionContext.CHECK_CELL
+      );
+    }
+  }, [
+    validation,
+    selectedCell,
+    initial,
+    final,
+    answer,
+    subscribeModal,
+    isSubscribed,
+  ]);
   useEffect(() => {
     setValidation(undefined);
   }, [answer, selectedCell]);
@@ -254,13 +338,6 @@ function useGameState({
 
     const { localValue, serverValuePromise } = getValue() || {};
     if (localValue) {
-      // If not logged in, force sign in to resume
-      // This will become a premium feature
-      if (!user && loginRedirect) {
-        loginRedirect();
-        return;
-      }
-
       setAnswerStack({
         answerStack: localValue.state.answerStack,
         isRestored: true,
@@ -316,7 +393,7 @@ function useGameState({
     return () => {
       active = false;
     };
-  }, [loginRedirect, user, puzzleId, getValue, setTimerNewSession, saveValue]);
+  }, [user, puzzleId, getValue, setTimerNewSession, saveValue]);
   useEffect(() => {
     let active = true;
     if (!isDisabled && !isRestored && answerStack.length > 0) {
@@ -335,7 +412,8 @@ function useGameState({
             initialValue !== enteredValue && enteredValue === correctValue;
         }
       }
-      if (isCorrect || completed) {
+      const isFirstLoad = answerStack.length === 1;
+      if (isCorrect || completed || isFirstLoad) {
         const { serverValuePromise } = saveValue({
           answerStack,
           initial,
@@ -493,6 +571,7 @@ function useGameState({
     reveal,
     completed,
     setPauseTimer,
+    setTimerNewSession,
     refreshSessionParties,
     sessionParties,
     showSidebar,

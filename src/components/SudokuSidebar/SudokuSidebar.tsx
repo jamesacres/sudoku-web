@@ -3,8 +3,10 @@ import { Loader, RefreshCw, Users, X } from 'react-feather';
 import { PartyRow } from '../PartyRow/PartyRow';
 import { ServerState } from '@/types/state';
 import { UserContext } from '@/providers/UserProvider';
+import { RevenueCatContext } from '@/providers/RevenueCatProvider';
 import { useParties } from '@/hooks/useParties';
 import { Parties, Session } from '@/types/serverTypes';
+import { SubscriptionContext } from '@/types/subscriptionContext';
 
 interface Arguments {
   showSidebar: boolean;
@@ -24,6 +26,7 @@ const SudokuSidebar = ({
   sessionParties,
 }: Arguments) => {
   const { user, loginRedirect } = useContext(UserContext) || {};
+  const { isSubscribed, subscribeModal } = useContext(RevenueCatContext) || {};
 
   const {
     parties,
@@ -78,15 +81,32 @@ const SudokuSidebar = ({
             </p>
             {!showCreateParty && (
               <button
-                className="bg-theme-primary hover:bg-theme-primary-dark mt-2 flex w-full cursor-pointer items-center justify-center rounded-full px-4 py-3 font-medium text-white transition-colors"
-                onClick={() =>
-                  user
-                    ? setShowCreateParty(true)
-                    : loginRedirect && loginRedirect()
-                }
+                className="bg-theme-primary hover:bg-theme-primary-dark relative mt-2 flex w-full cursor-pointer items-center justify-center rounded-full px-4 py-3 font-medium text-white transition-colors"
+                onClick={() => {
+                  if (!user) {
+                    loginRedirect && loginRedirect({ userInitiated: true });
+                    return;
+                  }
+
+                  // Check if user already has parties and is not subscribed
+                  if (parties.length > 0 && !isSubscribed) {
+                    subscribeModal?.showModalIfRequired(
+                      () => setShowCreateParty(true),
+                      () => {},
+                      SubscriptionContext.MULTIPLE_PARTIES
+                    );
+                  } else {
+                    setShowCreateParty(true);
+                  }
+                }}
               >
                 <Users className="mr-2" size={18} />
                 Create Party
+                {parties.length > 0 && !isSubscribed && (
+                  <span className="absolute -top-1 -right-1 z-10 inline-flex h-4 w-4 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-[8px] font-semibold text-white shadow-lg">
+                    ✨
+                  </span>
+                )}
               </button>
             )}
           </div>
@@ -96,9 +116,9 @@ const SudokuSidebar = ({
             {showCreateParty && (
               <div className="border-theme-primary/20 mt-4 rounded-2xl border bg-stone-50/50 p-4 shadow-sm backdrop-blur-sm dark:bg-zinc-800/50">
                 <p className="mb-4 text-sm text-gray-600 dark:text-gray-300">
-                  We recommend creating more than one party, e.g. one for your
-                  family and one for your friends. All party members can see
-                  each other&apos;s puzzles and compete.
+                  {parties.length === 0
+                    ? "We recommend creating your first party for your family or friend group. All party members can see each other's puzzles and compete."
+                    : "Give your party a name and your nickname. All party members can see each other's puzzles and compete."}
                 </p>
                 <form
                   className="w-full"

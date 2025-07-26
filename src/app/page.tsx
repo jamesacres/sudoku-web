@@ -8,7 +8,8 @@ import { useLocalStorage } from '@/hooks/localStorage';
 import { useOnline } from '@/hooks/online';
 import { useServerStorage } from '@/hooks/serverStorage';
 import { UserContext } from '@/providers/UserProvider';
-import { Difficulty, Party, ServerStateResult } from '@/types/serverTypes';
+import { useParties } from '@/hooks/useParties';
+import { Difficulty, ServerStateResult } from '@/types/serverTypes';
 import { GameState, ServerState } from '@/types/state';
 import { StateType } from '@/types/StateType';
 import { Timer } from '@/types/timer';
@@ -24,11 +25,9 @@ export default function Home() {
   const { user, loginRedirect } = useContext(UserContext) || {};
   const { isOnline } = useOnline();
   const [isLoading, setIsLoading] = useState(false);
-  const {
-    getSudokuOfTheDay,
-    listParties,
-    listValues: listServerValues,
-  } = useServerStorage();
+  const { getSudokuOfTheDay, listValues: listServerValues } =
+    useServerStorage();
+  const { parties } = useParties({});
   const {
     prefix,
     listValues: listLocalPuzzles,
@@ -42,7 +41,6 @@ export default function Home() {
     });
   const [sessions, setSessions] = useState<ServerStateResult<ServerState>[]>();
   const [userSessions, setUserSessions] = useState<UserSessions>({});
-  const [parties, setParties] = useState<Party[]>();
 
   const mergeSessions = useCallback(
     (newSessions: ServerStateResult<ServerState>[]) => {
@@ -128,21 +126,14 @@ export default function Home() {
         // Merge with local
         mergeSessions(recentServerSessions);
       }
-      const parties = await listParties();
-      setParties(parties);
+      // Parties are now loaded by PartiesProvider
     };
     serverState();
 
     return () => {
       active = false;
     };
-  }, [
-    listServerValues,
-    listLocalPuzzles,
-    listLocalTimers,
-    mergeSessions,
-    listParties,
-  ]);
+  }, [listServerValues, listLocalPuzzles, listLocalTimers, mergeSessions]);
 
   const friendsList = Array.from(
     new Set(
@@ -195,10 +186,10 @@ export default function Home() {
     if (!user) {
       setIsLoading(false);
       const confirmed = confirm(
-        'You need to sign in to play Sudoku of the Day. Would you like to sign in now?'
+        'You need to sign in to continue. Would you like to sign in now?'
       );
       if (confirmed && loginRedirect) {
-        loginRedirect();
+        loginRedirect({ userInitiated: true });
       }
       return;
     }

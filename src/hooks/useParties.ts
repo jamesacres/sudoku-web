@@ -25,11 +25,14 @@ export function useParties({
     saveParty,
     getNicknameByUserId,
     refreshParties: contextRefreshParties,
+    leaveParty,
+    removeMember,
+    deleteParty,
   } = context;
 
   // Wrap refreshParties to include the optional refreshSessionParties callback
   const refreshParties = async () => {
-    await contextRefreshParties(refreshSessionParties);
+    return contextRefreshParties(refreshSessionParties);
   };
 
   return {
@@ -50,5 +53,8 @@ export function useParties({
     saveParty,
     refreshParties,
     getNicknameByUserId,
+    leaveParty,
+    removeMember,
+    deleteParty,
   };
 }

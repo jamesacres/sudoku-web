@@ -9,6 +9,7 @@ const isCapacitor = (): boolean =>
   ['android', 'ios'].includes(Capacitor.getPlatform());
 
 const isIOS = (): boolean => Capacitor.getPlatform() === 'ios';
+const isAndroid = (): boolean => Capacitor.getPlatform() === 'android';
 
 const saveCapacitorState = async (state: any) => {
   const value = JSON.stringify(state);
@@ -22,4 +23,4 @@ const getCapacitorState = async (): Promise<string> => {
   return result.value;
 };
 
-export { isCapacitor, isIOS, saveCapacitorState, getCapacitorState };
+export { isCapacitor, isIOS, isAndroid, saveCapacitorState, getCapacitorState };

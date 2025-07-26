@@ -7,8 +7,12 @@ import { calculateSeconds } from '@/helpers/calculateSeconds';
 import { calculateCompletionPercentage } from '@/helpers/calculateCompletionPercentage';
 import { getPlayerColor, getAllUserIds } from '@/utils/playerColors';
 import { useParties } from '@/hooks/useParties';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { UserContext } from '@/providers/UserProvider';
+import { RevenueCatContext } from '@/providers/RevenueCatProvider';
+import { PartyConfirmationDialog } from '../PartyConfirmationDialog/PartyConfirmationDialog';
+import { LogOut, Trash, UserMinus } from 'react-feather';
+import { SubscriptionContext } from '@/types/subscriptionContext';
 const PartyRow = ({
   party: { partyName, isOwner, members, partyId },
   puzzleId,
@@ -20,18 +24,53 @@ const PartyRow = ({
   redirectUri: string;
   sessionParty?: SessionParty<Session<ServerState>>;
 }) => {
-  const { parties } = useParties();
+  const { parties, leaveParty, removeMember, deleteParty } = useParties();
   const { user } = useContext(UserContext) || {};
+  const { isSubscribed, subscribeModal } = useContext(RevenueCatContext) || {};
+  const [confirmDialog, setConfirmDialog] = useState<{
+    isOpen: boolean;
+    type: 'leave' | 'remove';
+    memberName?: string;
+    userId?: string;
+  }>({ isOpen: false, type: 'leave' });
 
   // Get consistent ordering of all user IDs for color assignment
   const allUserIds = getAllUserIds(parties);
 
+  const handleDeleteParty = async () => {
+    await deleteParty(partyId);
+  };
+
+  const handleLeaveParty = async () => {
+    await leaveParty(partyId);
+  };
+
+  const handleRemoveMember = async () => {
+    if (confirmDialog.userId) {
+      await removeMember(partyId, confirmDialog.userId);
+    }
+  };
+
   return (
     <li>
       <div className="rounded-2xl border border-stone-200 bg-stone-50/80 p-4 shadow-sm backdrop-blur-sm dark:border-gray-700 dark:bg-zinc-800/80">
-        <h3 className="text-theme-primary dark:text-theme-primary-light text-xl font-semibold">
-          {partyName}
-        </h3>
+        <div className="flex items-center justify-between">
+          <h3 className="text-theme-primary dark:text-theme-primary-light text-xl font-semibold">
+            {partyName}
+          </h3>
+
+          <button
+            type="button"
+            className={`inline-flex items-center rounded-md border border-transparent px-3 py-2 text-sm font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${'bg-red-100 text-red-700 hover:bg-red-200 focus-visible:ring-red-500 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30'}`}
+            onClick={() => setConfirmDialog({ isOpen: true, type: 'leave' })}
+          >
+            {isOwner ? (
+              <Trash className="h-3 w-3" />
+            ) : (
+              <LogOut className="h-3 w-3" />
+            )}
+          </button>
+        </div>
 
         {isOwner && (
           <div className="mt-2">
@@ -70,14 +109,53 @@ const PartyRow = ({
                 key={userId}
                 className="rounded-xl bg-gray-50 p-3 dark:bg-zinc-700/40"
               >
-                <div className="flex items-center">
-                  <div
-                    className={`mr-2 h-3 w-3 rounded-full ${playerColor}`}
-                  ></div>
-                  <span className="font-medium text-gray-800 dark:text-gray-200">
-                    {memberNickname}
-                    {isUser && ' (you)'}
-                  </span>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <div
+                      className={`mr-2 h-3 w-3 rounded-full ${playerColor}`}
+                    ></div>
+                    <span className="font-medium text-gray-800 dark:text-gray-200">
+                      {memberNickname}
+                      {isUser && ' (you)'}
+                    </span>
+                  </div>
+
+                  {isOwner && !isUser && (
+                    <button
+                      type="button"
+                      className="relative inline-flex items-center rounded-md border border-transparent bg-red-100 px-2 py-1 text-xs font-medium text-red-700 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-1 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30"
+                      onClick={() => {
+                        if (isSubscribed) {
+                          setConfirmDialog({
+                            isOpen: true,
+                            type: 'remove',
+                            memberName: memberNickname,
+                            userId,
+                          });
+                        } else {
+                          subscribeModal?.showModalIfRequired(
+                            () => {
+                              setConfirmDialog({
+                                isOpen: true,
+                                type: 'remove',
+                                memberName: memberNickname,
+                                userId,
+                              });
+                            },
+                            () => {},
+                            SubscriptionContext.REMOVE_MEMBER
+                          );
+                        }
+                      }}
+                    >
+                      <UserMinus className="h-3 w-3" />
+                      {!isSubscribed && (
+                        <span className="absolute -top-0.5 -right-0.5 z-10 inline-flex h-3 w-3 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-[6px] font-semibold text-white shadow-lg">
+                          ✨
+                        </span>
+                      )}
+                    </button>
+                  )}
                 </div>
 
                 {!isUser && !sessionParty?.memberSessions[userId] && (
@@ -134,6 +212,24 @@ const PartyRow = ({
           })}
         </ul>
       </div>
+
+      <PartyConfirmationDialog
+        isOpen={confirmDialog.isOpen}
+        onClose={() =>
+          setConfirmDialog({ isOpen: false, type: confirmDialog.type })
+        }
+        onConfirm={
+          confirmDialog.type === 'leave'
+            ? isOwner
+              ? handleDeleteParty
+              : handleLeaveParty
+            : handleRemoveMember
+        }
+        type={confirmDialog.type}
+        partyName={partyName}
+        memberName={confirmDialog.memberName}
+        isOwner={isOwner}
+      />
     </li>
   );
 };
