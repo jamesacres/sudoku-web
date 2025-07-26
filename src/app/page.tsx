@@ -515,7 +515,7 @@ export default function Home() {
                     </p>
                     <button
                       onClick={() => handleTabChange(Tab.FRIENDS)}
-                      className="inline-flex items-center justify-center rounded-full bg-white/20 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/30 md:px-6 md:py-3 md:text-base"
+                      className="inline-flex cursor-pointer items-center justify-center rounded-full bg-white/20 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/30 md:px-6 md:py-3 md:text-base"
                     >
                       <Users className="mr-2 h-4 w-4 md:h-5 md:w-5" />
                       View Racing Teams
