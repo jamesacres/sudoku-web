@@ -21,6 +21,7 @@ const Header = () => {
           </div>
         </div>
       </nav>
+      <div className="pt-[calc(env(safe-area-inset-top)+4rem)]"></div>
     </>
   );
 };
