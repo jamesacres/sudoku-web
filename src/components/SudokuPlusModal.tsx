@@ -68,7 +68,7 @@ const SudokuPlusModal = () => {
   }
 
   const [selectedPlan, setSelectedPlan] = useState<'lifetime' | 'monthly'>(
-    'lifetime'
+    'monthly'
   );
 
   if (!modal?.isOpen || isLoading || isSubscribed) return null;
