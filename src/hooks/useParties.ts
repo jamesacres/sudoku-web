@@ -25,6 +25,9 @@ export function useParties({
     saveParty,
     getNicknameByUserId,
     refreshParties: contextRefreshParties,
+    leaveParty,
+    removeMember,
+    deleteParty,
   } = context;
 
   // Wrap refreshParties to include the optional refreshSessionParties callback
@@ -50,5 +53,8 @@ export function useParties({
     saveParty,
     refreshParties,
     getNicknameByUserId,
+    leaveParty,
+    removeMember,
+    deleteParty,
   };
 }

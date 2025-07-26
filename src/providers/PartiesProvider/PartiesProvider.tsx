@@ -33,6 +33,9 @@ interface PartiesContextInterface {
     refreshSessionParties?: () => Promise<void>
   ) => Promise<void>;
   getNicknameByUserId: (userId: string) => string | null;
+  leaveParty: (partyId: string) => Promise<boolean>;
+  removeMember: (partyId: string, userId: string) => Promise<boolean>;
+  deleteParty: (partyId: string) => Promise<boolean>;
 }
 
 export const PartiesContext = createContext<
@@ -43,7 +46,8 @@ const PartiesProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const { user } = useContext(UserContext) || {};
-  const { listParties, createParty } = useServerStorage({});
+  const { listParties, createParty, leaveParty, removeMember, deleteParty } =
+    useServerStorage({});
 
   // Party state
   const [parties, setParties] = useState<Party[]>([]);
@@ -111,6 +115,57 @@ const PartiesProvider: React.FC<{ children: React.ReactNode }> = ({
     [parties]
   );
 
+  // Leave a party (or delete if owner)
+  const handleLeaveParty = useCallback(
+    async (partyId: string): Promise<boolean> => {
+      const success = await leaveParty(partyId);
+      if (success) {
+        setParties((prevParties) =>
+          prevParties.filter((party) => party.partyId !== partyId)
+        );
+      }
+      return success;
+    },
+    [leaveParty]
+  );
+
+  // Remove a member from a party
+  const handleRemoveMember = useCallback(
+    async (partyId: string, userId: string): Promise<boolean> => {
+      const success = await removeMember(partyId, userId);
+      if (success) {
+        setParties((prevParties) =>
+          prevParties.map((party) =>
+            party.partyId === partyId
+              ? {
+                  ...party,
+                  members: party.members.filter(
+                    (member) => member.userId !== userId
+                  ),
+                }
+              : party
+          )
+        );
+      }
+      return success;
+    },
+    [removeMember]
+  );
+
+  // Delete a party (owner only)
+  const handleDeleteParty = useCallback(
+    async (partyId: string): Promise<boolean> => {
+      const success = await deleteParty(partyId);
+      if (success) {
+        setParties((prevParties) =>
+          prevParties.filter((party) => party.partyId !== partyId)
+        );
+      }
+      return success;
+    },
+    [deleteParty]
+  );
+
   // Load parties on mount
   useEffect(() => {
     let active = true;
@@ -150,6 +205,9 @@ const PartiesProvider: React.FC<{ children: React.ReactNode }> = ({
         saveParty,
         refreshParties,
         getNicknameByUserId,
+        leaveParty: handleLeaveParty,
+        removeMember: handleRemoveMember,
+        deleteParty: handleDeleteParty,
       }}
     >
       {children}
