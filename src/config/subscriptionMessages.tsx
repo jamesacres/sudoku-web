@@ -108,4 +108,14 @@ export const SUBSCRIPTION_CONTEXT_MESSAGES: Record<
       </>
     ),
   },
+  [SubscriptionContext.REMOVE_MEMBER]: {
+    bgColor: 'bg-purple-50 dark:bg-purple-900/20',
+    textColor: 'text-purple-800 dark:text-purple-200',
+    content: (
+      <>
+        👥 <strong>Removing members from your party is a premium feature!</strong>{' '}
+        Subscribe to unlock advanced party management features including member removal.
+      </>
+    ),
+  },
 };

@@ -9,8 +9,10 @@ import { getPlayerColor, getAllUserIds } from '@/utils/playerColors';
 import { useParties } from '@/hooks/useParties';
 import { useContext, useState } from 'react';
 import { UserContext } from '@/providers/UserProvider';
+import { RevenueCatContext } from '@/providers/RevenueCatProvider';
 import { PartyConfirmationDialog } from '../PartyConfirmationDialog/PartyConfirmationDialog';
 import { LogOut, Trash, UserMinus } from 'react-feather';
+import { SubscriptionContext } from '@/types/subscriptionContext';
 const PartyRow = ({
   party: { partyName, isOwner, members, partyId },
   puzzleId,
@@ -24,6 +26,7 @@ const PartyRow = ({
 }) => {
   const { parties, leaveParty, removeMember, deleteParty } = useParties();
   const { user } = useContext(UserContext) || {};
+  const { isSubscribed, subscribeModal } = useContext(RevenueCatContext) || {};
   const [confirmDialog, setConfirmDialog] = useState<{
     isOpen: boolean;
     type: 'leave' | 'remove';
@@ -120,17 +123,37 @@ const PartyRow = ({
                   {isOwner && !isUser && (
                     <button
                       type="button"
-                      className="inline-flex items-center rounded-md border border-transparent bg-red-100 px-2 py-1 text-xs font-medium text-red-700 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-1 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30"
-                      onClick={() =>
-                        setConfirmDialog({
-                          isOpen: true,
-                          type: 'remove',
-                          memberName: memberNickname,
-                          userId,
-                        })
-                      }
+                      className="relative inline-flex items-center rounded-md border border-transparent bg-red-100 px-2 py-1 text-xs font-medium text-red-700 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-1 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30"
+                      onClick={() => {
+                        if (isSubscribed) {
+                          setConfirmDialog({
+                            isOpen: true,
+                            type: 'remove',
+                            memberName: memberNickname,
+                            userId,
+                          });
+                        } else {
+                          subscribeModal?.showModalIfRequired(
+                            () => {
+                              setConfirmDialog({
+                                isOpen: true,
+                                type: 'remove',
+                                memberName: memberNickname,
+                                userId,
+                              });
+                            },
+                            () => {},
+                            SubscriptionContext.REMOVE_MEMBER
+                          );
+                        }
+                      }}
                     >
                       <UserMinus className="h-3 w-3" />
+                      {!isSubscribed && (
+                        <span className="absolute -top-0.5 -right-0.5 z-10 inline-flex items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 w-3 h-3 text-[6px] font-semibold text-white shadow-lg">
+                          ✨
+                        </span>
+                      )}
                     </button>
                   )}
                 </div>

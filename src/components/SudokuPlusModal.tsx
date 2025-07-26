@@ -97,7 +97,8 @@ const SudokuPlusModal = () => {
     {
       icon: <Users className="h-6 w-6" />,
       title: 'Unlimited party management',
-      description: 'Create, delete, join and leave as many parties as you like',
+      description:
+        'Create and join as many parties as you like. Ability to remove members from your party.',
     },
   ];
 
