@@ -10,7 +10,7 @@ const HeaderBack = () => {
   return pathname === '/' ? (
     <div className="flex items-center">
       <span className="inline-flex items-center bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-sm font-semibold text-transparent">
-        Sudoku Share
+        Sudoku Race
       </span>
     </div>
   ) : (

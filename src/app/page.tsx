@@ -321,7 +321,7 @@ export default function Home() {
                 <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm md:h-20 md:w-20">
                   <Image
                     src="/icons/icon-512.webp"
-                    alt="Sudoku Share Logo"
+                    alt="Sudoku Race Logo"
                     width={64}
                     height={64}
                     className="h-10 w-10 md:h-12 md:w-12"
@@ -510,7 +510,7 @@ export default function Home() {
                 🏁 Premium Features
               </h2>
               <p className="text-center text-sm text-gray-600 md:text-base dark:text-gray-400">
-                Unlock the full Sudoku Share experience
+                Unlock the full Sudoku Race experience
               </p>
             </div>
 

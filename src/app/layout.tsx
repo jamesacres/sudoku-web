@@ -18,9 +18,9 @@ if (Capacitor.getPlatform() === 'android') {
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Sudoku Share',
+  title: 'Sudoku Race',
   description:
-    'Play, scan & share sudoku with friends. Daily challenges & cross-device sync!',
+    'Play and share to race sudoku with friends. Daily challenges & cross-device!',
   icons: [
     {
       url: '/icons/icon-48.webp',

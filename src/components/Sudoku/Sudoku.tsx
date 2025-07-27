@@ -178,7 +178,7 @@ const Sudoku = ({
                 <div className="text-center">
                   <span className="inline-flex items-center bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-sm font-semibold text-transparent">
                     <span className="mr-1">✨</span>
-                    Sudoku Share
+                    Sudoku Race
                     <span className="ml-1">✨</span>
                   </span>
                 </div>
