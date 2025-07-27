@@ -76,27 +76,6 @@ export const SUBSCRIPTION_CONTEXT_MESSAGES: Record<
       </>
     ),
   },
-  [SubscriptionContext.CHALLENGING_DIFFICULTY]: {
-    bgColor: 'bg-yellow-50 dark:bg-yellow-900/20',
-    textColor: 'text-yellow-800 dark:text-yellow-200',
-    content: (
-      <>
-        😎 <strong>Challenging sudoku is a premium feature!</strong> Subscribe
-        to unlock the challenging difficulty level and test your advanced
-        skills.
-      </>
-    ),
-  },
-  [SubscriptionContext.HARD_DIFFICULTY]: {
-    bgColor: 'bg-red-50 dark:bg-red-900/20',
-    textColor: 'text-red-800 dark:text-red-200',
-    content: (
-      <>
-        🌶️ <strong>Hard sudoku is a premium feature!</strong> Subscribe to
-        unlock the hardest difficulty level for the ultimate sudoku challenge.
-      </>
-    ),
-  },
   [SubscriptionContext.DAILY_PUZZLE_LIMIT]: {
     bgColor: 'bg-green-50 dark:bg-green-900/20',
     textColor: 'text-green-800 dark:text-green-200',

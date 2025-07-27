@@ -231,12 +231,6 @@ export default function Home() {
       isPremium: !isSubscribed,
     },
     {
-      icon: Award,
-      title: 'All difficulty levels unlocked',
-      description: 'Master every challenge',
-      isPremium: !isSubscribed,
-    },
-    {
       icon: RotateCcw,
       title: 'Unlimited undo, check and reveal',
       description: 'Remove daily undo, check and reveal limits',
@@ -433,13 +427,7 @@ export default function Home() {
                       <span className="text-xs md:text-sm">Tricky</span>
                     </button>
                     <button
-                      onClick={() =>
-                        subscribeModal?.showModalIfRequired(
-                          () => openSudokuOfTheDay(Difficulty.EASY),
-                          () => {},
-                          SubscriptionContext.CHALLENGING_DIFFICULTY
-                        )
-                      }
+                      onClick={() => openSudokuOfTheDay(Difficulty.EASY)}
                       disabled={isLoading}
                       className={`${
                         isLoading ? 'cursor-wait' : 'cursor-pointer'
@@ -449,19 +437,10 @@ export default function Home() {
                         🔥
                       </span>
                       <span className="text-xs md:text-sm">Challenging</span>
-                      {!isSubscribed && (
-                        <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-yellow-400 text-xs">
-                          ✨
-                        </span>
-                      )}
                     </button>
                     <button
                       onClick={() =>
-                        subscribeModal?.showModalIfRequired(
-                          () => openSudokuOfTheDay(Difficulty.INTERMEDIATE),
-                          () => {},
-                          SubscriptionContext.HARD_DIFFICULTY
-                        )
+                        openSudokuOfTheDay(Difficulty.INTERMEDIATE)
                       }
                       disabled={isLoading}
                       className={`${
@@ -472,11 +451,6 @@ export default function Home() {
                         🚀
                       </span>
                       <span className="text-xs md:text-sm">Hard</span>
-                      {!isSubscribed && (
-                        <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-yellow-400 text-xs">
-                          ✨
-                        </span>
-                      )}
                     </button>
                   </div>
                 </div>

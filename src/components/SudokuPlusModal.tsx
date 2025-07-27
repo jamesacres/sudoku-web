@@ -86,11 +86,6 @@ const SudokuPlusModal = () => {
       description: 'Host private competitions with friends and family',
     },
     {
-      icon: <Unlock className="h-6 w-6" />,
-      title: 'All difficulty levels unlocked',
-      description: 'Master every challenge',
-    },
-    {
       icon: <RotateCcw className="h-6 w-6" />,
       title: 'Unlimited undo, check and reveal',
       description: 'Remove daily undo, check and reveal limits',
