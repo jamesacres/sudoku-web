@@ -33,7 +33,7 @@ const RaceTrack = ({
   onClick,
   countdown,
 }: Arguments) => {
-  const { getNicknameByUserId, parties } = useParties();
+  const { getNicknameByUserId, parties, refreshParties } = useParties();
 
   // Get consistent ordering of all user IDs for color assignment
   const allUserIds = useMemo(() => getAllUserIds(parties), [parties]);
@@ -78,13 +78,17 @@ const RaceTrack = ({
 
           // Get the user's nickname from parties data, fallback to a default
           const nickname = getNicknameByUserId(memberId) || ``;
-
-          progressMap[memberId] = {
-            userId: memberId,
-            nickname,
-            percentage,
-            isCurrentUser: false,
-          };
+          if (!nickname) {
+            // We're missing a new member, refresh the members list
+            refreshParties();
+          } else {
+            progressMap[memberId] = {
+              userId: memberId,
+              nickname,
+              percentage,
+              isCurrentUser: false,
+            };
+          }
         });
       }
     });
@@ -93,7 +97,15 @@ const RaceTrack = ({
     return Object.values(progressMap).sort(
       (a, b) => b.percentage - a.percentage
     );
-  }, [sessionParties, initial, final, answer, userId, getNicknameByUserId]);
+  }, [
+    sessionParties,
+    initial,
+    final,
+    answer,
+    userId,
+    getNicknameByUserId,
+    refreshParties,
+  ]);
 
   return (
     <div className="mx-auto mt-2 mb-2 w-full max-w-xl lg:mt-4 lg:mr-0">

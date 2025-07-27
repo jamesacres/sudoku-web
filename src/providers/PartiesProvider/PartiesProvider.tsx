@@ -88,18 +88,21 @@ const PartiesProvider: React.FC<{ children: React.ReactNode }> = ({
   // Refresh parties from server
   const refreshParties = useCallback(
     async (refreshSessionParties?: () => Promise<void>) => {
-      setIsLoading(true);
-      const values = await listParties();
-      if (values) {
-        setParties(values);
+      if (!isLoading) {
+        setIsLoading(true);
+        const values = await listParties();
+        if (values) {
+          setParties(values);
+        }
+        if (refreshSessionParties) {
+          await refreshSessionParties();
+        }
+        setIsLoading(false);
+        return values;
       }
-      if (refreshSessionParties) {
-        await refreshSessionParties();
-      }
-      setIsLoading(false);
-      return values;
+      return parties;
     },
-    [listParties]
+    [listParties, isLoading, parties]
   );
 
   // Get nickname for a specific user ID across all parties
