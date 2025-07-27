@@ -5,6 +5,7 @@ import { calculateCompletionPercentage } from '@/helpers/calculateCompletionPerc
 import { useParties } from '@/hooks/useParties';
 import { memo, useMemo } from 'react';
 import { getPlayerColor, getAllUserIds } from '@/utils/playerColors';
+import { TrafficLight } from '@/components/TrafficLight';
 
 interface Arguments {
   sessionParties: Parties<Session<ServerState>>;
@@ -13,6 +14,7 @@ interface Arguments {
   answer: any;
   userId?: string;
   onClick?: () => void;
+  countdown?: number;
 }
 
 interface PlayerProgress {
@@ -29,6 +31,7 @@ const RaceTrack = ({
   answer,
   userId,
   onClick,
+  countdown,
 }: Arguments) => {
   const { getNicknameByUserId, parties } = useParties();
 
@@ -102,6 +105,8 @@ const RaceTrack = ({
       >
         {/* Main track */}
         <div className="relative h-10 overflow-visible rounded-lg bg-stone-100 lg:h-14 dark:bg-gray-800">
+          {/* Traffic Light */}
+          <TrafficLight countdown={countdown} />
           {/* Track surface with center line */}
           <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-stone-200 via-stone-100 to-stone-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
             {/* Dashed center line */}
