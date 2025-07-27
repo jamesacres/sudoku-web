@@ -5,14 +5,15 @@ import React from 'react';
 import { Wifi, WifiOff } from 'react-feather';
 
 const HeaderOnline = () => {
-  const { isOnline, forceOffline } = useOnline();
+  const { isOnline } = useOnline();
 
   return (
     <button
       onClick={() => {
-        (!isOnline ||
-          window.confirm('Are you sure you wish to force offline mode?')) &&
-          forceOffline(isOnline);
+        window.alert('You are online!');
+        //(!isOnline ||
+        //  window.confirm('Are you sure you wish to force offline mode?')) &&
+        //  forceOffline(isOnline);
       }}
       className="text-theme-primary dark:text-theme-primary-light ml-1 h-8 w-8 cursor-pointer rounded-full bg-gray-100 p-1.5 transition-colors active:opacity-70 dark:bg-gray-800"
     >
