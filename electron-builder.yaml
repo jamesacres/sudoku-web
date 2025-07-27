@@ -1,5 +1,5 @@
 appId: "io.github.jamesacres.sudoku-web"
-productName: "Sudoku"
+productName: "Sudoku Race"
 copyright: "Copyright (c) 2024 James Acres"
 win:
   target: ["dir", "portable", "zip"]

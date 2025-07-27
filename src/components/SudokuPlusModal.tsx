@@ -97,9 +97,9 @@ const SudokuPlusModal = () => {
     },
     {
       icon: <Users className="h-6 w-6" />,
-      title: 'Unlimited party management',
+      title: 'Unlimited racing team management',
       description:
-        'Create and join as many parties as you like. Ability to remove members from your party.',
+        'Create and join as many teams as you like. Ability to remove members from your team.',
     },
   ];
 

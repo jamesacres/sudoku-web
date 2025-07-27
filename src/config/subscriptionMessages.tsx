@@ -104,9 +104,9 @@ export const SUBSCRIPTION_CONTEXT_MESSAGES: Record<
     textColor: 'text-blue-800 dark:text-blue-200',
     content: (
       <>
-        🏘️ <strong>Multiple parties is a premium feature!</strong> Free users
-        can have one party. Subscribe to create and join unlimited parties for
-        family, friends, and more.
+        🏘️ <strong>Multiple racing teams is a premium feature!</strong> Free
+        users can have one team. Subscribe to create and join unlimited teams
+        for family, friends, and more.
       </>
     ),
   },

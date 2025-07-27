@@ -4,7 +4,7 @@
   "private": true,
   "main": "main.mjs",
   "author": "James Acres",
-  "description": "Sudoku",
+  "description": "Sudoku Race",
   "dependencies": {
     "electron-serve": "^2.0.0",
     "electron-store": "^9.0.0"

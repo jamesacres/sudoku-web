@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "author": "James Acres",
-  "description": "Sudoku",
+  "description": "Sudoku Race",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

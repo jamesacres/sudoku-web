@@ -209,7 +209,7 @@ function InviteComponent() {
                   {/* Invitation content */}
                   <div className="mb-8 text-center">
                     <p className="mb-4 text-lg text-gray-700 dark:text-gray-300">
-                      Join the party{' '}
+                      Join the racing team{' '}
                       <span className="inline-flex items-center rounded-full bg-gradient-to-r from-blue-100 to-purple-100 px-3 py-1 text-lg font-bold text-blue-800 dark:from-blue-900/50 dark:to-purple-900/50 dark:text-blue-200">
                         <Users className="mr-2 h-5 w-5" />
                         {publicInvite.description}
@@ -222,7 +222,7 @@ function InviteComponent() {
                     <div className="rounded-2xl bg-gradient-to-r from-blue-50 to-purple-50 p-4 dark:from-blue-900/20 dark:to-purple-900/20">
                       <p className="text-sm text-gray-600 dark:text-gray-400">
                         💡 <strong>Pro tip:</strong> All future puzzles you play
-                        will be shared with your party members for friendly
+                        will be shared with your team members for friendly
                         competition!
                       </p>
                     </div>
@@ -236,7 +236,7 @@ function InviteComponent() {
                           className="mb-3 block text-sm font-semibold text-gray-700 dark:text-gray-300"
                           htmlFor="memberNickname"
                         >
-                          What should we call you?
+                          What does your racing team call you?
                         </label>
                         <input
                           className={`${
@@ -260,7 +260,7 @@ function InviteComponent() {
                         {isJoining ? (
                           <div className="flex items-center justify-center">
                             <Loader className="mr-2 h-5 w-5 animate-spin" />
-                            Joining Party...
+                            Joining Team...
                           </div>
                         ) : (
                           <div className="flex cursor-pointer items-center justify-center">
