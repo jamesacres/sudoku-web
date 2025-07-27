@@ -28,6 +28,7 @@ import {
   incrementCheckGridCount,
 } from '@/utils/dailyActionCounter';
 import { SubscriptionContext } from '@/types/subscriptionContext';
+import { useDocumentVisibility } from './documentVisibility';
 
 function useGameState({
   final,
@@ -40,13 +41,20 @@ function useGameState({
 }) {
   const { user } = useContext(UserContext) || {};
   const { subscribeModal, isSubscribed } = useContext(RevenueCatContext) || {};
+  const isDocumentVisible = useDocumentVisibility();
 
-  const { timer, setTimerNewSession, stopTimer, setPauseTimer } = useTimer({
-    puzzleId,
-  });
+  const { timer, setTimerNewSession, stopTimer, setPauseTimer, isPaused } =
+    useTimer({
+      puzzleId,
+    });
 
   // Reference to timer value to use without triggering re-renders
   const timerRef = useRef(timer);
+
+  // Track last saveValue call to prevent race conditions and unnecessary polling
+  const lastSaveTimeRef = useRef<number>(0);
+  const pollingIgnoreCounterRef = useRef<number>(0);
+
   useEffect(() => {
     timerRef.current = timer;
   }, [timer]);
@@ -76,6 +84,7 @@ function useGameState({
   const [sessionParties, setSessionParties] = useState<
     Parties<Session<ServerState>>
   >({});
+  const hasSessionParties = Object.keys(sessionParties).length;
 
   const [selectedCell, setSelectedCellState] = useState<null | string>(null);
   const setSelectedCell = useCallback(
@@ -380,6 +389,9 @@ function useGameState({
               serverValue?.updatedAt?.getTime() || 0,
               Math.floor(localValue.lastUpdated / 1000) * 1000
             );
+            // Track saveValue call timestamp and increment ignore counter
+            lastSaveTimeRef.current = Date.now();
+            pollingIgnoreCounterRef.current += 1;
             saveValue(localValue.state);
           }
           // Remove disabled flag, heard from server but ignored it
@@ -394,6 +406,68 @@ function useGameState({
       active = false;
     };
   }, [user, puzzleId, getValue, setTimerNewSession, saveValue]);
+
+  useEffect(() => {
+    let active = true;
+    let intervalId: ReturnType<typeof setInterval>;
+
+    const pollGetValue = () => {
+      const now = Date.now();
+      const timeSinceLastSave = now - lastSaveTimeRef.current;
+
+      // Only poll if more than 1 minute has passed since last saveValue call
+      if (
+        !isPaused &&
+        isDocumentVisible &&
+        active &&
+        timeSinceLastSave >= 60000
+      ) {
+        console.info('polling stale session parties..');
+        const currentIgnoreCounter = pollingIgnoreCounterRef.current;
+        const { serverValuePromise } = getValue() || {};
+
+        serverValuePromise?.then((serverValue) => {
+          // Ignore response if a saveValue call happened after this polling request
+          if (
+            !isPaused &&
+            active &&
+            pollingIgnoreCounterRef.current === currentIgnoreCounter
+          ) {
+            if (
+              serverValue?.parties &&
+              Object.keys(serverValue.parties).length
+            ) {
+              setSessionParties(serverValue.parties);
+            }
+          }
+        });
+      } else {
+        console.info('skipping poll');
+      }
+    };
+
+    if (active && !isPaused && isDocumentVisible && hasSessionParties) {
+      // Poll every minute if we have at least one party in the session
+      console.info('setting up polling..');
+      intervalId = setInterval(pollGetValue, 60000);
+    } else {
+      console.info('not setting up polling, no need');
+    }
+
+    return () => {
+      active = false;
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [
+    getValue,
+    setSessionParties,
+    isPaused,
+    isDocumentVisible,
+    hasSessionParties,
+  ]);
+
   useEffect(() => {
     let active = true;
     if (!isDisabled && !isRestored && answerStack.length > 0) {
@@ -414,6 +488,10 @@ function useGameState({
       }
       const isFirstLoad = answerStack.length === 1;
       if (isCorrect || completed || isFirstLoad) {
+        // Track saveValue call timestamp and increment ignore counter
+        lastSaveTimeRef.current = Date.now();
+        pollingIgnoreCounterRef.current += 1;
+
         const { serverValuePromise } = saveValue({
           answerStack,
           initial,

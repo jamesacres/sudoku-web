@@ -12,7 +12,7 @@ const TimerDisplay = ({
 }) => {
   let content;
   if (isComplete) {
-    content = <span>👏🎉 {formatSeconds(seconds)} 🎉👏</span>;
+    content = <span>👏 {formatSeconds(seconds)} 👏</span>;
   } else if (countdown) {
     content = <span>{countdown === 1 ? 'GO!' : countdown - 1}</span>;
   } else {

@@ -121,6 +121,7 @@ function useTimer({ puzzleId }: { puzzleId: string }) {
     timer,
     stopTimer,
     setPauseTimer,
+    isPaused,
   };
 }
 

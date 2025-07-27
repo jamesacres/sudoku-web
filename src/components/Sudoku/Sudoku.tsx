@@ -259,7 +259,7 @@ const Sudoku = ({
               </div>
 
               {/* Race Track Progress */}
-              {!completed && (
+              {!showAnimation && (
                 <RaceTrack
                   sessionParties={sessionParties}
                   initial={initial}
