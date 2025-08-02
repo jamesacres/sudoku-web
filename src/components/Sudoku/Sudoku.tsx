@@ -173,11 +173,9 @@ const Sudoku = ({
             <div className="mt-auto">
               {/* App Branding Header */}
               <div className="mr-auto ml-auto max-w-xl px-4 pb-1 lg:mr-0">
-                <div className="text-center">
-                  <span className="inline-flex items-center bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-sm font-semibold text-transparent">
-                    <span className="mr-1">✨</span>
+                <div className="text-right">
+                  <span className="bg-theme-primary inline-flex items-center bg-clip-text text-sm text-transparent">
                     Sudoku Race
-                    <span className="ml-1">✨</span>
                   </span>
                 </div>
               </div>
