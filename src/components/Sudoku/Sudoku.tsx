@@ -151,7 +151,7 @@ const Sudoku = ({
 
   return (
     <div
-      className={`${showAdvancedControls ? 'pb-90' : 'pb-70'} lg:pb-0 landscape:mb-120 sm:landscape:pb-[calc(60vh)] lg:landscape:mb-0 lg:landscape:pb-0`}
+      className={`${showAdvancedControls ? 'pb-120' : 'pb-90'} lg:pb-0 landscape:mb-120 sm:landscape:pb-[calc(60vh)] lg:landscape:mb-0 lg:landscape:pb-0`}
     >
       <SudokuSidebar
         showSidebar={showSidebar}
