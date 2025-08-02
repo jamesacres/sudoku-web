@@ -4,7 +4,6 @@ import { DAILY_LIMITS } from '@/config/dailyLimits';
 interface DailyActionData {
   date: string;
   undoCount: number;
-  checkCellCount: number;
   checkGridCount: number;
 }
 
@@ -19,7 +18,6 @@ export function getDailyActionData(): DailyActionData {
     return {
       date: getTodayDateString(),
       undoCount: 0,
-      checkCellCount: 0,
       checkGridCount: 0,
     };
   }
@@ -30,7 +28,6 @@ export function getDailyActionData(): DailyActionData {
       return {
         date: getTodayDateString(),
         undoCount: 0,
-        checkCellCount: 0,
         checkGridCount: 0,
       };
     }
@@ -43,7 +40,6 @@ export function getDailyActionData(): DailyActionData {
       return {
         date: today,
         undoCount: 0,
-        checkCellCount: 0,
         checkGridCount: 0,
       };
     }
@@ -54,7 +50,6 @@ export function getDailyActionData(): DailyActionData {
     return {
       date: getTodayDateString(),
       undoCount: 0,
-      checkCellCount: 0,
       checkGridCount: 0,
     };
   }
@@ -77,13 +72,6 @@ export function incrementUndoCount(): number {
   return data.undoCount;
 }
 
-export function incrementCheckCellCount(): number {
-  const data = getDailyActionData();
-  data.checkCellCount += 1;
-  saveDailyActionData(data);
-  return data.checkCellCount;
-}
-
 export function incrementCheckGridCount(): number {
   const data = getDailyActionData();
   data.checkGridCount += 1;
@@ -95,10 +83,6 @@ export function getUndoCount(): number {
   return getDailyActionData().undoCount;
 }
 
-export function getCheckCellCount(): number {
-  return getDailyActionData().checkCellCount;
-}
-
 export function getCheckGridCount(): number {
   return getDailyActionData().checkGridCount;
 }
@@ -107,20 +91,12 @@ export function canUseUndo(): boolean {
   return getUndoCount() < DAILY_LIMITS.UNDO;
 }
 
-export function canUseCheckCell(): boolean {
-  return getCheckCellCount() < DAILY_LIMITS.CHECK_CELL;
-}
-
 export function canUseCheckGrid(): boolean {
   return getCheckGridCount() < DAILY_LIMITS.CHECK_GRID;
 }
 
 export function getRemainingUndos(): number {
   return Math.max(0, DAILY_LIMITS.UNDO - getUndoCount());
-}
-
-export function getRemainingCheckCells(): number {
-  return Math.max(0, DAILY_LIMITS.CHECK_CELL - getCheckCellCount());
 }
 
 export function getRemainingCheckGrids(): number {

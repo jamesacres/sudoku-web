@@ -33,17 +33,6 @@ export const SUBSCRIPTION_CONTEXT_MESSAGES: Record<
       </>
     ),
   },
-  [SubscriptionContext.CHECK_CELL]: {
-    bgColor: 'bg-orange-50 dark:bg-orange-900/20',
-    textColor: 'text-orange-800 dark:text-orange-200',
-    content: (
-      <>
-        📅 <strong>You&rsquo;ve reached your daily cell check limit!</strong>{' '}
-        You get {DAILY_LIMITS.CHECK_CELL} free cell checks per day. The limit
-        resets tomorrow, or subscribe for unlimited checks.
-      </>
-    ),
-  },
   [SubscriptionContext.CHECK_GRID]: {
     bgColor: 'bg-orange-50 dark:bg-orange-900/20',
     textColor: 'text-orange-800 dark:text-orange-200',

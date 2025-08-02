@@ -17,11 +17,7 @@ import NumberPad from '../NumberPad';
 import Toggle from '../Toggle';
 import React, { memo, useState, useRef, useCallback, useEffect } from 'react';
 import { HintBox } from '../HintBox/HintBox';
-import {
-  canUseUndo,
-  canUseCheckCell,
-  canUseCheckGrid,
-} from '@/utils/dailyActionCounter';
+import { canUseUndo, canUseCheckGrid } from '@/utils/dailyActionCounter';
 
 interface Arguments {
   isInputDisabled: boolean;
@@ -280,13 +276,6 @@ const SudokuControls = ({
                 >
                   <Square size={15} />
                   Cell
-                  {!isSubscribed &&
-                    !isValidateCellDisabled &&
-                    !canUseCheckCell() && (
-                      <span className="absolute -top-1 -right-1 z-10 inline-flex items-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 px-1 py-0.5 text-xs font-semibold text-white shadow-lg">
-                        ✨
-                      </span>
-                    )}
                 </button>
                 <button
                   onClick={() => validateGrid()}

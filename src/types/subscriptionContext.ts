@@ -4,7 +4,6 @@
  */
 export enum SubscriptionContext {
   UNDO = 'undo',
-  CHECK_CELL = 'checkCell',
   CHECK_GRID = 'checkGrid',
   REVEAL = 'reveal',
   THEME_COLOR = 'themeColor',
