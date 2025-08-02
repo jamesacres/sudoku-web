@@ -218,7 +218,7 @@ const RaceTrack = ({
         </div>
 
         {/* Compact horizontal player legend - lowest to highest percentage */}
-        <div className="text-s mt-2 flex flex-wrap items-center gap-x-4 gap-y-1">
+        <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
           {[...allPlayerProgress].reverse().map((player) => {
             const colorClass = getPlayerColor(
               player.userId,
