@@ -39,8 +39,6 @@ const Sudoku = ({
     selectedCell,
     setIsNotesMode,
     isNotesMode,
-    setIsMiniNotes,
-    isMiniNotes,
     undo,
     redo,
     selectNumber,
@@ -248,7 +246,6 @@ const Sudoku = ({
                               y as PuzzleRowOrColumn
                             ]
                           }
-                          isMiniNotes={isMiniNotes}
                           isZoomMode={isZoomMode}
                           onDragStart={handleDragStart}
                         />
@@ -300,8 +297,6 @@ const Sudoku = ({
                 selectNumber={selectNumber}
                 isNotesMode={isNotesMode}
                 setIsNotesMode={setIsNotesMode}
-                isMiniNotes={isMiniNotes}
-                setIsMiniNotes={setIsMiniNotes}
                 isZoomMode={isZoomMode}
                 setIsZoomMode={setIsZoomMode}
                 reset={reset}

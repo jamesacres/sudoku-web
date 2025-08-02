@@ -11,7 +11,6 @@ interface Arguments {
   value?: number | Notes;
   validation?: boolean;
   isInitial: boolean;
-  isMiniNotes: boolean;
   isZoomMode?: boolean;
   onDragStart?: (e: React.PointerEvent) => void;
 }
@@ -24,7 +23,6 @@ const SudokuInput = ({
   value,
   validation,
   isInitial,
-  isMiniNotes,
   isZoomMode,
   onDragStart,
 }: Arguments) => {
@@ -61,12 +59,7 @@ const SudokuInput = ({
       className={`flex h-full w-full items-center justify-center border border-zinc-300 dark:border-zinc-400 ${backgroundClass}`}
     >
       {isNotesMode ? (
-        <SudokuInputNotes
-          isSelected={isSelected}
-          isMiniNotes={isMiniNotes}
-          notes={notes}
-          selectNumber={selectNumber}
-        />
+        <SudokuInputNotes notes={notes} selectNumber={selectNumber} />
       ) : (
         <div
           data-cell-id={cellId}

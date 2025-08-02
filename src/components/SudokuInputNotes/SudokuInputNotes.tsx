@@ -3,18 +3,11 @@ import { SelectNumber } from '@/types/state';
 import { memo } from 'react';
 
 interface Arguments {
-  isSelected: boolean;
-  isMiniNotes: boolean;
   notes: Notes;
   selectNumber: SelectNumber;
 }
 
-const SudokuInputNotes = ({
-  isSelected,
-  isMiniNotes,
-  notes,
-  selectNumber,
-}: Arguments) => {
+const SudokuInputNotes = ({ notes }: Arguments) => {
   return (
     <div className={`grid h-full w-full grid-cols-3 grid-rows-3`}>
       {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((value) => {
@@ -23,11 +16,8 @@ const SudokuInputNotes = ({
           ? 'dark:text-white text-black'
           : 'text-slate-400';
         const boldClass = isChecked ? 'font-bold' : undefined;
-        return (isSelected && isMiniNotes) || isChecked ? (
+        return isChecked ? (
           <div
-            onClick={() =>
-              isSelected && isMiniNotes && selectNumber(value, true)
-            }
             className={`flex aspect-square h-full w-full items-center justify-center text-xs md:text-sm ${colorClass} ${boldClass}`}
             key={crypto.randomUUID()}
           >

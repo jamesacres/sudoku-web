@@ -36,8 +36,6 @@ interface Arguments {
   selectNumber: (number: number) => void;
   isNotesMode: boolean;
   setIsNotesMode: (_value: boolean) => void;
-  isMiniNotes: boolean;
-  setIsMiniNotes: (_value: boolean) => void;
   isZoomMode: boolean;
   setIsZoomMode: (_value: boolean) => void;
   reset: () => void;
@@ -59,8 +57,6 @@ const SudokuControls = ({
   selectNumber,
   isNotesMode,
   setIsNotesMode,
-  isMiniNotes,
-  setIsMiniNotes,
   isZoomMode,
   setIsZoomMode,
   reset,
@@ -98,13 +94,6 @@ const SudokuControls = ({
               Notes
             </div>
             <Toggle isEnabled={isNotesMode} setEnabled={setIsNotesMode} />
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1 text-xs font-medium text-gray-700 dark:text-gray-300">
-              {isMiniNotes ? <Grid size={14} /> : <Square size={14} />}
-              Mini
-            </div>
-            <Toggle isEnabled={isMiniNotes} setEnabled={setIsMiniNotes} />
           </div>
         </div>
 

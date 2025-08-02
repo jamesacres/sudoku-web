@@ -70,7 +70,6 @@ function useGameState({
       type: StateType.PUZZLE,
     });
   const [isNotesMode, setIsNotesMode] = useState<boolean>(false);
-  const [isMiniNotes, setIsMiniNotes] = useState<boolean>(false);
   const [showSidebar, setShowSidebar] = useState(false);
   const [isZoomMode, setIsZoomMode] = useState(false);
   const [{ answerStack, isRestored, isDisabled, completed }, setAnswerStack] =
@@ -631,8 +630,6 @@ function useGameState({
     selectedCell,
     setIsNotesMode,
     isNotesMode,
-    setIsMiniNotes,
-    isMiniNotes,
     undo,
     redo,
     selectNumber,
