@@ -21,10 +21,8 @@ import { UserContext } from '@/providers/UserProvider';
 import { RevenueCatContext } from '@/providers/RevenueCatProvider/RevenueCatProvider';
 import {
   canUseUndo,
-  canUseCheckCell,
   canUseCheckGrid,
   incrementUndoCount,
-  incrementCheckCellCount,
   incrementCheckGridCount,
 } from '@/utils/dailyActionCounter';
 import { SubscriptionContext } from '@/types/subscriptionContext';
@@ -70,7 +68,6 @@ function useGameState({
       type: StateType.PUZZLE,
     });
   const [isNotesMode, setIsNotesMode] = useState<boolean>(false);
-  const [isMiniNotes, setIsMiniNotes] = useState<boolean>(false);
   const [showSidebar, setShowSidebar] = useState(false);
   const [isZoomMode, setIsZoomMode] = useState(false);
   const [{ answerStack, isRestored, isDisabled, completed }, setAnswerStack] =
@@ -312,31 +309,10 @@ function useGameState({
         (validation
           ? setValidation(undefined)
           : setValidation(checkCell(selectedCell, initial, final, answer)));
-      // Increment daily counter only for non-subscribers
-      if (!isSubscribed) {
-        incrementCheckCellCount();
-      }
     };
 
-    // Check if user has free uses left or is subscribed
-    if (isSubscribed || canUseCheckCell()) {
-      performValidateCell();
-    } else if (subscribeModal) {
-      subscribeModal.showModalIfRequired(
-        performValidateCell,
-        () => {},
-        SubscriptionContext.CHECK_CELL
-      );
-    }
-  }, [
-    validation,
-    selectedCell,
-    initial,
-    final,
-    answer,
-    subscribeModal,
-    isSubscribed,
-  ]);
+    performValidateCell();
+  }, [validation, selectedCell, initial, final, answer]);
   useEffect(() => {
     setValidation(undefined);
   }, [answer, selectedCell]);
@@ -631,8 +607,6 @@ function useGameState({
     selectedCell,
     setIsNotesMode,
     isNotesMode,
-    setIsMiniNotes,
-    isMiniNotes,
     undo,
     redo,
     selectNumber,

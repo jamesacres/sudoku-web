@@ -2,7 +2,6 @@
 import { ServerStateResult } from '@/types/serverTypes';
 import { ServerState } from '@/types/state';
 import SessionRow from '../SessionRow';
-import { Zap } from 'react-feather';
 
 interface MyPuzzlesTabProps {
   sessions?: ServerStateResult<ServerState>[];

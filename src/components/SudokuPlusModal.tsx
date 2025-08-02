@@ -14,7 +14,6 @@ import {
   RotateCcw,
   Droplet,
   Users,
-  Unlock,
   Watch,
 } from 'react-feather';
 import { SubscriptionContext } from '@/types/subscriptionContext';

@@ -8,19 +8,16 @@ import {
   Edit2,
   Eye,
   Grid,
+  Minus,
   RefreshCw,
   Square,
   Unlock,
 } from 'react-feather';
 import NumberPad from '../NumberPad';
 import Toggle from '../Toggle';
-import React, { memo, useState } from 'react';
+import React, { memo, useState, useRef, useCallback, useEffect } from 'react';
 import { HintBox } from '../HintBox/HintBox';
-import {
-  canUseUndo,
-  canUseCheckCell,
-  canUseCheckGrid,
-} from '@/utils/dailyActionCounter';
+import { canUseUndo, canUseCheckGrid } from '@/utils/dailyActionCounter';
 
 interface Arguments {
   isInputDisabled: boolean;
@@ -36,8 +33,6 @@ interface Arguments {
   selectNumber: (number: number) => void;
   isNotesMode: boolean;
   setIsNotesMode: (_value: boolean) => void;
-  isMiniNotes: boolean;
-  setIsMiniNotes: (_value: boolean) => void;
   isZoomMode: boolean;
   setIsZoomMode: (_value: boolean) => void;
   reset: () => void;
@@ -59,8 +54,6 @@ const SudokuControls = ({
   selectNumber,
   isNotesMode,
   setIsNotesMode,
-  isMiniNotes,
-  setIsMiniNotes,
   isZoomMode,
   setIsZoomMode,
   reset,
@@ -68,13 +61,103 @@ const SudokuControls = ({
   onAdvancedToggle,
   isSubscribed,
 }: Arguments) => {
-  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [showAdvanced, setShowAdvanced] = useState(true);
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStartY = useRef(0);
+  const dragRef = useRef<HTMLDivElement>(null);
 
   const handleAdvancedToggle = () => {
-    const newState = !showAdvanced;
-    setShowAdvanced(newState);
-    onAdvancedToggle?.(newState);
+    if (!isDragging) {
+      const newState = !showAdvanced;
+      setShowAdvanced(newState);
+      onAdvancedToggle?.(newState);
+    }
   };
+
+  const handleDragStart = useCallback((clientY: number) => {
+    setIsDragging(true);
+    dragStartY.current = clientY;
+  }, []);
+
+  const handleDragMove = useCallback(
+    (clientY: number) => {
+      if (!isDragging) return;
+
+      const deltaY = dragStartY.current - clientY;
+      // If dragged up by at least 20px, show advanced controls
+      if (deltaY > 20 && !showAdvanced) {
+        setShowAdvanced(true);
+        setIsDragging(false); // Stop dragging when toggled
+      }
+      // If dragged down by at least 20px, hide advanced controls
+      else if (deltaY < -20 && showAdvanced) {
+        setShowAdvanced(false);
+        setIsDragging(false); // Stop dragging when toggled
+      }
+    },
+    [isDragging, showAdvanced]
+  );
+
+  const handleDragEnd = useCallback(() => {
+    setIsDragging(false);
+  }, []);
+
+  useEffect(() => {
+    setTimeout(() => setShowAdvanced(false), 1000);
+  }, []);
+
+  // Global mouse and touch handlers
+  useEffect(() => {
+    if (!isDragging) return;
+
+    const handleGlobalMouseMove = (e: MouseEvent) => {
+      handleDragMove(e.clientY);
+    };
+
+    const handleGlobalTouchMove = (e: TouchEvent) => {
+      e.preventDefault();
+      const touch = e.touches[0];
+      handleDragMove(touch.clientY);
+    };
+
+    const handleGlobalEnd = () => {
+      handleDragEnd();
+    };
+
+    // Add global listeners
+    document.addEventListener('mousemove', handleGlobalMouseMove);
+    document.addEventListener('mouseup', handleGlobalEnd);
+    document.addEventListener('touchmove', handleGlobalTouchMove, {
+      passive: false,
+    });
+    document.addEventListener('touchend', handleGlobalEnd);
+
+    return () => {
+      // Cleanup
+      document.removeEventListener('mousemove', handleGlobalMouseMove);
+      document.removeEventListener('mouseup', handleGlobalEnd);
+      document.removeEventListener('touchmove', handleGlobalTouchMove);
+      document.removeEventListener('touchend', handleGlobalEnd);
+    };
+  }, [isDragging, handleDragMove, handleDragEnd]);
+
+  // Local start events
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      handleDragStart(e.clientY);
+    },
+    [handleDragStart]
+  );
+
+  const handleTouchStart = useCallback(
+    (e: React.TouchEvent) => {
+      e.preventDefault();
+      const touch = e.touches[0];
+      handleDragStart(touch.clientY);
+    },
+    [handleDragStart]
+  );
 
   return (
     <div className="mt-0 mb-0 overflow-visible px-2 pt-2 lg:mb-16 xl:max-w-lg">
@@ -89,7 +172,37 @@ const SudokuControls = ({
       </div>
 
       {/* iOS-style control panel */}
-      <div className="pb-safe mt-0 overflow-visible rounded-t-xl bg-white/60 p-3 shadow-lg backdrop-blur-md dark:bg-zinc-900/60">
+      <div className="pb-safe mt-0 touch-none overflow-visible rounded-t-xl bg-white/60 p-3 pt-0 shadow-lg backdrop-blur-md lg:pt-3 dark:bg-zinc-900/60">
+        {/* Advanced controls drag handle */}
+        <div className="lg:hidden">
+          <div className="flex w-full cursor-grab items-center justify-center gap-1.5 rounded-lg px-2 py-0 text-xs font-medium text-gray-600 transition-all duration-60 select-none dark:text-gray-400">
+            <p className="grow-0 cursor-pointer" onClick={handleAdvancedToggle}>
+              {showAdvanced ? (
+                <ChevronDown size={15} />
+              ) : (
+                <ChevronUp size={15} />
+              )}
+            </p>
+            <div
+              ref={dragRef}
+              className={`flex max-h-[35px] w-full cursor-grab items-center justify-center gap-1.5 rounded-lg px-2 py-0 text-xs font-medium text-gray-600 transition-all duration-60 select-none dark:text-gray-400 ${
+                isDragging ? 'cursor-grabbing' : 'cursor-grab'
+              }`}
+              onMouseDown={handleMouseDown}
+              onTouchStart={handleTouchStart}
+            >
+              <Minus size={50} className="grow-3" />
+            </div>
+            <p className="grow-0 cursor-pointer" onClick={handleAdvancedToggle}>
+              {showAdvanced ? (
+                <ChevronDown size={15} />
+              ) : (
+                <ChevronUp size={15} />
+              )}
+            </p>
+          </div>
+        </div>
+
         {/* Toggle controls section */}
         <div className="mb-0 flex justify-center gap-4 border-b border-gray-200 pb-3 lg:mb-3 dark:border-gray-600">
           <div className="flex items-center gap-3">
@@ -98,13 +211,6 @@ const SudokuControls = ({
               Notes
             </div>
             <Toggle isEnabled={isNotesMode} setEnabled={setIsNotesMode} />
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1 text-xs font-medium text-gray-700 dark:text-gray-300">
-              {isMiniNotes ? <Grid size={14} /> : <Square size={14} />}
-              Mini
-            </div>
-            <Toggle isEnabled={isMiniNotes} setEnabled={setIsMiniNotes} />
           </div>
         </div>
 
@@ -153,21 +259,6 @@ const SudokuControls = ({
               </button>
             </div>
 
-            {/* Advanced controls toggle */}
-            <div className="mt-2 lg:hidden">
-              <button
-                onClick={handleAdvancedToggle}
-                className="flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 transition-all duration-150 hover:bg-gray-100 dark:bg-zinc-800 dark:text-gray-400 dark:hover:bg-zinc-700"
-              >
-                {showAdvanced ? (
-                  <ChevronUp size={14} />
-                ) : (
-                  <ChevronDown size={14} />
-                )}
-                {showAdvanced ? 'Hide' : 'More'} Options
-              </button>
-            </div>
-
             {/* Collapsible advanced controls */}
             <div
               className={`mt-2 overflow-visible transition-all duration-300 ease-in-out lg:block ${
@@ -185,13 +276,6 @@ const SudokuControls = ({
                 >
                   <Square size={15} />
                   Cell
-                  {!isSubscribed &&
-                    !isValidateCellDisabled &&
-                    !canUseCheckCell() && (
-                      <span className="absolute -top-1 -right-1 z-10 inline-flex items-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 px-1 py-0.5 text-xs font-semibold text-white shadow-lg">
-                        ✨
-                      </span>
-                    )}
                 </button>
                 <button
                   onClick={() => validateGrid()}

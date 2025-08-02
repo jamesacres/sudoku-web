@@ -12,7 +12,6 @@ interface Arguments {
   selectNumber: SelectNumber;
   validation?: PuzzleBox<boolean | undefined>;
   initial: PuzzleBox;
-  isMiniNotes: boolean;
   isZoomMode?: boolean;
   onDragStart?: (e: PointerEvent) => void;
 }
@@ -25,7 +24,6 @@ const SudokuBox = ({
   selectNumber,
   validation,
   initial,
-  isMiniNotes,
   isZoomMode,
   onDragStart,
 }: Arguments) => {
@@ -52,7 +50,6 @@ const SudokuBox = ({
               isInitial={
                 !!initial[x as PuzzleRowOrColumn][y as PuzzleRowOrColumn]
               }
-              isMiniNotes={isMiniNotes}
               isZoomMode={isZoomMode}
               onDragStart={onDragStart}
             />

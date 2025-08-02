@@ -39,8 +39,6 @@ const Sudoku = ({
     selectedCell,
     setIsNotesMode,
     isNotesMode,
-    setIsMiniNotes,
-    isMiniNotes,
     undo,
     redo,
     selectNumber,
@@ -153,7 +151,7 @@ const Sudoku = ({
 
   return (
     <div
-      className={`${showAdvancedControls ? 'pb-90' : 'pb-70'} lg:pb-0 landscape:mb-120 sm:landscape:pb-[calc(60vh)] lg:landscape:mb-0 lg:landscape:pb-0`}
+      className={`${showAdvancedControls ? 'pb-120' : 'pb-90'} lg:pb-0 landscape:mb-120 sm:landscape:pb-[calc(60vh)] lg:landscape:mb-0 lg:landscape:pb-0`}
     >
       <SudokuSidebar
         showSidebar={showSidebar}
@@ -175,11 +173,9 @@ const Sudoku = ({
             <div className="mt-auto">
               {/* App Branding Header */}
               <div className="mr-auto ml-auto max-w-xl px-4 pb-1 lg:mr-0">
-                <div className="text-center">
-                  <span className="inline-flex items-center bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-sm font-semibold text-transparent">
-                    <span className="mr-1">✨</span>
+                <div className="text-right">
+                  <span className="bg-theme-primary inline-flex items-center bg-clip-text text-sm text-transparent">
                     Sudoku Race
-                    <span className="ml-1">✨</span>
                   </span>
                 </div>
               </div>
@@ -248,7 +244,6 @@ const Sudoku = ({
                               y as PuzzleRowOrColumn
                             ]
                           }
-                          isMiniNotes={isMiniNotes}
                           isZoomMode={isZoomMode}
                           onDragStart={handleDragStart}
                         />
@@ -300,8 +295,6 @@ const Sudoku = ({
                 selectNumber={selectNumber}
                 isNotesMode={isNotesMode}
                 setIsNotesMode={setIsNotesMode}
-                isMiniNotes={isMiniNotes}
-                setIsMiniNotes={setIsMiniNotes}
                 isZoomMode={isZoomMode}
                 setIsZoomMode={setIsZoomMode}
                 reset={reset}

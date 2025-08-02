@@ -4,13 +4,18 @@ import { UserAvatar } from './UserAvatar';
 import { useServerStorage } from '@/hooks/serverStorage';
 import { DeleteAccountDialog } from './DeleteAccountDialog';
 import { RevenueCatContext } from '@/providers/RevenueCatProvider';
+import { Plus, LogOut, X } from 'react-feather';
 
 export const UserPanel = ({
   user,
   logout,
+  onClose,
+  isMobile = false,
 }: {
   user: UserProfile;
   logout: () => void;
+  onClose?: () => void;
+  isMobile?: boolean;
 }) => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const { deleteAccount } = useServerStorage();
@@ -25,89 +30,202 @@ export const UserPanel = ({
     }
   };
 
+  // Shared user info component
+  const UserInfo = ({
+    size,
+    showSubtitle = false,
+  }: {
+    size: number;
+    showSubtitle?: boolean;
+  }) => (
+    <div className="flex flex-col items-center">
+      <UserAvatar user={user} size={size} showRing={true} />
+      <h2
+        className={`${size > 70 ? 'mt-4 text-xl' : 'mt-3 text-lg'} font-medium`}
+      >
+        Hi, {user.name?.split(' ')[0] || 'User'}!
+      </h2>
+      {showSubtitle && (
+        <p className="text-sm text-gray-400">{user.name || 'User'}</p>
+      )}
+    </div>
+  );
+
+  // Shared primary action component
+  const PrimaryAction = () => (
+    <>
+      {isSubscribed ? (
+        <div className="rounded-full border border-gray-600 bg-gray-700 px-6 py-3 text-center">
+          <span className="inline-flex items-center text-sm font-medium">
+            <span className="mr-2">✨</span>
+            Sudoku Plus Active
+            <span className="ml-2">✓</span>
+          </span>
+        </div>
+      ) : (
+        <button
+          onClick={() => subscribeModal?.showModalIfRequired(() => {})}
+          className="w-full cursor-pointer rounded-full border border-gray-600 bg-gray-700 px-6 py-3 text-sm font-medium transition-colors hover:bg-gray-600"
+        >
+          Join Sudoku Plus
+        </button>
+      )}
+    </>
+  );
+
+  // Shared action buttons component
+  const ActionButtons = () => (
+    <div
+      className={`${isSubscribed ? 'flex justify-center' : 'grid grid-cols-2 gap-3'}`}
+    >
+      {!isSubscribed && (
+        <button
+          onClick={() => subscribeModal?.showModalIfRequired(() => {})}
+          className="flex cursor-pointer items-center justify-center rounded-2xl bg-gray-700 px-4 py-3 text-sm font-medium transition-colors hover:bg-gray-600"
+        >
+          <Plus size={16} className="mr-2" />
+          Join Plus
+        </button>
+      )}
+      <button
+        onClick={() => logout()}
+        className={`flex cursor-pointer items-center justify-center rounded-2xl bg-gray-700 px-4 py-3 text-sm font-medium transition-colors hover:bg-gray-600 ${isSubscribed ? 'w-full max-w-xs' : ''}`}
+      >
+        <LogOut size={16} className="mr-2" />
+        Sign out
+      </button>
+    </div>
+  );
+
+  // Shared footer links component
+  const FooterLinks = () => (
+    <div className="flex items-center justify-center space-x-4 text-sm text-gray-400">
+      <a
+        href="https://bubblyclouds.com/privacy"
+        target="_blank"
+        className="hover:text-white"
+      >
+        Privacy policy
+      </a>
+      <span>•</span>
+      <a
+        href="https://bubblyclouds.com/terms"
+        target="_blank"
+        className="hover:text-white"
+      >
+        Terms of Service
+      </a>
+    </div>
+  );
+
+  // Shared delete account button
+  const DeleteAccountButton = () => (
+    <button
+      onClick={() => setIsDeleteDialogOpen(true)}
+      className="w-full cursor-pointer text-center text-xs text-red-400 hover:text-red-300"
+    >
+      Delete account
+    </button>
+  );
+
+  // Shared powered by component
+  const PoweredBy = () => (
+    <div className="border-t border-gray-700 px-6 py-3 text-center text-xs text-gray-500">
+      Powered by{' '}
+      <a
+        href="https://bubblyclouds.com/"
+        target="_blank"
+        className="hover:text-gray-300"
+      >
+        Bubbly Clouds
+      </a>
+    </div>
+  );
+
+  if (isMobile) {
+    return (
+      <>
+        <div className="w-full max-w-sm rounded-3xl bg-gray-800 text-white shadow-2xl">
+          {/* Header */}
+          <div className="flex items-center justify-between p-6 pb-4">
+            <div className="text-lg font-medium text-gray-300">Account</div>
+            <button
+              onClick={onClose}
+              className="cursor-pointer text-gray-400 hover:text-white"
+            >
+              <X size={20} />
+            </button>
+          </div>
+
+          {/* User info */}
+          <div className="px-6 py-4">
+            <UserInfo size={80} />
+          </div>
+
+          {/* Primary action */}
+          <div className="px-6 py-4">
+            <PrimaryAction />
+          </div>
+
+          {/* Actions */}
+          <div className="px-6 py-4">
+            <ActionButtons />
+          </div>
+
+          {/* Footer */}
+          <div className="px-6 py-4">
+            <FooterLinks />
+          </div>
+
+          {/* Delete account */}
+          <div className="px-6 pb-4">
+            <DeleteAccountButton />
+          </div>
+
+          {/* Powered by footer */}
+          <PoweredBy />
+        </div>
+
+        <DeleteAccountDialog
+          isOpen={isDeleteDialogOpen}
+          onClose={() => setIsDeleteDialogOpen(false)}
+          onConfirm={handleDeleteAccount}
+        />
+      </>
+    );
+  }
+
+  // Desktop version
   return (
     <>
-      <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black/5">
-        <div className="bg-gray-50 p-4">
-          <div className="flow-root rounded-md px-2 py-2">
-            <div className="float-left mr-4">
-              <UserAvatar user={user} size={64} />
-            </div>
-            <span className="flex items-center">
-              <span className="text-sm font-medium text-gray-900">
-                {user.name}
-              </span>
-            </span>
-            {isSubscribed ? (
-              <span className="mt-2 inline-flex items-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-2 text-xs font-semibold text-white shadow-lg">
-                <span className="mr-1">✨</span>
-                Sudoku Plus
-                <span className="ml-1">✓</span>
-              </span>
-            ) : (
-              <button
-                onClick={() => subscribeModal?.showModalIfRequired(() => {})}
-                className="mt-2 inline-flex cursor-pointer items-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-2 text-xs font-semibold text-white shadow-lg transition-all duration-200 hover:scale-105 hover:from-blue-600 hover:to-purple-700 hover:shadow-xl active:scale-95"
-              >
-                <span className="mr-1">✨</span>
-                Upgrade to Plus
-                <span className="ml-1">→</span>
-              </button>
-            )}
-          </div>
+      <div className="w-80 overflow-hidden rounded-2xl bg-gray-800 text-white shadow-2xl ring-1 ring-black/10">
+        {/* User info */}
+        <div className="px-6 py-6">
+          <UserInfo size={64} showSubtitle={true} />
         </div>
-        <div className="bg-gray-200 p-4">
-          <div className="flex flex-col space-y-4">
-            <div className="flex items-center justify-between text-gray-600">
-              <div>
-                <button
-                  onClick={() => logout()}
-                  className="cursor-pointer rounded-sm bg-gray-200 px-4 py-2 outline outline-1 outline-gray-400 hover:bg-gray-300"
-                >
-                  Sign out
-                </button>
-              </div>
-              <div className="flex items-center space-x-2">
-                <a
-                  href="https://bubblyclouds.com/privacy"
-                  target="_blank"
-                  className="hover:underline"
-                >
-                  Privacy
-                </a>
-                <a
-                  href="https://bubblyclouds.com/terms"
-                  target="_blank"
-                  className="hover:underline"
-                >
-                  Terms
-                </a>
-              </div>
-            </div>
-            <div className="flex items-center justify-between border-t border-gray-300 pt-3">
-              <button
-                onClick={() => setIsDeleteDialogOpen(true)}
-                className="cursor-pointer text-sm text-red-600 hover:text-red-800 hover:underline"
-              >
-                Delete account
-              </button>
-            </div>
-          </div>
+
+        {/* Primary action */}
+        <div className="px-6 py-2">
+          <PrimaryAction />
         </div>
-        <div className="m-auto flex flex-wrap items-center justify-between bg-white bg-zinc-700 p-2 text-sm text-white">
-          <div className="mr-6 flex shrink-0 items-center">
-            <span className="tracking-tight">
-              Powered by{' '}
-              <a
-                href="https://bubblyclouds.com/"
-                target="_blank"
-                className="hover:underline"
-              >
-                Bubbly Clouds
-              </a>
-            </span>
-          </div>
+
+        {/* Actions */}
+        <div className="px-6 py-4">
+          <ActionButtons />
         </div>
+
+        {/* Footer */}
+        <div className="px-6 py-4">
+          <FooterLinks />
+        </div>
+
+        {/* Delete account */}
+        <div className="px-6 pb-4">
+          <DeleteAccountButton />
+        </div>
+
+        {/* Powered by footer */}
+        <PoweredBy />
       </div>
 
       <DeleteAccountDialog
