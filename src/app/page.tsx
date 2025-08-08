@@ -33,6 +33,7 @@ import {
 } from 'react-feather';
 import Link from 'next/link';
 import Image from 'next/image';
+import { BookCover } from '@/components/BookCovers';
 
 export default function Home() {
   const [tab, setTab] = useState(Tab.START_PUZZLE);
@@ -454,6 +455,49 @@ export default function Home() {
                     </button>
                   </div>
                 </div>
+
+                {/* Monthly Puzzle Book */}
+                {(() => {
+                  const currentMonth = new Date(
+                    new Date().toISOString()
+                  ).toLocaleString('en-US', {
+                    month: 'long',
+                    timeZone: 'UTC',
+                  });
+
+                  return (
+                    <div className="mb-4 rounded-2xl bg-white/10 p-4 backdrop-blur-sm md:mb-6 md:p-6">
+                      <h3 className="mb-2 text-lg font-bold text-white md:mb-3 md:text-xl">
+                        📚 {currentMonth} Puzzle Book
+                      </h3>
+                      <p className="mb-3 text-sm text-white/80 md:mb-4 md:text-base">
+                        Each month we publish a new collection of 50 puzzles
+                        crafted with multiple solving techniques
+                      </p>
+                      <div className="flex flex-col items-center rounded-xl bg-white/20 p-4 backdrop-blur-sm md:flex-row md:items-center md:justify-between md:p-6">
+                        <div className="mb-4 flex flex-col items-center md:mb-0 md:flex-row md:items-center">
+                          <Link href="/book" className="mb-3 md:mr-6 md:mb-0">
+                            <BookCover month={currentMonth} size="large" />
+                          </Link>
+                          <div className="text-center md:text-left">
+                            <div className="text-lg font-bold text-white md:text-xl">
+                              {currentMonth} Edition
+                            </div>
+                            <div className="text-sm text-white/70 md:text-base">
+                              50 Technique-Based Puzzles
+                            </div>
+                          </div>
+                        </div>
+                        <Link
+                          href="/book"
+                          className="inline-flex items-center justify-center rounded-full bg-white/20 px-6 py-3 text-sm font-medium text-white backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/30 md:px-8 md:py-4 md:text-base"
+                        >
+                          Browse Puzzles
+                        </Link>
+                      </div>
+                    </div>
+                  );
+                })()}
 
                 {/* Import & Friends in 2-column grid on desktop */}
                 <div className="grid gap-4 md:grid-cols-2 md:gap-6">
