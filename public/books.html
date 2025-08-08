@@ -4,13 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sudoku Race Monthly Covers</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Orbitron:wght@400;700&family=Creepster&display=swap" rel="stylesheet">
     <style>
+      
+      * {
+        box-sizing: border-box;
+      }
+      
       body {
         margin: 0;
         padding: 20px;
         font-family: "Arial", sans-serif;
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         min-height: 100vh;
+        overflow-x: hidden;
       }
 
       .covers-grid {
@@ -28,12 +35,7 @@
         border-radius: 15px;
         overflow: hidden;
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        transition: transform 0.3s ease;
         margin: 0 auto;
-      }
-
-      .cover:hover {
-        transform: translateY(-10px);
       }
 
       .cover-bg {
@@ -1059,31 +1061,386 @@
         }
       }
 
-      .month-icon {
+      /* Particle Effects */
+      .particles {
         position: absolute;
-        top: 20px;
-        right: 20px;
-        width: 30px;
-        height: 30px;
-        opacity: 0.6;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        overflow: hidden;
       }
 
+      .particle {
+        position: absolute;
+        border-radius: 50%;
+        pointer-events: none;
+      }
+
+      /* Snow particles for January - Realistic */
+      .january .particles .particle {
+        background: rgba(255, 255, 255, 0.9);
+        width: 4px;
+        height: 4px;
+        animation: snowfall 4s linear infinite;
+        border-radius: 50%;
+        position: absolute;
+        box-shadow: 0 0 6px rgba(255, 255, 255, 0.5);
+        top: -20px;
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+
+      .january .particles .particle:nth-child(1) { left: 15%; animation-delay: 0s; }
+      .january .particles .particle:nth-child(2) { left: 35%; animation-delay: 1s; }
+      .january .particles .particle:nth-child(3) { left: 55%; animation-delay: 2s; }
+      .january .particles .particle:nth-child(4) { left: 75%; animation-delay: 3s; }
+      .january .particles .particle:nth-child(5) { left: 25%; animation-delay: 4s; }
+
+      @keyframes snowfall {
+        0% {
+          transform: translateY(-20px);
+          opacity: 0;
+        }
+        10% {
+          opacity: 1;
+        }
+        90% {
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(470px);
+          opacity: 0;
+        }
+      }
+
+      /* Heart particles for February - Subtle */
+      .february .particles .particle {
+        width: 6px;
+        height: 6px;
+        background: #ff69b4;
+        border-radius: 50%;
+        animation: heartFloat 6s ease-in-out infinite;
+        position: absolute;
+        opacity: 0;
+        box-shadow: 0 0 8px rgba(255, 105, 180, 0.4);
+        top: 50%;
+      }
+
+      .february .particles .particle:nth-child(1) { left: 20%; animation-delay: 0s; }
+      .february .particles .particle:nth-child(2) { left: 50%; animation-delay: 2s; }
+      .february .particles .particle:nth-child(3) { left: 80%; animation-delay: 4s; }
+
+      @keyframes heartFloat {
+        0%, 100% {
+          transform: translateY(0px);
+          opacity: 0.6;
+        }
+        50% {
+          transform: translateY(-15px);
+          opacity: 1;
+        }
+      }
+
+      /* Autumn leaves for November - Realistic */
+      .november .particles .particle {
+        width: 8px;
+        height: 8px;
+        background: #d2691e;
+        border-radius: 0 100% 0 100%;
+        animation: leafFall 8s ease-in infinite;
+        position: absolute;
+        opacity: 0;
+        top: -15px;
+        transform: translateY(-15px);
+      }
+      
+      .november .particles .particle:nth-child(1) { background: #cd853f; }
+      .november .particles .particle:nth-child(2) { background: #ff4500; }
+      .november .particles .particle:nth-child(3) { background: #ff6347; }
+      .november .particles .particle:nth-child(4) { background: #b8860b; }
+
+      .november .particles .particle:nth-child(1) { left: 10%; animation-delay: 0s; background: #d2691e; }
+      .november .particles .particle:nth-child(2) { left: 40%; animation-delay: 2s; background: #cd853f; }
+      .november .particles .particle:nth-child(3) { left: 70%; animation-delay: 4s; background: #ff4500; }
+      .november .particles .particle:nth-child(4) { left: 25%; animation-delay: 6s; background: #ff6347; }
+
+      @keyframes leafFall {
+        0% {
+          transform: translateY(-15px) rotate(0deg);
+          opacity: 0;
+        }
+        10% {
+          opacity: 1;
+        }
+        90% {
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(470px) translateX(30px) rotate(180deg);
+          opacity: 0;
+        }
+      }
+
+      /* Sparkle particles for December - Festive Glow */
+      .december .particles .particle {
+        width: 8px;
+        height: 8px;
+        background: radial-gradient(circle, #fff 0%, #ffd700 30%, #ff6b35 70%, transparent 100%);
+        animation: festiveSparkle 2s ease-in-out infinite;
+        border-radius: 50%;
+        position: absolute;
+        box-shadow: 
+          0 0 20px rgba(255, 215, 0, 0.8),
+          0 0 40px rgba(255, 215, 0, 0.6),
+          0 0 60px rgba(255, 215, 0, 0.4);
+        opacity: 0;
+      }
+
+      .december .particles .particle:nth-child(1) { left: 20%; top: 25%; animation-delay: 0s; }
+      .december .particles .particle:nth-child(2) { left: 70%; top: 40%; animation-delay: 0.5s; }
+      .december .particles .particle:nth-child(3) { left: 45%; top: 65%; animation-delay: 1s; }
+      .december .particles .particle:nth-child(4) { left: 25%; top: 80%; animation-delay: 1.5s; }
+
+      @keyframes festiveSparkle {
+        0% {
+          opacity: 0;
+          transform: scale(0) rotate(0deg);
+        }
+        25% {
+          opacity: 1;
+          transform: scale(1.2) rotate(90deg);
+        }
+        50% {
+          opacity: 0.7;
+          transform: scale(0.8) rotate(180deg);
+        }
+        75% {
+          opacity: 1;
+          transform: scale(1.5) rotate(270deg);
+        }
+        100% {
+          opacity: 0;
+          transform: scale(0) rotate(360deg);
+        }
+      }
+
+      .month-icon {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        width: 60px;
+        height: 60px;
+        font-size: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0.8;
+      }
+
+      /* Test animation for debugging */
+      .test-pulse {
+        animation: testPulse 2s ease-in-out infinite;
+      }
+      
+      @keyframes testPulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+      }
+      
+      /* Month-specific icon animations */
+      .january .month-icon {
+        animation: rotate 4s linear infinite;
+        transform-origin: center center;
+      }
+      
+      .february .month-icon {
+        animation: heartBeat 2s ease-in-out infinite;
+        transform-origin: center center;
+      }
+      
+      .march .month-icon {
+        animation: bounce 3s ease-in-out infinite;
+      }
+      
+      .april .month-icon {
+        animation: sway 4s ease-in-out infinite;
+      }
+      
+      .may .month-icon {
+        animation: gentleGlow 4s ease-in-out infinite;
+        transform-origin: center center;
+      }
+      
+      .june .month-icon {
+        animation: pulse 2s ease-in-out infinite;
+        transform-origin: center center;
+      }
+      
+      .july .month-icon {
+        animation: wave 2.5s ease-in-out infinite;
+      }
+      
+      .august .month-icon {
+        animation: blaze 1.5s ease-in-out infinite;
+        transform-origin: center center;
+      }
+      
+      .september .month-icon {
+        animation: wiggle 4s ease-in-out infinite;
+      }
+      
+      .october .month-icon {
+        animation: spooky 3s ease-in-out infinite;
+        transform-origin: center center;
+      }
+      
+      .november .month-icon {
+        animation: fall 4s ease-in-out infinite;
+      }
+      
+      .december .month-icon {
+        animation: twinkle 2s ease-in-out infinite;
+        transform-origin: center center;
+      }
+      
+      /* Animation keyframes */
+      @keyframes rotate {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      
+      @keyframes heartBeat {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.2); }
+      }
+      
+      @keyframes bounce {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-8px); }
+      }
+      
+      @keyframes sway {
+        0%, 100% { transform: rotate(-5deg); }
+        50% { transform: rotate(5deg); }
+      }
+      
+      @keyframes gentleGlow {
+        0%, 100% { transform: scale(1); filter: brightness(1); }
+        50% { transform: scale(1.08); filter: brightness(1.2); }
+      }
+      
+      @keyframes pulse {
+        0%, 100% { transform: scale(1); filter: brightness(1); }
+        50% { transform: scale(1.15); filter: brightness(1.3); }
+      }
+      
+      @keyframes wave {
+        0%, 100% { transform: translateX(0px); }
+        25% { transform: translateX(3px); }
+        75% { transform: translateX(-3px); }
+      }
+      
+      @keyframes blaze {
+        0%, 100% { transform: scale(1); filter: brightness(1); }
+        50% { transform: scale(1.1); filter: brightness(1.5); }
+      }
+      
+      @keyframes wiggle {
+        0%, 100% { transform: rotate(0deg); }
+        25% { transform: rotate(2deg); }
+        75% { transform: rotate(-2deg); }
+      }
+      
+      @keyframes spooky {
+        0%, 100% { transform: scale(1) rotate(0deg); }
+        25% { transform: scale(1.1) rotate(-5deg); }
+        75% { transform: scale(0.9) rotate(5deg); }
+      }
+      
+      @keyframes fall {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(5px) rotate(10deg); }
+      }
+      
+      @keyframes twinkle {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.7; transform: scale(1.2); }
+      }
+      
       .page-title {
         text-align: center;
         color: white;
         font-size: 36px;
         margin-bottom: 30px;
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        font-family: 'Orbitron', sans-serif;
+        font-weight: 700;
+        letter-spacing: 3px;
       }
+
+      /* Month-specific typography - VERY OBVIOUS differences */
+      .january .title { font-family: 'Orbitron', 'Arial Black', sans-serif; color: #e6f3ff; font-size: 28px; }
+      .february .title { font-family: 'Pacifico', 'Brush Script MT', cursive; color: #ffb3d9; font-size: 36px; }
+      .march .title { font-family: 'Times New Roman', serif; font-style: italic; font-size: 30px; }
+      .april .title { font-family: 'Arial', sans-serif; font-weight: 900; text-transform: uppercase; font-size: 26px; }
+      .may .title { font-family: 'Pacifico', 'Brush Script MT', cursive; font-size: 34px; }
+      .june .title { font-family: 'Orbitron', 'Arial Black', sans-serif; font-weight: 700; font-size: 28px; }
+      .july .title { font-family: 'Impact', 'Arial Black', sans-serif; font-size: 32px; }
+      .august .title { font-family: 'Orbitron', 'Arial Black', sans-serif; font-weight: 900; font-size: 30px; }
+      .september .title { font-family: 'Georgia', 'Times New Roman', serif; font-size: 28px; }
+      .october .title { font-family: 'Creepster', 'Chiller', fantasy; color: #ff6b35; font-size: 24px; }
+      .november .title { font-family: 'Georgia', 'Times New Roman', serif; font-style: italic; font-size: 30px; }
+      .december .title { font-family: 'Orbitron', 'Arial Black', sans-serif; color: #fff; font-weight: 700; font-size: 28px; }
+
+      /* Dynamic Background Animations */
+      @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+
+      @keyframes pulseGlow {
+        0%, 100% { filter: brightness(1) saturate(1); }
+        50% { filter: brightness(1.15) saturate(1.2); }
+      }
+
+      @keyframes floatingElements {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        33% { transform: translateY(-10px) rotate(3deg); }
+        66% { transform: translateY(5px) rotate(-2deg); }
+      }
+
+      /* Subtle background animations for specific months */
+      .may .cover-bg {
+        animation: pulseGlow 8s ease-in-out infinite;
+      }
+
+      .july .cover-bg {
+        animation: pulseGlow 6s ease-in-out infinite;
+      }
+
+      .october .cover-bg {
+        animation: pulseGlow 5s ease-in-out infinite;
+      }
+
     </style>
   </head>
   <body>
-    <h1 class="page-title">Sudoku Race - Monthly Collection</h1>
+    <h1 class="page-title test-pulse">Sudoku Race - Monthly Collection</h1>
 
     <div class="covers-grid">
       <!-- January - Winter Theme -->
-      <div class="cover">
+      <div class="cover january">
         <div class="cover-bg january"></div>
+        <div class="particles">
+          <div class="particle"></div>
+          <div class="particle"></div>
+          <div class="particle"></div>
+          <div class="particle"></div>
+          <div class="particle"></div>
+        </div>
         <div class="month-icon">❄️</div>
         <div class="cover-content">
           <h1 class="title">SUDOKU RACE</h1>
@@ -1184,8 +1541,13 @@
       </div>
 
       <!-- February - Valentine's Theme -->
-      <div class="cover">
+      <div class="cover february">
         <div class="cover-bg february"></div>
+        <div class="particles">
+          <div class="particle"></div>
+          <div class="particle"></div>
+          <div class="particle"></div>
+        </div>
         <div class="month-icon">💕</div>
         <div class="cover-content">
           <h1 class="title">SUDOKU RACE</h1>
@@ -1286,7 +1648,7 @@
       </div>
 
       <!-- March - Spring Theme -->
-      <div class="cover">
+      <div class="cover march">
         <div class="cover-bg march"></div>
         <div class="month-icon">🌸</div>
         <div class="cover-content">
@@ -1388,7 +1750,7 @@
       </div>
 
       <!-- April - Easter/Rain Theme -->
-      <div class="cover">
+      <div class="cover april">
         <div class="cover-bg april"></div>
         <div class="month-icon">🌈</div>
         <div class="cover-content">
@@ -1490,7 +1852,7 @@
       </div>
 
       <!-- May - Flowers Theme -->
-      <div class="cover">
+      <div class="cover may">
         <div class="cover-bg may"></div>
         <div class="month-icon">🌻</div>
         <div class="cover-content">
@@ -1592,7 +1954,7 @@
       </div>
 
       <!-- June - Summer Theme -->
-      <div class="cover">
+      <div class="cover june">
         <div class="cover-bg june"></div>
         <div class="month-icon">☀️</div>
         <div class="cover-content">
@@ -1694,7 +2056,7 @@
       </div>
 
       <!-- July - Beach Theme -->
-      <div class="cover">
+      <div class="cover july">
         <div class="cover-bg july"></div>
         <div class="month-icon">🏖️</div>
         <div class="cover-content">
@@ -1796,7 +2158,7 @@
       </div>
 
       <!-- August - Hot Summer Theme -->
-      <div class="cover">
+      <div class="cover august">
         <div class="cover-bg august"></div>
         <div class="month-icon">🔥</div>
         <div class="cover-content">
@@ -1898,7 +2260,7 @@
       </div>
 
       <!-- September - Back to School Theme -->
-      <div class="cover">
+      <div class="cover september">
         <div class="cover-bg september"></div>
         <div class="month-icon">📚</div>
         <div class="cover-content">
@@ -2000,7 +2362,7 @@
       </div>
 
       <!-- October - Halloween Theme -->
-      <div class="cover">
+      <div class="cover october">
         <div class="cover-bg october"></div>
         <div class="month-icon">🎃</div>
         <div class="cover-content">
@@ -2102,8 +2464,14 @@
       </div>
 
       <!-- November - Autumn Theme -->
-      <div class="cover">
+      <div class="cover november">
         <div class="cover-bg november"></div>
+        <div class="particles">
+          <div class="particle"></div>
+          <div class="particle"></div>
+          <div class="particle"></div>
+          <div class="particle"></div>
+        </div>
         <div class="month-icon">🍂</div>
         <div class="cover-content">
           <h1 class="title">SUDOKU RACE</h1>
@@ -2204,8 +2572,14 @@
       </div>
 
       <!-- December - Winter/Christmas Theme -->
-      <div class="cover">
+      <div class="cover december">
         <div class="cover-bg december"></div>
+        <div class="particles">
+          <div class="particle"></div>
+          <div class="particle"></div>
+          <div class="particle"></div>
+          <div class="particle"></div>
+        </div>
         <div class="month-icon">🎅</div>
         <div class="cover-content">
           <h1 class="title">SUDOKU RACE</h1>
