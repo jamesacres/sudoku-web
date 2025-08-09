@@ -326,7 +326,7 @@ export default function Home() {
                   </h3>
                   <p className="mb-3 text-sm text-white/80 md:mb-4 md:text-base">
                     Choose your difficulty - race against the clock and your
-                    friends! New puzzle at midnight UTC.
+                    friends! New puzzles at midnight UTC.
                   </p>
                   <div className="grid grid-cols-3 gap-2 md:gap-3">
                     <button
