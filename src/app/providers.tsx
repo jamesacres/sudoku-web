@@ -4,6 +4,8 @@ import FetchProvider from '@/providers/FetchProvider';
 import CapacitorProvider from '@/providers/CapacitorProvider';
 import UserProvider from '@/providers/UserProvider';
 import PartiesProvider from '@/providers/PartiesProvider';
+import { BookProvider } from '@/providers/BookProvider/BookProvider';
+import { SessionsProvider } from '@/providers/SessionsProvider/SessionsProvider';
 import { ThemeProvider } from 'next-themes';
 import { PropsWithChildren } from 'react';
 import GlobalStateProvider from '@/providers/GlobalStateProvider';
@@ -18,9 +20,13 @@ export function Providers({ children }: PropsWithChildren) {
           <UserProvider>
             <RevenueCatProvider>
               <PartiesProvider>
-                <ThemeProvider attribute="class">
-                  <ThemeColorProvider>{children}</ThemeColorProvider>
-                </ThemeProvider>
+                <SessionsProvider>
+                  <BookProvider>
+                    <ThemeProvider attribute="class">
+                      <ThemeColorProvider>{children}</ThemeColorProvider>
+                    </ThemeProvider>
+                  </BookProvider>
+                </SessionsProvider>
               </PartiesProvider>
             </RevenueCatProvider>
           </UserProvider>

@@ -16,15 +16,15 @@ if (Capacitor.getPlatform() === 'android') {
 }
 
 const inter = Inter({ subsets: ['latin'] });
-const orbitron = Orbitron({ 
+const orbitron = Orbitron({
   subsets: ['latin'],
   weight: ['400', '700'],
-  variable: '--font-orbitron'
+  variable: '--font-orbitron',
 });
-const pacifico = Pacifico({ 
+const pacifico = Pacifico({
   subsets: ['latin'],
   weight: '400',
-  variable: '--font-pacifico'
+  variable: '--font-pacifico',
 });
 
 export const metadata: Metadata = {
@@ -87,9 +87,14 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Orbitron:wght@400;700&family=Creepster&display=swap" rel="stylesheet" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Pacifico&family=Orbitron:wght@400;700&family=Creepster&display=swap"
+          rel="stylesheet"
+        />
       </head>
-      <body className={`${inter.className} ${orbitron.variable} ${pacifico.variable}`}>
+      <body
+        className={`${inter.className} ${orbitron.variable} ${pacifico.variable}`}
+      >
         <Providers>
           <Header />
           <div className="mb-24">{children}</div>

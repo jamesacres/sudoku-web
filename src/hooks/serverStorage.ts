@@ -19,6 +19,8 @@ import {
   SudokuOfTheDay,
   SudokuOfTheDayResponse,
   Difficulty,
+  SudokuBookOfTheMonth,
+  SudokuBookOfTheMonthResponse,
 } from '@/types/serverTypes';
 import { UserProfile } from '@/types/userProfile';
 
@@ -437,6 +439,31 @@ function useServerStorage({
     [fetch, isLoggedIn, isOnline]
   );
 
+  const getSudokuBookOfTheMonth = useCallback(async (): Promise<
+    SudokuBookOfTheMonth | undefined
+  > => {
+    if (isOnline && isLoggedIn()) {
+      try {
+        console.info('fetching sudoku book of the month');
+        const response = await fetch(
+          new Request(`${apiUrl}/sudoku/bookOfTheMonth`)
+        );
+        if (response.ok) {
+          const sudokuBookOfTheMonthResponse =
+            (await response.json()) as SudokuBookOfTheMonthResponse;
+          return {
+            ...sudokuBookOfTheMonthResponse,
+            createdAt: new Date(sudokuBookOfTheMonthResponse.createdAt),
+            updatedAt: new Date(sudokuBookOfTheMonthResponse.updatedAt),
+          };
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    return undefined;
+  }, [fetch, isLoggedIn, isOnline]);
+
   const removeMember = useCallback(
     async (partyId: string, userId: string): Promise<boolean> => {
       if (isOnline && isLoggedIn()) {
@@ -527,6 +554,7 @@ function useServerStorage({
     getPublicInvite,
     createMember,
     getSudokuOfTheDay,
+    getSudokuBookOfTheMonth,
     leaveParty,
     removeMember,
     deleteParty,

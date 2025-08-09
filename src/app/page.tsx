@@ -3,16 +3,13 @@ import Footer from '@/components/Footer';
 import MyPuzzlesTab from '@/components/tabs/MyPuzzlesTab';
 import FriendsTab from '@/components/tabs/FriendsTab';
 import ActivityWidget from '@/components/ActivityWidget';
-import { useLocalStorage } from '@/hooks/localStorage';
 import { useOnline } from '@/hooks/online';
 import { useServerStorage } from '@/hooks/serverStorage';
 import { UserContext } from '@/providers/UserProvider';
 import { RevenueCatContext } from '@/providers/RevenueCatProvider';
+import { useSessions } from '@/providers/SessionsProvider/SessionsProvider';
 import { useParties } from '@/hooks/useParties';
-import { Difficulty, ServerStateResult } from '@/types/serverTypes';
-import { GameState, ServerState } from '@/types/state';
-import { StateType } from '@/types/StateType';
-import { Timer } from '@/types/timer';
+import { Difficulty } from '@/types/serverTypes';
 import { Tab } from '@/types/tabs';
 import { UserSessions } from '@/types/userSessions';
 import { SubscriptionContext } from '@/types/subscriptionContext';
@@ -34,6 +31,7 @@ import {
 import Link from 'next/link';
 import Image from 'next/image';
 import { BookCover } from '@/components/BookCovers';
+import { ServerState } from '@/types/state';
 
 export default function Home() {
   const [tab, setTab] = useState(Tab.START_PUZZLE);
@@ -45,112 +43,13 @@ export default function Home() {
   const { getSudokuOfTheDay, listValues: listServerValues } =
     useServerStorage();
   const { parties } = useParties({});
-  const {
-    prefix,
-    listValues: listLocalPuzzles,
-    saveValue: saveLocalPuzzle,
-  } = useLocalStorage({
-    type: StateType.PUZZLE,
-  });
-  const { listValues: listLocalTimers, saveValue: saveLocalTimer } =
-    useLocalStorage({
-      type: StateType.TIMER,
-    });
-  const [sessions, setSessions] = useState<ServerStateResult<ServerState>[]>();
   const [userSessions, setUserSessions] = useState<UserSessions>({});
-
-  const mergeSessions = useCallback(
-    (newSessions: ServerStateResult<ServerState>[]) => {
-      setSessions((previousSessions) => {
-        if (previousSessions) {
-          // If missing previously, update local with server value
-          const missingLocally = newSessions.filter(
-            (serverValue) =>
-              !previousSessions?.find(
-                (session) => serverValue.sessionId === session.sessionId
-              )
-          );
-          missingLocally.map((serverState) => {
-            const { sessionId: sessionIdWithPrefix, state } = serverState;
-            if (sessionIdWithPrefix.startsWith(prefix) && state) {
-              const sessionId = sessionIdWithPrefix.replace(prefix, '');
-              const { timer: serverTimerState, ...serverGameState } = state;
-              console.info('Saving missing local puzzle', sessionId);
-              saveLocalPuzzle<GameState>(serverGameState, {
-                overrideId: sessionId,
-              });
-              if (serverTimerState) {
-                console.info('Saving missing local timer', sessionId);
-                saveLocalTimer<Timer>(serverTimerState, {
-                  overrideId: sessionId,
-                });
-              }
-            }
-          });
-        }
-
-        // Set sessions to combination of previous local and new server
-        const mergedSessions = [
-          ...newSessions,
-          ...(previousSessions || []),
-        ].sort(
-          // Sort newest first
-          ({ updatedAt: a }, { updatedAt: b }) => b.getTime() - a.getTime()
-        );
-        const uniqueSessions = mergedSessions.filter(
-          ({ sessionId }, i) =>
-            // If index greater then filter out duplicate
-            i <=
-            mergedSessions.findIndex((other) => other.sessionId === sessionId)
-        );
-        return uniqueSessions;
-      });
-    },
-    [prefix, saveLocalPuzzle, saveLocalTimer]
-  );
+  const { sessions, refetchSessions } = useSessions();
 
   useEffect(() => {
-    let active = true;
-
-    const localState = () => {
-      const localGameStates = listLocalPuzzles<GameState>();
-      const localTimers = listLocalTimers<Timer>();
-      const localSessions: ServerStateResult<ServerState>[] =
-        localGameStates.map((localGameState) => {
-          return {
-            ...localGameState,
-            updatedAt: new Date(localGameState.lastUpdated),
-            state: {
-              ...localGameState.state,
-              timer: localTimers.find(
-                (timer) => timer.sessionId === localGameState.sessionId
-              )?.state,
-            },
-          };
-        });
-      mergeSessions(localSessions);
-    };
-    localState();
-
-    const serverState = async () => {
-      const values = await listServerValues<ServerState>();
-      if (active && values) {
-        // Filter out server sessions older than a month
-        const oneMonthAgo = new Date().getTime() - 30 * 24 * 60 * 60 * 1000;
-        const recentServerSessions = values.filter(
-          (session) => session.updatedAt.getTime() >= oneMonthAgo
-        );
-        // Merge with local
-        mergeSessions(recentServerSessions);
-      }
-      // Parties are now loaded by PartiesProvider
-    };
-    serverState();
-
-    return () => {
-      active = false;
-    };
-  }, [listServerValues, listLocalPuzzles, listLocalTimers, mergeSessions]);
+    // Always refetch sessions when returning to homepage to get latest progress
+    refetchSessions();
+  }, [refetchSessions]);
 
   const friendsList = Array.from(
     new Set(
@@ -216,6 +115,21 @@ export default function Home() {
       return;
     }
     setIsLoading(false);
+  };
+
+  const openBook = (): void => {
+    if (!user) {
+      const confirmed = confirm(
+        'You need to sign in to access the puzzle book. Would you like to sign in now?'
+      );
+      if (confirmed && loginRedirect) {
+        loginRedirect({ userInitiated: true });
+      }
+      return;
+    }
+
+    // Just navigate to book page, let it handle loading
+    router.push('/book');
   };
 
   const premiumFeatures = [
@@ -488,9 +402,12 @@ export default function Home() {
                       </p>
                       <div className="flex flex-col items-center rounded-xl bg-white/20 p-4 backdrop-blur-sm md:flex-row md:items-center md:justify-between md:p-6">
                         <div className="mb-4 flex flex-col items-center md:mb-0 md:flex-row md:items-center">
-                          <Link href="/book" className="mb-3 md:mr-6 md:mb-0">
+                          <button
+                            onClick={openBook}
+                            className="mb-3 cursor-pointer md:mr-6 md:mb-0"
+                          >
                             <BookCover month={currentMonth} size="large" />
-                          </Link>
+                          </button>
                           <div className="text-center md:text-left">
                             <div className="text-lg font-bold text-white md:text-xl">
                               {currentMonth} Edition
@@ -500,12 +417,12 @@ export default function Home() {
                             </div>
                           </div>
                         </div>
-                        <Link
-                          href="/book"
-                          className="inline-flex items-center justify-center rounded-full bg-white/20 px-6 py-3 text-sm font-medium text-white backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/30 md:px-8 md:py-4 md:text-base"
+                        <button
+                          onClick={openBook}
+                          className="inline-flex cursor-pointer items-center justify-center rounded-full bg-white/20 px-6 py-3 text-sm font-medium text-white backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/30 md:px-8 md:py-4 md:text-base"
                         >
                           Browse Puzzles
-                        </Link>
+                        </button>
                       </div>
                     </div>
                   );
@@ -628,16 +545,18 @@ export default function Home() {
         <div className="pt-safe min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
           <div className="container mx-auto max-w-4xl px-6 pb-24">
             <div className="flex justify-center">
-              <ActivityWidget sessions={sessions} />
+              <ActivityWidget sessions={sessions || []} />
             </div>
-            {tab === Tab.MY_PUZZLES && <MyPuzzlesTab sessions={sessions} />}
+            {tab === Tab.MY_PUZZLES && (
+              <MyPuzzlesTab sessions={sessions || []} />
+            )}
             {tab === Tab.FRIENDS && (
               <FriendsTab
                 user={user}
                 parties={parties}
                 expandUser={expandUser}
                 userSessions={userSessions}
-                mySessions={sessions}
+                mySessions={sessions || []}
               />
             )}
           </div>
