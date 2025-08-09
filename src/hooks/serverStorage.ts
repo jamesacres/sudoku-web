@@ -192,7 +192,7 @@ function useServerStorage({
           const stateKey = getStateKey();
           console.info('saving session', stateKey);
           const inOneMonth = new Date();
-          inOneMonth.setDate(inOneMonth.getDate() + 30);
+          inOneMonth.setDate(inOneMonth.getDate() + 32);
           const response = await fetch(
             new Request(`${apiUrl}/sessions/${stateKey}`, {
               method: 'PATCH',
