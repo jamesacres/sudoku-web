@@ -412,7 +412,7 @@ export default function Home() {
                   </h3>
                   <p className="mb-3 text-sm text-white/80 md:mb-4 md:text-base">
                     Choose your difficulty - race against the clock and your
-                    friends!
+                    friends! New puzzle at midnight UTC.
                   </p>
                   <div className="grid grid-cols-3 gap-2 md:gap-3">
                     <button
@@ -426,6 +426,9 @@ export default function Home() {
                         ⚡
                       </span>
                       <span className="text-xs md:text-sm">Tricky</span>
+                      <div className="mt-1 flex space-x-0.5">
+                        <span className="text-xs text-yellow-300">⭐</span>
+                      </div>
                     </button>
                     <button
                       onClick={() => openSudokuOfTheDay(Difficulty.EASY)}
@@ -438,6 +441,9 @@ export default function Home() {
                         🔥
                       </span>
                       <span className="text-xs md:text-sm">Challenging</span>
+                      <div className="mt-1 flex space-x-0.5">
+                        <span className="text-xs text-yellow-300">⭐⭐</span>
+                      </div>
                     </button>
                     <button
                       onClick={() =>
@@ -452,8 +458,14 @@ export default function Home() {
                         🚀
                       </span>
                       <span className="text-xs md:text-sm">Hard</span>
+                      <div className="mt-1 flex space-x-0.5">
+                        <span className="text-xs text-yellow-300">⭐⭐⭐</span>
+                      </div>
                     </button>
                   </div>
+                  <p className="mt-3 text-xs text-white/80 md:mb-4 md:text-base">
+                    (For easy or brutal check out the book below!)
+                  </p>
                 </div>
 
                 {/* Monthly Puzzle Book */}
@@ -507,8 +519,8 @@ export default function Home() {
                       📸 Import Puzzle
                     </h3>
                     <p className="mb-3 text-sm text-white/80 md:mb-4 md:text-base">
-                      Scan and share an unsolved puzzle from a book - race
-                      against the clock and your friends!
+                      Scan and share an unsolved puzzle from a book or website -
+                      race against the clock and your friends!
                     </p>
                     <Link
                       href="/import"
