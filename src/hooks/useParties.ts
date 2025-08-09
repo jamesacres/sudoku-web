@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { PartiesContext } from '@/providers/PartiesProvider';
 
 export function useParties({
@@ -25,10 +25,16 @@ export function useParties({
     saveParty,
     getNicknameByUserId,
     refreshParties: contextRefreshParties,
+    lazyLoadParties,
     leaveParty,
     removeMember,
     deleteParty,
   } = context;
+
+  // Trigger lazy loading when the hook is used
+  useEffect(() => {
+    lazyLoadParties();
+  }, [lazyLoadParties]);
 
   // Wrap refreshParties to include the optional refreshSessionParties callback
   const refreshParties = async () => {

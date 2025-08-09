@@ -32,6 +32,7 @@ interface PartiesContextInterface {
   refreshParties: (
     refreshSessionParties?: () => Promise<void>
   ) => Promise<Party[] | undefined>;
+  lazyLoadParties: () => Promise<void>;
   getNicknameByUserId: (userId: string) => string | null;
   leaveParty: (partyId: string) => Promise<boolean>;
   removeMember: (partyId: string, userId: string) => Promise<boolean>;
@@ -52,6 +53,8 @@ const PartiesProvider: React.FC<{ children: React.ReactNode }> = ({
   // Party state
   const [parties, setParties] = useState<Party[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  // Load parties lazily - only when first accessed
+  const [hasInitialized, setHasInitialized] = useState(false);
 
   // Form state
   const [showCreateParty, setShowCreateParty] = useState(false);
@@ -85,10 +88,13 @@ const PartiesProvider: React.FC<{ children: React.ReactNode }> = ({
     [createParty]
   );
 
-  // Refresh parties from server
+  // Refresh parties from server (also triggers initial load if needed)
   const refreshParties = useCallback(
     async (refreshSessionParties?: () => Promise<void>) => {
       if (!isLoading) {
+        if (!hasInitialized) {
+          setHasInitialized(true);
+        }
         setIsLoading(true);
         const values = await listParties();
         if (values) {
@@ -102,7 +108,7 @@ const PartiesProvider: React.FC<{ children: React.ReactNode }> = ({
       }
       return parties;
     },
-    [listParties, isLoading, parties]
+    [listParties, isLoading, parties, hasInitialized]
   );
 
   // Get nickname for a specific user ID across all parties
@@ -170,26 +176,18 @@ const PartiesProvider: React.FC<{ children: React.ReactNode }> = ({
     [deleteParty]
   );
 
-  // Load parties on mount
-  useEffect(() => {
-    let active = true;
-
-    const loadParties = async () => {
-      console.info('loadParties');
+  const lazyLoadParties = useCallback(async () => {
+    if (!hasInitialized && !isLoading) {
+      console.info('loadParties (lazy)');
+      setHasInitialized(true);
       setIsLoading(true);
       const values = await listParties();
-      if (active && values) {
+      if (values) {
         setParties(values);
       }
       setIsLoading(false);
-    };
-
-    loadParties();
-
-    return () => {
-      active = false;
-    };
-  }, [listParties]);
+    }
+  }, [hasInitialized, isLoading, listParties]);
 
   return (
     <PartiesContext.Provider
@@ -210,6 +208,7 @@ const PartiesProvider: React.FC<{ children: React.ReactNode }> = ({
         // Actions
         saveParty,
         refreshParties,
+        lazyLoadParties,
         getNicknameByUserId,
         leaveParty: handleLeaveParty,
         removeMember: handleRemoveMember,
