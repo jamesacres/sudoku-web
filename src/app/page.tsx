@@ -378,7 +378,7 @@ export default function Home() {
                     </button>
                   </div>
                   <p className="mt-3 text-xs text-white/80 md:mb-4 md:text-base">
-                    (For easy or brutal check out the book below!)
+                    (For easy or fiendish check out the book below!)
                   </p>
                 </div>
 
