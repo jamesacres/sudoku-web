@@ -1,15 +1,29 @@
 'use client';
+import { useEffect } from 'react';
 import { ServerStateResult } from '@/types/serverTypes';
 import { ServerState } from '@/types/state';
-import SessionRow from '../SessionRow';
+import { useSessions } from '@/providers/SessionsProvider/SessionsProvider';
+import { useParties } from '@/hooks/useParties';
+import IntegratedSessionRow from '../IntegratedSessionRow';
 
 interface MyPuzzlesTabProps {
   sessions?: ServerStateResult<ServerState>[];
 }
 
 export const MyPuzzlesTab = ({ sessions }: MyPuzzlesTabProps) => {
-  const inProgress = sessions?.filter((session) => !session.state.completed);
-  const completed = sessions?.filter((session) => session.state.completed);
+  const { fetchFriendSessions } = useSessions();
+  const { parties } = useParties();
+
+  // Fetch friend sessions when parties are available
+  useEffect(() => {
+    if (parties && parties.length > 0) {
+      fetchFriendSessions(parties);
+    }
+  }, [parties, fetchFriendSessions]);
+  // Sort all sessions by most recently played (updatedAt descending)
+  const allSessions = sessions?.sort(
+    (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+  );
 
   return (
     <div className="mb-4">
@@ -23,30 +37,13 @@ export const MyPuzzlesTab = ({ sessions }: MyPuzzlesTabProps) => {
         Press Start Race in the bottom navigation to find a new puzzle to solve
         or resume a previous one below.
       </p>
-      {!!inProgress?.length && (
+
+      {!!allSessions?.length && (
         <div className="mb-4">
-          <h2 className="mb-2 text-2xl font-extrabold">In Progress</h2>
+          <h2 className="mb-2 text-2xl font-extrabold">Recent Puzzles</h2>
           <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
-            {inProgress?.map((session) => (
-              <SessionRow
-                key={session.sessionId}
-                mySession={session}
-                display="my"
-              />
-            ))}
-          </ul>
-        </div>
-      )}
-      {!!completed?.length && (
-        <div className="mb-4">
-          <h2 className="mb-2 text-2xl font-extrabold">Completed</h2>
-          <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
-            {completed?.map((session) => (
-              <SessionRow
-                key={session.sessionId}
-                mySession={session}
-                display="my"
-              />
+            {allSessions?.map((session) => (
+              <IntegratedSessionRow key={session.sessionId} session={session} />
             ))}
           </ul>
         </div>

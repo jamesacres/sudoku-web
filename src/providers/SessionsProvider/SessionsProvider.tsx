@@ -5,11 +5,13 @@ import {
   useState,
   useCallback,
   ReactNode,
+  useRef,
 } from 'react';
-import { ServerStateResult } from '@/types/serverTypes';
+import { ServerStateResult, Party } from '@/types/serverTypes';
 import { ServerState, GameState } from '@/types/state';
 import { StateType } from '@/types/StateType';
 import { Timer } from '@/types/timer';
+import { UserSessions } from '@/types/userSessions';
 import { useServerStorage } from '@/hooks/serverStorage';
 import { useLocalStorage } from '@/hooks/localStorage';
 
@@ -20,6 +22,11 @@ interface SessionsContextType {
   refetchSessions: () => Promise<void>;
   setSessions: (sessions: ServerStateResult<ServerState>[]) => void;
   clearSessions: () => void;
+  // Friend sessions
+  friendSessions: UserSessions;
+  isFriendSessionsLoading: boolean;
+  fetchFriendSessions: (parties: Party[]) => Promise<void>;
+  clearFriendSessions: () => void;
 }
 
 const SessionsContext = createContext<SessionsContextType | null>(null);
@@ -33,7 +40,13 @@ export const SessionsProvider = ({ children }: SessionsProviderProps) => {
     ServerStateResult<ServerState>[] | null
   >(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [friendSessions, setFriendSessions] = useState<UserSessions>({});
+  const [isFriendSessionsLoading, setIsFriendSessionsLoading] = useState(false);
+  const friendSessionsRef = useRef<UserSessions>({});
   const { listValues: listServerValues } = useServerStorage();
+
+  // Update ref whenever friendSessions state changes
+  friendSessionsRef.current = friendSessions;
   const {
     prefix,
     listValues: listLocalPuzzles,
@@ -161,6 +174,104 @@ export const SessionsProvider = ({ children }: SessionsProviderProps) => {
     setSessionsState(null);
   }, []);
 
+  const fetchFriendSessions = useCallback(
+    async (parties: Party[]) => {
+      if (isFriendSessionsLoading) {
+        return;
+      }
+
+      setIsFriendSessionsLoading(true);
+
+      try {
+        // Get all unique friend user IDs from all parties
+        const friendUserIds = Array.from(
+          new Set(
+            parties
+              .flatMap(({ members }) => members)
+              .map(({ userId }) => userId)
+          )
+        );
+
+        // Set loading state for each user first
+        const loadingStates: UserSessions = {};
+        friendUserIds.forEach((userId) => {
+          if (
+            !friendSessionsRef.current[userId] ||
+            (!friendSessionsRef.current[userId]?.isLoading &&
+              !friendSessionsRef.current[userId]?.sessions)
+          ) {
+            loadingStates[userId] = { isLoading: true };
+          }
+        });
+
+        // Update state with loading indicators
+        setFriendSessions((prev) => ({ ...prev, ...loadingStates }));
+
+        // Fetch sessions for users that need loading
+        const fetchPromises = friendUserIds
+          .filter((userId) => loadingStates[userId]) // Only fetch for users we marked as loading
+          .map(async (userId) => {
+            try {
+              // Find a party this user belongs to (we need partyId for the API call)
+              const userParty = parties.find((party) =>
+                party.members.some((member) => member.userId === userId)
+              );
+
+              if (!userParty) {
+                return { userId, sessions: null };
+              }
+
+              const serverValuesForUser = await listServerValues<ServerState>({
+                partyId: userParty.partyId,
+                userId,
+              });
+
+              if (serverValuesForUser) {
+                // Filter out friends' sessions older than a month
+                const oneMonthAgo =
+                  new Date().getTime() - 30 * 24 * 60 * 60 * 1000;
+                const recentFriendSessions = serverValuesForUser.filter(
+                  (session) => session.updatedAt.getTime() >= oneMonthAgo
+                );
+                return { userId, sessions: recentFriendSessions };
+              } else {
+                return { userId, sessions: null };
+              }
+            } catch (error) {
+              console.error(
+                `Error fetching sessions for user ${userId}:`,
+                error
+              );
+              return { userId, sessions: null };
+            }
+          });
+
+        const results = await Promise.all(fetchPromises);
+
+        // Update state with results
+        setFriendSessions((prev) => {
+          const updated = { ...prev };
+          results.forEach(({ userId, sessions }) => {
+            updated[userId] = {
+              isLoading: false,
+              sessions: sessions || undefined,
+            };
+          });
+          return updated;
+        });
+      } catch (error) {
+        console.error('Error fetching friend sessions:', error);
+      } finally {
+        setIsFriendSessionsLoading(false);
+      }
+    },
+    [listServerValues, isFriendSessionsLoading]
+  );
+
+  const clearFriendSessions = useCallback(() => {
+    setFriendSessions({});
+  }, []);
+
   return (
     <SessionsContext.Provider
       value={{
@@ -170,6 +281,10 @@ export const SessionsProvider = ({ children }: SessionsProviderProps) => {
         refetchSessions,
         setSessions,
         clearSessions,
+        friendSessions,
+        isFriendSessionsLoading,
+        fetchFriendSessions,
+        clearFriendSessions,
       }}
     >
       {children}
