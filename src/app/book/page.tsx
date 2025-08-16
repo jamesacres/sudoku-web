@@ -69,12 +69,11 @@ export default function BookPage() {
 
   const handlePuzzleClick = (
     puzzle: { initial: string; final: string },
-    isCompleted: boolean
+    completed: boolean
   ) => {
-    if (isCompleted) {
-      return; // Don't allow playing completed puzzles
-    }
-    router.push(`/puzzle?initial=${puzzle.initial}&final=${puzzle.final}`);
+    router.push(
+      `/puzzle?initial=${puzzle.initial}&final=${puzzle.final}${completed ? '&alreadyCompleted=true' : ''}`
+    );
   };
 
   const getPuzzleSession = (puzzle: { initial: string; final: string }) => {
@@ -518,11 +517,7 @@ export default function BookPage() {
                 <div
                   key={index}
                   id={`puzzle-${index}`}
-                  className={`group relative rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition-all hover:shadow-lg dark:border-gray-700 dark:bg-gray-800 ${
-                    stats.completed
-                      ? 'cursor-default opacity-90'
-                      : 'cursor-pointer hover:scale-105'
-                  }`}
+                  className={`group relative cursor-pointer rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition-all hover:scale-105 hover:shadow-lg dark:border-gray-700 dark:bg-gray-800`}
                   onClick={() => handlePuzzleClick(puzzle, !!stats.completed)}
                 >
                   {/* Status Badge */}

@@ -129,19 +129,13 @@ export const SessionRow = ({
   return (
     <li
       key={session.sessionId}
-      className={`rounded-sm border-2 border-stone-200 bg-stone-50/80 dark:border-zinc-600 dark:bg-zinc-800 ${
-        isCompleted
-          ? 'cursor-not-allowed opacity-70'
-          : 'hover:bg-stone-100 dark:hover:bg-zinc-700'
-      }`}
+      className={`rounded-sm border-2 border-stone-200 bg-stone-50/80 hover:bg-stone-100 dark:border-zinc-600 dark:bg-zinc-800 dark:hover:bg-zinc-700`}
     >
-      {isCompleted ? (
-        content
-      ) : (
-        <Link href={`/puzzle?initial=${initial}&final=${final}`}>
-          {content}
-        </Link>
-      )}
+      <Link
+        href={`/puzzle?initial=${initial}&final=${final}${isCompleted ? '&alreadyCompleted=true' : ''}`}
+      >
+        {content}
+      </Link>
     </li>
   );
 };

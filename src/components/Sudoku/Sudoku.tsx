@@ -26,9 +26,11 @@ import { DAILY_LIMITS } from '@/config/dailyLimits';
 const Sudoku = ({
   puzzle: { initial, final, puzzleId },
   redirectUri,
+  alreadyCompleted,
 }: {
   puzzle: { initial: Puzzle<number>; final: Puzzle<number>; puzzleId: string };
   redirectUri: string;
+  alreadyCompleted?: boolean;
 }) => {
   const router = useRouter();
   const { user } = useContext(UserContext) || {};
@@ -84,7 +86,7 @@ const Sudoku = ({
 
   // Show animation when the puzzle is completed
   useEffect(() => {
-    if (completed) {
+    if (completed && !alreadyCompleted) {
       setShowAnimation(true);
 
       // Reset animation after it completes - extended to 10 seconds to match the animation duration
@@ -94,16 +96,18 @@ const Sudoku = ({
 
       return () => clearTimeout(timer);
     }
-  }, [completed]);
+  }, [completed, alreadyCompleted]);
 
-  // Add puzzle ID to daily tracking when puzzle starts (countdown begins)
+  // Add puzzle ID to daily tracking when puzzle is completed
   useEffect(() => {
-    addDailyPuzzleId(puzzleId);
-  }, [puzzleId]);
+    if (completed && !alreadyCompleted) {
+      addDailyPuzzleId(puzzleId);
+    }
+  }, [puzzleId, completed, alreadyCompleted]);
 
   // Handle countdown finishing for subscription modal
   useEffect(() => {
-    if (timer?.countdown === 1 && !isSubscribed) {
+    if (timer?.countdown === 1 && !isSubscribed && !completed) {
       if (getDailyPuzzleCount() > DAILY_LIMITS.PUZZLE) {
         // Countdown just reached "GO!" - show subscription modal after a brief delay
         setPauseTimer(true);
@@ -128,6 +132,7 @@ const Sudoku = ({
     subscribeModal,
     setPauseTimer,
     setTimerNewSession,
+    completed,
   ]);
 
   // Use drag hook for all drag-related functionality

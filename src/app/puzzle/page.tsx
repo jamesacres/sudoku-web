@@ -11,6 +11,7 @@ function PuzzlePageComponent() {
   const searchParams = useSearchParams();
   const initial = searchParams.get('initial');
   const final = searchParams.get('final');
+  const alreadyCompleted = searchParams.get('alreadyCompleted');
   const redirectUri = `/puzzle?initial=${initial}&final=${final}`;
   const { requestWakeLock } = useWakeLock();
   const [puzzle, setPuzzle] = useState<{
@@ -41,7 +42,13 @@ function PuzzlePageComponent() {
 
   return (
     <div className="-mb-24">
-      {puzzle && <Sudoku puzzle={puzzle} redirectUri={redirectUri} />}
+      {puzzle && (
+        <Sudoku
+          puzzle={puzzle}
+          redirectUri={redirectUri}
+          alreadyCompleted={alreadyCompleted ? true : undefined}
+        />
+      )}
     </div>
   );
 }
