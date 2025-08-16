@@ -136,7 +136,7 @@ export const SessionsProvider = ({ children }: SessionsProviderProps) => {
       const serverSessions = await listServerValues<ServerState>();
       if (serverSessions) {
         // Filter out server sessions older than a month
-        const oneMonthAgo = new Date().getTime() - 30 * 24 * 60 * 60 * 1000;
+        const oneMonthAgo = new Date().getTime() - 32 * 24 * 60 * 60 * 1000;
         const recentServerSessions = serverSessions.filter(
           (session) => session.updatedAt.getTime() >= oneMonthAgo
         );
@@ -229,7 +229,7 @@ export const SessionsProvider = ({ children }: SessionsProviderProps) => {
               if (serverValuesForUser) {
                 // Filter out friends' sessions older than a month
                 const oneMonthAgo =
-                  new Date().getTime() - 30 * 24 * 60 * 60 * 1000;
+                  new Date().getTime() - 32 * 24 * 60 * 60 * 1000;
                 const recentFriendSessions = serverValuesForUser.filter(
                   (session) => session.updatedAt.getTime() >= oneMonthAgo
                 );
