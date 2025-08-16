@@ -1,6 +1,6 @@
 'use client';
 import { useContext } from 'react';
-import { ServerStateResult } from '@/types/serverTypes';
+import { Party, ServerStateResult } from '@/types/serverTypes';
 import { ServerState } from '@/types/state';
 import { UserContext } from '@/providers/UserProvider';
 import { useSessions } from '@/providers/SessionsProvider/SessionsProvider';
@@ -14,6 +14,7 @@ import {
 import { Award, Loader } from 'react-feather';
 import SimpleSudoku from './SimpleSudoku';
 import Link from 'next/link';
+import { UserSession, UserSessions } from '@/types/userSessions';
 
 interface IntegratedSessionRowProps {
   session: ServerStateResult<ServerState>;
@@ -71,10 +72,10 @@ const getGameStatusText = (
 
 // Helper to process friend sessions
 const getFriendSessions = (
-  friendSessions: any,
+  friendSessions: UserSessions,
   session: ServerStateResult<ServerState>,
   currentUserId: string | undefined,
-  parties: any[]
+  parties: Party[]
 ) => {
   const friendSessionData: Array<{
     nickname: string;
@@ -85,11 +86,12 @@ const getFriendSessions = (
   }> = [];
 
   Object.entries(friendSessions).forEach(
-    ([userId, userSessionData]: [string, any]) => {
+    ([userId, userSessionData]: [string, UserSession | undefined]) => {
       if (userId === currentUserId || !userSessionData?.sessions) return;
 
       const matchingSession = userSessionData.sessions.find(
-        (friendSession: any) => friendSession.sessionId === session.sessionId
+        (friendSession: ServerStateResult<ServerState>) =>
+          friendSession.sessionId === session.sessionId
       );
 
       if (matchingSession) {
