@@ -20,6 +20,109 @@ interface IntegratedSessionRowProps {
   userSessions?: ServerStateResult<ServerState>[]; // Optional: user's sessions for cross-referencing
 }
 
+// Helper to get user's session data for display
+const useUserSessionData = (
+  session: ServerStateResult<ServerState>,
+  userSessions?: ServerStateResult<ServerState>[]
+) => {
+  const userSession = userSessions?.find(
+    (s) => s.sessionId === session.sessionId
+  );
+  const actualSession = userSessions ? userSession : session;
+
+  const latest = actualSession
+    ? actualSession.state.answerStack[
+        actualSession.state.answerStack.length - 1
+      ]
+    : session.state.initial;
+
+  const percentage = actualSession
+    ? calculateCompletionPercentage(
+        actualSession.state.initial,
+        actualSession.state.final,
+        latest
+      )
+    : 0;
+
+  return {
+    actualSession,
+    latest,
+    percentage,
+    isCompleted: !!actualSession?.state.completed,
+  };
+};
+
+// Helper to get game status text
+const getGameStatusText = (
+  session: ServerStateResult<ServerState>,
+  userSessions?: ServerStateResult<ServerState>[]
+) => {
+  const userSession = userSessions?.find(
+    (s) => s.sessionId === session.sessionId
+  );
+  const gameSession = userSession || (!userSessions ? session : null);
+
+  if (!gameSession || (gameSession.state.answerStack.length || 0) <= 1) {
+    return 'Start Game';
+  }
+
+  return gameSession.state.completed ? 'You Completed!' : 'Continue Game';
+};
+
+// Helper to process friend sessions
+const getFriendSessions = (
+  friendSessions: any,
+  session: ServerStateResult<ServerState>,
+  currentUserId: string | undefined,
+  parties: any[]
+) => {
+  const friendSessionData: Array<{
+    nickname: string;
+    userId: string;
+    completionPercentage: number;
+    completionTime: number | null;
+    isCompleted: boolean;
+  }> = [];
+
+  Object.entries(friendSessions).forEach(
+    ([userId, userSessionData]: [string, any]) => {
+      if (userId === currentUserId || !userSessionData?.sessions) return;
+
+      const matchingSession = userSessionData.sessions.find(
+        (friendSession: any) => friendSession.sessionId === session.sessionId
+      );
+
+      if (matchingSession) {
+        const friendNickname =
+          parties
+            ?.flatMap((party) => party.members)
+            .find((member) => member.userId === userId)?.memberNickname ||
+          'Unknown';
+
+        const latest =
+          matchingSession.state.answerStack[
+            matchingSession.state.answerStack.length - 1
+          ];
+        const completionPercentage = calculateCompletionPercentage(
+          matchingSession.state.initial,
+          matchingSession.state.final,
+          latest
+        );
+
+        friendSessionData.push({
+          nickname: friendNickname,
+          userId,
+          completionPercentage,
+          completionTime: matchingSession.state.completed?.seconds || null,
+          isCompleted: !!matchingSession.state.completed,
+        });
+      }
+    }
+  );
+
+  return friendSessionData;
+};
+
 export const IntegratedSessionRow = ({
   session,
   userSessions,
@@ -31,25 +134,12 @@ export const IntegratedSessionRow = ({
   const initial = puzzleToPuzzleText(session.state.initial);
   const final = puzzleToPuzzleText(session.state.final);
 
-  // Use user's session for calculations if we're in FriendsTab context
-  const userSession = userSessions?.find(
-    (s) => s.sessionId === session.sessionId
-  );
-  const actualSession = userSessions ? userSession : session;
-
-  const latest = actualSession
-    ? actualSession.state.answerStack[
-        actualSession.state.answerStack.length - 1
-      ]
-    : session.state.initial;
-  const myPercentage = actualSession
-    ? calculateCompletionPercentage(
-        actualSession.state.initial,
-        actualSession.state.final,
-        latest
-      )
-    : 0;
-  const isCompleted = actualSession?.state.completed;
+  const {
+    actualSession,
+    latest,
+    percentage: myPercentage,
+    isCompleted,
+  } = useUserSessionData(session, userSessions);
 
   // Helper function to get all player sessions for this puzzle, sorted by performance
   const getAllPlayerSessionsForPuzzle = () => {
@@ -57,7 +147,7 @@ export const IntegratedSessionRow = ({
 
     const allPlayerSessions: Array<{
       nickname: string;
-      userId: string | null; // null for current user
+      userId: string | null;
       completionPercentage: number;
       completionTime: number | null;
       isCompleted: boolean;
@@ -65,103 +155,37 @@ export const IntegratedSessionRow = ({
       isWinner: boolean;
     }> = [];
 
-    // Add user's own session - use userSessions if provided (for FriendsTab)
-    const userSession = userSessions?.find(
-      (s) => s.sessionId === session.sessionId
-    );
-
-    // Only use friend's session data if we're NOT in FriendsTab context
-    const actualSession = userSessions ? userSession : session;
-
-    let myLatest, myCompletionPercentage, myCompletionTime, isUserCompleted;
-
-    if (actualSession) {
-      myLatest =
-        actualSession.state.answerStack[
-          actualSession.state.answerStack.length - 1
-        ];
-      myCompletionPercentage = calculateCompletionPercentage(
-        actualSession.state.initial,
-        actualSession.state.final,
-        myLatest
-      );
-      myCompletionTime = actualSession.state.completed?.seconds || null;
-      isUserCompleted = !!actualSession.state.completed;
-    } else {
-      // User hasn't played this puzzle (FriendsTab only)
-      myLatest = session.state.initial;
-      myCompletionPercentage = 0;
-      myCompletionTime = null;
-      isUserCompleted = false;
-    }
-
-    // Only add user to the list if they have actually played this puzzle, or if we're in MyPuzzlesTab
+    // Add user's session if they have actually played this puzzle, or if we're in MyPuzzlesTab
     if (actualSession || !userSessions) {
       allPlayerSessions.push({
         nickname: 'You',
-        userId: null, // Mark as current user
-        completionPercentage: myCompletionPercentage,
-        completionTime: myCompletionTime,
-        isCompleted: isUserCompleted,
+        userId: null,
+        completionPercentage: myPercentage,
+        completionTime: actualSession?.state.completed?.seconds || null,
+        isCompleted,
         isCurrentUser: true,
         isWinner: false, // Will be determined later
       });
     }
 
-    // Add friends' sessions (excluding current user)
-    let hasFriends = false;
-    Object.entries(friendSessions).forEach(([userId, userSessionData]) => {
-      // Skip if this is the current user
-      if (userId === user?.sub) {
-        return;
-      }
+    // Add friends' sessions
+    const friendData = getFriendSessions(
+      friendSessions,
+      session,
+      user?.sub,
+      parties || []
+    );
 
-      if (userSessionData?.sessions) {
-        const matchingSession = userSessionData.sessions.find(
-          (friendSession) => {
-            // Match based on session ID (puzzle ID)
-            return friendSession.sessionId === session.sessionId;
-          }
-        );
-        if (matchingSession) {
-          hasFriends = true;
-          // Get friend nickname from parties
-          const friendNickname =
-            parties
-              ?.flatMap((party) => party.members)
-              .find((member) => member.userId === userId)?.memberNickname ||
-            'Unknown';
-
-          // Calculate completion percentage
-          const latest =
-            matchingSession.state.answerStack[
-              matchingSession.state.answerStack.length - 1
-            ];
-          const completionPercentage = calculateCompletionPercentage(
-            matchingSession.state.initial,
-            matchingSession.state.final,
-            latest
-          );
-
-          const completionTime =
-            matchingSession.state.completed?.seconds || null;
-          const isCompleted = !!matchingSession.state.completed;
-
-          allPlayerSessions.push({
-            nickname: friendNickname,
-            userId,
-            completionPercentage,
-            completionTime,
-            isCompleted,
-            isCurrentUser: false,
-            isWinner: false, // Will be determined later
-          });
-        }
-      }
+    friendData.forEach((friend) => {
+      allPlayerSessions.push({
+        ...friend,
+        isCurrentUser: false,
+        isWinner: false, // Will be determined later
+      });
     });
 
     // Don't show list if only the current user is playing
-    if (!hasFriends) return [];
+    if (friendData.length === 0) return [];
 
     // Determine the winner among completed puzzles
     const completedSessions = allPlayerSessions.filter(
@@ -208,15 +232,10 @@ export const IntegratedSessionRow = ({
 
   const playerSessions = getAllPlayerSessionsForPuzzle();
 
-  // Helper to get the correct timer session and display
+  // Helper to get timer display
   const getTimerDisplay = () => {
-    const userSession = userSessions?.find(
-      (s) => s.sessionId === session.sessionId
-    );
-    const timerSession = userSession || (!userSessions ? session : null);
-
-    if (timerSession?.state.timer !== undefined) {
-      const seconds = calculateSeconds(timerSession.state.timer);
+    if (actualSession?.state.timer !== undefined) {
+      const seconds = calculateSeconds(actualSession.state.timer);
       return (
         <span className="text-xs opacity-75">
           {Math.floor(seconds / 60)}m {seconds % 60}s
@@ -243,27 +262,7 @@ export const IntegratedSessionRow = ({
             latest={latest}
           />
           <div className="px-4 py-2 text-center text-gray-900 dark:text-white">
-            <p>
-              {(() => {
-                // Use user's session if we're in FriendsTab context
-                const userSession = userSessions?.find(
-                  (s) => s.sessionId === session.sessionId
-                );
-                const gameSession =
-                  userSession || (!userSessions ? session : null);
-
-                if (
-                  !gameSession ||
-                  (gameSession.state.answerStack.length || 0) <= 1
-                ) {
-                  return 'Start Game';
-                }
-
-                return gameSession.state.completed
-                  ? 'You Completed!'
-                  : 'Continue Game';
-              })()}
-            </p>
+            <p>{getGameStatusText(session, userSessions)}</p>
           </div>
         </div>
       </Link>
