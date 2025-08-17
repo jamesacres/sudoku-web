@@ -17,6 +17,7 @@ import { calculateCompletionPercentage } from '@/helpers/calculateCompletionPerc
 import { calculateSeconds } from '@/helpers/calculateSeconds';
 import { TimerDisplay } from '@/components/TimerDisplay/TimerDisplay';
 import { SudokuBookPuzzle } from '@/types/serverTypes';
+import { buildPuzzleUrl } from '@/helpers/buildPuzzleUrl';
 
 export default function BookPage() {
   const router = useRouter();
@@ -68,11 +69,17 @@ export default function BookPage() {
   }, [user, loginRedirect, router, fetchBookData, fetchSessions]);
 
   const handlePuzzleClick = (
-    puzzle: { initial: string; final: string },
-    completed: boolean
+    puzzle: SudokuBookPuzzle,
+    completed: boolean,
+    sudokuBookPuzzleId: string
   ) => {
     router.push(
-      `/puzzle?initial=${puzzle.initial}&final=${puzzle.final}${completed ? '&alreadyCompleted=true' : ''}`
+      buildPuzzleUrl(
+        puzzle.initial,
+        puzzle.final,
+        { sudokuBookPuzzleId, difficulty: puzzle.difficulty.coach },
+        completed
+      )
     );
   };
 
@@ -518,7 +525,13 @@ export default function BookPage() {
                   key={index}
                   id={`puzzle-${index}`}
                   className={`group relative cursor-pointer rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition-all hover:scale-105 hover:shadow-lg dark:border-gray-700 dark:bg-gray-800`}
-                  onClick={() => handlePuzzleClick(puzzle, !!stats.completed)}
+                  onClick={() =>
+                    handlePuzzleClick(
+                      puzzle,
+                      !!stats.completed,
+                      `${bookData.sudokuBookId}-puzzle-${index}`
+                    )
+                  }
                 >
                   {/* Status Badge */}
                   <div className="absolute -top-2 -right-2 z-10">

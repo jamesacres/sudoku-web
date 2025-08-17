@@ -9,7 +9,13 @@ import {
   calculateNextCellId,
   splitCellId,
 } from '@/helpers/calculateId';
-import { GameState, SelectNumber, ServerState, SetAnswer } from '@/types/state';
+import {
+  GameState,
+  GameStateMetadata,
+  SelectNumber,
+  ServerState,
+  SetAnswer,
+} from '@/types/state';
 import { useLocalStorage } from './localStorage';
 import { useServerStorage } from './serverStorage';
 import { checkCell, checkGrid } from '@/helpers/checkAnswer';
@@ -32,10 +38,12 @@ function useGameState({
   final,
   initial,
   puzzleId,
+  metadata,
 }: {
   final: Puzzle<number>;
   initial: Puzzle<number>;
   puzzleId: string;
+  metadata: Partial<GameStateMetadata>;
 }) {
   const { user } = useContext(UserContext) || {};
   const { subscribeModal, isSubscribed } = useContext(RevenueCatContext) || {};
@@ -473,6 +481,7 @@ function useGameState({
           initial,
           final,
           completed,
+          metadata,
         });
         serverValuePromise.then((serverValue) => {
           if (
@@ -498,6 +507,7 @@ function useGameState({
     isDisabled,
     completed,
     selectedCell,
+    metadata,
   ]);
 
   // Handle keyboard

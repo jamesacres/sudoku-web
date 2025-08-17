@@ -10,6 +10,7 @@ import type Processor from '../../augmentedReality/Processor';
 import { useRouter } from 'next/navigation';
 import SimpleSudoku from '@/components/SimpleSudoku';
 import { emptyPuzzle } from '@/types/puzzle';
+import { buildPuzzleUrl } from '@/helpers/buildPuzzleUrl';
 
 let processor: Processor | undefined;
 let solver: Solver | undefined;
@@ -36,7 +37,9 @@ export default function Home() {
       processor = undefined;
       solver = undefined;
       router.replace(
-        `/puzzle?initial=${puzzleStrings.initial}&final=${puzzleStrings.final}`
+        buildPuzzleUrl(puzzleStrings.initial, puzzleStrings.final, {
+          scannedAt: new Date().toISOString(),
+        })
       );
     }
   }, [router, puzzleStrings]);

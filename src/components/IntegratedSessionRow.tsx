@@ -15,6 +15,7 @@ import { Award, Loader } from 'react-feather';
 import SimpleSudoku from './SimpleSudoku';
 import Link from 'next/link';
 import { UserSession, UserSessions } from '@/types/userSessions';
+import { buildPuzzleUrl } from '@/helpers/buildPuzzleUrl';
 
 interface IntegratedSessionRowProps {
   session: ServerStateResult<ServerState>;
@@ -135,6 +136,7 @@ export const IntegratedSessionRow = ({
 
   const initial = puzzleToPuzzleText(session.state.initial);
   const final = puzzleToPuzzleText(session.state.final);
+  const metadata = session.state.metadata;
 
   const {
     actualSession,
@@ -253,9 +255,12 @@ export const IntegratedSessionRow = ({
       className="rounded-lg border-2 border-stone-200 bg-stone-50/80 hover:bg-stone-100 dark:border-zinc-600 dark:bg-zinc-800 dark:hover:bg-zinc-700"
     >
       <Link
-        href={`/puzzle?initial=${initial}&final=${final}${
-          isCompleted ? '&alreadyCompleted=true' : ''
-        }`}
+        href={buildPuzzleUrl(
+          initial,
+          final,
+          session.state.metadata,
+          isCompleted
+        )}
       >
         <div>
           <SimpleSudoku

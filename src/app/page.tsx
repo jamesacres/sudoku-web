@@ -30,6 +30,7 @@ import {
 import Link from 'next/link';
 import Image from 'next/image';
 import { BookCover } from '@/components/BookCovers';
+import { buildPuzzleUrl } from '@/helpers/buildPuzzleUrl';
 
 export default function Home() {
   const [tab, setTab] = useState(Tab.START_PUZZLE);
@@ -73,7 +74,12 @@ export default function Home() {
     }
     const result = await getSudokuOfTheDay(difficulty);
     if (result) {
-      router.push(`/puzzle?initial=${result.initial}&final=${result.final}`);
+      router.push(
+        buildPuzzleUrl(result.initial, result.final, {
+          difficulty,
+          sudokuId: result.sudokuId,
+        })
+      );
       return;
     }
     setIsLoading(false);
