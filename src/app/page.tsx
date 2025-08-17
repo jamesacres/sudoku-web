@@ -11,7 +11,6 @@ import { useSessions } from '@/providers/SessionsProvider/SessionsProvider';
 import { useParties } from '@/hooks/useParties';
 import { Difficulty } from '@/types/serverTypes';
 import { Tab } from '@/types/tabs';
-import { UserSessions } from '@/types/userSessions';
 import { SubscriptionContext } from '@/types/subscriptionContext';
 import { useRouter } from 'next/navigation';
 import { useCallback, useContext, useEffect, useState } from 'react';
@@ -31,7 +30,7 @@ import {
 import Link from 'next/link';
 import Image from 'next/image';
 import { BookCover } from '@/components/BookCovers';
-import { ServerState } from '@/types/state';
+import { buildPuzzleUrl } from '@/helpers/buildPuzzleUrl';
 
 export default function Home() {
   const [tab, setTab] = useState(Tab.START_PUZZLE);
@@ -40,10 +39,8 @@ export default function Home() {
   const { isSubscribed, subscribeModal } = useContext(RevenueCatContext) || {};
   useOnline();
   const [isLoading, setIsLoading] = useState(false);
-  const { getSudokuOfTheDay, listValues: listServerValues } =
-    useServerStorage();
+  const { getSudokuOfTheDay } = useServerStorage();
   const { parties } = useParties({});
-  const [userSessions, setUserSessions] = useState<UserSessions>({});
   const { sessions, refetchSessions } = useSessions();
 
   useEffect(() => {
@@ -63,40 +60,6 @@ export default function Home() {
     )
   );
 
-  const expandUser = async (partyId: string, userId: string) => {
-    if (
-      userSessions[userId] &&
-      (userSessions[userId]?.isLoading || userSessions[userId]?.sessions)
-    ) {
-      // Already got sessions
-      return;
-    }
-    setUserSessions({
-      ...userSessions,
-      [userId]: { isLoading: true },
-    });
-    const serverValuesForUser = await listServerValues<ServerState>({
-      partyId,
-      userId,
-    });
-    if (serverValuesForUser) {
-      // Filter out friends' sessions older than a month
-      const oneMonthAgo = new Date().getTime() - 30 * 24 * 60 * 60 * 1000;
-      const recentFriendSessions = serverValuesForUser.filter(
-        (session) => session.updatedAt.getTime() >= oneMonthAgo
-      );
-      setUserSessions({
-        ...userSessions,
-        [userId]: { isLoading: false, sessions: recentFriendSessions },
-      });
-    } else {
-      setUserSessions({
-        ...userSessions,
-        [userId]: { isLoading: false },
-      });
-    }
-  };
-
   const openSudokuOfTheDay = async (difficulty: Difficulty): Promise<void> => {
     setIsLoading(true);
     if (!user) {
@@ -111,7 +74,12 @@ export default function Home() {
     }
     const result = await getSudokuOfTheDay(difficulty);
     if (result) {
-      router.push(`/puzzle?initial=${result.initial}&final=${result.final}`);
+      router.push(
+        buildPuzzleUrl(result.initial, result.final, {
+          difficulty,
+          sudokuId: result.sudokuId,
+        })
+      );
       return;
     }
     setIsLoading(false);
@@ -554,8 +522,6 @@ export default function Home() {
               <FriendsTab
                 user={user}
                 parties={parties}
-                expandUser={expandUser}
-                userSessions={userSessions}
                 mySessions={sessions || []}
               />
             )}

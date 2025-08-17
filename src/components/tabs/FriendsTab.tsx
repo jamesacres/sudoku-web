@@ -1,26 +1,40 @@
 'use client';
+import { useEffect, useState } from 'react';
 import { ServerStateResult, Party } from '@/types/serverTypes';
 import { ServerState } from '@/types/state';
-import { UserSessions } from '@/types/userSessions';
 import { UserProfile } from '@/types/userProfile';
-import { Loader, ChevronDown } from 'react-feather';
-import SessionRow from '../SessionRow';
+import { Loader, ChevronDown, ChevronRight } from 'react-feather';
+import { useSessions } from '@/providers/SessionsProvider/SessionsProvider';
+import IntegratedSessionRow from '../IntegratedSessionRow';
 
 interface FriendsTabProps {
   user: UserProfile | undefined;
   parties: Party[] | undefined;
-  expandUser: (partyId: string, userId: string) => void;
-  userSessions: UserSessions;
   mySessions: ServerStateResult<ServerState>[] | undefined;
 }
 
-export const FriendsTab = ({
-  user,
-  parties,
-  expandUser,
-  userSessions,
-  mySessions,
-}: FriendsTabProps) => {
+export const FriendsTab = ({ user, parties, mySessions }: FriendsTabProps) => {
+  const { friendSessions, fetchFriendSessions } = useSessions();
+  const [expandedUsers, setExpandedUsers] = useState<Set<string>>(new Set());
+
+  // Fetch friend sessions when parties are available
+  useEffect(() => {
+    if (parties && parties.length > 0) {
+      fetchFriendSessions(parties);
+    }
+  }, [parties, fetchFriendSessions]);
+
+  const toggleUserExpansion = (userId: string) => {
+    setExpandedUsers((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(userId)) {
+        newSet.delete(userId);
+      } else {
+        newSet.add(userId);
+      }
+      return newSet;
+    });
+  };
   return (
     <div className="mb-4">
       <h1 className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-4xl font-bold text-transparent">
@@ -57,52 +71,51 @@ export const FriendsTab = ({
                           className="rounded-xl bg-gray-50 dark:bg-zinc-700/40"
                         >
                           <button
-                            className="flex w-full cursor-pointer items-center p-3"
-                            onClick={() => expandUser(partyId, userId)}
+                            className="flex w-full cursor-pointer items-center rounded-xl p-3 transition-colors hover:bg-gray-100 dark:hover:bg-zinc-600/40"
+                            onClick={() => toggleUserExpansion(userId)}
                           >
                             <span className="mr-2 text-xl">🧍</span>
                             <span className="font-medium text-gray-800 dark:text-gray-200">
                               {memberNickname}
                             </span>
-                            {userSessions[userId]?.isLoading ? (
+                            {friendSessions[userId]?.isLoading ? (
                               <Loader className="mr-0 ml-auto animate-spin" />
                             ) : (
                               <>
-                                {userSessions[userId]?.sessions ? (
-                                  <></>
-                                ) : (
+                                {expandedUsers.has(userId) ? (
                                   <ChevronDown className="mr-0 ml-auto" />
+                                ) : (
+                                  <ChevronRight className="mr-0 ml-auto" />
                                 )}
                               </>
                             )}
                           </button>
-                          {userSessions[userId]?.sessions && (
-                            <>
-                              {userSessions[userId]?.sessions?.length ? (
-                                <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
-                                  {userSessions[userId]?.sessions?.map(
-                                    (userSession) => (
-                                      <SessionRow
-                                        key={userSession.sessionId}
-                                        memberSession={userSession}
-                                        mySession={mySessions?.find(
-                                          (session) =>
-                                            session.sessionId ===
-                                            userSession.sessionId
-                                        )}
-                                        display="my"
-                                        memberNickname={memberNickname}
-                                      />
-                                    )
-                                  )}
-                                </ul>
-                              ) : (
-                                <p className="px-3 pb-3 text-gray-600 dark:text-gray-400">
-                                  No recent puzzles, ask them to play!
-                                </p>
-                              )}
-                            </>
-                          )}
+                          {expandedUsers.has(userId) &&
+                            friendSessions[userId]?.sessions && (
+                              <>
+                                {friendSessions[userId]?.sessions?.length ? (
+                                  <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
+                                    {friendSessions[userId]?.sessions
+                                      ?.sort(
+                                        (a, b) =>
+                                          new Date(b.updatedAt).getTime() -
+                                          new Date(a.updatedAt).getTime()
+                                      )
+                                      ?.map((userSession) => (
+                                        <IntegratedSessionRow
+                                          key={userSession.sessionId}
+                                          session={userSession}
+                                          userSessions={mySessions}
+                                        />
+                                      ))}
+                                  </ul>
+                                ) : (
+                                  <p className="px-3 pb-3 text-gray-600 dark:text-gray-400">
+                                    No recent puzzles, ask them to play!
+                                  </p>
+                                )}
+                              </>
+                            )}
                         </li>
                       ))}
                   </ul>

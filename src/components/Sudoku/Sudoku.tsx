@@ -22,14 +22,19 @@ import {
 import { useRouter } from 'next/navigation';
 import { SubscriptionContext } from '@/types/subscriptionContext';
 import { DAILY_LIMITS } from '@/config/dailyLimits';
+import { GameStateMetadata } from '@/types/state';
 
 const Sudoku = ({
-  puzzle: { initial, final, puzzleId },
-  redirectUri,
+  puzzle: { initial, final, puzzleId, redirectUri, metadata },
   alreadyCompleted,
 }: {
-  puzzle: { initial: Puzzle<number>; final: Puzzle<number>; puzzleId: string };
-  redirectUri: string;
+  puzzle: {
+    initial: Puzzle<number>;
+    final: Puzzle<number>;
+    puzzleId: string;
+    redirectUri: string;
+    metadata: Partial<GameStateMetadata>;
+  };
   alreadyCompleted?: boolean;
 }) => {
   const router = useRouter();
@@ -68,6 +73,7 @@ const Sudoku = ({
     final,
     initial,
     puzzleId,
+    metadata,
   });
   const friendsOnClick = useCallback(() => {
     setShowSidebar((showSidebar) => !showSidebar);

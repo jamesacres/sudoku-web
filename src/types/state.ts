@@ -8,6 +8,13 @@ export type SetSelectedCell = (_cell: string | null) => void;
 
 export type SetAnswer = (_value: number | Notes) => void;
 
+export interface GameStateMetadata {
+  difficulty: string;
+  sudokuId: string;
+  sudokuBookPuzzleId: string;
+  scannedAt: string;
+}
+
 export interface GameState {
   answerStack: Puzzle[];
   initial: Puzzle<number>;
@@ -16,6 +23,7 @@ export interface GameState {
     at: string;
     seconds: number;
   };
+  metadata?: Partial<GameStateMetadata>;
 }
 
 export interface ServerState extends GameState {

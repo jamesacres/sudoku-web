@@ -35,7 +35,7 @@ function useLocalStorage({
   const listValues = useCallback(<T>(): (StateResult<T> & {
     sessionId: string;
   })[] => {
-    const oneMonthAgo = new Date().getTime() - 30 * 24 * 60 * 60 * 1000;
+    const oneMonthAgo = new Date().getTime() - 32 * 24 * 60 * 60 * 1000;
 
     return Object.entries(localStorage)
       .filter(([key]) => {
