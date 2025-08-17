@@ -131,11 +131,11 @@ const getDifficultyDisplay = (difficulty: string) => {
     [key: string]: { name: string; badgeColor: string };
   } = {
     // Standard difficulties (from Difficulty enum)
-    simple: { name: '🟢 Simple', badgeColor: 'bg-green-500 text-white' },
-    easy: { name: '🟢 Easy', badgeColor: 'bg-green-500 text-white' },
+    simple: { name: '⚡️ Tricky', badgeColor: 'bg-green-500 text-white' },
+    easy: { name: '🔥 Challenging', badgeColor: 'bg-yellow-500 text-white' },
     intermediate: {
-      name: '🟡 Intermediate',
-      badgeColor: 'bg-yellow-500 text-white',
+      name: '🚀 Hard',
+      badgeColor: 'bg-red-500 text-white',
     },
     expert: { name: '🔴 Expert', badgeColor: 'bg-red-500 text-white' },
 
