@@ -16,10 +16,294 @@ import SimpleSudoku from './SimpleSudoku';
 import Link from 'next/link';
 import { UserSession, UserSessions } from '@/types/userSessions';
 import { buildPuzzleUrl } from '@/helpers/buildPuzzleUrl';
+import { SudokuBookPuzzle } from '@/types/serverTypes';
+
+// Helper function to format date from YYYYMMDD to "Mon DD"
+const formatDateString = (dateString: string) => {
+  // dateString is in format YYYYMMDD
+  if (dateString.length !== 8) return dateString;
+
+  const year = dateString.substring(0, 4);
+  const month = dateString.substring(4, 6);
+  const day = dateString.substring(6, 8);
+
+  // Create a date object and format it
+  const date = new Date(`${year}-${month}-${day}`);
+
+  // Format as "Aug 17th"
+  const monthNames = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
+  const monthName = monthNames[date.getMonth()];
+  const dayNum = date.getDate();
+
+  // Add ordinal suffix (st, nd, rd, th)
+  const getOrdinalSuffix = (day: number) => {
+    if (day >= 11 && day <= 13) return 'th';
+    switch (day % 10) {
+      case 1:
+        return 'st';
+      case 2:
+        return 'nd';
+      case 3:
+        return 'rd';
+      default:
+        return 'th';
+    }
+  };
+
+  return `${monthName} ${dayNum}${getOrdinalSuffix(dayNum)}`;
+};
+
+// Helper function to extract metadata information
+const extractMetadataInfo = (
+  metadata?: Partial<{
+    difficulty: string;
+    sudokuId: string;
+    sudokuBookPuzzleId: string;
+    scannedAt: string;
+  }>
+) => {
+  if (!metadata) return null;
+
+  const info: {
+    type: 'daily' | 'book' | 'scanned' | 'other';
+    difficulty?: string;
+    date?: string;
+    bookInfo?: { year: string; month: string; number: number };
+  } = { type: 'other' };
+
+  // Extract from sudokuId (format: oftheday-${date}-${difficulty})
+  if (metadata.sudokuId?.startsWith('oftheday-')) {
+    const parts = metadata.sudokuId.split('-');
+    if (parts.length >= 3) {
+      info.type = 'daily';
+      info.date = parts[1];
+      info.difficulty = parts.slice(2).join('-');
+    }
+  }
+
+  // Extract from sudokuBookPuzzleId (format: ofthemonth-${YYYYMM}-puzzle-${index})
+  if (metadata.sudokuBookPuzzleId?.startsWith('ofthemonth-')) {
+    const parts = metadata.sudokuBookPuzzleId.split('-');
+    if (parts.length >= 4) {
+      info.type = 'book';
+      const yearMonth = parts[1];
+      const number = parseInt(parts[3]);
+      if (yearMonth.length === 6) {
+        info.bookInfo = {
+          year: yearMonth.substring(0, 4),
+          month: yearMonth.substring(4, 6),
+          number: number + 1, // Convert 0-based index to 1-based
+        };
+      }
+    }
+  }
+
+  // Check for scanned puzzles
+  if (metadata.scannedAt) {
+    info.type = 'scanned';
+  }
+
+  // Use difficulty from metadata if available
+  if (metadata.difficulty) {
+    info.difficulty = metadata.difficulty;
+  }
+
+  return info;
+};
+
+// Helper function to get difficulty display information
+const getDifficultyDisplay = (difficulty: string) => {
+  // Map both Difficulty enum and BookPuzzleDifficulty enum values
+  const difficultyMap: {
+    [key: string]: { name: string; badgeColor: string };
+  } = {
+    // Standard difficulties (from Difficulty enum)
+    simple: { name: '🟢 Simple', badgeColor: 'bg-green-500 text-white' },
+    easy: { name: '🟢 Easy', badgeColor: 'bg-green-500 text-white' },
+    intermediate: {
+      name: '🟡 Intermediate',
+      badgeColor: 'bg-yellow-500 text-white',
+    },
+    expert: { name: '🔴 Expert', badgeColor: 'bg-red-500 text-white' },
+
+    // Book difficulties (from BookPuzzleDifficulty enum)
+    '1-very-easy': {
+      name: '🟢 Very Easy',
+      badgeColor: 'bg-green-400 text-white',
+    },
+    '2-easy': { name: '🟢 Easy', badgeColor: 'bg-green-500 text-white' },
+    '3-moderately-easy': {
+      name: '🟡 Moderately Easy',
+      badgeColor: 'bg-lime-600 text-white',
+    },
+    '4-moderate': {
+      name: '🟡 Moderate',
+      badgeColor: 'bg-yellow-600 text-white',
+    },
+    '5-moderately-hard': {
+      name: '🟠 Moderately Hard',
+      badgeColor: 'bg-orange-500 text-white',
+    },
+    '6-hard': { name: '🔴 Hard', badgeColor: 'bg-red-500 text-white' },
+    '7-vicious': { name: '🔥 Vicious', badgeColor: 'bg-red-600 text-white' },
+    '8-fiendish': { name: '🔥 Fiendish', badgeColor: 'bg-red-700 text-white' },
+    '9-devilish': { name: '🔥 Devilish', badgeColor: 'bg-red-800 text-white' },
+    '10-hell': { name: '🔥🔥 Hell', badgeColor: 'bg-red-900 text-white' },
+    '11-beyond-hell': {
+      name: '🔥🔥🔥 Beyond Hell',
+      badgeColor: 'bg-black text-white',
+    },
+  };
+
+  return (
+    difficultyMap[difficulty] || {
+      name: difficulty,
+      badgeColor: 'bg-gray-500 text-white',
+    }
+  );
+};
+
+// Helper function to extract and display techniques from book puzzle
+const getTechniquesDisplay = (techniques?: SudokuBookPuzzle['techniques']) => {
+  if (!techniques) return [];
+
+  const techniqueNames: { [key: string]: string } = {
+    // Basic
+    lastDigit: 'Last Digit',
+    hiddenSingleBox: 'Hidden Single (Box)',
+    hiddenSingleLine: 'Hidden Single (Line)',
+    hiddenSingleVariantRegion: 'Hidden Single (Variant Region)',
+    nakedSingle: 'Naked Single',
+    // Simple
+    hiddenPair: 'Hidden Pair',
+    lockedCandidate: 'Locked Candidate',
+    hiddenTriple: 'Hidden Triple',
+    hiddenQuadruple: 'Hidden Quadruple',
+    nakedPair: 'Naked Pair',
+    nakedTriple: 'Naked Triple',
+    nakedQuadruple: 'Naked Quadruple',
+    // Advanced
+    xWing: 'X-Wing',
+    swordfish: 'Swordfish',
+    skyscraper: 'Skyscraper',
+    twoStringKite: 'Two-String-Kite',
+    crane: 'Crane',
+    simpleColoring: 'Simple Coloring',
+    yWing: 'Y-Wing',
+    xYZWing: 'XYZ-Wing',
+    wWing: 'W-Wing',
+    finnedSashimiXWing: 'Finned/Sashimi X-Wing',
+    emptyRectangle: 'Empty Rectangle',
+    uniqueRectangleType1: 'Unique Rectangle Type 1',
+    uniqueRectangleType2: 'Unique Rectangle Type 2',
+    uniqueRectangleType3: 'Unique Rectangle Type 3',
+    uniqueRectangleType4: 'Unique Rectangle Type 4',
+    uniqueRectangleType5: 'Unique Rectangle Type 5',
+    // Hard
+    finnedSashimiSwordfish: 'Finned/Sashimi Swordfish',
+    jellyfish: 'Jellyfish',
+    bugBinaryUniversalGrave: 'BUG (Binary Universal Grave)',
+    xChain: 'X-Chain',
+    groupedXChain: 'Grouped X-Chain',
+    YWing4WXYZWing: '4-Y-Wing (WXYZ-Wing)',
+    yWing5: '5-Y-Wing',
+    yWing6: '6-Y-Wing',
+    yWing7: '7-Y-Wing',
+    yWing8: '8-Y-Wing',
+    yWing9: '9-Y-Wing',
+    finnedSashimiJellyfish: 'Finned/Sashimi Jellyfish',
+    // Brutal
+    medusa3D: '3D Medusa',
+    xyChain: 'XY-Chain',
+    alternatingInferenceChainAIC: 'Alternating Inference Chain (AIC)',
+    groupedAlternatingInferenceChainAIC:
+      'Grouped Alternating Inference Chain (AIC)',
+    // Beyond Brutal
+    nishioForcingChain: 'Nishio Forcing Chain',
+    nishioForcingNet: 'Nishio Forcing Net',
+  };
+
+  const categoryColors: { [key: string]: string } = {
+    beyondBrutal: 'bg-black text-white',
+    brutal: 'bg-red-600 text-white',
+    hard: 'bg-red-500 text-white',
+    advanced: 'bg-yellow-500 text-white',
+    simple: 'bg-blue-500 text-white',
+    basic: 'bg-green-500 text-white',
+  };
+
+  // Define the order of categories from hardest to easiest
+  const categoryOrder: { [key: string]: number } = {
+    beyondBrutal: 0,
+    brutal: 1,
+    hard: 2,
+    advanced: 3,
+    simple: 4,
+    basic: 5,
+  };
+
+  const allTechniques: Array<{
+    name: string;
+    count: number;
+    color: string;
+    category: string;
+    categoryOrder: number;
+  }> = [];
+
+  Object.entries(techniques).forEach(([category, categoryTechniques]) => {
+    if (typeof categoryTechniques === 'object') {
+      const color = categoryColors[category] || 'bg-gray-500 text-white';
+      const order = categoryOrder[category] ?? 999; // Default to end if unknown category
+      Object.entries(categoryTechniques as any).forEach(
+        ([technique, count]) => {
+          if (count && (count as number) > 0) {
+            const humanName = techniqueNames[technique] || technique;
+            allTechniques.push({
+              name: humanName,
+              count: count as number,
+              color,
+              category,
+              categoryOrder: order,
+            });
+          }
+        }
+      );
+    }
+  });
+
+  // Sort by category order (hardest first), then by count within category (highest first)
+  return allTechniques.sort((a, b) => {
+    // First sort by category order (hardest first)
+    if (a.categoryOrder !== b.categoryOrder) {
+      return a.categoryOrder - b.categoryOrder;
+    }
+    // Then sort by count within the same category (highest first)
+    return b.count - a.count;
+  });
+};
 
 interface IntegratedSessionRowProps {
   session: ServerStateResult<ServerState>;
   userSessions?: ServerStateResult<ServerState>[]; // Optional: user's sessions for cross-referencing
+  // Book-specific props
+  bookPuzzle?: {
+    puzzle: SudokuBookPuzzle;
+    index: number;
+    sudokuBookId: string;
+  };
 }
 
 // Helper to get user's session data for display
@@ -65,10 +349,10 @@ const getGameStatusText = (
   const gameSession = userSession || (!userSessions ? session : null);
 
   if (!gameSession || (gameSession.state.answerStack.length || 0) <= 1) {
-    return 'Start Game';
+    return 'Start Puzzle';
   }
 
-  return gameSession.state.completed ? 'You Completed!' : 'Continue Game';
+  return gameSession.state.completed ? 'You Completed!' : 'Continue Puzzle';
 };
 
 // Helper to process friend sessions
@@ -129,6 +413,7 @@ const getFriendSessions = (
 export const IntegratedSessionRow = ({
   session,
   userSessions,
+  bookPuzzle,
 }: IntegratedSessionRowProps) => {
   const { user } = useContext(UserContext) || {};
   const { friendSessions, isFriendSessionsLoading } = useSessions();
@@ -137,6 +422,59 @@ export const IntegratedSessionRow = ({
   const initial = puzzleToPuzzleText(session.state.initial);
   const final = puzzleToPuzzleText(session.state.final);
   const metadata = session.state.metadata;
+
+  // Extract metadata information
+  const metadataInfo = extractMetadataInfo(metadata);
+
+  // Get difficulty information
+  const difficultyInfo = (() => {
+    // Prefer book puzzle difficulty if available
+    if (bookPuzzle?.puzzle.difficulty.coach) {
+      return getDifficultyDisplay(bookPuzzle.puzzle.difficulty.coach);
+    }
+    // Otherwise use metadata difficulty
+    if (metadataInfo?.difficulty) {
+      return getDifficultyDisplay(metadataInfo.difficulty);
+    }
+    return null;
+  })();
+
+  // Get techniques if from book puzzle
+  const techniques = bookPuzzle
+    ? getTechniquesDisplay(bookPuzzle.puzzle.techniques)
+    : [];
+
+  // Get puzzle title
+  const puzzleTitle = (() => {
+    if (bookPuzzle) {
+      return `Puzzle #${bookPuzzle.index + 1}`;
+    }
+    if (metadataInfo?.type === 'daily' && metadataInfo.date) {
+      return `Daily ${formatDateString(metadataInfo.date)}`;
+    }
+    if (metadataInfo?.type === 'book' && metadataInfo.bookInfo) {
+      const monthNames = [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec',
+      ];
+      const monthName = monthNames[parseInt(metadataInfo.bookInfo.month) - 1];
+      return `Book ${monthName} #${metadataInfo.bookInfo.number}`;
+    }
+    if (metadataInfo?.type === 'scanned') {
+      return 'Scanned Puzzle';
+    }
+    return '';
+  })();
 
   const {
     actualSession,
@@ -268,8 +606,46 @@ export const IntegratedSessionRow = ({
             final={puzzleTextToPuzzle(final)}
             latest={latest}
           />
-          <div className="px-4 py-2 text-center text-gray-900 dark:text-white">
-            <p>{getGameStatusText(session, userSessions)}</p>
+          <div className="space-y-2 px-4 py-2">
+            <div className="text-center text-gray-900 dark:text-white">
+              <h3 className="text-sm font-semibold">{puzzleTitle}</h3>
+              <p className="text-xs opacity-75">
+                {getGameStatusText(session, userSessions)}
+              </p>
+            </div>
+
+            {/* Difficulty Badge */}
+            {difficultyInfo && (
+              <div className="flex justify-center">
+                <span
+                  className={`rounded-full px-2 py-1 text-xs font-medium ${difficultyInfo.badgeColor}`}
+                >
+                  {difficultyInfo.name}
+                </span>
+              </div>
+            )}
+
+            {/* Techniques (show only if from book) */}
+            {techniques.length > 0 && (
+              <div
+                className={`space-y-2 rounded-lg p-3 text-white ${difficultyInfo?.badgeColor.replace('text-white', '') || 'bg-red-500'}`}
+              >
+                <h4 className="text-center text-sm font-semibold">
+                  Recommended Techniques:
+                </h4>
+                <div className="flex flex-wrap justify-start gap-1">
+                  {techniques.map((technique, i) => (
+                    <span
+                      key={i}
+                      className={`rounded px-1.5 py-0.5 text-xs font-medium ${technique.color}`}
+                      title={`${technique.name} (${technique.count})`}
+                    >
+                      {technique.name} ({technique.count})
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </Link>
