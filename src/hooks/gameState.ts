@@ -33,6 +33,8 @@ import {
 } from '@/utils/dailyActionCounter';
 import { SubscriptionContext } from '@/types/subscriptionContext';
 import { useDocumentVisibility } from './documentVisibility';
+import { useSessions } from '@/providers/SessionsProvider/SessionsProvider';
+import { useParties } from './useParties';
 
 function useGameState({
   final,
@@ -75,6 +77,9 @@ function useGameState({
       id: puzzleId,
       type: StateType.PUZZLE,
     });
+  const { parties } = useParties();
+  const { getSessionParties, patchFriendSessions } = useSessions();
+
   const [isNotesMode, setIsNotesMode] = useState<boolean>(false);
   const [showSidebar, setShowSidebar] = useState(false);
   const [isZoomMode, setIsZoomMode] = useState(false);
@@ -86,9 +91,30 @@ function useGameState({
       completed?: GameState['completed'];
     }>({ answerStack: [structuredClone(initial)], isDisabled: true });
   const [redoAnswerStack, setRedoAnswerStack] = useState<Puzzle[]>([]);
-  const [sessionParties, setSessionParties] = useState<
+  const [sessionParties, setSessionPartiesLocal] = useState<
     Parties<Session<ServerState>>
-  >({});
+  >(() => {
+    const initialSessionParties = getSessionParties(
+      parties,
+      `sudoku-${puzzleId}`
+    );
+    console.info('initialSessionParties', initialSessionParties);
+    return initialSessionParties;
+  });
+  const setSessionParties = useCallback(
+    (sessionParties: Parties<Session<ServerState>>) => {
+      setSessionPartiesLocal(sessionParties);
+      const partySessions = Object.values(sessionParties);
+      const userSessions: { [userId: string]: Session<ServerState> } = {};
+      for (const partySession of partySessions) {
+        if (partySession?.memberSessions) {
+          Object.assign(userSessions, partySession.memberSessions);
+        }
+      }
+      patchFriendSessions(`sudoku-${puzzleId}`, userSessions);
+    },
+    [patchFriendSessions, puzzleId]
+  );
   const hasSessionParties = Object.keys(sessionParties).length;
 
   const [selectedCell, setSelectedCellState] = useState<null | string>(null);
@@ -338,6 +364,7 @@ function useGameState({
         completed: localValue.state.completed,
       });
     }
+
     serverValuePromise.then((serverValue) => {
       if (active) {
         if (serverValue?.parties && Object.keys(serverValue?.parties).length) {
@@ -389,7 +416,14 @@ function useGameState({
     return () => {
       active = false;
     };
-  }, [user, puzzleId, getValue, setTimerNewSession, saveValue]);
+  }, [
+    user,
+    puzzleId,
+    getValue,
+    setTimerNewSession,
+    saveValue,
+    setSessionParties,
+  ]);
 
   useEffect(() => {
     let active = true;
@@ -508,6 +542,7 @@ function useGameState({
     completed,
     selectedCell,
     metadata,
+    setSessionParties,
   ]);
 
   // Handle keyboard
@@ -610,7 +645,7 @@ function useGameState({
     if (serverValue?.parties && Object.keys(serverValue?.parties).length) {
       setSessionParties(serverValue.parties);
     }
-  }, [getValue]);
+  }, [getValue, setSessionParties]);
 
   return {
     answer,

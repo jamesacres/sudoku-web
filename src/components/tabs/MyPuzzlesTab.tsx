@@ -1,9 +1,6 @@
 'use client';
-import { useEffect } from 'react';
 import { ServerStateResult } from '@/types/serverTypes';
 import { ServerState } from '@/types/state';
-import { useSessions } from '@/providers/SessionsProvider/SessionsProvider';
-import { useParties } from '@/hooks/useParties';
 import IntegratedSessionRow from '../IntegratedSessionRow';
 
 interface MyPuzzlesTabProps {
@@ -11,15 +8,6 @@ interface MyPuzzlesTabProps {
 }
 
 export const MyPuzzlesTab = ({ sessions }: MyPuzzlesTabProps) => {
-  const { fetchFriendSessions } = useSessions();
-  const { parties } = useParties();
-
-  // Fetch friend sessions when parties are available
-  useEffect(() => {
-    if (parties && parties.length > 0) {
-      fetchFriendSessions(parties);
-    }
-  }, [parties, fetchFriendSessions]);
   // Sort all sessions by most recently played (updatedAt descending)
   const allSessions = sessions?.sort(
     (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()

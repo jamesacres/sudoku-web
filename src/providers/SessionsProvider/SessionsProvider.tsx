@@ -7,11 +7,16 @@ import {
   ReactNode,
   useRef,
 } from 'react';
-import { ServerStateResult, Party } from '@/types/serverTypes';
+import {
+  ServerStateResult,
+  Party,
+  Parties,
+  Session,
+} from '@/types/serverTypes';
 import { ServerState, GameState } from '@/types/state';
 import { StateType } from '@/types/StateType';
 import { Timer } from '@/types/timer';
-import { UserSessions } from '@/types/userSessions';
+import { UserSession, UserSessions } from '@/types/userSessions';
 import { useServerStorage } from '@/hooks/serverStorage';
 import { useLocalStorage } from '@/hooks/localStorage';
 
@@ -26,7 +31,16 @@ interface SessionsContextType {
   friendSessions: UserSessions;
   isFriendSessionsLoading: boolean;
   fetchFriendSessions: (parties: Party[]) => Promise<void>;
+  lazyLoadFriendSessions: (parties: Party[]) => Promise<void>;
   clearFriendSessions: () => void;
+  getSessionParties: (
+    parties: Party[],
+    sessionId: string
+  ) => Parties<Session<ServerState>>;
+  patchFriendSessions: (
+    sessionId: string,
+    userSessions: { [userId: string]: Session<ServerState> }
+  ) => void;
 }
 
 const SessionsContext = createContext<SessionsContextType | null>(null);
@@ -42,6 +56,8 @@ export const SessionsProvider = ({ children }: SessionsProviderProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [friendSessions, setFriendSessions] = useState<UserSessions>({});
   const [isFriendSessionsLoading, setIsFriendSessionsLoading] = useState(false);
+  const [hasFriendSessionsInitialized, setHasFriendSessionsInitialized] =
+    useState(false);
   const friendSessionsRef = useRef<UserSessions>({});
   const { listValues: listServerValues } = useServerStorage();
 
@@ -180,6 +196,10 @@ export const SessionsProvider = ({ children }: SessionsProviderProps) => {
         return;
       }
 
+      if (!hasFriendSessionsInitialized) {
+        setHasFriendSessionsInitialized(true);
+      }
+
       setIsFriendSessionsLoading(true);
 
       try {
@@ -265,12 +285,98 @@ export const SessionsProvider = ({ children }: SessionsProviderProps) => {
         setIsFriendSessionsLoading(false);
       }
     },
-    [listServerValues, isFriendSessionsLoading]
+    [listServerValues, isFriendSessionsLoading, hasFriendSessionsInitialized]
   );
 
   const clearFriendSessions = useCallback(() => {
     setFriendSessions({});
   }, []);
+
+  const lazyLoadFriendSessions = useCallback(
+    async (parties: Party[]) => {
+      if (
+        !hasFriendSessionsInitialized &&
+        !isFriendSessionsLoading &&
+        parties.length > 0
+      ) {
+        console.info('lazyLoadFriendSessions');
+        await fetchFriendSessions(parties);
+      }
+    },
+    [hasFriendSessionsInitialized, isFriendSessionsLoading, fetchFriendSessions]
+  );
+
+  const getSessionParties = useCallback(
+    (parties: Party[], sessionId: string): Parties<Session<ServerState>> => {
+      return parties.reduce((result, party) => {
+        const nextResult: Parties<Session<ServerState>> = {
+          ...result,
+          [party.partyId]: {
+            memberSessions: Object.entries(friendSessions).reduce(
+              (memberSessions, [userId, allUserSessions]) => {
+                const userSession = allUserSessions?.sessions?.find(
+                  (session) => session.sessionId === sessionId
+                );
+                if (userSession) {
+                  const nextMemberSessions: {
+                    [userId: string]: Session<ServerState>;
+                  } = {
+                    ...memberSessions,
+                    [userId]: userSession,
+                  };
+                  return nextMemberSessions;
+                }
+                return memberSessions;
+              },
+              {}
+            ),
+          },
+        };
+        return nextResult;
+      }, {});
+    },
+    [friendSessions]
+  );
+
+  const patchFriendSessions = useCallback(
+    (
+      sessionId: string,
+      userSessions: { [userId: string]: Session<ServerState> }
+    ): void => {
+      console.info('patchFriendSessions', userSessions);
+      if (isFriendSessionsLoading) {
+        return;
+      }
+      setFriendSessions((friendSessions) => {
+        return Object.entries(userSessions).reduce(
+          (result, [userId, newSession]) => {
+            if (
+              friendSessions[userId]?.sessions &&
+              !friendSessions[userId].isLoading
+            ) {
+              const userSession: UserSession = {
+                ...friendSessions[userId],
+                isLoading: friendSessions[userId].isLoading,
+                sessions: [
+                  ...friendSessions[userId].sessions.filter(
+                    (session) => session.sessionId !== sessionId
+                  ),
+                  newSession,
+                ],
+              };
+              return {
+                ...result,
+                [userId]: userSession,
+              };
+            }
+            return result;
+          },
+          {}
+        );
+      });
+    },
+    [isFriendSessionsLoading]
+  );
 
   return (
     <SessionsContext.Provider
@@ -284,7 +390,10 @@ export const SessionsProvider = ({ children }: SessionsProviderProps) => {
         friendSessions,
         isFriendSessionsLoading,
         fetchFriendSessions,
+        lazyLoadFriendSessions,
         clearFriendSessions,
+        getSessionParties,
+        patchFriendSessions,
       }}
     >
       {children}

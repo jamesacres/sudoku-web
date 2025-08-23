@@ -14,15 +14,8 @@ interface FriendsTabProps {
 }
 
 export const FriendsTab = ({ user, parties, mySessions }: FriendsTabProps) => {
-  const { friendSessions, fetchFriendSessions } = useSessions();
+  const { friendSessions } = useSessions();
   const [expandedUsers, setExpandedUsers] = useState<Set<string>>(new Set());
-
-  // Fetch friend sessions when parties are available
-  useEffect(() => {
-    if (parties && parties.length > 0) {
-      fetchFriendSessions(parties);
-    }
-  }, [parties, fetchFriendSessions]);
 
   const toggleUserExpansion = (userId: string) => {
     setExpandedUsers((prev) => {

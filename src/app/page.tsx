@@ -41,12 +41,19 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const { getSudokuOfTheDay } = useServerStorage();
   const { parties } = useParties({});
-  const { sessions, refetchSessions } = useSessions();
+  const { sessions, refetchSessions, lazyLoadFriendSessions } = useSessions();
 
   useEffect(() => {
     // Always refetch sessions when returning to homepage to get latest progress
     refetchSessions();
   }, [refetchSessions]);
+
+  // Lazy load friend sessions when parties are available
+  useEffect(() => {
+    if (parties && parties.length > 0) {
+      lazyLoadFriendSessions(parties);
+    }
+  }, [parties, lazyLoadFriendSessions]);
 
   const friendsList = Array.from(
     new Set(
