@@ -7,7 +7,7 @@ export const DAILY_LIMITS = {
   UNDO: 3,
 
   /** Number of free grid check actions per day */
-  CHECK_GRID: 2,
+  CHECK_GRID: 5,
 
   /** Number of free puzzles per day */
   PUZZLE: 1,
