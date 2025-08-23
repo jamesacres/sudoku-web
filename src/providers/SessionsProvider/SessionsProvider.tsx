@@ -348,31 +348,34 @@ export const SessionsProvider = ({ children }: SessionsProviderProps) => {
         return;
       }
       setFriendSessions((friendSessions) => {
-        return Object.entries(userSessions).reduce(
-          (result, [userId, newSession]) => {
-            if (
-              friendSessions[userId]?.sessions &&
-              !friendSessions[userId].isLoading
-            ) {
-              const userSession: UserSession = {
-                ...friendSessions[userId],
-                isLoading: friendSessions[userId].isLoading,
-                sessions: [
-                  ...friendSessions[userId].sessions.filter(
-                    (session) => session.sessionId !== sessionId
-                  ),
-                  newSession,
-                ],
-              };
-              return {
-                ...result,
-                [userId]: userSession,
-              };
-            }
-            return result;
-          },
-          {}
-        );
+        return {
+          ...friendSessions,
+          ...Object.entries(userSessions).reduce(
+            (result, [userId, newSession]) => {
+              if (
+                friendSessions[userId]?.sessions &&
+                !friendSessions[userId].isLoading
+              ) {
+                const userSession: UserSession = {
+                  ...friendSessions[userId],
+                  isLoading: friendSessions[userId].isLoading,
+                  sessions: [
+                    ...friendSessions[userId].sessions.filter(
+                      (session) => session.sessionId !== sessionId
+                    ),
+                    newSession,
+                  ],
+                };
+                return {
+                  ...result,
+                  [userId]: userSession,
+                };
+              }
+              return result;
+            },
+            {}
+          ),
+        };
       });
     },
     [isFriendSessionsLoading]
