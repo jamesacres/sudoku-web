@@ -7,6 +7,8 @@ import { memo, useMemo } from 'react';
 import { getPlayerColor, getAllUserIds } from '@/utils/playerColors';
 import { TrafficLight } from '@/components/TrafficLight';
 import { formatSeconds } from '@/helpers/formatSeconds';
+import Link from 'next/link';
+import { Tab } from '@/types/tabs';
 
 interface Arguments {
   sessionParties: Parties<Session<ServerState>>;
@@ -126,6 +128,12 @@ const RaceTrack = ({
       .filter((p) => p.percentage === 100 && p.finishTime)
       .sort((a, b) => a.finishTime! - b.finishTime!);
   }, [allPlayerProgress]);
+
+  const currentUserProgress = useMemo(() => {
+    return allPlayerProgress.find((p) => p.isCurrentUser);
+  }, [allPlayerProgress]);
+
+  const isCompleted = currentUserProgress?.percentage === 100;
 
   return (
     <div className="mx-auto mt-2 mb-2 w-full max-w-xl lg:mt-4 lg:mr-0">
@@ -288,13 +296,7 @@ const RaceTrack = ({
                     <span className="mr-2 w-6 text-center font-bold">
                       {index + 1}.
                     </span>
-                    <span
-                      className={
-                        player.isCurrentUser
-                          ? 'font-bold text-red-600 dark:text-red-400'
-                          : ''
-                      }
-                    >
+                    <span className={player.isCurrentUser ? 'font-bold' : ''}>
                       {player.nickname}
                     </span>
                   </div>
@@ -307,6 +309,19 @@ const RaceTrack = ({
           </div>
         )}
       </div>
+      {isCompleted && (
+        <div className="mt-4 text-center">
+          <Link
+            href={`/?tab=${Tab.FRIENDS}`}
+            className="bg-theme-primary hover:bg-theme-primary-dark inline-flex items-center rounded-full px-6 py-3 text-base font-bold text-white shadow-md transition-transform hover:scale-105"
+          >
+            <span className="mr-2 text-xl" role="img" aria-label="trophy">
+              🏆
+            </span>
+            View Monthly Leaderboard
+          </Link>
+        </div>
+      )}
     </div>
   );
 };

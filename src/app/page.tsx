@@ -12,7 +12,7 @@ import { useParties } from '@/hooks/useParties';
 import { Difficulty } from '@/types/serverTypes';
 import { Tab } from '@/types/tabs';
 import { SubscriptionContext } from '@/types/subscriptionContext';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import {
   Users,
@@ -33,7 +33,8 @@ import { BookCover } from '@/components/BookCovers';
 import { buildPuzzleUrl } from '@/helpers/buildPuzzleUrl';
 
 export default function Home() {
-  const [tab, setTab] = useState(Tab.START_PUZZLE);
+  const searchParams = useSearchParams();
+  const [tab, setTab] = useState(searchParams.get('tab') || Tab.START_PUZZLE);
   const router = useRouter();
   const { user, loginRedirect } = useContext(UserContext) || {};
   const { isSubscribed, subscribeModal } = useContext(RevenueCatContext) || {};
