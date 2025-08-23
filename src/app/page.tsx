@@ -288,6 +288,14 @@ export default function Home() {
                         </>
                       )}
                     </div>
+                    <div className="mt-4">
+                      <div
+                        className="inline-flex cursor-pointer items-center justify-center rounded-full bg-white/20 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/30"
+                        onClick={() => handleTabChange(Tab.FRIENDS)}
+                      >
+                        View leaderboard
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
