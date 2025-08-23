@@ -10,6 +10,8 @@ import { formatSeconds } from '@/helpers/formatSeconds';
 import Link from 'next/link';
 import { Tab } from '@/types/tabs';
 import { RefreshCw } from 'react-feather';
+import { Puzzle } from '@/types/puzzle';
+import { isPuzzleCheated } from '@/helpers/cheatDetection';
 
 interface Arguments {
   sessionParties: Parties<Session<ServerState>>;
@@ -22,6 +24,7 @@ interface Arguments {
   completed?: GameState['completed'];
   refreshSessionParties: () => void;
   isPolling: boolean;
+  answerStack: Puzzle[];
 }
 
 interface PlayerProgress {
@@ -30,6 +33,7 @@ interface PlayerProgress {
   percentage: number;
   isCurrentUser: boolean;
   finishTime?: number;
+  isPuzzleCheated: boolean;
 }
 
 const RaceTrack = ({
@@ -43,6 +47,7 @@ const RaceTrack = ({
   completed,
   refreshSessionParties,
   isPolling,
+  answerStack,
 }: Arguments) => {
   const { getNicknameByUserId, parties, refreshParties } = useParties();
 
@@ -69,6 +74,8 @@ const RaceTrack = ({
         percentage: currentUserPercentage,
         isCurrentUser: true,
         finishTime,
+        isPuzzleCheated:
+          currentUserPercentage === 100 && isPuzzleCheated(answerStack),
       };
     }
 
@@ -107,6 +114,10 @@ const RaceTrack = ({
               percentage,
               isCurrentUser: false,
               finishTime,
+              isPuzzleCheated:
+                percentage === 100 &&
+                !!session &&
+                isPuzzleCheated(session.state.answerStack),
             };
           }
         });
@@ -126,11 +137,12 @@ const RaceTrack = ({
     getNicknameByUserId,
     refreshParties,
     completed,
+    answerStack,
   ]);
 
   const finishedPlayers = useMemo(() => {
     return allPlayerProgress
-      .filter((p) => p.percentage === 100 && p.finishTime)
+      .filter((p) => !p.isPuzzleCheated && p.percentage === 100 && p.finishTime)
       .sort((a, b) => a.finishTime! - b.finishTime!);
   }, [allPlayerProgress]);
 
@@ -138,7 +150,8 @@ const RaceTrack = ({
     return allPlayerProgress.find((p) => p.isCurrentUser);
   }, [allPlayerProgress]);
 
-  const isCompleted = currentUserProgress?.percentage === 100;
+  const isCompleted =
+    currentUserProgress?.percentage === 100 && !isPuzzleCheated(answerStack);
 
   return (
     <div className="mx-auto mt-2 mb-2 w-full max-w-xl lg:mt-4 lg:mr-0">
@@ -330,7 +343,7 @@ const RaceTrack = ({
             onClick={refreshSessionParties}
             disabled={isPolling}
             title="Refresh scores"
-            className="inline-flex items-center rounded-full bg-gray-200 p-3 font-bold text-gray-700 shadow-md transition-transform hover:scale-105 hover:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex cursor-pointer items-center rounded-full bg-gray-200 p-3 font-bold text-gray-700 shadow-md transition-transform hover:scale-105 hover:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <RefreshCw
               className={`h-5 w-5 ${isPolling ? 'animate-spin' : ''}`}

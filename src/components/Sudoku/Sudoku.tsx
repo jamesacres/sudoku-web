@@ -290,6 +290,7 @@ const Sudoku = ({
                   completed={completed}
                   isPolling={isPolling}
                   refreshSessionParties={refreshSessionParties}
+                  answerStack={answerStack}
                 />
               )}
             </div>
