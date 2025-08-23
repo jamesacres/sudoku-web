@@ -24,6 +24,7 @@ import { SubscriptionContext } from '@/types/subscriptionContext';
 import { DAILY_LIMITS } from '@/config/dailyLimits';
 import { GameStateMetadata } from '@/types/state';
 import { puzzleToPuzzleText } from '@/helpers/puzzleTextToPuzzle';
+import { isPuzzleCheated } from '@/helpers/cheatDetection';
 
 const Sudoku = ({
   puzzle: { initial, final, puzzleId, redirectUri, metadata },
@@ -44,6 +45,7 @@ const Sudoku = ({
 
   const {
     answer,
+    answerStack,
     selectedCell,
     setIsNotesMode,
     isNotesMode,
@@ -102,7 +104,7 @@ const Sudoku = ({
 
   // Show animation when the puzzle is completed
   useEffect(() => {
-    if (completed && !alreadyCompleted) {
+    if (completed && !alreadyCompleted && !isPuzzleCheated(answerStack)) {
       setShowAnimation(true);
 
       // Reset animation after it completes - extended to 10 seconds to match the animation duration
@@ -112,7 +114,7 @@ const Sudoku = ({
 
       return () => clearTimeout(timer);
     }
-  }, [completed, alreadyCompleted]);
+  }, [completed, alreadyCompleted, answerStack]);
 
   // Add puzzle ID to daily tracking when puzzle is completed
   useEffect(() => {

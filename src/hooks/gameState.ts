@@ -649,6 +649,7 @@ function useGameState({
 
   return {
     answer,
+    answerStack,
     selectedCell,
     setIsNotesMode,
     isNotesMode,
