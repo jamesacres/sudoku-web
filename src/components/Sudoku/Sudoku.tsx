@@ -286,6 +286,7 @@ const Sudoku = ({
                   userId={user?.sub}
                   onClick={raceTrackOnClick}
                   countdown={timer?.countdown}
+                  completed={completed}
                 />
               )}
             </div>
