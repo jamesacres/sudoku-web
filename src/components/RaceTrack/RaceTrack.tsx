@@ -339,16 +339,18 @@ const RaceTrack = ({
             </span>
             View Monthly Leaderboard
           </Link>
-          <button
-            onClick={refreshSessionParties}
-            disabled={isPolling}
-            title="Refresh scores"
-            className="inline-flex cursor-pointer items-center rounded-full bg-gray-200 p-3 font-bold text-gray-700 shadow-md transition-transform hover:scale-105 hover:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            <RefreshCw
-              className={`h-5 w-5 ${isPolling ? 'animate-spin' : ''}`}
-            />
-          </button>
+          {finishedPlayers.length !== allPlayerProgress.length && (
+            <button
+              onClick={refreshSessionParties}
+              disabled={isPolling}
+              title="Refresh scores"
+              className="inline-flex cursor-pointer items-center rounded-full bg-gray-200 p-3 font-bold text-gray-700 shadow-md transition-transform hover:scale-105 hover:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <RefreshCw
+                className={`h-5 w-5 ${isPolling ? 'animate-spin' : ''}`}
+              />
+            </button>
+          )}
         </div>
       )}
     </div>
