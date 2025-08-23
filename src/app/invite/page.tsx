@@ -38,9 +38,10 @@ function InviteComponent() {
     (redirectUri: string | undefined) => {
       const uri =
         redirectUri &&
-        new RegExp('^/puzzle\\?initial=[1-9.]+&final=[1-9]+$').test(redirectUri)
+        new RegExp('^/puzzle\\?initial=[1-9.]+&final=[1-9]+').test(redirectUri)
           ? redirectUri
           : '/';
+      console.info('redirect', uri);
       router.replace(uri);
     },
     [router]
@@ -60,6 +61,7 @@ function InviteComponent() {
       const partyId = publicInvite.resourceId.replace('party-', '');
       if (isAlreadyAMember(partyId)) {
         // They're a member! redirect to the game
+        console.info('already a member, redirect', publicInvite);
         redirect(publicInvite?.redirectUri);
         return true;
       }
@@ -83,9 +85,10 @@ function InviteComponent() {
           if (!checkIfMemberAndRedirect(publicInvite)) {
             // Otherwise, show invite page
             setPublicInvite(publicInvite);
+            setInviteLoading(false);
           }
         }
-        if (active) {
+        if (active && !publicInvite) {
           setInviteLoading(false);
         }
       };
