@@ -72,6 +72,7 @@ const Sudoku = ({
     setShowSidebar,
     isZoomMode,
     setIsZoomMode,
+    isPolling,
   } = useGameState({
     final,
     initial,
@@ -287,6 +288,8 @@ const Sudoku = ({
                   onClick={raceTrackOnClick}
                   countdown={timer?.countdown}
                   completed={completed}
+                  isPolling={isPolling}
+                  refreshSessionParties={refreshSessionParties}
                 />
               )}
             </div>

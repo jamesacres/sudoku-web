@@ -639,11 +639,17 @@ function useGameState({
     showSidebar,
   ]);
 
+  const [isPolling, setIsPolling] = useState(false);
   const refreshSessionParties = useCallback(async () => {
-    const { serverValuePromise } = getValue() || {};
-    const serverValue = await serverValuePromise;
-    if (serverValue?.parties && Object.keys(serverValue?.parties).length) {
-      setSessionParties(serverValue.parties);
+    setIsPolling(true);
+    try {
+      const { serverValuePromise } = getValue() || {};
+      const serverValue = await serverValuePromise;
+      if (serverValue?.parties && Object.keys(serverValue?.parties).length) {
+        setSessionParties(serverValue.parties);
+      }
+    } finally {
+      setIsPolling(false);
     }
   }, [getValue, setSessionParties]);
 
@@ -671,6 +677,7 @@ function useGameState({
     setPauseTimer,
     setTimerNewSession,
     refreshSessionParties,
+    isPolling,
     sessionParties,
     showSidebar,
     setShowSidebar,

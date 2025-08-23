@@ -9,6 +9,7 @@ import { TrafficLight } from '@/components/TrafficLight';
 import { formatSeconds } from '@/helpers/formatSeconds';
 import Link from 'next/link';
 import { Tab } from '@/types/tabs';
+import { RefreshCw } from 'react-feather';
 
 interface Arguments {
   sessionParties: Parties<Session<ServerState>>;
@@ -19,6 +20,8 @@ interface Arguments {
   onClick?: () => void;
   countdown?: number;
   completed?: GameState['completed'];
+  refreshSessionParties: () => void;
+  isPolling: boolean;
 }
 
 interface PlayerProgress {
@@ -38,6 +41,8 @@ const RaceTrack = ({
   onClick,
   countdown,
   completed,
+  refreshSessionParties,
+  isPolling,
 }: Arguments) => {
   const { getNicknameByUserId, parties, refreshParties } = useParties();
 
@@ -309,8 +314,9 @@ const RaceTrack = ({
           </div>
         )}
       </div>
+
       {isCompleted && (
-        <div className="mt-4 text-center">
+        <div className="mt-4 mb-8 flex items-center justify-between">
           <Link
             href={`/?tab=${Tab.FRIENDS}`}
             className="bg-theme-primary hover:bg-theme-primary-dark inline-flex items-center rounded-full px-6 py-3 text-base font-bold text-white shadow-md transition-transform hover:scale-105"
@@ -320,6 +326,16 @@ const RaceTrack = ({
             </span>
             View Monthly Leaderboard
           </Link>
+          <button
+            onClick={refreshSessionParties}
+            disabled={isPolling}
+            title="Refresh scores"
+            className="inline-flex items-center rounded-full bg-gray-200 p-3 font-bold text-gray-700 shadow-md transition-transform hover:scale-105 hover:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <RefreshCw
+              className={`h-5 w-5 ${isPolling ? 'animate-spin' : ''}`}
+            />
+          </button>
         </div>
       )}
     </div>
