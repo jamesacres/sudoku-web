@@ -32,7 +32,7 @@ import Image from 'next/image';
 import { BookCover } from '@/components/BookCovers';
 import { buildPuzzleUrl } from '@/helpers/buildPuzzleUrl';
 
-export default function Home() {
+function HomeComponent() {
   const searchParams = useSearchParams();
   const [tab, setTab] = useState(searchParams.get('tab') || Tab.START_PUZZLE);
   const router = useRouter();
@@ -201,7 +201,7 @@ export default function Home() {
   const dailyStreak = calculateDailyStreak();
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <>
       {tab === Tab.START_PUZZLE ? (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
           {/* Racing Hero Section */}
@@ -567,6 +567,14 @@ export default function Home() {
           <span className="text-center text-xs font-medium">Racing Teams</span>
         </button>
       </Footer>
+    </>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense>
+      <HomeComponent />
     </Suspense>
   );
 }
