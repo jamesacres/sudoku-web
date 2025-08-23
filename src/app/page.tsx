@@ -13,7 +13,7 @@ import { Difficulty } from '@/types/serverTypes';
 import { Tab } from '@/types/tabs';
 import { SubscriptionContext } from '@/types/subscriptionContext';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { Suspense, useCallback, useContext, useEffect, useState } from 'react';
 import {
   Users,
   Calendar,
@@ -201,7 +201,7 @@ export default function Home() {
   const dailyStreak = calculateDailyStreak();
 
   return (
-    <>
+    <Suspense fallback={<div>Loading...</div>}>
       {tab === Tab.START_PUZZLE ? (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
           {/* Racing Hero Section */}
@@ -567,6 +567,6 @@ export default function Home() {
           <span className="text-center text-xs font-medium">Racing Teams</span>
         </button>
       </Footer>
-    </>
+    </Suspense>
   );
 }
