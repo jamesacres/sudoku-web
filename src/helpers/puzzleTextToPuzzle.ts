@@ -1,3 +1,4 @@
+import { Notes } from '@/types/notes';
 import { Puzzle, PuzzleRowOrColumn } from '@/types/puzzle';
 
 export const puzzleTextToPuzzle = (puzzleText: string): Puzzle<number> => {
@@ -30,7 +31,7 @@ const puzzle: Puzzle<number> = [[[[0,0,0],[0,0,0],[0,0,0]],[[0,0,0],[0,0,0],[0,0
   return puzzle;
 };
 
-export const puzzleToPuzzleText = (puzzle: Puzzle<number>): string => {
+export const puzzleToPuzzleText = (puzzle: Puzzle<number | Notes>): string => {
   let puzzleText = '';
   Array.from(Array(3)).map((_, a) => {
     Array.from(Array(3)).map((_, b) => {
@@ -40,7 +41,7 @@ export const puzzleToPuzzleText = (puzzle: Puzzle<number>): string => {
             puzzle[c as PuzzleRowOrColumn][a as PuzzleRowOrColumn][
               d as PuzzleRowOrColumn
             ][b as PuzzleRowOrColumn];
-          puzzleText = `${puzzleText}${number || '.'}`;
+          puzzleText = `${puzzleText}${(typeof number === 'number' && number) || '.'}`;
         });
       });
     });

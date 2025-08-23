@@ -23,6 +23,7 @@ import { useRouter } from 'next/navigation';
 import { SubscriptionContext } from '@/types/subscriptionContext';
 import { DAILY_LIMITS } from '@/config/dailyLimits';
 import { GameStateMetadata } from '@/types/state';
+import { puzzleToPuzzleText } from '@/helpers/puzzleTextToPuzzle';
 
 const Sudoku = ({
   puzzle: { initial, final, puzzleId, redirectUri, metadata },
@@ -89,6 +90,15 @@ const Sudoku = ({
   // State to track if animation should be shown
   const [showAnimation, setShowAnimation] = useState(false);
   const [showAdvancedControls, setShowAdvancedControls] = useState(false);
+
+  const copyGrid = useCallback(() => {
+    // Copy to clipboard
+    navigator.clipboard
+      .writeText(puzzleToPuzzleText(answer).replaceAll('.', '0'))
+      .catch((err) => {
+        console.error('Failed to copy grid:', err);
+      });
+  }, [answer]);
 
   // Show animation when the puzzle is completed
   useEffect(() => {
@@ -310,6 +320,7 @@ const Sudoku = ({
                 setIsZoomMode={setIsZoomMode}
                 reset={reset}
                 reveal={reveal}
+                copyGrid={copyGrid}
                 onAdvancedToggle={setShowAdvancedControls}
                 isSubscribed={isSubscribed}
               />

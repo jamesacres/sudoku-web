@@ -1,6 +1,7 @@
 import {
   ChevronDown,
   ChevronUp,
+  Copy,
   CornerUpLeft,
   CornerUpRight,
   Delete,
@@ -37,6 +38,7 @@ interface Arguments {
   setIsZoomMode: (_value: boolean) => void;
   reset: () => void;
   reveal: () => void;
+  copyGrid: () => void;
   onAdvancedToggle?: (_expanded: boolean) => void;
   isSubscribed?: boolean;
 }
@@ -58,11 +60,13 @@ const SudokuControls = ({
   setIsZoomMode,
   reset,
   reveal,
+  copyGrid,
   onAdvancedToggle,
   isSubscribed,
 }: Arguments) => {
   const [showAdvanced, setShowAdvanced] = useState(true);
   const [isDragging, setIsDragging] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
   const dragStartY = useRef(0);
   const dragRef = useRef<HTMLDivElement>(null);
 
@@ -101,6 +105,12 @@ const SudokuControls = ({
   const handleDragEnd = useCallback(() => {
     setIsDragging(false);
   }, []);
+
+  const handleCopyGrid = useCallback(() => {
+    copyGrid();
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 2000);
+  }, [copyGrid]);
 
   useEffect(() => {
     setTimeout(() => setShowAdvanced(false), 1000);
@@ -204,13 +214,23 @@ const SudokuControls = ({
         </div>
 
         {/* Toggle controls section */}
-        <div className="mb-0 flex justify-center gap-4 border-b border-gray-200 pb-3 lg:mb-3 dark:border-gray-600">
+        <div className="mb-0 flex items-center justify-between border-b border-gray-200 pb-3 lg:mb-3 dark:border-gray-600">
+          <div className="flex-1"></div>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1 text-xs font-medium text-gray-700 dark:text-gray-300">
               {isNotesMode ? <Edit size={14} /> : <Edit2 size={14} />}
               Notes
             </div>
             <Toggle isEnabled={isNotesMode} setEnabled={setIsNotesMode} />
+          </div>
+          <div className="flex flex-1 justify-end">
+            <button
+              onClick={handleCopyGrid}
+              className="flex cursor-pointer items-center gap-1 rounded-md bg-gray-100 px-1.5 py-1 text-xs font-medium text-gray-700 transition-all duration-150 hover:bg-gray-200 active:bg-gray-300 dark:bg-zinc-700 dark:text-gray-200 dark:hover:bg-zinc-600 dark:active:bg-zinc-500"
+            >
+              <Copy size={10} />
+              {isCopied ? 'Copied!' : 'Export'}
+            </button>
           </div>
         </div>
 
