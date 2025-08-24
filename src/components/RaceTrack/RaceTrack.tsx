@@ -1,11 +1,17 @@
 'use client';
 import { Parties, Session } from '@/types/serverTypes';
-import { ServerState } from '@/types/state';
+import { GameState, ServerState } from '@/types/state';
 import { calculateCompletionPercentage } from '@/helpers/calculateCompletionPercentage';
 import { useParties } from '@/hooks/useParties';
 import { memo, useMemo } from 'react';
 import { getPlayerColor, getAllUserIds } from '@/utils/playerColors';
 import { TrafficLight } from '@/components/TrafficLight';
+import { formatSeconds } from '@/helpers/formatSeconds';
+import Link from 'next/link';
+import { Tab } from '@/types/tabs';
+import { RefreshCw } from 'react-feather';
+import { Puzzle } from '@/types/puzzle';
+import { isPuzzleCheated } from '@/helpers/cheatDetection';
 
 interface Arguments {
   sessionParties: Parties<Session<ServerState>>;
@@ -15,6 +21,10 @@ interface Arguments {
   userId?: string;
   onClick?: () => void;
   countdown?: number;
+  completed?: GameState['completed'];
+  refreshSessionParties: () => void;
+  isPolling: boolean;
+  answerStack: Puzzle[];
 }
 
 interface PlayerProgress {
@@ -22,6 +32,8 @@ interface PlayerProgress {
   nickname: string;
   percentage: number;
   isCurrentUser: boolean;
+  finishTime?: number;
+  isPuzzleCheated: boolean;
 }
 
 const RaceTrack = ({
@@ -32,6 +44,10 @@ const RaceTrack = ({
   userId,
   onClick,
   countdown,
+  completed,
+  refreshSessionParties,
+  isPolling,
+  answerStack,
 }: Arguments) => {
   const { getNicknameByUserId, parties, refreshParties } = useParties();
 
@@ -50,11 +66,16 @@ const RaceTrack = ({
         answer
       );
 
+      const finishTime: number | undefined = completed?.seconds;
+
       progressMap[userId] = {
         userId,
         nickname: 'You',
         percentage: currentUserPercentage,
         isCurrentUser: true,
+        finishTime,
+        isPuzzleCheated:
+          currentUserPercentage === 100 && isPuzzleCheated(answerStack),
       };
     }
 
@@ -76,6 +97,11 @@ const RaceTrack = ({
               )
             : 0;
 
+          let finishTime: number | undefined = undefined;
+          if (session?.state.completed) {
+            finishTime = session.state.completed.seconds;
+          }
+
           // Get the user's nickname from parties data, fallback to a default
           const nickname = getNicknameByUserId(memberId) || ``;
           if (!nickname) {
@@ -87,6 +113,11 @@ const RaceTrack = ({
               nickname,
               percentage,
               isCurrentUser: false,
+              finishTime,
+              isPuzzleCheated:
+                percentage === 100 &&
+                !!session &&
+                isPuzzleCheated(session.state.answerStack),
             };
           }
         });
@@ -105,7 +136,22 @@ const RaceTrack = ({
     userId,
     getNicknameByUserId,
     refreshParties,
+    completed,
+    answerStack,
   ]);
+
+  const finishedPlayers = useMemo(() => {
+    return allPlayerProgress
+      .filter((p) => !p.isPuzzleCheated && p.percentage === 100 && p.finishTime)
+      .sort((a, b) => a.finishTime! - b.finishTime!);
+  }, [allPlayerProgress]);
+
+  const currentUserProgress = useMemo(() => {
+    return allPlayerProgress.find((p) => p.isCurrentUser);
+  }, [allPlayerProgress]);
+
+  const isCompleted =
+    currentUserProgress?.percentage === 100 && !isPuzzleCheated(answerStack);
 
   return (
     <div className="mx-auto mt-2 mb-2 w-full max-w-xl lg:mt-4 lg:mr-0">
@@ -187,7 +233,10 @@ const RaceTrack = ({
                 key={player.userId}
                 className="absolute transform transition-all duration-700 ease-out"
                 style={{
-                  left: `${Math.min(Math.max(player.percentage * 0.83 + 12, 12), 95)}%`, // Scale 0-100% to 12-95% of track
+                  left: `${Math.min(
+                    Math.max(player.percentage * 0.83 + 12, 12),
+                    95
+                  )}%`, // Scale 0-100% to 12-95% of track
                   top: `${verticalOffset}px`,
                   transform: 'translateX(-50%)',
                 }}
@@ -235,7 +284,11 @@ const RaceTrack = ({
                 <div className={`h-2 w-2 rounded-full ${colorClass}`}></div>
                 {/* Player name with percentage */}
                 <span
-                  className={`font-medium ${player.isCurrentUser ? 'text-red-600 dark:text-red-400' : 'text-gray-700 dark:text-gray-300'}`}
+                  className={`font-medium ${
+                    player.isCurrentUser
+                      ? 'text-red-600 dark:text-red-400'
+                      : 'text-gray-700 dark:text-gray-300'
+                  }`}
                 >
                   {player.nickname}
                   {player.isCurrentUser && ' 👑'}
@@ -247,7 +300,59 @@ const RaceTrack = ({
             );
           })}
         </div>
+
+        {/* Leaderboard for finished players */}
+        {finishedPlayers.length > 0 && (
+          <div className="mt-4">
+            <div className="mt-2 rounded-lg bg-stone-100 p-2 dark:bg-gray-800">
+              {finishedPlayers.map((player, index) => (
+                <div
+                  key={player.userId}
+                  className="flex items-center justify-between p-1"
+                >
+                  <div className="flex items-center">
+                    <span className="mr-2 w-6 text-center font-bold">
+                      {index + 1}.
+                    </span>
+                    <span className={player.isCurrentUser ? 'font-bold' : ''}>
+                      {player.nickname}
+                    </span>
+                  </div>
+                  <span className="font-mono">
+                    {formatSeconds(player.finishTime!)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
+
+      {isCompleted && (
+        <div className="mt-4 mb-8 flex items-center justify-between">
+          <Link
+            href={`/?tab=${Tab.FRIENDS}`}
+            className="bg-theme-primary hover:bg-theme-primary-dark inline-flex items-center rounded-full px-6 py-3 text-base font-bold text-white shadow-md transition-transform hover:scale-105"
+          >
+            <span className="mr-2 text-xl" role="img" aria-label="trophy">
+              🏆
+            </span>
+            View Monthly Leaderboard
+          </Link>
+          {finishedPlayers.length !== allPlayerProgress.length && (
+            <button
+              onClick={refreshSessionParties}
+              disabled={isPolling}
+              title="Refresh scores"
+              className="inline-flex cursor-pointer items-center rounded-full bg-gray-200 p-3 font-bold text-gray-700 shadow-md transition-transform hover:scale-105 hover:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <RefreshCw
+                className={`h-5 w-5 ${isPolling ? 'animate-spin' : ''}`}
+              />
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 };

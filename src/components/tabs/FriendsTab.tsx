@@ -1,11 +1,12 @@
 'use client';
-import { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { ServerStateResult, Party } from '@/types/serverTypes';
 import { ServerState } from '@/types/state';
 import { UserProfile } from '@/types/userProfile';
 import { Loader, ChevronDown, ChevronRight } from 'react-feather';
 import { useSessions } from '@/providers/SessionsProvider/SessionsProvider';
 import IntegratedSessionRow from '../IntegratedSessionRow';
+import Leaderboard from '../leaderboard/Leaderboard';
 
 interface FriendsTabProps {
   user: UserProfile | undefined;
@@ -14,7 +15,7 @@ interface FriendsTabProps {
 }
 
 export const FriendsTab = ({ user, parties, mySessions }: FriendsTabProps) => {
-  const { friendSessions } = useSessions();
+  const { sessions, friendSessions } = useSessions();
   const [expandedUsers, setExpandedUsers] = useState<Set<string>>(new Set());
 
   const toggleUserExpansion = (userId: string) => {
@@ -28,6 +29,7 @@ export const FriendsTab = ({ user, parties, mySessions }: FriendsTabProps) => {
       return newSet;
     });
   };
+
   return (
     <div className="mb-4">
       <h1 className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-4xl font-bold text-transparent">
@@ -37,12 +39,29 @@ export const FriendsTab = ({ user, parties, mySessions }: FriendsTabProps) => {
         💡 Send your friends an invite link from the Races sidebar when solving
         a puzzle.
       </p>
+
+      {/* Leaderboard Section */}
+      {user && parties && (
+        <Leaderboard
+          sessions={sessions}
+          friendSessions={friendSessions}
+          parties={parties}
+          user={user}
+        />
+      )}
+
+      {/* Individual Friends Puzzles Section */}
       {parties?.length !== 0 && (
         <>
-          <p className="mb-4">
-            Select a friend below to see and solve their recent puzzles. Race to
-            be the quickest!
-          </p>
+          <div className="mt-6 border-t border-gray-200 pt-6 dark:border-gray-700">
+            <h2 className="mb-4 text-xl font-bold text-gray-800 dark:text-gray-200">
+              Browse Friends&apos; Puzzles
+            </h2>
+            <p className="mb-4 text-gray-600 dark:text-gray-400">
+              Select a friend below to see and solve their recent puzzles. Race
+              to be the quickest!
+            </p>
+          </div>
         </>
       )}
 

@@ -17,6 +17,34 @@ import Link from 'next/link';
 import { UserSession, UserSessions } from '@/types/userSessions';
 import { buildPuzzleUrl } from '@/helpers/buildPuzzleUrl';
 import { SudokuBookPuzzle } from '@/types/serverTypes';
+import { isPuzzleCheated } from '@/helpers/cheatDetection';
+
+// Function to get game status text
+const getGameStatusText = (
+  session: ServerStateResult<ServerState>,
+  _userSessions?: ServerStateResult<ServerState>[]
+): string => {
+  const { state } = session;
+
+  if (state.completed) {
+    if (isPuzzleCheated(state)) {
+      return 'Cheated';
+    }
+    const seconds = state.completed.seconds;
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `Completed in ${minutes}m ${remainingSeconds}s`;
+  }
+
+  // Calculate completion percentage for incomplete puzzles
+  const latest = state.answerStack[state.answerStack.length - 1];
+  const percentage = calculateCompletionPercentage(
+    state.initial,
+    state.final,
+    latest
+  );
+  return `${percentage}% complete`;
+};
 
 // Helper function to format date from YYYYMMDD to "Mon DD"
 const formatDateString = (dateString: string) => {
@@ -336,23 +364,6 @@ const useUserSessionData = (
     percentage,
     isCompleted: !!actualSession?.state.completed,
   };
-};
-
-// Helper to get game status text
-const getGameStatusText = (
-  session: ServerStateResult<ServerState>,
-  userSessions?: ServerStateResult<ServerState>[]
-) => {
-  const userSession = userSessions?.find(
-    (s) => s.sessionId === session.sessionId
-  );
-  const gameSession = userSession || (!userSessions ? session : null);
-
-  if (!gameSession || (gameSession.state.answerStack.length || 0) <= 1) {
-    return 'Start Puzzle';
-  }
-
-  return gameSession.state.completed ? 'You Completed!' : 'Continue Puzzle';
 };
 
 // Helper to process friend sessions

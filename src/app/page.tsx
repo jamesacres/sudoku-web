@@ -12,8 +12,8 @@ import { useParties } from '@/hooks/useParties';
 import { Difficulty } from '@/types/serverTypes';
 import { Tab } from '@/types/tabs';
 import { SubscriptionContext } from '@/types/subscriptionContext';
-import { useRouter } from 'next/navigation';
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense, useCallback, useContext, useEffect, useState } from 'react';
 import {
   Users,
   Calendar,
@@ -32,8 +32,9 @@ import Image from 'next/image';
 import { BookCover } from '@/components/BookCovers';
 import { buildPuzzleUrl } from '@/helpers/buildPuzzleUrl';
 
-export default function Home() {
-  const [tab, setTab] = useState(Tab.START_PUZZLE);
+function HomeComponent() {
+  const searchParams = useSearchParams();
+  const [tab, setTab] = useState(searchParams.get('tab') || Tab.START_PUZZLE);
   const router = useRouter();
   const { user, loginRedirect } = useContext(UserContext) || {};
   const { isSubscribed, subscribeModal } = useContext(RevenueCatContext) || {};
@@ -287,6 +288,14 @@ export default function Home() {
                               : '100 days'}
                         </>
                       )}
+                    </div>
+                    <div className="mt-4">
+                      <div
+                        className="inline-flex cursor-pointer items-center justify-center rounded-full bg-white/20 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/30"
+                        onClick={() => handleTabChange(Tab.FRIENDS)}
+                      >
+                        View leaderboard
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -559,5 +568,13 @@ export default function Home() {
         </button>
       </Footer>
     </>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense>
+      <HomeComponent />
+    </Suspense>
   );
 }
