@@ -23,6 +23,7 @@ export function useParties({
     partyName,
     setPartyName,
     saveParty,
+    updateParty,
     getNicknameByUserId,
     refreshParties: contextRefreshParties,
     lazyLoadParties,
@@ -57,6 +58,7 @@ export function useParties({
 
     // Actions
     saveParty,
+    updateParty,
     refreshParties,
     getNicknameByUserId,
     leaveParty,

@@ -99,4 +99,14 @@ export const SUBSCRIPTION_CONTEXT_MESSAGES: Record<
       </>
     ),
   },
+  [SubscriptionContext.PARTY_MAX_SIZE]: {
+    bgColor: 'bg-purple-50 dark:bg-purple-900/20',
+    textColor: 'text-purple-800 dark:text-purple-200',
+    content: (
+      <>
+        👥 <strong>Large parties is a premium feature!</strong> Subscribe to
+        unlock advanced party management features including large parties.
+      </>
+    ),
+  },
 };

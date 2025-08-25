@@ -523,6 +523,33 @@ function useServerStorage({
     [fetch, isLoggedIn, isOnline]
   );
 
+  const updateParty = useCallback(
+    async (
+      partyId: string,
+      updates: { maxSize?: number }
+    ): Promise<boolean> => {
+      if (isOnline && isLoggedIn()) {
+        try {
+          console.info('updating party', { partyId, updates });
+          const response = await fetch(
+            new Request(`${apiUrl}/parties/${partyId}?app=${app}`, {
+              method: 'PATCH',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(updates),
+            })
+          );
+          return response.ok;
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      return false;
+    },
+    [fetch, isLoggedIn, isOnline]
+  );
+
   const deleteAccount = useCallback(async (): Promise<boolean> => {
     if (isOnline && isLoggedIn() && user) {
       try {
@@ -550,6 +577,7 @@ function useServerStorage({
     saveValue,
     listParties,
     createParty,
+    updateParty,
     createInvite,
     getPublicInvite,
     createMember,

@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useMemo } from 'react';
-import { Award, ChevronDown, ChevronRight } from 'react-feather';
+import { Award } from 'react-feather';
 import { ServerStateResult, Party } from '@/types/serverTypes';
 import { ServerState } from '@/types/state';
 import { UserProfile } from '@/types/userProfile';

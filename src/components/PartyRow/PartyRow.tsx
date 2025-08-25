@@ -11,10 +11,10 @@ import { useContext, useState } from 'react';
 import { UserContext } from '@/providers/UserProvider';
 import { RevenueCatContext } from '@/providers/RevenueCatProvider';
 import { PartyConfirmationDialog } from '../PartyConfirmationDialog/PartyConfirmationDialog';
-import { LogOut, Trash, UserMinus } from 'react-feather';
+import { LogOut, Trash, UserMinus, Edit3, Users } from 'react-feather';
 import { SubscriptionContext } from '@/types/subscriptionContext';
 const PartyRow = ({
-  party: { partyName, isOwner, members, partyId },
+  party: { partyName, isOwner, members, partyId, maxSize },
   puzzleId,
   redirectUri,
   sessionParty,
@@ -24,7 +24,8 @@ const PartyRow = ({
   redirectUri: string;
   sessionParty?: SessionParty<Session<ServerState>>;
 }) => {
-  const { parties, leaveParty, removeMember, deleteParty } = useParties();
+  const { parties, leaveParty, removeMember, deleteParty, updateParty } =
+    useParties();
   const { user } = useContext(UserContext) || {};
   const { isSubscribed, subscribeModal } = useContext(RevenueCatContext) || {};
   const [confirmDialog, setConfirmDialog] = useState<{
@@ -33,6 +34,9 @@ const PartyRow = ({
     memberName?: string;
     userId?: string;
   }>({ isOpen: false, type: 'leave' });
+
+  const [isEditingMaxSize, setIsEditingMaxSize] = useState(false);
+  const [editMaxSize, setEditMaxSize] = useState(maxSize || 5);
 
   // Get consistent ordering of all user IDs for color assignment
   const allUserIds = getAllUserIds(parties);
@@ -51,17 +55,132 @@ const PartyRow = ({
     }
   };
 
+  const handleMaxSizeChange = async (newMaxSize: number) => {
+    if (newMaxSize > 5 && !isSubscribed) {
+      subscribeModal?.showModalIfRequired(
+        async () => {
+          const success = await updateParty(partyId, { maxSize: newMaxSize });
+          if (success) {
+            setIsEditingMaxSize(false);
+          }
+        },
+        () => {
+          setEditMaxSize(maxSize || 5); // Reset to original value
+        },
+        SubscriptionContext.PARTY_MAX_SIZE
+      );
+    } else {
+      const success = await updateParty(partyId, { maxSize: newMaxSize });
+      if (success) {
+        setIsEditingMaxSize(false);
+      }
+    }
+  };
+
+  const handleCancelEditMaxSize = () => {
+    setEditMaxSize(maxSize || 5);
+    setIsEditingMaxSize(false);
+  };
+
+  const handleEditMaxSize = () => {
+    setIsEditingMaxSize(true);
+  };
+
   return (
     <li>
       <div className="rounded-2xl border border-stone-200 bg-stone-50/80 p-4 shadow-sm backdrop-blur-sm dark:border-gray-700 dark:bg-zinc-800/80">
-        <div className="flex items-center justify-between">
-          <h3 className="text-theme-primary dark:text-theme-primary-light text-xl font-semibold">
-            {partyName}
-          </h3>
+        <div className="flex items-start justify-between">
+          <div className="flex min-w-0 flex-1 flex-col">
+            <h3 className="text-theme-primary dark:text-theme-primary-light text-xl font-semibold">
+              {partyName}
+            </h3>
+
+            {/* Max Size Display/Editor */}
+            <div className="mt-1 flex items-center space-x-2">
+              <Users className="h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-400" />
+              {isOwner && isEditingMaxSize ? (
+                <div className="flex flex-wrap items-center space-x-2">
+                  <select
+                    value={editMaxSize}
+                    onChange={(e) => {
+                      const newValue = parseInt(e.target.value);
+                      setEditMaxSize(newValue);
+                      handleMaxSizeChange(newValue);
+                    }}
+                    onBlur={handleCancelEditMaxSize}
+                    autoFocus
+                    className="min-w-0 rounded border border-gray-300 bg-white px-2 py-1 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-zinc-700 dark:text-gray-200"
+                  >
+                    <option value={2}>2 members</option>
+                    <option value={3}>3 members</option>
+                    <option value={4}>4 members</option>
+                    <option value={5}>5 members</option>
+                    <option value={6}>
+                      6 members {!isSubscribed ? '✨ Premium' : ''}
+                    </option>
+                    <option value={7}>
+                      7 members {!isSubscribed ? '✨ Premium' : ''}
+                    </option>
+                    <option value={8}>
+                      8 members {!isSubscribed ? '✨ Premium' : ''}
+                    </option>
+                    <option value={9}>
+                      9 members {!isSubscribed ? '✨ Premium' : ''}
+                    </option>
+                    <option value={10}>
+                      10 members {!isSubscribed ? '✨ Premium' : ''}
+                    </option>
+                    <option value={11}>
+                      11 members {!isSubscribed ? '✨ Premium' : ''}
+                    </option>
+                    <option value={12}>
+                      12 members {!isSubscribed ? '✨ Premium' : ''}
+                    </option>
+                    <option value={13}>
+                      13 members {!isSubscribed ? '✨ Premium' : ''}
+                    </option>
+                    <option value={14}>
+                      14 members {!isSubscribed ? '✨ Premium' : ''}
+                    </option>
+                    <option value={15}>
+                      15 members {!isSubscribed ? '✨ Premium' : ''}
+                    </option>
+                  </select>
+                  <button
+                    onClick={handleCancelEditMaxSize}
+                    className="px-2 py-1 text-xs text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                    title="Cancel"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-center space-x-1">
+                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                    {members.length}/{maxSize || 5} members
+                  </span>
+                  {maxSize && maxSize > 5 && !isSubscribed && (
+                    <span className="inline-flex h-3 w-3 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-[6px] font-semibold text-white shadow-lg">
+                      ✨
+                    </span>
+                  )}
+                  {isOwner && (
+                    <button
+                      onClick={handleEditMaxSize}
+                      className="ml-2 p-1 text-blue-500 transition-colors hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300"
+                      title="Edit max members"
+                    >
+                      <Edit3 className="h-4 w-4" />
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
 
           <button
             type="button"
-            className={`inline-flex items-center rounded-md border border-transparent px-3 py-2 text-sm font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${'bg-red-100 text-red-700 hover:bg-red-200 focus-visible:ring-red-500 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30'}`}
+            className={`ml-2 inline-flex flex-shrink-0 items-center rounded-md border border-transparent px-3 py-2 text-sm font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${'bg-red-100 text-red-700 hover:bg-red-200 focus-visible:ring-red-500 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30'}`}
             onClick={() => setConfirmDialog({ isOpen: true, type: 'leave' })}
           >
             {isOwner ? (

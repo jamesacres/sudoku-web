@@ -33,6 +33,7 @@ export interface PartyResponse {
   appId: string;
   partyName: string;
   createdBy: string;
+  maxSize?: number;
   createdAt: string;
   updatedAt: string;
 }

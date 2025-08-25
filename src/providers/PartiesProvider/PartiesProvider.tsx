@@ -29,6 +29,10 @@ interface PartiesContextInterface {
     memberNickname: string;
     partyName: string;
   }) => Promise<Party | undefined>;
+  updateParty: (
+    partyId: string,
+    updates: { maxSize?: number }
+  ) => Promise<boolean>;
   refreshParties: (
     refreshSessionParties?: () => Promise<void>
   ) => Promise<Party[] | undefined>;
@@ -47,8 +51,14 @@ const PartiesProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const { user } = useContext(UserContext) || {};
-  const { listParties, createParty, leaveParty, removeMember, deleteParty } =
-    useServerStorage({});
+  const {
+    listParties,
+    createParty,
+    updateParty,
+    leaveParty,
+    removeMember,
+    deleteParty,
+  } = useServerStorage({});
 
   // Party state
   const [parties, setParties] = useState<Party[]>([]);
@@ -162,6 +172,25 @@ const PartiesProvider: React.FC<{ children: React.ReactNode }> = ({
     [removeMember]
   );
 
+  // Update a party (owner only)
+  const handleUpdateParty = useCallback(
+    async (
+      partyId: string,
+      updates: { maxSize?: number }
+    ): Promise<boolean> => {
+      const success = await updateParty(partyId, updates);
+      if (success) {
+        setParties((prevParties) =>
+          prevParties.map((party) =>
+            party.partyId === partyId ? { ...party, ...updates } : party
+          )
+        );
+      }
+      return success;
+    },
+    [updateParty]
+  );
+
   // Delete a party (owner only)
   const handleDeleteParty = useCallback(
     async (partyId: string): Promise<boolean> => {
@@ -207,6 +236,7 @@ const PartiesProvider: React.FC<{ children: React.ReactNode }> = ({
 
         // Actions
         saveParty,
+        updateParty: handleUpdateParty,
         refreshParties,
         lazyLoadParties,
         getNicknameByUserId,

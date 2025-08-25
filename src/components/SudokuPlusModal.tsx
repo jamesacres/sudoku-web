@@ -81,13 +81,15 @@ const SudokuPlusModal = () => {
     },
     {
       icon: <Watch className="h-6 w-6" />,
-      title: 'Create unlimited racing parties',
+      title: 'Create and join multiple racing teams',
       description: 'Host private competitions with friends and family',
     },
+
     {
-      icon: <RotateCcw className="h-6 w-6" />,
-      title: 'Unlimited undo, check and reveal',
-      description: 'Remove daily undo, check and reveal limits',
+      icon: <Users className="h-6 w-6" />,
+      title: 'Racing team management',
+      description:
+        'Create large parties up to 15 people, and remove members from your team.',
     },
     {
       icon: <Droplet className="h-6 w-6" />,
@@ -95,10 +97,9 @@ const SudokuPlusModal = () => {
       description: 'Personalise your racing experience',
     },
     {
-      icon: <Users className="h-6 w-6" />,
-      title: 'Unlimited racing team management',
-      description:
-        'Create and join as many teams as you like. Ability to remove members from your team.',
+      icon: <RotateCcw className="h-6 w-6" />,
+      title: 'Unlimited undo, check and reveal',
+      description: 'Remove daily undo, check and reveal limits',
     },
   ];
 

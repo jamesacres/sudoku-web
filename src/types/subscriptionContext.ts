@@ -10,4 +10,5 @@ export enum SubscriptionContext {
   DAILY_PUZZLE_LIMIT = 'dailyPuzzleLimit',
   REMOVE_MEMBER = 'removeMember',
   MULTIPLE_PARTIES = 'multipleParties',
+  PARTY_MAX_SIZE = 'maxSize',
 }
