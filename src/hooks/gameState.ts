@@ -158,6 +158,21 @@ function useGameState({
     },
     [saveLocalValue, saveServerValue, timerRef, shrinkAnswerStack]
   );
+  const handleServerResponse = useCallback(
+    (
+      active: boolean,
+      serverValue: ServerStateResult<GameState> | undefined
+    ) => {
+      if (
+        active &&
+        serverValue?.parties &&
+        Object.keys(serverValue.parties).length
+      ) {
+        setSessionParties(serverValue.parties);
+      }
+    },
+    [setSessionParties]
+  );
 
   // Answers
   const answer = answerStack[answerStack.length - 1];
@@ -403,7 +418,9 @@ function useGameState({
             // Track saveValue call timestamp and increment ignore counter
             lastSaveTimeRef.current = Date.now();
             pollingIgnoreCounterRef.current += 1;
-            saveValue(localValue.state);
+            saveValue(localValue.state).serverValuePromise.then((result) =>
+              handleServerResponse(active, result)
+            );
           }
           // Remove disabled flag, heard from server but ignored it
           setAnswerStack((current) => {
@@ -423,6 +440,7 @@ function useGameState({
     setTimerNewSession,
     saveValue,
     setSessionParties,
+    handleServerResponse,
   ]);
 
   useEffect(() => {
@@ -520,15 +538,9 @@ function useGameState({
           completed,
           metadata,
         });
-        serverValuePromise.then((serverValue) => {
-          if (
-            active &&
-            serverValue?.parties &&
-            Object.keys(serverValue.parties).length
-          ) {
-            setSessionParties(serverValue.parties);
-          }
-        });
+        serverValuePromise.then((result) =>
+          handleServerResponse(active, result)
+        );
       }
     }
     return () => {
@@ -546,6 +558,7 @@ function useGameState({
     selectedCell,
     metadata,
     setSessionParties,
+    handleServerResponse,
   ]);
 
   // Handle keyboard
