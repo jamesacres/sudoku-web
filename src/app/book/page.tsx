@@ -1,8 +1,7 @@
 'use client';
-import Footer from '@/components/Footer';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, ArrowUp } from 'react-feather';
+import { ArrowUp } from 'react-feather';
 import { BookCover } from '@/components/BookCovers';
 import { useContext, useEffect, useState, useCallback } from 'react';
 import { UserContext } from '@/providers/UserProvider';
@@ -215,13 +214,6 @@ export default function BookPage() {
         {/* Header */}
         <div className="pt-safe bg-gradient-to-r from-blue-600 to-purple-600 px-6">
           <div className="container mx-auto max-w-6xl py-6 md:py-8">
-            <button
-              onClick={() => router.back()}
-              className="mb-4 inline-flex cursor-pointer items-center text-white/80 transition-colors hover:text-white"
-            >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Home
-            </button>
 
             <div className="flex flex-col items-center text-white md:flex-row md:items-center">
               <div className="mb-4 md:mr-6 md:mb-0">
@@ -387,15 +379,6 @@ export default function BookPage() {
           </button>
         )}
       </div>
-      <Footer>
-        <Link
-          href="/"
-          className="group hover:text-theme-primary dark:hover:text-theme-primary-light inline-flex cursor-pointer flex-col items-center justify-center px-5 text-gray-500 transition-colors duration-200 active:opacity-70 dark:text-gray-400"
-        >
-          <ArrowLeft className="mb-1 h-6 w-6" />
-          <span className="text-center text-xs font-medium">Back</span>
-        </Link>
-      </Footer>
     </>
   );
 }
