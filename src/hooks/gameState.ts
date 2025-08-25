@@ -504,7 +504,10 @@ function useGameState({
             initialValue !== enteredValue && enteredValue === correctValue;
         }
       }
-      const isFirstLoad = answerStack.length === 1;
+      const isFirstLoad = answerStack.length === 1 && !selectedCell;
+      if (isFirstLoad) {
+        console.info('isFirstLoad');
+      }
       if (isCorrect || completed || isFirstLoad) {
         // Track saveValue call timestamp and increment ignore counter
         lastSaveTimeRef.current = Date.now();
