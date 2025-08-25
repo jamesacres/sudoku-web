@@ -40,5 +40,5 @@ export const SCORING_CONFIG = {
     STEADY: 50,
   },
 
-  RACING_BONUS_PER_PERSON: 25,
+  RACING_BONUS_PER_PERSON: 100,
 };

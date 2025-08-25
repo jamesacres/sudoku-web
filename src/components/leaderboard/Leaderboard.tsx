@@ -15,6 +15,7 @@ interface LeaderboardProps {
   friendSessions: UserSessions;
   parties: Party[];
   user: UserProfile;
+  selectedParty?: Party;
 }
 
 const Leaderboard: React.FC<LeaderboardProps> = ({
@@ -22,6 +23,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
   friendSessions,
   parties,
   user,
+  selectedParty,
 }) => {
   const [showScoringLegend, setShowScoringLegend] = useState(false);
 
@@ -29,15 +31,23 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
   const leaderboardData = useMemo(() => {
     if (!sessions || !parties || !user || !friendSessions) return [];
 
-    // Get all friend sessions for racing bonus calculation
+    // Filter sessions and friends based on selected party
+    const partyUserIds = selectedParty
+      ? new Set(selectedParty.members.map((m) => m.userId))
+      : new Set();
+
+    // Get all friend sessions for racing bonus calculation (filtered by party if selected)
     const allFriendsSessions: AllFriendsSessionsMap = {};
     Object.entries(friendSessions).forEach(([userId, userSession]) => {
-      if (userSession?.sessions) {
+      if (
+        userSession?.sessions &&
+        (!selectedParty || partyUserIds.has(userId))
+      ) {
         allFriendsSessions[userId] = userSession.sessions;
       }
     });
 
-    // Add current user's sessions
+    // Add current user's sessions (always included)
     if (sessions) {
       allFriendsSessions[user.sub] = sessions;
     }
@@ -77,9 +87,13 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
       });
     }
 
-    // Calculate scores for friends
+    // Calculate scores for friends (filtered by selected party)
     Object.entries(friendSessions).forEach(([userId, userSession]) => {
-      if (userSession?.sessions && userId !== user.sub) {
+      if (
+        userSession?.sessions &&
+        userId !== user.sub &&
+        (!selectedParty || partyUserIds.has(userId))
+      ) {
         const friendScore = calculateUserScore(
           userSession.sessions,
           allFriendsSessions,
@@ -96,7 +110,10 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
 
         leaderboard.push({
           userId,
-          username: getUsernameFromParties(userId, parties),
+          username: getUsernameFromParties(
+            userId,
+            selectedParty ? [selectedParty] : parties
+          ),
           totalScore,
           breakdown: {
             volumeScore: friendScore.volumeScore,
@@ -116,7 +133,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
     return leaderboard
       .filter((entry) => entry.stats.totalPuzzles > 0)
       .sort((a, b) => b.totalScore - a.totalScore);
-  }, [sessions, friendSessions, parties, user]);
+  }, [sessions, friendSessions, parties, user, selectedParty]);
 
   if (leaderboardData.length === 0) {
     return null;
@@ -124,25 +141,44 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
 
   return (
     <div className="mb-8">
-      <div className="mb-6 flex items-center justify-between">
-        <div className="flex items-center">
-          <Award className="mr-3 text-yellow-500" size={28} />
-          <div>
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200">
-              Leaderboard
-            </h2>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              Last 30 days
-            </p>
+      {/* Pro Tip about party-specific scoring */}
+      <div className="mb-4 rounded-lg border border-blue-200 bg-blue-50 p-3 dark:border-blue-700 dark:bg-blue-900/30">
+        <p className="text-sm text-blue-800 dark:text-blue-200">
+          💡 <strong>Pro tip:</strong> Your racing wins and scores change for
+          each tab above depending on who you&apos;ve beaten within that
+          specific group. Switch between tabs to see your performance in
+          different racing contexts!
+        </p>
+      </div>
+
+      <div className="mb-6">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center">
+            <Award className="mr-3 text-yellow-500" size={28} />
+            <div>
+              <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200">
+                Leaderboard
+              </h2>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Last 30 days
+                {selectedParty
+                  ? ` • ${selectedParty.partyName}`
+                  : ' • All Parties'}
+              </p>
+            </div>
           </div>
-        </div>
-        <div className="flex gap-2">
-          <button
-            onClick={() => setShowScoringLegend(true)}
-            className="flex items-center text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200"
-          >
-            How scoring works
-          </button>
+          <div className="flex justify-center sm:justify-end">
+            <button
+              onClick={() => setShowScoringLegend(true)}
+              className="group relative flex cursor-pointer items-center overflow-hidden rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-4 py-2 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:from-purple-600 hover:to-blue-600 hover:shadow-xl"
+            >
+              <span className="relative z-10 flex items-center whitespace-nowrap">
+                🏆 How scoring works
+                <span className="ml-1 animate-bounce">✨</span>
+              </span>
+              <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 to-pink-400/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+            </button>
+          </div>
         </div>
       </div>
 

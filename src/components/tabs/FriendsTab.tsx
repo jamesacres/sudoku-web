@@ -17,6 +17,7 @@ interface FriendsTabProps {
 export const FriendsTab = ({ user, parties, mySessions }: FriendsTabProps) => {
   const { sessions, friendSessions } = useSessions();
   const [expandedUsers, setExpandedUsers] = useState<Set<string>>(new Set());
+  const [selectedPartyId, setSelectedPartyId] = useState<string | 'all'>('all');
 
   const toggleUserExpansion = (userId: string) => {
     setExpandedUsers((prev) => {
@@ -30,6 +31,13 @@ export const FriendsTab = ({ user, parties, mySessions }: FriendsTabProps) => {
     });
   };
 
+  const selectedParty =
+    selectedPartyId === 'all'
+      ? undefined
+      : parties?.find((p) => p.partyId === selectedPartyId);
+  const displayParties =
+    selectedPartyId === 'all' ? parties : selectedParty ? [selectedParty] : [];
+
   return (
     <div className="mb-4">
       <h1 className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-4xl font-bold text-transparent">
@@ -40,6 +48,37 @@ export const FriendsTab = ({ user, parties, mySessions }: FriendsTabProps) => {
         a puzzle.
       </p>
 
+      {/* Party Selection Tabs */}
+      {parties && parties.length > 0 && (
+        <div className="mb-6">
+          <div className="flex flex-wrap gap-2 border-b border-gray-200 dark:border-gray-700">
+            <button
+              onClick={() => setSelectedPartyId('all')}
+              className={`px-4 py-2 text-sm font-medium transition-colors ${
+                selectedPartyId === 'all'
+                  ? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400'
+                  : 'text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200'
+              }`}
+            >
+              All
+            </button>
+            {parties.map((party) => (
+              <button
+                key={party.partyId}
+                onClick={() => setSelectedPartyId(party.partyId)}
+                className={`px-4 py-2 text-sm font-medium transition-colors ${
+                  selectedPartyId === party.partyId
+                    ? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400'
+                    : 'text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200'
+                }`}
+              >
+                {party.partyName}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Leaderboard Section */}
       {user && parties && (
         <Leaderboard
@@ -47,15 +86,22 @@ export const FriendsTab = ({ user, parties, mySessions }: FriendsTabProps) => {
           friendSessions={friendSessions}
           parties={parties}
           user={user}
+          selectedParty={selectedParty}
         />
       )}
 
       {/* Individual Friends Puzzles Section */}
-      {parties?.length !== 0 && (
+      {displayParties?.length !== 0 && (
         <>
           <div className="mt-6 border-t border-gray-200 pt-6 dark:border-gray-700">
             <h2 className="mb-4 text-xl font-bold text-gray-800 dark:text-gray-200">
               Browse Friends&apos; Puzzles
+              {selectedParty && (
+                <span className="text-base font-normal text-gray-600 dark:text-gray-400">
+                  {' '}
+                  • {selectedParty.partyName}
+                </span>
+              )}
             </h2>
             <p className="mb-4 text-gray-600 dark:text-gray-400">
               Select a friend below to see and solve their recent puzzles. Race
@@ -65,10 +111,10 @@ export const FriendsTab = ({ user, parties, mySessions }: FriendsTabProps) => {
         </>
       )}
 
-      {parties?.length ? (
+      {displayParties?.length ? (
         <>
           <ul className="space-y-4 pb-16">
-            {parties?.map(({ partyId, members, partyName }) => (
+            {displayParties?.map(({ partyId, members, partyName }) => (
               <li key={partyId}>
                 <div className="rounded-2xl border border-stone-200 bg-stone-50/80 p-4 shadow-sm backdrop-blur-sm dark:border-gray-700 dark:bg-zinc-800/80">
                   <h3 className="text-theme-primary dark:text-theme-primary-light text-xl font-semibold">
