@@ -31,7 +31,7 @@ interface PartiesContextInterface {
   }) => Promise<Party | undefined>;
   updateParty: (
     partyId: string,
-    updates: { maxSize?: number }
+    updates: { maxSize?: number; partyName?: string }
   ) => Promise<boolean>;
   refreshParties: (
     refreshSessionParties?: () => Promise<void>
@@ -176,7 +176,7 @@ const PartiesProvider: React.FC<{ children: React.ReactNode }> = ({
   const handleUpdateParty = useCallback(
     async (
       partyId: string,
-      updates: { maxSize?: number }
+      updates: { maxSize?: number; partyName?: string }
     ): Promise<boolean> => {
       const success = await updateParty(partyId, updates);
       if (success) {

@@ -38,6 +38,9 @@ const PartyRow = ({
   const [isEditingMaxSize, setIsEditingMaxSize] = useState(false);
   const [editMaxSize, setEditMaxSize] = useState(maxSize || 5);
 
+  const [isEditingPartyName, setIsEditingPartyName] = useState(false);
+  const [editPartyName, setEditPartyName] = useState(partyName);
+
   // Get consistent ordering of all user IDs for color assignment
   const allUserIds = getAllUserIds(parties);
 
@@ -86,17 +89,71 @@ const PartyRow = ({
     setIsEditingMaxSize(true);
   };
 
+  const handlePartyNameChange = async (newPartyName: string) => {
+    const success = await updateParty(partyId, { partyName: newPartyName });
+    if (success) {
+      setIsEditingPartyName(false);
+    }
+  };
+
+  const handleCancelEditPartyName = () => {
+    setEditPartyName(partyName);
+    setIsEditingPartyName(false);
+  };
+
+  const handleEditPartyName = () => {
+    setIsEditingPartyName(true);
+  };
+
   return (
     <li>
       <div className="rounded-2xl border border-stone-200 bg-stone-50/80 p-4 shadow-sm backdrop-blur-sm dark:border-gray-700 dark:bg-zinc-800/80">
         <div className="flex items-start justify-between">
           <div className="flex min-w-0 flex-1 flex-col">
-            <h3 className="text-theme-primary dark:text-theme-primary-light text-xl font-semibold">
-              {partyName}
-            </h3>
+            {isOwner && isEditingPartyName ? (
+              <div className="space-y-2">
+                <input
+                  type="text"
+                  value={editPartyName}
+                  onChange={(e) => setEditPartyName(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handlePartyNameChange(editPartyName);
+                    } else if (e.key === 'Escape') {
+                      handleCancelEditPartyName();
+                    }
+                  }}
+                  onBlur={() => handlePartyNameChange(editPartyName)}
+                  autoFocus
+                  className="text-theme-primary dark:text-theme-primary-light w-full rounded border border-gray-300 bg-white px-2 py-1 text-xl font-semibold focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-zinc-700"
+                />
+                <button
+                  onClick={handleCancelEditPartyName}
+                  className="px-2 py-1 text-xs text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                  title="Cancel"
+                >
+                  Cancel
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-start space-x-2">
+                <h3 className="text-theme-primary dark:text-theme-primary-light text-xl leading-tight font-semibold">
+                  {partyName}
+                </h3>
+                {isOwner && (
+                  <button
+                    onClick={handleEditPartyName}
+                    className="mt-0.5 flex-shrink-0 p-1 text-blue-500 transition-colors hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300"
+                    title="Edit party name"
+                  >
+                    <Edit3 className="h-4 w-4" />
+                  </button>
+                )}
+              </div>
+            )}
 
             {/* Max Size Display/Editor */}
-            <div className="mt-1 flex items-center space-x-2">
+            <div className="mt-3 flex items-center space-x-2">
               <Users className="h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-400" />
               {isOwner && isEditingMaxSize ? (
                 <div className="flex flex-wrap items-center space-x-2">

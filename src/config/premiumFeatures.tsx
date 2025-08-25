@@ -1,10 +1,4 @@
-import {
-  Calendar,
-  RotateCcw,
-  Droplet,
-  Users,
-  Watch,
-} from 'react-feather';
+import { Calendar, RotateCcw, Droplet, Users, Watch } from 'react-feather';
 
 export const PREMIUM_FEATURES = [
   {

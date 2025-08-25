@@ -526,7 +526,7 @@ function useServerStorage({
   const updateParty = useCallback(
     async (
       partyId: string,
-      updates: { maxSize?: number }
+      updates: { maxSize?: number; partyName?: string }
     ): Promise<boolean> => {
       if (isOnline && isLoggedIn()) {
         try {
