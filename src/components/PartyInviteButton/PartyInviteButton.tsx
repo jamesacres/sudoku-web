@@ -7,11 +7,13 @@ const PartyInviteButton = ({
   redirectUri,
   partyId,
   partyName,
+  extraSmall = false,
 }: {
   puzzleId: string;
   redirectUri: string;
   partyId: string;
   partyName: string;
+  extraSmall?: boolean;
 }) => {
   const sessionId = `sudoku-${puzzleId}`;
   const [isLoading, setIsLoading] = useState(false);
@@ -52,7 +54,9 @@ const PartyInviteButton = ({
 
   return (
     <button
-      className="text-theme-primary dark:text-theme-primary-light flex w-full cursor-pointer items-center justify-center rounded-full bg-gray-100 px-4 py-2.5 text-sm font-medium transition-colors hover:bg-gray-200 active:opacity-80 dark:bg-gray-700 dark:hover:bg-gray-600"
+      className={`text-theme-primary dark:text-theme-primary-light flex cursor-pointer items-center justify-center rounded-full bg-gray-100 transition-colors hover:bg-gray-200 active:opacity-80 dark:bg-gray-700 dark:hover:bg-gray-600 ${
+        extraSmall ? 'px-2 py-1 text-xs' : 'w-full px-4 py-2.5 text-sm'
+      } font-medium`}
       onClick={async () => {
         await copyInviteUrl();
       }}
@@ -60,15 +64,20 @@ const PartyInviteButton = ({
     >
       {showCopied ? (
         <>
-          <Check className="mr-2" size={18} /> Copied to clipboard!
+          <Check className="mr-2" size={extraSmall ? 14 : 18} /> Copied to
+          clipboard!
         </>
       ) : (
         <>
           {isLoading ? (
-            <Loader className="mx-auto animate-spin" size={18} />
+            <Loader
+              className="mx-auto animate-spin"
+              size={extraSmall ? 14 : 18}
+            />
           ) : (
             <>
-              <Copy className="mr-2" size={18} /> Copy Invite Link
+              <Copy className="mr-2" size={extraSmall ? 14 : 18} /> Copy Invite
+              Link
             </>
           )}
         </>

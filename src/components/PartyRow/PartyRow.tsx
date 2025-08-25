@@ -13,6 +13,9 @@ import { RevenueCatContext } from '@/providers/RevenueCatProvider';
 import { PartyConfirmationDialog } from '../PartyConfirmationDialog/PartyConfirmationDialog';
 import { LogOut, Trash, UserMinus, Edit3, Users } from 'react-feather';
 import { SubscriptionContext } from '@/types/subscriptionContext';
+
+const DEFAULT_MAX_SIZE = 5;
+
 const PartyRow = ({
   party: { partyName, isOwner, members, partyId, maxSize },
   puzzleId,
@@ -36,7 +39,7 @@ const PartyRow = ({
   }>({ isOpen: false, type: 'leave' });
 
   const [isEditingMaxSize, setIsEditingMaxSize] = useState(false);
-  const [editMaxSize, setEditMaxSize] = useState(maxSize || 5);
+  const [editMaxSize, setEditMaxSize] = useState(maxSize || DEFAULT_MAX_SIZE);
 
   const [isEditingPartyName, setIsEditingPartyName] = useState(false);
   const [editPartyName, setEditPartyName] = useState(partyName);
@@ -59,7 +62,7 @@ const PartyRow = ({
   };
 
   const handleMaxSizeChange = async (newMaxSize: number) => {
-    if (newMaxSize > 5 && !isSubscribed) {
+    if (newMaxSize > DEFAULT_MAX_SIZE && !isSubscribed) {
       subscribeModal?.showModalIfRequired(
         async () => {
           const success = await updateParty(partyId, { maxSize: newMaxSize });
@@ -68,7 +71,7 @@ const PartyRow = ({
           }
         },
         () => {
-          setEditMaxSize(maxSize || 5); // Reset to original value
+          setEditMaxSize(maxSize || DEFAULT_MAX_SIZE); // Reset to original value
         },
         SubscriptionContext.PARTY_MAX_SIZE
       );
@@ -81,7 +84,7 @@ const PartyRow = ({
   };
 
   const handleCancelEditMaxSize = () => {
-    setEditMaxSize(maxSize || 5);
+    setEditMaxSize(maxSize || DEFAULT_MAX_SIZE);
     setIsEditingMaxSize(false);
   };
 
@@ -214,9 +217,9 @@ const PartyRow = ({
               ) : (
                 <div className="flex items-center space-x-1">
                   <span className="text-sm text-gray-600 dark:text-gray-400">
-                    {members.length}/{maxSize || 5} members
+                    {members.length}/{maxSize || DEFAULT_MAX_SIZE} members
                   </span>
-                  {maxSize && maxSize > 5 && !isSubscribed && (
+                  {maxSize && maxSize > DEFAULT_MAX_SIZE && !isSubscribed && (
                     <span className="inline-flex h-3 w-3 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-[6px] font-semibold text-white shadow-lg">
                       ✨
                     </span>
@@ -248,7 +251,7 @@ const PartyRow = ({
           </button>
         </div>
 
-        {isOwner && (
+        {isOwner && members.length < (maxSize || DEFAULT_MAX_SIZE) && (
           <div className="mt-2">
             <PartyInviteButton
               puzzleId={puzzleId}
@@ -337,6 +340,15 @@ const PartyRow = ({
                 {!isUser && !sessionParty?.memberSessions[userId] && (
                   <p className="mt-2 text-sm text-gray-500 italic dark:text-gray-400">
                     Not started! Ask them to play
+                    {isOwner && (
+                      <PartyInviteButton
+                        puzzleId={puzzleId}
+                        redirectUri={redirectUri}
+                        partyId={partyId}
+                        partyName={partyName}
+                        extraSmall={true}
+                      />
+                    )}
                   </p>
                 )}
 

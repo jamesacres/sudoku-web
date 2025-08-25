@@ -79,7 +79,7 @@ const SudokuSidebar = ({
               Challenge your friends and family to a race, who can solve it in
               the fastest time?
             </p>
-            {!showCreateParty && (
+            {!showCreateParty && parties.length < 10 && (
               <button
                 className="bg-theme-primary hover:bg-theme-primary-dark relative mt-2 flex w-full cursor-pointer items-center justify-center rounded-full px-4 py-3 font-medium text-white transition-colors"
                 onClick={() => {
