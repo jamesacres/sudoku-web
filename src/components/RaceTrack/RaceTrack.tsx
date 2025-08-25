@@ -329,27 +329,55 @@ const RaceTrack = ({
       </div>
 
       {isCompleted && (
-        <div className="mt-4 mb-8 flex items-center justify-between">
-          <Link
-            href={`/?tab=${Tab.FRIENDS}`}
-            className="bg-theme-primary hover:bg-theme-primary-dark inline-flex items-center rounded-full px-6 py-3 text-base font-bold text-white shadow-md transition-transform hover:scale-105"
-          >
-            <span className="mr-2 text-xl" role="img" aria-label="trophy">
-              🏆
-            </span>
-            View Monthly Leaderboard
-          </Link>
-          {finishedPlayers.length !== allPlayerProgress.length && (
-            <button
-              onClick={refreshSessionParties}
-              disabled={isPolling}
-              title="Refresh scores"
-              className="inline-flex cursor-pointer items-center rounded-full bg-gray-200 p-3 font-bold text-gray-700 shadow-md transition-transform hover:scale-105 hover:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-50"
+        <div className="mt-4 mb-8 space-y-4">
+          <div className="flex items-center justify-between">
+            <Link
+              href={`/?tab=${Tab.FRIENDS}`}
+              className="bg-theme-primary hover:bg-theme-primary-dark inline-flex items-center rounded-full px-6 py-3 text-base font-bold text-white shadow-md transition-transform hover:scale-105"
             >
-              <RefreshCw
-                className={`h-5 w-5 ${isPolling ? 'animate-spin' : ''}`}
-              />
-            </button>
+              <span className="mr-2 text-xl" role="img" aria-label="trophy">
+                🏆
+              </span>
+              View Monthly Leaderboard
+            </Link>
+            {finishedPlayers.length !== allPlayerProgress.length && (
+              <button
+                onClick={refreshSessionParties}
+                disabled={isPolling}
+                title="Refresh scores"
+                className="inline-flex cursor-pointer items-center rounded-full bg-gray-200 p-3 font-bold text-gray-700 shadow-md transition-transform hover:scale-105 hover:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <RefreshCw
+                  className={`h-5 w-5 ${isPolling ? 'animate-spin' : ''}`}
+                />
+              </button>
+            )}
+          </div>
+
+          {/* Challenge friends section */}
+          {currentUserProgress?.finishTime && (
+            <div className="rounded-lg border border-purple-200 bg-purple-50 p-4 dark:border-purple-800 dark:bg-purple-900/20">
+              <div className="text-center">
+                <div className="mb-2 text-lg font-semibold text-purple-900 dark:text-purple-100">
+                  🏁 Challenge friends to beat your time!
+                </div>
+                <div className="mb-3 text-sm text-purple-700 dark:text-purple-300">
+                  Your time:{' '}
+                  <span className="font-mono font-bold">
+                    {formatSeconds(currentUserProgress.finishTime)}
+                  </span>
+                </div>
+                <button
+                  onClick={onClick}
+                  className="inline-flex items-center rounded-full bg-purple-600 px-6 py-3 text-base font-bold text-white shadow-md transition-transform hover:scale-105 hover:bg-purple-700"
+                >
+                  <span className="mr-2 text-xl" role="img" aria-label="racing">
+                    🚀
+                  </span>
+                  Invite Friends to Race
+                </button>
+              </div>
+            </div>
           )}
         </div>
       )}
