@@ -8,7 +8,14 @@ import { useGameState } from '@/hooks/gameState';
 import { TimerDisplay } from '../TimerDisplay/TimerDisplay';
 import { calculateSeconds } from '@/helpers/calculateSeconds';
 import SudokuSidebar from '../SudokuSidebar/SudokuSidebar';
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { CelebrationAnimation } from '../CelebrationAnimation';
 import { RaceTrack } from '../RaceTrack';
 import { UserContext } from '@/providers/UserProvider';
@@ -25,10 +32,12 @@ import { DAILY_LIMITS } from '@/config/dailyLimits';
 import { GameStateMetadata } from '@/types/state';
 import { puzzleToPuzzleText } from '@/helpers/puzzleTextToPuzzle';
 import { isPuzzleCheated } from '@/helpers/cheatDetection';
+import RacingPromptModal from '../RacingPromptModal/RacingPromptModal';
 
 const Sudoku = ({
   puzzle: { initial, final, puzzleId, redirectUri, metadata },
   alreadyCompleted,
+  showRacingPrompt: showRacingPromptProp = true,
 }: {
   puzzle: {
     initial: Puzzle<number>;
@@ -38,6 +47,7 @@ const Sudoku = ({
     metadata: Partial<GameStateMetadata>;
   };
   alreadyCompleted?: boolean;
+  showRacingPrompt?: boolean;
 }) => {
   const router = useRouter();
   const { user } = useContext(UserContext) || {};
@@ -94,6 +104,32 @@ const Sudoku = ({
   const [showAnimation, setShowAnimation] = useState(false);
   const [showAdvancedControls, setShowAdvancedControls] = useState(false);
 
+  // Check if there are other players already racing
+  const hasOtherPlayers = useMemo(() => {
+    if (!sessionParties || !user?.sub) return false;
+
+    return Object.values(sessionParties).some((party) => {
+      if (party?.memberSessions) {
+        return Object.keys(party.memberSessions).some(
+          (memberId) => memberId !== user.sub
+        );
+      }
+      return false;
+    });
+  }, [sessionParties, user?.sub]);
+
+  // State for racing prompt modal
+  const [showRacingPrompt, setShowRacingPrompt] = useState(false);
+  const [hasSelectedMode, setHasSelectedMode] = useState(false);
+
+  // Update racing prompt visibility when conditions change
+  useEffect(() => {
+    const shouldShow =
+      !alreadyCompleted && showRacingPromptProp && !hasOtherPlayers;
+    setShowRacingPrompt(shouldShow);
+    setHasSelectedMode(alreadyCompleted || hasOtherPlayers);
+  }, [alreadyCompleted, showRacingPromptProp, hasOtherPlayers]);
+
   const copyGrid = useCallback(() => {
     // Copy to clipboard
     navigator.clipboard
@@ -102,6 +138,16 @@ const Sudoku = ({
         console.error('Failed to copy grid:', err);
       });
   }, [answer]);
+
+  // Racing prompt handlers
+  const handleRaceMode = useCallback(() => {
+    setHasSelectedMode(true);
+    setShowSidebar(true); // Show friends sidebar immediately
+  }, [setShowSidebar]);
+
+  const handleSoloMode = useCallback(() => {
+    setHasSelectedMode(true);
+  }, []);
 
   // Show animation when the puzzle is completed
   useEffect(() => {
@@ -161,22 +207,33 @@ const Sudoku = ({
     gridRef,
   });
 
+  // Timer and scroll management
   useEffect(() => {
-    if (showSidebar) {
-      setPauseTimer(true);
+    const shouldPause = !hasSelectedMode || showSidebar || showRacingPrompt;
+
+    setPauseTimer(shouldPause);
+
+    if (showSidebar || showRacingPrompt) {
       // Stop scroll
       document.body.classList.add('overflow-y-hidden');
     } else {
-      setPauseTimer(false);
       // Allow scroll
       document.body.classList.remove('overflow-y-hidden');
     }
-  }, [showSidebar, setPauseTimer]);
+  }, [hasSelectedMode, showSidebar, showRacingPrompt, setPauseTimer]);
 
   return (
     <div
       className={`${showAdvancedControls ? 'pb-120' : 'pb-90'} lg:pb-0 landscape:mb-120 sm:landscape:pb-[calc(60vh)] lg:landscape:mb-0 lg:landscape:pb-0`}
     >
+      {/* Racing mode selection modal */}
+      <RacingPromptModal
+        isOpen={showRacingPrompt}
+        onClose={() => setShowRacingPrompt(false)}
+        onRaceMode={handleRaceMode}
+        onSoloMode={handleSoloMode}
+      />
+
       <SudokuSidebar
         showSidebar={showSidebar}
         setShowSidebar={setShowSidebar}

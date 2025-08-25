@@ -36,11 +36,17 @@ function InviteComponent() {
 
   const redirect = useCallback(
     (redirectUri: string | undefined) => {
-      const uri =
+      let uri =
         redirectUri &&
         new RegExp('^/puzzle\\?initial=[1-9.]+&final=[1-9]+').test(redirectUri)
           ? redirectUri
           : '/';
+
+      // If redirecting to a puzzle from an invite, don't show racing prompt
+      if (uri !== '/' && uri.includes('/puzzle?')) {
+        uri += '&showRacingPrompt=false';
+      }
+
       console.info('redirect', uri);
       router.replace(uri);
     },

@@ -61,19 +61,21 @@ const SudokuSidebar = ({
           {/* Fixed Header */}
           <div className="sticky top-0 z-10 rounded-tr-3xl px-4 pt-5 pb-3 backdrop-blur-md dark:bg-zinc-900/95">
             <div
-              className="mb-4 flex-nowrap items-center xl:hidden"
+              className={`mb-4 flex-nowrap items-center`}
               role="group"
               aria-label="Button group"
             >
-              <button
-                onClick={() => {
-                  setShowSidebar(!showSidebar);
-                }}
-                className="text-theme-primary dark:text-theme-primary-light flex w-full cursor-pointer items-center justify-between rounded-full px-4 py-2 text-right"
-              >
+              <div className="text-theme-primary dark:text-theme-primary-light flex w-full items-center justify-between rounded-full px-4 py-2 text-right">
                 <span className="text-lg font-medium">Races</span>
-                <X className="ml-2" />
-              </button>
+                <button
+                  onClick={() => {
+                    setShowSidebar(!showSidebar);
+                  }}
+                  className="cursor-pointer"
+                >
+                  <X className={`ml-2 ${showSidebar ? '' : 'hidden'}`} />
+                </button>
+              </div>
             </div>
             <p className="mb-5 text-sm text-gray-600 dark:text-gray-300">
               Challenge your friends and family to a race, who can solve it in
@@ -197,6 +199,11 @@ const SudokuSidebar = ({
                     />
                   </button>
                 </div>
+
+                <p className="mb-5 text-sm text-gray-600 dark:text-gray-300">
+                  Simply send your group an invite link and close this sidebar
+                  to start solving! They can join now or in their own time.
+                </p>
 
                 <ul className="space-y-4 pb-16">
                   {parties

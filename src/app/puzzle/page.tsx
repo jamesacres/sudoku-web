@@ -15,6 +15,7 @@ function PuzzlePageComponent() {
   const final = searchParams.get('final');
 
   const alreadyCompleted = searchParams.get('alreadyCompleted') === 'true';
+  const showRacingPrompt = searchParams.get('showRacingPrompt') !== 'false';
 
   const { requestWakeLock } = useWakeLock();
   const [puzzle, setPuzzle] = useState<{
@@ -57,7 +58,13 @@ function PuzzlePageComponent() {
 
   return (
     <div className="-mb-24">
-      {puzzle && <Sudoku puzzle={puzzle} alreadyCompleted={alreadyCompleted} />}
+      {puzzle && (
+        <Sudoku
+          puzzle={puzzle}
+          alreadyCompleted={alreadyCompleted}
+          showRacingPrompt={showRacingPrompt}
+        />
+      )}
     </div>
   );
 }
