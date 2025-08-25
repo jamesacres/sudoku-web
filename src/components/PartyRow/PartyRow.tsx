@@ -220,11 +220,14 @@ const PartyRow = ({
                   <span className="text-sm text-gray-600 dark:text-gray-400">
                     {members.length}/{maxSize || DEFAULT_MAX_SIZE} members
                   </span>
-                  {maxSize && maxSize > DEFAULT_MAX_SIZE && !isSubscribed && (
-                    <span className="inline-flex h-3 w-3 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-[6px] font-semibold text-white shadow-lg">
-                      ✨
-                    </span>
-                  )}
+                  {isOwner &&
+                    maxSize &&
+                    maxSize > DEFAULT_MAX_SIZE &&
+                    !isSubscribed && (
+                      <span className="inline-flex h-3 w-3 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-[6px] font-semibold text-white shadow-lg">
+                        ✨
+                      </span>
+                    )}
                   {isOwner && (
                     <button
                       onClick={handleEditMaxSize}
