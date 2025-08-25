@@ -7,17 +7,10 @@ import { PurchasesPackage as CapacitorPackage } from '@revenuecat/purchases-capa
 import { Package as WebPackage } from '@revenuecat/purchases-js';
 import Image from 'next/image';
 import { useContext, useState } from 'react';
-import {
-  X,
-  Check,
-  Calendar,
-  RotateCcw,
-  Droplet,
-  Users,
-  Watch,
-} from 'react-feather';
+import { X, Check } from 'react-feather';
 import { SubscriptionContext } from '@/types/subscriptionContext';
 import { SUBSCRIPTION_CONTEXT_MESSAGES } from '@/config/subscriptionMessages';
+import { PREMIUM_FEATURES } from '@/config/premiumFeatures';
 
 const SudokuPlusModal = () => {
   const {
@@ -73,35 +66,7 @@ const SudokuPlusModal = () => {
 
   if (!modal?.isOpen || isLoading || isSubscribed) return null;
 
-  const features = [
-    {
-      icon: <Calendar className="h-6 w-6" />,
-      title: '🏁 Unlimited play and race',
-      description: 'Race friends in real-time more than once a day',
-    },
-    {
-      icon: <Watch className="h-6 w-6" />,
-      title: 'Create and join multiple racing teams',
-      description: 'Host private competitions with friends and family',
-    },
-
-    {
-      icon: <Users className="h-6 w-6" />,
-      title: 'Racing team management',
-      description:
-        'Create large parties up to 15 people, and remove members from your team.',
-    },
-    {
-      icon: <Droplet className="h-6 w-6" />,
-      title: 'All themes unlocked',
-      description: 'Personalise your racing experience',
-    },
-    {
-      icon: <RotateCcw className="h-6 w-6" />,
-      title: 'Unlimited undo, check and reveal',
-      description: 'Remove daily undo, check and reveal limits',
-    },
-  ];
+  const features = PREMIUM_FEATURES;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">

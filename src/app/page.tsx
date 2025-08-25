@@ -16,17 +16,14 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useCallback, useContext, useEffect, useState } from 'react';
 import {
   Users,
-  Calendar,
   Star,
   Zap,
   Award,
-  RotateCcw,
-  Droplet,
-  UserPlus,
   CheckCircle,
   Lock,
   Camera,
 } from 'react-feather';
+import { PREMIUM_FEATURES } from '@/config/premiumFeatures';
 import Link from 'next/link';
 import Image from 'next/image';
 import { BookCover } from '@/components/BookCovers';
@@ -108,39 +105,11 @@ function HomeComponent() {
     router.push('/book');
   };
 
-  const premiumFeatures = [
-    {
-      icon: Calendar,
-      title: 'Unlimited play and race',
-      description: 'Race friends in real-time more than once a day',
-      isPremium: !isSubscribed,
-    },
-    {
-      icon: UserPlus,
-      title: 'Create unlimited racing parties',
-      description: 'Host private competitions with friends and family',
-      isPremium: !isSubscribed,
-    },
-    {
-      icon: RotateCcw,
-      title: 'Unlimited undo, check and reveal',
-      description: 'Remove daily undo, check and reveal limits',
-      isPremium: !isSubscribed,
-    },
-    {
-      icon: Droplet,
-      title: 'All themes unlocked',
-      description: 'Personalise your racing experience',
-      isPremium: !isSubscribed,
-    },
-    {
-      icon: Users,
-      title: 'Unlimited party management',
-      description:
-        'Create and join as many parties as you like. Remove members from your party.',
-      isPremium: !isSubscribed,
-    },
-  ];
+  const premiumFeatures = PREMIUM_FEATURES.map((feature) => ({
+    ...feature,
+    icon: feature.icon.type, // Extract the icon component
+    isPremium: !isSubscribed,
+  }));
 
   const handlePremiumFeatureClick = (context?: SubscriptionContext) => {
     if (!isSubscribed) {
