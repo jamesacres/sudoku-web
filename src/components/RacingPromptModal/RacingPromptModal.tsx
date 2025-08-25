@@ -87,7 +87,7 @@ export const RacingPromptModal = ({
 
                   <div className="relative flex items-center justify-between">
                     <div className="flex items-center space-x-4">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 transition-colors group-hover:bg-white/30">
+                      <div className="flex aspect-square h-12 w-12 items-center justify-center rounded-full bg-white/20 transition-colors group-hover:bg-white/30">
                         <Users className="h-6 w-6" />
                       </div>
                       <div className="text-left">
@@ -95,7 +95,8 @@ export const RacingPromptModal = ({
                           Race Friends and Family!
                         </div>
                         <div className="text-sm text-white/90">
-                          Invite your racing team
+                          Players can join anytime, but playing simultaneously
+                          gives the best racing experience
                         </div>
                       </div>
                     </div>
