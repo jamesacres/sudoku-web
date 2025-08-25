@@ -1,6 +1,7 @@
 import { Party, SessionParty, Session } from '@/types/serverTypes';
 import { ServerState } from '@/types/state';
 import { PartyInviteButton } from '../PartyInviteButton/PartyInviteButton';
+import { CopyButton } from '../CopyButton/CopyButton';
 import SimpleSudoku from '../SimpleSudoku';
 import { TimerDisplay } from '../TimerDisplay/TimerDisplay';
 import { calculateSeconds } from '@/helpers/calculateSeconds';
@@ -338,9 +339,11 @@ const PartyRow = ({
                 </div>
 
                 {!isUser && !sessionParty?.memberSessions[userId] && (
-                  <p className="mt-2 text-sm text-gray-500 italic dark:text-gray-400">
-                    Not started! Ask them to play
-                    {isOwner && (
+                  <div className="mt-2">
+                    <p className="text-sm text-gray-500 italic dark:text-gray-400">
+                      Not started! Ask them to play
+                    </p>
+                    {isOwner ? (
                       <PartyInviteButton
                         puzzleId={puzzleId}
                         redirectUri={redirectUri}
@@ -348,8 +351,17 @@ const PartyRow = ({
                         partyName={partyName}
                         extraSmall={true}
                       />
+                    ) : (
+                      <div className="mt-1">
+                        <CopyButton
+                          getText={() =>
+                            `https://sudoku.bubblyclouds.com${window.location.pathname}${window.location.search}`
+                          }
+                          extraSmall={true}
+                        />
+                      </div>
                     )}
-                  </p>
+                  </div>
                 )}
 
                 {sessionParty?.memberSessions[userId]?.state.timer && (
