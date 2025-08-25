@@ -28,6 +28,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { BookCover } from '@/components/BookCovers';
 import { buildPuzzleUrl } from '@/helpers/buildPuzzleUrl';
+import SocialProof from '@/components/SocialProof/SocialProof';
 
 function HomeComponent() {
   const searchParams = useSearchParams();
@@ -196,76 +197,30 @@ function HomeComponent() {
                 the fastest Sudoku solver 🏁
               </p>
 
-              {/* Daily Streak Section */}
-              <div className="mb-6 md:mb-8">
-                <div className="mx-auto max-w-md rounded-2xl border border-white/20 bg-purple-600/20 p-4 backdrop-blur-sm md:p-6">
-                  <div className="text-center">
-                    <div className="mb-2 flex justify-center md:mb-3">
-                      <div className="text-3xl md:text-4xl">🔥</div>
-                    </div>
-                    <div className="mb-2">
-                      <span className="text-2xl font-bold text-white md:text-3xl">
-                        {dailyStreak}
-                      </span>
-                      <span className="ml-2 text-base text-white/80 md:text-lg">
-                        day streak
-                      </span>
-                    </div>
-                    <p className="mb-3 text-xs text-white/70 md:mb-4 md:text-sm">
-                      {dailyStreak === 0
-                        ? 'Start your racing streak today!'
-                        : dailyStreak === 1
-                          ? 'Great start! Keep it going tomorrow!'
-                          : 'Keep racing daily to maintain your streak!'}
-                    </p>
+              {/* Social Proof - Motivational Message */}
+              <SocialProof />
 
-                    {/* Streak Progress - Show last 7 days */}
-                    <div className="flex justify-center space-x-1 md:space-x-2">
-                      {Array.from({ length: 7 }, (_, index) => {
-                        const dayOffset = 6 - index; // 6, 5, 4, 3, 2, 1, 0 (today)
-                        const hasActivity = dayOffset < dailyStreak;
-                        return (
-                          <div
-                            key={index}
-                            className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold md:h-8 md:w-8 md:text-sm ${
-                              hasActivity
-                                ? 'bg-orange-400 text-white'
-                                : 'bg-white/20 text-white/40'
-                            }`}
-                          >
-                            {hasActivity ? '🔥' : '○'}
-                          </div>
-                        );
-                      })}
-                    </div>
-
-                    <div className="mt-3 text-xs text-white/60 md:mt-4">
-                      {dailyStreak >= 100 && '⭐ Century champion! '}
-                      {dailyStreak >= 30 &&
-                        dailyStreak < 100 &&
-                        '🏆 Monthly master! '}
-                      {dailyStreak >= 7 &&
-                        dailyStreak < 30 &&
-                        '🎉 Week warrior! '}
-                      {dailyStreak > 0 && (
-                        <>
-                          Next milestone:{' '}
-                          {dailyStreak < 7
-                            ? '7 days'
-                            : dailyStreak < 30
-                              ? '30 days'
-                              : '100 days'}
-                        </>
-                      )}
-                    </div>
-                    <div className="mt-4">
-                      <div
-                        className="inline-flex cursor-pointer items-center justify-center rounded-full bg-white/20 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/30"
-                        onClick={() => handleTabChange(Tab.FRIENDS)}
-                      >
-                        View leaderboard
+              {/* Daily Streak Section - Compact */}
+              <div className="mb-4 md:mb-6">
+                <div className="mx-auto max-w-sm rounded-xl border border-white/20 bg-purple-600/20 p-3 backdrop-blur-sm">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="text-xl">🔥</div>
+                      <div>
+                        <span className="text-lg font-bold text-white">
+                          {dailyStreak}
+                        </span>
+                        <span className="ml-1 text-sm text-white/80">
+                          day streak
+                        </span>
                       </div>
                     </div>
+                    <button
+                      className="rounded-full bg-white/20 px-3 py-1 text-xs font-medium text-white backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/30"
+                      onClick={() => handleTabChange(Tab.FRIENDS)}
+                    >
+                      Leaderboard
+                    </button>
                   </div>
                 </div>
               </div>
@@ -279,7 +234,7 @@ function HomeComponent() {
                   </h3>
                   <p className="mb-3 text-sm text-white/80 md:mb-4 md:text-base">
                     Choose your difficulty - race against the clock and your
-                    friends! New puzzles at midnight UTC.
+                    friends! Fresh puzzles daily!
                   </p>
                   <div className="grid grid-cols-3 gap-2 md:gap-3">
                     <button
@@ -350,8 +305,7 @@ function HomeComponent() {
                         📚 {currentMonth} Puzzle Book
                       </h3>
                       <p className="mb-3 text-sm text-white/80 md:mb-4 md:text-base">
-                        Each month we publish a new collection of 50 puzzles
-                        crafted with multiple solving techniques
+                        50 new puzzles each month with varied solving techniques
                       </p>
                       <div className="flex flex-col items-center rounded-xl bg-white/20 p-4 backdrop-blur-sm md:flex-row md:items-center md:justify-between md:p-6">
                         <div className="mb-4 flex flex-col items-center md:mb-0 md:flex-row md:items-center">
