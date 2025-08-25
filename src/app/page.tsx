@@ -286,7 +286,8 @@ function HomeComponent() {
                     </button>
                   </div>
                   <p className="mt-3 text-xs text-white/80 md:mb-4 md:text-base">
-                    (For easy or fiendish check out the book below!)
+                    For a larger range of difficulties and techniques check out
+                    this month&apos;s book below!
                   </p>
                 </div>
 
@@ -335,46 +336,55 @@ function HomeComponent() {
                   );
                 })()}
 
-                {/* Import & Friends in 2-column grid on desktop */}
-                <div className="grid gap-4 md:grid-cols-2 md:gap-6">
-                  {/* Import Racing Challenge */}
-                  <div className="rounded-2xl bg-white/15 p-4 backdrop-blur-sm md:p-6">
-                    <h3 className="mb-2 text-lg font-bold text-white md:mb-3 md:text-xl">
-                      📸 Import Puzzle
-                    </h3>
-                    <p className="mb-3 text-sm text-white/80 md:mb-4 md:text-base">
-                      Scan and share an unsolved puzzle from a book or website -
-                      race against the clock and your friends!
-                    </p>
+                {/* Import Your Own Puzzle - Full Width Feature */}
+                <div className="mb-4 rounded-2xl bg-white/10 p-4 backdrop-blur-sm md:mb-6 md:p-6">
+                  <h3 className="mb-2 text-lg font-bold text-white md:mb-3 md:text-xl">
+                    🏁 Race Friends on ANY Puzzle!
+                  </h3>
+                  <p className="mb-3 text-sm text-white/80 md:mb-4 md:text-base">
+                    Found the perfect puzzle? Scan any Sudoku from books,
+                    newspapers, or websites and challenge your friends to solve
+                    the same puzzle. See who can solve it fastest! 🚀
+                  </p>
+                  <div className="flex flex-col items-center rounded-xl bg-white/20 p-4 backdrop-blur-sm md:flex-row md:justify-between md:p-6">
+                    <div className="mb-4 text-center md:mb-0 md:text-left">
+                      <div className="mb-2 text-lg font-bold text-white md:text-xl">
+                        📸 Import & Share Challenge
+                      </div>
+                      <div className="text-sm text-white/70 md:text-base">
+                        Perfect for book puzzles, newspaper challenges, or that
+                        impossible puzzle you found online
+                      </div>
+                    </div>
                     <Link
                       href="/import"
-                      className="inline-flex items-center justify-center rounded-full bg-white/20 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/30 md:px-6 md:py-3 md:text-base"
+                      className="inline-flex items-center justify-center rounded-full bg-white/20 px-6 py-3 text-sm font-bold text-white backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/30 md:px-8 md:py-4 md:text-base"
                     >
                       <Camera className="mr-2 h-4 w-4 md:h-5 md:w-5" />
-                      Import Puzzle
+                      Start Import Challenge
                     </Link>
                   </div>
+                </div>
 
-                  {/* Friends Racing */}
-                  <div className="rounded-2xl bg-white/8 p-4 backdrop-blur-sm md:p-6">
-                    <h3 className="mb-2 text-lg font-bold text-white md:mb-3 md:text-xl">
-                      👥 Team Racing
-                    </h3>
-                    <p className="mb-3 text-sm text-white/80 md:mb-4 md:text-base">
-                      Race against{' '}
-                      {friendsList?.length
-                        ? friendsList.slice(0, 3).join(', ')
-                        : 'your racing team'}{' '}
-                      and climb the leaderboard!
-                    </p>
-                    <button
-                      onClick={() => handleTabChange(Tab.FRIENDS)}
-                      className="inline-flex cursor-pointer items-center justify-center rounded-full bg-white/20 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/30 md:px-6 md:py-3 md:text-base"
-                    >
-                      <Users className="mr-2 h-4 w-4 md:h-5 md:w-5" />
-                      View Racing Teams
-                    </button>
-                  </div>
+                {/* Friends Racing - Single column */}
+                <div className="mb-4 rounded-2xl bg-white/8 p-4 backdrop-blur-sm md:mb-6 md:p-6">
+                  <h3 className="mb-2 text-lg font-bold text-white md:mb-3 md:text-xl">
+                    👥 Team Racing
+                  </h3>
+                  <p className="mb-3 text-sm text-white/80 md:mb-4 md:text-base">
+                    Race against{' '}
+                    {friendsList?.length
+                      ? friendsList.slice(0, 3).join(', ')
+                      : 'your racing team'}{' '}
+                    and climb the leaderboard!
+                  </p>
+                  <button
+                    onClick={() => handleTabChange(Tab.FRIENDS)}
+                    className="inline-flex cursor-pointer items-center justify-center rounded-full bg-white/20 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/30 md:px-6 md:py-3 md:text-base"
+                  >
+                    <Users className="mr-2 h-4 w-4 md:h-5 md:w-5" />
+                    View Racing Teams
+                  </button>
                 </div>
               </div>
             </div>

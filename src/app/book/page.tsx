@@ -1,5 +1,4 @@
 'use client';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowUp } from 'react-feather';
 import { BookCover } from '@/components/BookCovers';
@@ -214,7 +213,6 @@ export default function BookPage() {
         {/* Header */}
         <div className="pt-safe bg-gradient-to-r from-blue-600 to-purple-600 px-6">
           <div className="container mx-auto max-w-6xl py-6 md:py-8">
-
             <div className="flex flex-col items-center text-white md:flex-row md:items-center">
               <div className="mb-4 md:mr-6 md:mb-0">
                 <BookCover month={currentMonth} size="large" />
