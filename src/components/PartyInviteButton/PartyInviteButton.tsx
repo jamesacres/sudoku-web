@@ -39,7 +39,13 @@ const PartyInviteButton = ({
     return latestInviteUrl;
   };
 
-  return <CopyButton getText={getInviteUrl} extraSmall={extraSmall} />;
+  return (
+    <CopyButton
+      getText={getInviteUrl}
+      extraSmall={extraSmall}
+      partyName={partyName}
+    />
+  );
 };
 
 export { PartyInviteButton };

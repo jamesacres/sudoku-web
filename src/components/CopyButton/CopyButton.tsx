@@ -1,17 +1,36 @@
-import { useState } from 'react';
-import { Check, Copy, Loader } from 'react-feather';
+import { isAndroid, isCapacitor, isIOS } from '@/helpers/capacitor';
+import { Share } from '@capacitor/share';
+import { useEffect, useState } from 'react';
+import {
+  Check,
+  Copy,
+  Loader,
+  Share as ShareIOS,
+  Share2 as ShareAndroid,
+} from 'react-feather';
 
 const CopyButton = ({
   getText,
   extraSmall = false,
   className = '',
+  partyName,
 }: {
   getText: () => Promise<string> | string;
   extraSmall?: boolean;
   className?: string;
+  partyName?: string;
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [showCopied, setShowCopied] = useState(false);
+  const [canShare, setCanShare] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      if (await Share.canShare()) {
+        setCanShare(true);
+      }
+    })();
+  }, []);
 
   const handleCopy = async () => {
     setIsLoading(true);
@@ -21,6 +40,14 @@ const CopyButton = ({
       if (text) {
         await navigator.clipboard.writeText(text);
         setShowCopied(true);
+        if (canShare) {
+          Share.share({
+            title: `You're invited to a Sudoku Race!`,
+            text: `Join the${partyName ? ` ${partyName}` : ''} racing team`,
+            url: text,
+            dialogTitle: 'Share invite',
+          });
+        }
         setTimeout(() => {
           setShowCopied(false);
         }, 5000);
@@ -35,6 +62,8 @@ const CopyButton = ({
   const defaultClassName = `text-theme-primary dark:text-theme-primary-light flex cursor-pointer items-center justify-center rounded-full bg-gray-100 transition-colors hover:bg-gray-200 active:opacity-80 dark:bg-gray-700 dark:hover:bg-gray-600 ${
     extraSmall ? 'px-2 py-1 text-xs' : 'w-full px-4 py-2.5 text-sm'
   } font-medium`;
+
+  const ShareIcon = isIOS() ? ShareIOS : ShareAndroid;
 
   return (
     <button
@@ -54,6 +83,11 @@ const CopyButton = ({
               className="mx-auto animate-spin"
               size={extraSmall ? 14 : 18}
             />
+          ) : canShare ? (
+            <>
+              <ShareIcon className="mr-2" size={extraSmall ? 14 : 18} /> Share
+              Invite Link
+            </>
           ) : (
             <>
               <Copy className="mr-2" size={extraSmall ? 14 : 18} /> Copy Invite

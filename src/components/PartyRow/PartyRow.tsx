@@ -361,6 +361,7 @@ const PartyRow = ({
                             `https://sudoku.bubblyclouds.com${window.location.pathname}${window.location.search}`
                           }
                           extraSmall={true}
+                          partyName={partyName}
                         />
                       </div>
                     )}
