@@ -104,7 +104,7 @@ export const AppDownloadModal = ({
 
                   <p className="text-lg text-gray-600 dark:text-gray-300">
                     {isMobileWeb
-                      ? 'Get the best racing experience with our native app!'
+                      ? 'Get the best racing experience with our Sudoku Race app!'
                       : 'Download Sudoku Race'}
                   </p>
                 </div>
