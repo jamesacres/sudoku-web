@@ -22,7 +22,7 @@ const CopyButton = ({
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [showCopied, setShowCopied] = useState(false);
-  const [canShare, setCanShare] = useState(true);
+  const [canShare, setCanShare] = useState(false);
 
   useEffect(() => {
     (async () => {
