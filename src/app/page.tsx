@@ -45,8 +45,13 @@ function HomeComponent() {
   useOnline();
   const [isLoading, setIsLoading] = useState(false);
   const { getSudokuOfTheDay } = useServerStorage();
-  const { parties } = useParties({});
-  const { sessions, refetchSessions, lazyLoadFriendSessions } = useSessions();
+  const { parties, refreshParties } = useParties({});
+  const {
+    sessions,
+    refetchSessions,
+    lazyLoadFriendSessions,
+    fetchFriendSessions,
+  } = useSessions();
 
   useEffect(() => {
     // Always refetch sessions when returning to homepage to get latest progress
@@ -176,6 +181,14 @@ function HomeComponent() {
   }, [sessions]);
 
   const dailyStreak = calculateDailyStreak();
+
+  const refreshLeaderboard = useCallback(async () => {
+    await refreshParties();
+    // After refreshing parties, we need to fetch fresh friend sessions
+    if (parties && parties.length > 0) {
+      await fetchFriendSessions(parties);
+    }
+  }, [refreshParties, fetchFriendSessions, parties]);
 
   return (
     <>
@@ -479,6 +492,7 @@ function HomeComponent() {
                 user={user}
                 parties={parties}
                 mySessions={sessions || []}
+                onRefresh={refreshLeaderboard}
               />
             )}
           </div>

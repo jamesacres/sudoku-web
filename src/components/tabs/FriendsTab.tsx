@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { ServerStateResult, Party } from '@/types/serverTypes';
 import { ServerState } from '@/types/state';
 import { UserProfile } from '@/types/userProfile';
-import { Loader, ChevronDown, ChevronRight } from 'react-feather';
+import { Loader, ChevronDown, ChevronRight, RotateCcw } from 'react-feather';
 import { useSessions } from '@/providers/SessionsProvider/SessionsProvider';
 import IntegratedSessionRow from '../IntegratedSessionRow';
 import Leaderboard from '../leaderboard/Leaderboard';
@@ -12,12 +12,30 @@ interface FriendsTabProps {
   user: UserProfile | undefined;
   parties: Party[] | undefined;
   mySessions: ServerStateResult<ServerState>[] | undefined;
+  onRefresh?: () => Promise<void>;
 }
 
-export const FriendsTab = ({ user, parties, mySessions }: FriendsTabProps) => {
+export const FriendsTab = ({
+  user,
+  parties,
+  mySessions,
+  onRefresh,
+}: FriendsTabProps) => {
   const { sessions, friendSessions } = useSessions();
   const [expandedUsers, setExpandedUsers] = useState<Set<string>>(new Set());
   const [selectedPartyId, setSelectedPartyId] = useState<string | 'all'>('all');
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const handleRefresh = async () => {
+    if (!onRefresh || isRefreshing) return;
+
+    setIsRefreshing(true);
+    try {
+      await onRefresh();
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
 
   const toggleUserExpansion = (userId: string) => {
     setExpandedUsers((prev) => {
@@ -81,13 +99,32 @@ export const FriendsTab = ({ user, parties, mySessions }: FriendsTabProps) => {
 
       {/* Leaderboard Section */}
       {user && parties && (
-        <Leaderboard
-          sessions={sessions}
-          friendSessions={friendSessions}
-          parties={parties}
-          user={user}
-          selectedParty={selectedParty}
-        />
+        <div className="mb-6">
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200">
+              Leaderboard
+            </h2>
+            {onRefresh && (
+              <button
+                onClick={handleRefresh}
+                disabled={isRefreshing}
+                className="flex items-center space-x-2 px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:text-gray-800 disabled:opacity-50 dark:text-gray-400 dark:hover:text-gray-200"
+              >
+                <RotateCcw
+                  className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`}
+                />
+                <span>{isRefreshing ? 'Refreshing...' : 'Refresh'}</span>
+              </button>
+            )}
+          </div>
+          <Leaderboard
+            sessions={sessions}
+            friendSessions={friendSessions}
+            parties={parties}
+            user={user}
+            selectedParty={selectedParty}
+          />
+        </div>
       )}
 
       {/* Individual Friends Puzzles Section */}
