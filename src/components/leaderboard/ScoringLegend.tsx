@@ -29,7 +29,7 @@ const ScoringLegend: React.FC<ScoringLegendProps> = ({ isOpen, onClose }) => {
             </h3>
             <button
               onClick={onClose}
-              className="cursor-pointer rounded-full bg-white/20 p-2 text-white transition-colors hover:bg-white/30"
+              className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-white/20 text-white transition-colors hover:bg-white/30"
             >
               ✕
             </button>
