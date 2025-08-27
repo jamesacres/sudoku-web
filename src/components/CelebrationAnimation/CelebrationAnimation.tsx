@@ -125,7 +125,9 @@ const CelebrationAnimation: React.FC<CelebrationAnimationProps> = ({
         // We check if count is 2, because the completedGamesCount will be stale
         try {
           if (isCapacitor() && completedGamesCount === 2) {
-            InAppReview.requestReview();
+            InAppReview.requestReview().catch((e) => {
+              console.error(e);
+            });
           }
         } catch (e) {
           console.error('Error requesting app review:', e);
