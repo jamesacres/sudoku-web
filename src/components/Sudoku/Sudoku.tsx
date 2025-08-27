@@ -173,7 +173,7 @@ const Sudoku = ({
   // Handle countdown finishing for subscription modal
   useEffect(() => {
     if (timer?.countdown === 1 && !isSubscribed && !completed) {
-      if (getDailyPuzzleCount() > DAILY_LIMITS.PUZZLE) {
+      if (getDailyPuzzleCount() >= DAILY_LIMITS.PUZZLE) {
         // Countdown just reached "GO!" - show subscription modal after a brief delay
         setPauseTimer(true);
         subscribeModal?.showModalIfRequired(
