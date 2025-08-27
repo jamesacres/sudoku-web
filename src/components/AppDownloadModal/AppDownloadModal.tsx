@@ -2,7 +2,7 @@
 
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
-import { Smartphone, Download, ExternalLink } from 'react-feather';
+import { Smartphone, Download } from 'react-feather';
 import { isCapacitor } from '@/helpers/capacitor';
 
 interface AppDownloadModalProps {

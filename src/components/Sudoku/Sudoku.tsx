@@ -35,6 +35,7 @@ import { isPuzzleCheated } from '@/helpers/cheatDetection';
 import RacingPromptModal from '../RacingPromptModal/RacingPromptModal';
 import AppDownloadModal from '../AppDownloadModal/AppDownloadModal';
 import { isCapacitor } from '@/helpers/capacitor';
+import { useSessions } from '@/providers/SessionsProvider/SessionsProvider';
 
 const Sudoku = ({
   puzzle: { initial, final, puzzleId, redirectUri, metadata },
@@ -54,6 +55,7 @@ const Sudoku = ({
   const router = useRouter();
   const { user } = useContext(UserContext) || {};
   const { isSubscribed, subscribeModal } = useContext(RevenueCatContext) || {};
+  const { sessions } = useSessions();
 
   const {
     answer,
@@ -148,6 +150,12 @@ const Sudoku = ({
     const shouldShowAppDownload = !isCapacitor() && !hasShownAppDownload;
     setShowAppDownload(shouldShowAppDownload);
   }, [hasShownAppDownload]);
+
+  // Calculate completed games count for rating prompt
+  const completedGamesCount = useMemo(() => {
+    if (!sessions) return 0;
+    return sessions.filter((session) => session.state.completed).length;
+  }, [sessions]);
 
   const copyGrid = useCallback(() => {
     // Copy to clipboard
@@ -298,7 +306,11 @@ const Sudoku = ({
 
       {/* Display celebration animation when completed */}
       {completed && (
-        <CelebrationAnimation isVisible={showAnimation} gridRef={gridRef} />
+        <CelebrationAnimation
+          isVisible={showAnimation}
+          gridRef={gridRef}
+          completedGamesCount={completedGamesCount}
+        />
       )}
 
       <div className="flex flex-col items-center lg:flex-row">

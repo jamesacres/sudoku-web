@@ -1,9 +1,12 @@
 'use client';
 import React, { useEffect, useState } from 'react';
+import { InAppReview } from '@capacitor-community/in-app-review';
+import { isCapacitor } from '@/helpers/capacitor';
 
 interface CelebrationAnimationProps {
   isVisible: boolean;
   gridRef?: React.RefObject<HTMLDivElement>;
+  completedGamesCount?: number;
 }
 
 interface Piece {
@@ -42,6 +45,7 @@ const RAINBOW_COLORS = [
 const CelebrationAnimation: React.FC<CelebrationAnimationProps> = ({
   isVisible,
   gridRef,
+  completedGamesCount = 0,
 }) => {
   // For the explosion animation, we'll store the pieces based on cell content
   const [explosionPieces, setExplosionPieces] = useState<Array<Piece>>([]);
@@ -116,6 +120,16 @@ const CelebrationAnimation: React.FC<CelebrationAnimationProps> = ({
           grid.style.visibility = 'visible';
         }
         setIsAnimating(false);
+
+        // Ask for app rating if it's their third completed game
+        // We check if count is 2, because the completedGamesCount will be stale
+        try {
+          if (isCapacitor() && completedGamesCount === 2) {
+            InAppReview.requestReview();
+          }
+        } catch (e) {
+          console.error('Error requesting app review:', e);
+        }
       }, 9000); // Extended to 9 seconds (2 second pause + 7 second animation)
 
       return () => {
@@ -125,7 +139,7 @@ const CelebrationAnimation: React.FC<CelebrationAnimationProps> = ({
         }
       };
     }
-  }, [isVisible, gridRef]);
+  }, [isVisible, gridRef, completedGamesCount]);
 
   if (!isVisible || !isAnimating) return null;
 

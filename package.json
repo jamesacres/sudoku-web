@@ -19,6 +19,7 @@
     "generate:icons": "npx @capacitor/assets generate --iconBackgroundColor '#eeeeee' --iconBackgroundColorDark '#222222' --splashBackgroundColor '#eeeeee' --splashBackgroundColorDark '#111111'"
   },
   "dependencies": {
+    "@capacitor-community/in-app-review": "^7.0.1",
     "@capacitor/android": "^7.0.0",
     "@capacitor/app": "^7.0.0",
     "@capacitor/browser": "^7.0.0",
