@@ -48,6 +48,14 @@ export const AppDownloadModal = ({
     onClose();
   };
 
+  const handleOpenInApp = () => {
+    const currentPath = window.location.pathname + window.location.search;
+    const deepLink = `com.bubblyclouds.sudoku://-${currentPath}`;
+
+    // Try to open the deep link
+    window.location.href = deepLink;
+  };
+
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-50" onClose={() => {}}>
@@ -131,6 +139,21 @@ export const AppDownloadModal = ({
                     </button>
                   )}
                 </div>
+
+                {/* Open in app option - only show on mobile */}
+                {isMobileWeb && (
+                  <div className="mt-4 text-center">
+                    <p className="mb-3 text-sm text-gray-600 dark:text-gray-400">
+                      Already got the app?
+                    </p>
+                    <button
+                      onClick={handleOpenInApp}
+                      className="w-full cursor-pointer rounded-xl bg-blue-100 px-4 py-3 text-sm font-medium text-blue-700 transition-all duration-200 hover:bg-blue-200 active:scale-95 dark:bg-blue-900/30 dark:text-blue-300 dark:hover:bg-blue-900/50"
+                    >
+                      Open Puzzle
+                    </button>
+                  </div>
+                )}
 
                 {/* Continue in browser option */}
                 <div className="mt-4 border-t border-gray-200 pt-4 dark:border-gray-700">
