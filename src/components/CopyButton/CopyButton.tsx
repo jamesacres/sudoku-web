@@ -26,7 +26,14 @@ const CopyButton = ({
 
   useEffect(() => {
     (async () => {
-      if (await Share.canShare()) {
+      if (
+        (
+          await Share.canShare().catch((e) => {
+            console.warn(e);
+            return { value: false };
+          })
+        ).value
+      ) {
         setCanShare(true);
       }
     })();
@@ -53,7 +60,7 @@ const CopyButton = ({
         }, 5000);
       }
     } catch (error) {
-      console.error('Failed to copy:', error);
+      console.error('Failed to copy/share:', error);
     } finally {
       setIsLoading(false);
     }
