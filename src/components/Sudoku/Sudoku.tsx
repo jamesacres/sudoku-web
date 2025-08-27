@@ -241,18 +241,32 @@ const Sudoku = ({
 
   // Timer and scroll management
   useEffect(() => {
-    const shouldPause = !hasSelectedMode || showSidebar || showRacingPrompt;
+    const shouldPause =
+      !hasSelectedMode || showSidebar || showRacingPrompt || showAppDownload;
 
     setPauseTimer(shouldPause);
 
-    if (showSidebar || showRacingPrompt) {
+    if (showSidebar || showRacingPrompt || showAppDownload) {
       // Stop scroll
       document.body.classList.add('overflow-y-hidden');
     } else {
       // Allow scroll
       document.body.classList.remove('overflow-y-hidden');
     }
-  }, [hasSelectedMode, showSidebar, showRacingPrompt, setPauseTimer]);
+  }, [
+    hasSelectedMode,
+    showSidebar,
+    showRacingPrompt,
+    showAppDownload,
+    setPauseTimer,
+  ]);
+
+  // Cleanup: Always restore scrolling when component unmounts
+  useEffect(() => {
+    return () => {
+      document.body.classList.remove('overflow-y-hidden');
+    };
+  }, []);
 
   return (
     <div
