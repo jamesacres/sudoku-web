@@ -1,4 +1,4 @@
-import { isAndroid, isCapacitor, isIOS } from '@/helpers/capacitor';
+import { isIOS } from '@/helpers/capacitor';
 import { Share } from '@capacitor/share';
 import { useEffect, useState } from 'react';
 import {
