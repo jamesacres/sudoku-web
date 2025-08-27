@@ -236,7 +236,7 @@ function HomeComponent() {
                       </div>
                     </div>
                     <button
-                      className="rounded-full bg-white/20 px-3 py-1 text-xs font-medium text-white backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/30"
+                      className="cursor-pointer rounded-full bg-white/20 px-3 py-1 text-xs font-medium text-white backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/30"
                       onClick={() => handleTabChange(Tab.FRIENDS)}
                     >
                       Leaderboard
