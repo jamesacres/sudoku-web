@@ -512,6 +512,7 @@ function useGameState({
     isPaused,
     isDocumentVisible,
     hasSessionParties,
+    sessionParties,
   ]);
 
   useEffect(() => {
