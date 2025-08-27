@@ -452,11 +452,21 @@ function useGameState({
       const timeSinceLastSave = now - lastSaveTimeRef.current;
 
       // Only poll if more than 30 seconds has passed since last saveValue call
+      // And less than 30 minutes
+      // And there are sessions still in progress
       if (
         !isPaused &&
         isDocumentVisible &&
         active &&
-        timeSinceLastSave >= 30000
+        timeSinceLastSave >= 30000 &&
+        timeSinceLastSave < 60000 * 30 &&
+        Object.values(sessionParties).find(
+          (party) =>
+            party &&
+            Object.values(party.memberSessions).find(
+              (session) => !session?.state.completed
+            )
+        )
       ) {
         console.info('polling stale session parties..');
         const currentIgnoreCounter = pollingIgnoreCounterRef.current;
