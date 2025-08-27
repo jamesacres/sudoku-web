@@ -33,6 +33,8 @@ import { GameStateMetadata } from '@/types/state';
 import { puzzleToPuzzleText } from '@/helpers/puzzleTextToPuzzle';
 import { isPuzzleCheated } from '@/helpers/cheatDetection';
 import RacingPromptModal from '../RacingPromptModal/RacingPromptModal';
+import AppDownloadModal from '../AppDownloadModal/AppDownloadModal';
+import { isCapacitor } from '@/helpers/capacitor';
 
 const Sudoku = ({
   puzzle: { initial, final, puzzleId, redirectUri, metadata },
@@ -122,13 +124,30 @@ const Sudoku = ({
   const [showRacingPrompt, setShowRacingPrompt] = useState(false);
   const [hasSelectedMode, setHasSelectedMode] = useState(false);
 
+  // State for app download modal
+  const [showAppDownload, setShowAppDownload] = useState(false);
+  const [hasShownAppDownload, setHasShownAppDownload] = useState(false);
+
   // Update racing prompt visibility when conditions change
   useEffect(() => {
-    const shouldShow =
+    const shouldShowRacingPrompt =
       !alreadyCompleted && showRacingPromptProp && !hasOtherPlayers;
-    setShowRacingPrompt(shouldShow);
+
+    // Only show racing prompt if app download modal is not showing/hasn't been dismissed yet
+    setShowRacingPrompt(shouldShowRacingPrompt && !showAppDownload);
     setHasSelectedMode(alreadyCompleted || hasOtherPlayers);
-  }, [alreadyCompleted, showRacingPromptProp, hasOtherPlayers]);
+  }, [
+    alreadyCompleted,
+    showRacingPromptProp,
+    hasOtherPlayers,
+    showAppDownload,
+  ]);
+
+  // Update app download modal visibility - only for web users who haven't seen it yet
+  useEffect(() => {
+    const shouldShowAppDownload = !isCapacitor() && !hasShownAppDownload;
+    setShowAppDownload(shouldShowAppDownload);
+  }, [hasShownAppDownload]);
 
   const copyGrid = useCallback(() => {
     // Copy to clipboard
@@ -147,6 +166,19 @@ const Sudoku = ({
 
   const handleSoloMode = useCallback(() => {
     setHasSelectedMode(true);
+  }, []);
+
+  // App download modal handlers
+  const handleAppDownloadClose = useCallback(() => {
+    setShowAppDownload(false);
+    setHasShownAppDownload(true);
+    // Racing prompt will show automatically via useEffect if conditions are met
+  }, []);
+
+  const handleContinueWeb = useCallback(() => {
+    setShowAppDownload(false);
+    setHasShownAppDownload(true);
+    // Racing prompt will show automatically via useEffect if conditions are met
   }, []);
 
   // Show animation when the puzzle is completed
@@ -226,6 +258,13 @@ const Sudoku = ({
     <div
       className={`${showAdvancedControls ? 'pb-120' : 'pb-90'} lg:pb-0 landscape:mb-120 sm:landscape:pb-[calc(60vh)] lg:landscape:mb-0 lg:landscape:pb-0`}
     >
+      {/* App download prompt modal - shows first for web users */}
+      <AppDownloadModal
+        isOpen={showAppDownload}
+        onClose={handleAppDownloadClose}
+        onContinueWeb={handleContinueWeb}
+      />
+
       {/* Racing mode selection modal */}
       <RacingPromptModal
         isOpen={showRacingPrompt}
