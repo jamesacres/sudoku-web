@@ -451,12 +451,12 @@ function useGameState({
       const now = Date.now();
       const timeSinceLastSave = now - lastSaveTimeRef.current;
 
-      // Only poll if more than 1 minute has passed since last saveValue call
+      // Only poll if more than 30 seconds has passed since last saveValue call
       if (
         !isPaused &&
         isDocumentVisible &&
         active &&
-        timeSinceLastSave >= 60000
+        timeSinceLastSave >= 30000
       ) {
         console.info('polling stale session parties..');
         const currentIgnoreCounter = pollingIgnoreCounterRef.current;
@@ -485,7 +485,7 @@ function useGameState({
     if (active && !isPaused && isDocumentVisible && hasSessionParties) {
       // Poll every minute if we have at least one party in the session
       console.info('setting up polling..');
-      intervalId = setInterval(pollGetValue, 60000);
+      intervalId = setInterval(pollGetValue, 30000);
     } else {
       console.info('not setting up polling, no need');
     }

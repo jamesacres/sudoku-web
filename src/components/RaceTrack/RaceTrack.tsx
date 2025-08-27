@@ -369,7 +369,7 @@ const RaceTrack = ({
                 </div>
                 <button
                   onClick={onClick}
-                  className="inline-flex items-center rounded-full bg-purple-600 px-6 py-3 text-base font-bold text-white shadow-md transition-transform hover:scale-105 hover:bg-purple-700"
+                  className="inline-flex cursor-pointer items-center rounded-full bg-purple-600 px-6 py-3 text-base font-bold text-white shadow-md transition-transform hover:scale-105 hover:bg-purple-700"
                 >
                   <span className="mr-2 text-xl" role="img" aria-label="racing">
                     🚀
