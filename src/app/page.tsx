@@ -33,6 +33,12 @@ import SocialProof from '@/components/SocialProof/SocialProof';
 function HomeComponent() {
   const searchParams = useSearchParams();
   const [tab, setTab] = useState(searchParams.get('tab') || Tab.START_PUZZLE);
+
+  // Update tab when search params change (only from external navigation)
+  useEffect(() => {
+    const tabFromUrl = searchParams.get('tab') || Tab.START_PUZZLE;
+    setTab(tabFromUrl);
+  }, [searchParams]);
   const router = useRouter();
   const { user, loginRedirect } = useContext(UserContext) || {};
   const { isSubscribed, subscribeModal } = useContext(RevenueCatContext) || {};
@@ -128,7 +134,8 @@ function HomeComponent() {
       : 'text-gray-500 dark:text-gray-400';
 
   const handleTabChange = (newTab: Tab) => {
-    setTab(newTab);
+    // Update URL to reflect the new tab (useEffect will update state)
+    router.replace(`/?tab=${newTab}`);
     // Scroll to top when changing tabs
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };

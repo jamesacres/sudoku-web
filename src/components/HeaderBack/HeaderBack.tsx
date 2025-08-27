@@ -9,9 +9,12 @@ const HeaderBack = () => {
   const pathname = usePathname();
   return pathname === '/' ? (
     <div className="flex items-center">
-      <span className="inline-flex items-center bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-sm font-semibold text-transparent">
+      <button
+        className="inline-flex cursor-pointer items-center bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-sm font-semibold text-transparent transition-opacity active:opacity-70"
+        onClick={() => router.replace('/?tab=START_PUZZLE')}
+      >
         Sudoku Race
-      </span>
+      </button>
     </div>
   ) : (
     <button
