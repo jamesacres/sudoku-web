@@ -4,16 +4,7 @@ import './globals.css';
 import React from 'react';
 import { Providers } from './providers';
 import Header from '@/components/Header';
-import { StatusBar } from '@capacitor/status-bar';
-import { Capacitor } from '@capacitor/core';
 import SudokuPlusModal from '@/components/SudokuPlusModal';
-
-if (Capacitor.getPlatform() === 'android') {
-  setTimeout(() => {
-    StatusBar.setOverlaysWebView({ overlay: true });
-    StatusBar.setBackgroundColor({ color: '#00000000' });
-  }, 100);
-}
 
 const inter = Inter({ subsets: ['latin'] });
 const orbitron = Orbitron({

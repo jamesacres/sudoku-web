@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
+import { isCapacitor } from '@/helpers/capacitor';
+import { StatusBar, Style } from '@capacitor/status-bar';
 
 const ThemeSwitch = () => {
   const [mounted, setMounted] = useState(false);
@@ -10,6 +12,17 @@ const ThemeSwitch = () => {
   // When mounted on client, now we can show the UI
   useEffect(() => setMounted(true), []);
 
+  useEffect(() => {
+    if (isCapacitor()) {
+      StatusBar.setStyle({
+        style:
+          theme === 'dark' || resolvedTheme === 'dark'
+            ? Style.Dark
+            : Style.Light,
+      });
+    }
+  }, [theme, resolvedTheme]);
+
   if (!mounted) {
     return null;
   }
@@ -17,11 +30,11 @@ const ThemeSwitch = () => {
   return (
     <button
       aria-label="Toggle Dark Mode"
-      onClick={() =>
-        setTheme(
-          theme === 'dark' || resolvedTheme === 'dark' ? 'light' : 'dark'
-        )
-      }
+      onClick={() => {
+        const newTheme =
+          theme === 'dark' || resolvedTheme === 'dark' ? 'light' : 'dark';
+        setTheme(newTheme);
+      }}
       className="text-theme-primary dark:text-theme-primary-light mx-1 h-8 w-8 cursor-pointer rounded-full bg-gray-100 p-1.5 transition-colors active:opacity-70 dark:bg-gray-800"
     >
       <svg

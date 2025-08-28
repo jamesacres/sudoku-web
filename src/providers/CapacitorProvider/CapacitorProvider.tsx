@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { App, URLOpenListenerEvent } from '@capacitor/app';
 import { Capacitor } from '@capacitor/core';
 import { StatusBar } from '@capacitor/status-bar';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Browser } from '@capacitor/browser';
 
 interface CapacitorContextInterface {}
@@ -16,32 +16,54 @@ const CapacitorProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const router = useRouter();
-
-  if (Capacitor.getPlatform() === 'android') {
-    setTimeout(() => {
-      StatusBar.setOverlaysWebView({ overlay: false });
-      StatusBar.setBackgroundColor({ color: '#000000' });
-    }, 1000);
-  }
+  const pathname = usePathname();
 
   useEffect(() => {
-    App.addListener('appUrlOpen', (event: URLOpenListenerEvent) => {
-      if (event.url) {
-        // For auth and other links
-        // Note this is also used for the iOS/Android auth redirect with custom url schemes
-        // com.bubblyclouds.sudoku://-/auth
-        // capacitor://localhost/auth
-        // In addition to https://sudoku.bubblyclouds.com/auth
-        const url = new URL(event.url);
-        url.protocol = window.location.protocol;
-        url.host = window.location.host;
-        url.port = window.location.port;
-        router.push(url.toString());
-        // Close browser if open, e.g. on auth page
-        Browser.close();
-      }
+    if (Capacitor.getPlatform() === 'android') {
+      setTimeout(() => {
+        StatusBar.setOverlaysWebView({ overlay: false });
+        StatusBar.setBackgroundColor({ color: '#000000' });
+        // Note, style is changed in theme switch
+      }, 1000);
+    }
+  }, []);
+
+  useEffect(() => {
+    let isActive = true;
+    App.removeAllListeners().then(() => {
+      App.addListener('appUrlOpen', (event: URLOpenListenerEvent) => {
+        if (isActive) {
+          if (event.url) {
+            // For auth and other links
+            // Note this is also used for the iOS/Android auth redirect with custom url schemes
+            // com.bubblyclouds.sudoku://-/auth
+            // capacitor://localhost/auth
+            // In addition to https://sudoku.bubblyclouds.com/auth
+            const url = new URL(event.url);
+            url.protocol = window.location.protocol;
+            url.host = window.location.host;
+            url.port = window.location.port;
+            router.push(url.toString());
+            // Close browser if open, e.g. on auth page
+            Browser.close();
+          }
+        }
+      });
+
+      App.addListener('backButton', () => {
+        if (isActive) {
+          if (pathname === '/') {
+            App.minimizeApp();
+          } else {
+            router.back();
+          }
+        }
+      });
     });
-  }, [router]);
+    return () => {
+      isActive = false;
+    };
+  }, [router, pathname]);
 
   return (
     <CapacitorContext.Provider value={{}}>{children}</CapacitorContext.Provider>
