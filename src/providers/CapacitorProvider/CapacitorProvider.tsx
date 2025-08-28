@@ -19,16 +19,6 @@ const CapacitorProvider: React.FC<{ children: React.ReactNode }> = ({
   const pathname = usePathname();
 
   useEffect(() => {
-    if (Capacitor.getPlatform() === 'android') {
-      setTimeout(() => {
-        StatusBar.setOverlaysWebView({ overlay: false });
-        StatusBar.setBackgroundColor({ color: '#000000' });
-        // Note, style is changed in theme switch
-      }, 1000);
-    }
-  }, []);
-
-  useEffect(() => {
     let isActive = true;
     App.removeAllListeners().then(() => {
       App.addListener('appUrlOpen', (event: URLOpenListenerEvent) => {
