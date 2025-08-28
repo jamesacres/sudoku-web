@@ -1,8 +1,6 @@
 'use client';
 import React, { useEffect } from 'react';
 import { App, URLOpenListenerEvent } from '@capacitor/app';
-import { Capacitor } from '@capacitor/core';
-import { StatusBar } from '@capacitor/status-bar';
 import { usePathname, useRouter } from 'next/navigation';
 import { Browser } from '@capacitor/browser';
 
