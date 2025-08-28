@@ -139,8 +139,10 @@ function HomeComponent() {
       : 'text-gray-500 dark:text-gray-400';
 
   const handleTabChange = (newTab: Tab) => {
-    // Update URL to reflect the new tab (useEffect will update state)
-    router.replace(`/?tab=${newTab}`);
+    // Update state immediately to prevent unnecessary re-renders
+    setTab(newTab);
+    // Update URL without triggering navigation effects
+    window.history.replaceState(null, '', `/?tab=${newTab}`);
     // Scroll to top when changing tabs
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
