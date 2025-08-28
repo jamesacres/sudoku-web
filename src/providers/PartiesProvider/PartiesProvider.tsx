@@ -79,6 +79,12 @@ const PartiesProvider: React.FC<{ children: React.ReactNode }> = ({
     setMemberNickname(user?.given_name || user?.name || '');
   }, [user]);
 
+  // Reset initialization state when user changes to trigger reload
+  useEffect(() => {
+    setHasInitialized(false);
+    setParties([]);
+  }, [user]);
+
   // Create a new party
   const saveParty = useCallback(
     async (params: { memberNickname: string; partyName: string }) => {
@@ -206,7 +212,7 @@ const PartiesProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 
   const lazyLoadParties = useCallback(async () => {
-    if (!hasInitialized && !isLoading) {
+    if (!hasInitialized && !isLoading && user) {
       console.info('loadParties (lazy)');
       setHasInitialized(true);
       setIsLoading(true);
@@ -216,7 +222,7 @@ const PartiesProvider: React.FC<{ children: React.ReactNode }> = ({
       }
       setIsLoading(false);
     }
-  }, [hasInitialized, isLoading, listParties]);
+  }, [hasInitialized, isLoading, listParties, user]);
 
   return (
     <PartiesContext.Provider

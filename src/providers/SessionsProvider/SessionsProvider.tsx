@@ -6,6 +6,7 @@ import {
   useCallback,
   ReactNode,
   useRef,
+  useEffect,
 } from 'react';
 import {
   ServerStateResult,
@@ -19,6 +20,7 @@ import { Timer } from '@/types/timer';
 import { UserSession, UserSessions } from '@/types/userSessions';
 import { useServerStorage } from '@/hooks/serverStorage';
 import { useLocalStorage } from '@/hooks/localStorage';
+import { UserContext } from '@/providers/UserProvider';
 
 interface SessionsContextType {
   sessions: ServerStateResult<ServerState>[] | null;
@@ -50,6 +52,7 @@ interface SessionsProviderProps {
 }
 
 export const SessionsProvider = ({ children }: SessionsProviderProps) => {
+  const { user } = useContext(UserContext) || {};
   const [sessions, setSessionsState] = useState<
     ServerStateResult<ServerState>[] | null
   >(null);
@@ -63,6 +66,13 @@ export const SessionsProvider = ({ children }: SessionsProviderProps) => {
 
   // Update ref whenever friendSessions state changes
   friendSessionsRef.current = friendSessions;
+
+  useEffect(() => {
+    setSessionsState(null);
+    setFriendSessions({});
+    setHasFriendSessionsInitialized(false);
+  }, [user]);
+
   const {
     prefix,
     listValues: listLocalPuzzles,
