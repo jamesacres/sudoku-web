@@ -503,21 +503,21 @@ function HomeComponent() {
       <Footer>
         <button
           onClick={() => handleTabChange(Tab.START_PUZZLE)}
-          className={`group inline-flex cursor-pointer flex-col items-center justify-center px-5 transition-colors duration-200 active:opacity-70 ${tabBackground(Tab.START_PUZZLE)}`}
+          className={`group inline-flex cursor-pointer flex-col items-center justify-center px-0 transition-colors duration-200 active:opacity-70 ${tabBackground(Tab.START_PUZZLE)}`}
         >
           <Zap className="text-theme-primary dark:text-theme-primary-light mb-1 h-6 w-6" />
           <span className="text-center text-xs font-medium">Start Race</span>
         </button>
         <button
           onClick={() => handleTabChange(Tab.MY_PUZZLES)}
-          className={`group inline-flex cursor-pointer flex-col items-center justify-center px-5 transition-colors duration-200 active:opacity-70 ${tabBackground(Tab.MY_PUZZLES)}`}
+          className={`group inline-flex cursor-pointer flex-col items-center justify-center px-0 transition-colors duration-200 active:opacity-70 ${tabBackground(Tab.MY_PUZZLES)}`}
         >
           <Award className="text-theme-primary dark:text-theme-primary-light mb-1 h-6 w-6" />
           <span className="text-center text-xs font-medium">My Puzzles</span>
         </button>
         <button
           onClick={() => handleTabChange(Tab.FRIENDS)}
-          className={`group inline-flex cursor-pointer flex-col items-center justify-center px-5 transition-colors duration-200 active:opacity-70 ${tabBackground(Tab.FRIENDS)}`}
+          className={`group inline-flex cursor-pointer flex-col items-center justify-center px-0 transition-colors duration-200 active:opacity-70 ${tabBackground(Tab.FRIENDS)}`}
         >
           <Users className="text-theme-primary dark:text-theme-primary-light mb-1 h-6 w-6" />
           <span className="text-center text-xs font-medium">Racing Teams</span>
