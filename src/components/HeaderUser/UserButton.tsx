@@ -73,7 +73,7 @@ export const UserButton = ({
                 }
               }}
             >
-              <div className="h-8 w-8 cursor-pointer rounded-full ring-2 ring-transparent transition-all hover:ring-gray-300 dark:hover:ring-gray-600">
+              <div className="mx-1 h-8 w-8 cursor-pointer rounded-full ring-2 ring-transparent transition-all hover:ring-gray-300 dark:hover:ring-gray-600">
                 <UserAvatar user={user} size={32} />
               </div>
             </Popover.Button>
