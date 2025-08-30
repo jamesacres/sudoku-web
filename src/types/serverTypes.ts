@@ -28,12 +28,19 @@ export interface ServerStateResult<T> extends Session<T> {
   parties?: Parties<Session<T>>;
 }
 
+export enum EntitlementDuration {
+  LIFETIME = 'lifetime',
+  ONE_MONTH = 'one_month',
+  ONE_YEAR = 'one_year',
+}
+
 export interface PartyResponse {
   partyId: string;
   appId: string;
   partyName: string;
   createdBy: string;
   maxSize?: number;
+  entitlementDuration?: EntitlementDuration;
   createdAt: string;
   updatedAt: string;
 }
@@ -67,6 +74,7 @@ export interface InviteResponse {
   description?: string;
   sessionId?: string;
   redirectUri?: string;
+  entitlementDuration?: EntitlementDuration;
   createdBy: string;
   expiresAt: string;
   createdAt: string;
