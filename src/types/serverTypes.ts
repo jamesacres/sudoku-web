@@ -74,7 +74,6 @@ export interface InviteResponse {
   description?: string;
   sessionId?: string;
   redirectUri?: string;
-  entitlementDuration?: EntitlementDuration;
   createdBy: string;
   expiresAt: string;
   createdAt: string;
@@ -92,7 +91,9 @@ export interface PublicInvite
   extends Pick<
     Invite,
     'description' | 'resourceId' | 'sessionId' | 'redirectUri'
-  > {}
+  > {
+  entitlementDuration?: EntitlementDuration;
+}
 
 export enum Difficulty {
   SIMPLE = 'simple',

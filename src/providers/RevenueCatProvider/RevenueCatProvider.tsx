@@ -25,6 +25,7 @@ interface RevenueCatContextInterface {
     pkg: WebPackage | CapacitorPackage
   ) => Promise<boolean | void>;
   restorePurchases: () => Promise<boolean | void>;
+  refreshEntitlements: () => Promise<void>;
   subscribeModal: {
     isOpen: boolean;
     callback: () => void;
@@ -87,6 +88,30 @@ const RevenueCatProvider: React.FC<{ children: React.ReactNode }> = ({
     setIsOpen(true);
   };
   const hideModal = () => setIsOpen(false);
+
+  // Function to refresh customer info and entitlements
+  const refreshCustomerInfo = async () => {
+    if (!user) return;
+
+    try {
+      if (isCapacitor()) {
+        // iOS and Android
+        const { customerInfo } = await CapacitorPurchases.getCustomerInfo();
+        setCustomerInfo(customerInfo);
+      } else if (!isElectron()) {
+        // Web
+        const info = await WebPurchases.getSharedInstance().getCustomerInfo();
+        setCustomerInfo(info);
+      }
+    } catch (error) {
+      console.error('Error refreshing customer info:', error);
+    }
+  };
+
+  // Exposed function to manually refresh entitlements
+  const refreshEntitlements = async () => {
+    await refreshCustomerInfo();
+  };
 
   useEffect(() => {
     if (user) {
@@ -226,6 +251,7 @@ const RevenueCatProvider: React.FC<{ children: React.ReactNode }> = ({
         packages,
         purchasePackage,
         restorePurchases,
+        refreshEntitlements,
         subscribeModal: {
           isOpen,
           callback,

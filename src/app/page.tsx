@@ -6,29 +6,19 @@ import ActivityWidget from '@/components/ActivityWidget';
 import { useOnline } from '@/hooks/online';
 import { useServerStorage } from '@/hooks/serverStorage';
 import { UserContext } from '@/providers/UserProvider';
-import { RevenueCatContext } from '@/providers/RevenueCatProvider';
 import { useSessions } from '@/providers/SessionsProvider/SessionsProvider';
 import { useParties } from '@/hooks/useParties';
 import { Difficulty } from '@/types/serverTypes';
 import { Tab } from '@/types/tabs';
-import { SubscriptionContext } from '@/types/subscriptionContext';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useCallback, useContext, useEffect, useState } from 'react';
-import {
-  Users,
-  Star,
-  Zap,
-  Award,
-  CheckCircle,
-  Lock,
-  Camera,
-} from 'react-feather';
-import { PREMIUM_FEATURES } from '@/config/premiumFeatures';
+import { Users, Zap, Award, Camera } from 'react-feather';
 import Link from 'next/link';
 import Image from 'next/image';
 import { BookCover } from '@/components/BookCovers';
 import { buildPuzzleUrl } from '@/helpers/buildPuzzleUrl';
 import SocialProof from '@/components/SocialProof/SocialProof';
+import { PremiumFeatures } from '@/components/PremiumFeatures';
 
 function HomeComponent() {
   const searchParams = useSearchParams();
@@ -41,7 +31,6 @@ function HomeComponent() {
   }, [searchParams]);
   const router = useRouter();
   const { user, loginRedirect } = useContext(UserContext) || {};
-  const { isSubscribed, subscribeModal } = useContext(RevenueCatContext) || {};
   useOnline();
   const [isLoading, setIsLoading] = useState(false);
   const { getSudokuOfTheDay } = useServerStorage();
@@ -115,22 +104,6 @@ function HomeComponent() {
 
     // Just navigate to book page, let it handle loading
     router.push('/book');
-  };
-
-  const premiumFeatures = PREMIUM_FEATURES.map((feature) => ({
-    ...feature,
-    icon: feature.icon.type, // Extract the icon component
-    isPremium: !isSubscribed,
-  }));
-
-  const handlePremiumFeatureClick = (context?: SubscriptionContext) => {
-    if (!isSubscribed) {
-      subscribeModal?.showModalIfRequired(
-        () => {},
-        () => {},
-        context
-      );
-    }
   };
 
   const tabBackground = (thisTab: Tab) =>
@@ -416,66 +389,7 @@ function HomeComponent() {
           </div>
 
           {/* Premium Features Section */}
-          <div className="container mx-auto max-w-6xl px-6 py-6 md:py-8">
-            <div className="mb-6 md:mb-8">
-              <h2 className="mb-2 text-center text-xl font-bold text-gray-900 md:text-2xl dark:text-white">
-                🏁 Premium Features
-              </h2>
-              <p className="text-center text-sm text-gray-600 md:text-base dark:text-gray-400">
-                Unlock the full Sudoku Race experience
-              </p>
-            </div>
-
-            <div className="grid gap-3 sm:grid-cols-2 md:gap-4 lg:grid-cols-3">
-              {premiumFeatures.map((feature, index) => (
-                <div
-                  key={index}
-                  className={`group relative rounded-2xl border-2 bg-white/80 p-4 shadow-lg backdrop-blur-xl transition-all hover:scale-105 hover:shadow-xl md:p-6 dark:bg-gray-800/80 ${
-                    feature.isPremium
-                      ? 'cursor-pointer border-yellow-200 hover:border-yellow-300 dark:border-yellow-600'
-                      : 'border-green-200 dark:border-green-600'
-                  }`}
-                  onClick={() => {
-                    if (feature.isPremium) {
-                      handlePremiumFeatureClick();
-                    }
-                  }}
-                >
-                  {feature.isPremium && (
-                    <div className="absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg">
-                      <Star className="h-3 w-3" />
-                    </div>
-                  )}
-
-                  <div className="mb-3 flex items-center md:mb-4">
-                    <div
-                      className={`flex h-10 w-10 items-center justify-center rounded-xl md:h-12 md:w-12 ${
-                        feature.isPremium
-                          ? 'bg-gradient-to-br from-blue-500 to-purple-600 text-white'
-                          : 'bg-gradient-to-br from-green-500 to-green-600 text-white'
-                      }`}
-                    >
-                      <feature.icon className="h-5 w-5 md:h-6 md:w-6" />
-                    </div>
-                    <div className="ml-3 flex-1 md:ml-4">
-                      {feature.isPremium ? (
-                        <Lock className="float-right h-4 w-4 text-gray-400" />
-                      ) : (
-                        <CheckCircle className="float-right h-4 w-4 text-green-500" />
-                      )}
-                    </div>
-                  </div>
-
-                  <h3 className="mb-2 text-base font-semibold text-gray-900 md:text-lg dark:text-white">
-                    {feature.title}
-                  </h3>
-                  <p className="text-xs text-gray-600 md:text-sm dark:text-gray-400">
-                    {feature.description}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
+          <PremiumFeatures />
 
           {/* Bottom padding to ensure content doesn't get hidden behind footer */}
           <div className="pb-24"></div>

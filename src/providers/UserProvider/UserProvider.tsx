@@ -242,6 +242,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     localStorage.setItem('recoverSession', 'false');
     setUser(undefined);
     await logout();
+    router.replace('/');
   };
 
   return (

@@ -107,6 +107,10 @@ const PartiesProvider: React.FC<{ children: React.ReactNode }> = ({
   // Refresh parties from server (also triggers initial load if needed)
   const refreshParties = useCallback(
     async (refreshSessionParties?: () => Promise<void>) => {
+      if (!user) {
+        console.warn('refreshParties not logged in');
+        return;
+      }
       if (!isLoading) {
         if (!hasInitialized) {
           setHasInitialized(true);
@@ -124,7 +128,7 @@ const PartiesProvider: React.FC<{ children: React.ReactNode }> = ({
       }
       return parties;
     },
-    [listParties, isLoading, parties, hasInitialized]
+    [listParties, isLoading, parties, hasInitialized, user]
   );
 
   // Get nickname for a specific user ID across all parties

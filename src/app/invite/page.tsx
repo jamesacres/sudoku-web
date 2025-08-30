@@ -3,12 +3,13 @@ import { useServerStorage } from '@/hooks/serverStorage';
 import { UserContext } from '@/providers/UserProvider';
 import { RevenueCatContext } from '@/providers/RevenueCatProvider';
 import { useParties } from '@/hooks/useParties';
-import { PublicInvite } from '@/types/serverTypes';
+import { PublicInvite, EntitlementDuration } from '@/types/serverTypes';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useCallback, useContext, useEffect, useState } from 'react';
 import { Loader, Users, Star } from 'react-feather';
 import Image from 'next/image';
 import { SubscriptionContext } from '@/types/subscriptionContext';
+import { PremiumFeatures } from '@/components/PremiumFeatures';
 
 function InviteComponent() {
   const searchParams = useSearchParams();
@@ -16,7 +17,8 @@ function InviteComponent() {
 
   const router = useRouter();
   const { isLoggingIn, user, loginRedirect } = useContext(UserContext) || {};
-  const { isSubscribed, subscribeModal } = useContext(RevenueCatContext) || {};
+  const { isSubscribed, subscribeModal, refreshEntitlements } =
+    useContext(RevenueCatContext) || {};
   const { getPublicInvite, createMember } = useServerStorage({});
   const {
     parties: userParties,
@@ -30,6 +32,34 @@ function InviteComponent() {
   const name = user ? user?.given_name || user?.name : '';
   const [memberNickname, setMemberNickname] = useState(name || '');
   const [isJoining, setIsJoining] = useState(false);
+
+  // Helper function to get entitlement duration text
+  const getEntitlementText = useCallback(
+    (entitlementDuration: EntitlementDuration) => {
+      switch (entitlementDuration) {
+        case EntitlementDuration.ONE_MONTH:
+          return 'one month';
+        case EntitlementDuration.ONE_YEAR:
+          return 'one year';
+        case EntitlementDuration.LIFETIME:
+          return 'lifetime';
+        default:
+          return 'premium';
+      }
+    },
+    []
+  );
+
+  // Check if user will get entitlement and should show premium benefits
+  const shouldShowPremiumBenefits = useCallback(() => {
+    if (!publicInvite || isSubscribed) return false;
+    return !!publicInvite.entitlementDuration;
+  }, [publicInvite, isSubscribed]);
+
+  const getEntitlementDuration = useCallback(() => {
+    if (!publicInvite) return undefined;
+    return publicInvite.entitlementDuration;
+  }, [publicInvite]);
 
   // Combined loading state - wait for both invite and parties
   const isLoading = inviteLoading || partiesLoading;
@@ -149,7 +179,14 @@ function InviteComponent() {
           );
 
           if (isNowMember) {
-            // Success! User is now a member, redirect
+            // Success! User is now a member
+            // Refresh entitlements to check for any new premium benefits
+            if (refreshEntitlements) {
+              await refreshEntitlements().catch((e) => {
+                console.error(e);
+              });
+            }
+            // Then redirect
             redirect(publicInvite.redirectUri);
             return;
           }
@@ -188,7 +225,7 @@ function InviteComponent() {
     <div className="pt-safe min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <div className="flex min-h-screen items-center justify-center px-4 py-8">
         <div className="w-full max-w-md">
-          {isLoading ? (
+          {isLoading && !publicInvite ? (
             <div className="text-center">
               <div className="mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-full bg-white/80 shadow-xl backdrop-blur-lg dark:bg-gray-800/80">
                 <Loader className="h-8 w-8 animate-spin text-blue-600" />
@@ -221,7 +258,6 @@ function InviteComponent() {
                       <Star className="ml-2 h-4 w-4" />
                     </div>
                   </div>
-
                   {/* Invitation content */}
                   <div className="mb-8 text-center">
                     <p className="mb-4 text-lg text-gray-700 dark:text-gray-300">
@@ -243,7 +279,6 @@ function InviteComponent() {
                       </p>
                     </div>
                   </div>
-
                   {/* Join form or sign in */}
                   {user ? (
                     <div className="space-y-6">
@@ -315,6 +350,41 @@ function InviteComponent() {
                           </div>
                         )}
                       </button>
+                    </div>
+                  )}
+
+                  {/* Premium Benefits Section - only show if user will get entitlement and isn't already subscribed */}
+                  {shouldShowPremiumBenefits() && (
+                    <div className="mt-6 rounded-2xl bg-gradient-to-r from-blue-50 to-purple-50 p-6 dark:from-blue-900/20 dark:to-purple-900/20">
+                      <div className="mb-4 text-center">
+                        <div className="mb-2 flex items-center justify-center">
+                          <Star className="mr-2 h-5 w-5 text-blue-600" />
+                          <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                            🎉 Bonus: Get{' '}
+                            {getEntitlementText(getEntitlementDuration()!)} of
+                            Sudoku Plus!
+                          </h3>
+                          <Star className="ml-2 h-5 w-5 text-blue-600" />
+                        </div>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                          By joining this racing team, you&apos;ll unlock
+                          premium features absolutely free!
+                        </p>
+                      </div>
+
+                      <PremiumFeatures
+                        title=""
+                        subtitle=""
+                        compact={true}
+                        className="mb-4"
+                      />
+
+                      <div className="text-center">
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          💡 Your premium access will activate automatically
+                          after joining
+                        </p>
+                      </div>
                     </div>
                   )}
                 </div>
