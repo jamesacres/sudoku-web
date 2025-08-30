@@ -118,10 +118,17 @@ function InviteComponent() {
     try {
       if (!isJoining && inviteId && publicInvite) {
         setIsJoining(true);
-        await createMember({
+        const member = await createMember({
           memberNickname,
           inviteId,
         });
+        if (!member) {
+          // Invite expired while we were joining, likely max party size
+          setPublicInvite(undefined);
+          setIsJoining(false);
+          setInviteLoading(false);
+          return;
+        }
 
         // Extract party ID from invite resource ID
         const partyId = publicInvite.resourceId.replace('party-', '');
@@ -321,7 +328,7 @@ function InviteComponent() {
                   </h2>
                   <p className="text-gray-600 dark:text-gray-400">
                     This invitation link is no longer valid. Please ask your
-                    friend for a new invite!
+                    friend for a new invite or increase the team size.
                   </p>
                 </div>
               )}
