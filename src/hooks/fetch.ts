@@ -14,7 +14,8 @@ const jwtDecode = (token: string) =>
     )
   );
 const iss = 'https://auth.bubblyclouds.com';
-const clientId = isElectron() ? 'bubbly-sudoku-native' : 'bubbly-sudoku';
+const clientId =
+  isElectron() || isCapacitor() ? 'bubbly-sudoku-native' : 'bubbly-sudoku';
 const apiUrls = ['https://api.bubblyclouds.com'];
 const authUrls = ['https://auth.bubblyclouds.com'];
 const publicApiPathPatterns = [new RegExp('^/invites/[^/]+$')];
