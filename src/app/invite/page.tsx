@@ -209,8 +209,12 @@ function InviteComponent() {
   };
 
   const joinParty = () => {
-    // Check if user already has parties and is not subscribed
-    if (userParties.length > 0 && !isSubscribed) {
+    // Check if user already has parties and is not subscribed and no entitlement will be granted
+    if (
+      userParties.length > 0 &&
+      !isSubscribed &&
+      !publicInvite?.entitlementDuration
+    ) {
       subscribeModal?.showModalIfRequired(
         performJoinParty,
         () => {},
