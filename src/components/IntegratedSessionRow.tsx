@@ -140,7 +140,7 @@ const extractMetadataInfo = (
   }
 
   // Check for scanned puzzles
-  if (metadata.scannedAt) {
+  if (metadata.scannedAt && metadata.scannedAt !== 'undefined') {
     info.type = 'scanned';
   }
 
