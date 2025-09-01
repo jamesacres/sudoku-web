@@ -143,17 +143,20 @@ function useGameState({
 
   const saveValue = useCallback(
     (
-      state: GameState
+      state: GameState,
+      isSaveServerValue: boolean = true
     ): {
       localValue: { lastUpdated: number; state: GameState } | undefined;
-      serverValuePromise: Promise<ServerStateResult<GameState> | undefined>;
+      serverValuePromise?: Promise<ServerStateResult<GameState> | undefined>;
     } => {
       const localValue = saveLocalValue<GameState>(state);
-      const serverValuePromise = saveServerValue<ServerState>({
-        ...state,
-        answerStack: shrinkAnswerStack(state.answerStack),
-        timer: timerRef.current || undefined,
-      });
+      const serverValuePromise = isSaveServerValue
+        ? saveServerValue<ServerState>({
+            ...state,
+            answerStack: shrinkAnswerStack(state.answerStack),
+            timer: timerRef.current || undefined,
+          })
+        : undefined;
       return { localValue, serverValuePromise };
     },
     [saveLocalValue, saveServerValue, timerRef, shrinkAnswerStack]
@@ -418,7 +421,7 @@ function useGameState({
             // Track saveValue call timestamp and increment ignore counter
             lastSaveTimeRef.current = Date.now();
             pollingIgnoreCounterRef.current += 1;
-            saveValue(localValue.state).serverValuePromise.then((result) =>
+            saveValue(localValue.state).serverValuePromise?.then((result) =>
               handleServerResponse(active, result)
             );
           }
@@ -538,22 +541,29 @@ function useGameState({
       if (isFirstLoad) {
         console.info('isFirstLoad');
       }
-      if (isCorrect || completed || isFirstLoad) {
+      const isSaveServerValue: boolean = !!(
+        isCorrect ||
+        completed ||
+        isFirstLoad
+      );
+      if (isSaveServerValue) {
         // Track saveValue call timestamp and increment ignore counter
         lastSaveTimeRef.current = Date.now();
         pollingIgnoreCounterRef.current += 1;
-
-        const { serverValuePromise } = saveValue({
+      }
+      const { serverValuePromise } = saveValue(
+        {
           answerStack,
           initial,
           final,
           completed,
           metadata,
-        });
-        serverValuePromise.then((result) =>
-          handleServerResponse(active, result)
-        );
-      }
+        },
+        isSaveServerValue
+      );
+      serverValuePromise?.then((result) =>
+        handleServerResponse(active, result)
+      );
     }
     return () => {
       active = false;
