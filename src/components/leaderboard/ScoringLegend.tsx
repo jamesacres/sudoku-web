@@ -18,7 +18,7 @@ const ScoringLegend: React.FC<ScoringLegendProps> = ({ isOpen, onClose }) => {
       onClick={onClose}
     >
       <div
-        className="max-h-[calc(90vh-env(safe-area-inset-bottom))] w-full max-w-2xl overflow-y-auto rounded-2xl bg-gradient-to-br from-purple-50 via-white to-blue-50 shadow-2xl dark:from-purple-950 dark:via-zinc-800 dark:to-blue-950"
+        className="max-h-[calc(90vh-var(--ion-safe-area-bottom))] w-full max-w-2xl overflow-y-auto rounded-2xl bg-gradient-to-br from-purple-50 via-white to-blue-50 shadow-2xl dark:from-purple-950 dark:via-zinc-800 dark:to-blue-950"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="sticky top-0 z-10 bg-gradient-to-r from-purple-600 to-blue-600 p-6 pb-4">

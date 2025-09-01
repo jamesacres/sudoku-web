@@ -54,7 +54,7 @@ const SudokuSidebar = ({
       )}
       <aside
         id="default-sidebar"
-        className={`fixed top-0 left-0 z-50 h-screen w-72 pt-[env(safe-area-inset-top)] xl:top-20 ${showSidebar ? '' : '-translate-x-full'} transition-transform xl:translate-x-0`}
+        className={`fixed top-0 left-0 z-50 h-screen w-72 pt-[var(--ion-safe-area-top)] xl:top-20 ${showSidebar ? '' : '-translate-x-full'} transition-transform xl:translate-x-0`}
         aria-label="Sidebar"
       >
         <div className="flex h-full flex-col rounded-r-3xl bg-stone-50/90 drop-shadow-lg backdrop-blur-md dark:bg-zinc-900/95">
