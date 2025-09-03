@@ -57,7 +57,7 @@ function PuzzlePageComponent() {
   }, [puzzle, requestWakeLock]);
 
   return (
-    <div className="-mb-24">
+    <div>
       {puzzle && (
         <Sudoku
           puzzle={puzzle}
