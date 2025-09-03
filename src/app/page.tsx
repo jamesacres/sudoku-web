@@ -11,7 +11,14 @@ import { useParties } from '@/hooks/useParties';
 import { Difficulty } from '@/types/serverTypes';
 import { Tab } from '@/types/tabs';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Suspense, useCallback, useContext, useEffect, useState } from 'react';
+import {
+  Suspense,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { Users, Zap, Award, Camera } from 'react-feather';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -42,6 +49,8 @@ function HomeComponent() {
     fetchFriendSessions,
   } = useSessions();
 
+  const hasLoadedFriendSessionsRef = useRef(false);
+
   useEffect(() => {
     // Always refetch sessions when returning to homepage to get latest progress
     refetchSessions();
@@ -49,7 +58,8 @@ function HomeComponent() {
 
   // Lazy load friend sessions when parties are available
   useEffect(() => {
-    if (parties && parties.length > 0) {
+    if (parties && parties.length > 0 && !hasLoadedFriendSessionsRef.current) {
+      hasLoadedFriendSessionsRef.current = true;
       lazyLoadFriendSessions(parties);
     }
   }, [parties, lazyLoadFriendSessions]);
