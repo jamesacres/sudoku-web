@@ -315,7 +315,7 @@ const Sudoku = ({
 
       <div className="flex flex-col items-center lg:flex-row">
         <div className="container mx-auto px-4 pb-4 lg:pb-0">
-          <div className="flex h-[calc(58dvh)] flex-col">
+          <div className="flex flex-col">
             <div className="mt-auto">
               {/* App Branding Header */}
               <div className="mr-auto ml-auto max-w-xl px-4 pb-1 lg:mr-0">
