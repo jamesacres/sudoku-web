@@ -20,6 +20,7 @@ const CapacitorProvider: React.FC<{ children: React.ReactNode }> = ({
     let isActive = true;
     App.removeAllListeners().then(() => {
       App.addListener('appUrlOpen', (event: URLOpenListenerEvent) => {
+        console.info('appUrlOpen', event.url);
         if (isActive) {
           if (event.url) {
             // For auth and other links
@@ -31,9 +32,13 @@ const CapacitorProvider: React.FC<{ children: React.ReactNode }> = ({
             url.protocol = window.location.protocol;
             url.host = window.location.host;
             url.port = window.location.port;
-            router.push(url.toString());
+            const href = `${url.pathname}${url.search}`;
+            console.info('router.push', href);
+            router.push(href);
             // Close browser if open, e.g. on auth page
-            Browser.close();
+            Browser.close().catch((e) => {
+              console.warn(e);
+            });
           }
         }
       });
