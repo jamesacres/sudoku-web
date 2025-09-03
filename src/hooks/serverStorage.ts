@@ -471,7 +471,7 @@ function useServerStorage({
           console.info('removing member from party', { partyId, userId });
           const response = await fetch(
             new Request(
-              `${apiUrl}/members/${userId}?resourceId=party-${partyId}`,
+              `${apiUrl}/members/${encodeURIComponent(userId)}?resourceId=party-${partyId}`,
               {
                 method: 'DELETE',
                 headers: {
