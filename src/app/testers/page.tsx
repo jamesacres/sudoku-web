@@ -1,8 +1,9 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 
-export default function Testers() {
+function TestersContent() {
   const searchParams = useSearchParams();
   const inviteId = searchParams.get('inviteId');
   return (
@@ -341,5 +342,13 @@ export default function Testers() {
         </section>
       </div>
     </div>
+  );
+}
+
+export default function Testers() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <TestersContent />
+    </Suspense>
   );
 }
