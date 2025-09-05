@@ -25,7 +25,7 @@ export default function Testers() {
             </p>
             <p className="text-md mt-4 text-gray-600 dark:text-gray-300">
               Once you have installed the app, join the Racing Team which will
-              include a free year of Sudoku Plus premimum features. If you
+              include a free year of Sudoku Plus premium features. If you
               don&apos;t have an invite link email{' '}
               <a
                 href="mailto:james@bubblyclouds.com"
