@@ -195,7 +195,7 @@ function useFetch() {
       const headers = new Headers(request.headers);
 
       if (isApiUrl(destURL)) {
-        console.info('useFetch handleFetch apiUrl');
+        console.info('useFetch handleFetch apiUrl', request.url);
         // Automatically send auth header to API URLs
         if (stateRef.current.accessToken) {
           const { inProgress } = (await checkRefresh()) || {};

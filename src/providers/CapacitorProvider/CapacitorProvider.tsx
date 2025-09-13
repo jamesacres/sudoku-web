@@ -22,6 +22,7 @@ const CapacitorProvider: React.FC<{ children: React.ReactNode }> = ({
       App.addListener('appUrlOpen', (event: URLOpenListenerEvent) => {
         console.info('appUrlOpen', event.url);
         if (isActive) {
+          console.info('appUrlOpen is active');
           if (event.url) {
             // For auth and other links
             // Note this is also used for the iOS/Android auth redirect with custom url schemes
@@ -40,6 +41,8 @@ const CapacitorProvider: React.FC<{ children: React.ReactNode }> = ({
               console.warn(e);
             });
           }
+        } else {
+          console.info('appUrlOpen not active');
         }
       });
 

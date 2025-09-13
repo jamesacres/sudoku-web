@@ -9,6 +9,10 @@ export default function Home() {
     if (isInitialised && handleAuthUrl) {
       // exchange code for tokens
       handleAuthUrl();
+    } else {
+      console.info(
+        `auth skipping due to isInitialised ${isInitialised} handleAuthUrl ${handleAuthUrl}`
+      );
     }
   }, [isInitialised, handleAuthUrl]);
   return <main />;

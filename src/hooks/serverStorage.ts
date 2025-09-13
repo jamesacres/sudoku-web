@@ -121,11 +121,23 @@ function useServerStorage({
     return key;
   }, []);
 
-  const isLoggedIn = useCallback(() => {
+  const isLoggedIn = useCallback(async () => {
     if (user) {
       if (getUser()) {
         return true;
       }
+      console.warn('no longer logged in, retrying');
+      if (
+        await new Promise((res) => {
+          setTimeout(() => {
+            res(getUser());
+          }, 5000);
+        })
+      ) {
+        console.warn('we are logged back in!');
+        return true;
+      }
+
       console.warn('no longer logged in, logging out');
       if (logout) {
         logout();
@@ -143,7 +155,7 @@ function useServerStorage({
       partyId?: string;
       userId?: string;
     } = {}): Promise<ServerStateResult<T>[] | undefined> => {
-      if (isOnline && isLoggedIn()) {
+      if (isOnline && (await isLoggedIn())) {
         try {
           console.info('fetching sessions', { partyId, userId });
           const response = await fetch(
@@ -168,7 +180,7 @@ function useServerStorage({
   const getValue = useCallback(async <T>(): Promise<
     ServerStateResult<T> | undefined
   > => {
-    if (isOnline && isLoggedIn()) {
+    if (isOnline && (await isLoggedIn())) {
       try {
         const stateKey = getStateKey();
         console.info('fetching session', stateKey);
@@ -187,7 +199,7 @@ function useServerStorage({
 
   const saveValue = useCallback(
     async <T>(state: T): Promise<ServerStateResult<T> | undefined> => {
-      if (isOnline && isLoggedIn()) {
+      if (isOnline && (await isLoggedIn())) {
         try {
           const stateKey = getStateKey();
           console.info('saving session', stateKey);
@@ -218,7 +230,7 @@ function useServerStorage({
   );
 
   const listParties = useCallback(async (): Promise<Party[] | undefined> => {
-    if (isOnline && isLoggedIn()) {
+    if (isOnline && (await isLoggedIn())) {
       try {
         console.info('fetching parties');
         const response = await fetch(
@@ -258,7 +270,7 @@ function useServerStorage({
       partyName: string;
       memberNickname: string;
     }): Promise<Party | undefined> => {
-      if (isOnline && isLoggedIn()) {
+      if (isOnline && (await isLoggedIn())) {
         try {
           const response = await fetch(
             new Request(`${apiUrl}/parties`, {
@@ -316,7 +328,7 @@ function useServerStorage({
       redirectUri: string;
       expiresAt: string;
     }): Promise<Invite | undefined> => {
-      if (isOnline && isLoggedIn()) {
+      if (isOnline && (await isLoggedIn())) {
         try {
           const response = await fetch(
             new Request(`${apiUrl}/invites`, {
@@ -380,7 +392,7 @@ function useServerStorage({
       inviteId: string;
       memberNickname: string;
     }): Promise<Member | undefined> => {
-      if (isOnline && isLoggedIn()) {
+      if (isOnline && (await isLoggedIn())) {
         try {
           const response = await fetch(
             new Request(`${apiUrl}/members`, {
@@ -415,7 +427,7 @@ function useServerStorage({
 
   const getSudokuOfTheDay = useCallback(
     async (difficulty: Difficulty): Promise<SudokuOfTheDay | undefined> => {
-      if (isOnline && isLoggedIn()) {
+      if (isOnline && (await isLoggedIn())) {
         try {
           console.info('fetching sudoku of the day', difficulty);
           const response = await fetch(
@@ -442,7 +454,7 @@ function useServerStorage({
   const getSudokuBookOfTheMonth = useCallback(async (): Promise<
     SudokuBookOfTheMonth | undefined
   > => {
-    if (isOnline && isLoggedIn()) {
+    if (isOnline && (await isLoggedIn())) {
       try {
         console.info('fetching sudoku book of the month');
         const response = await fetch(
@@ -466,7 +478,7 @@ function useServerStorage({
 
   const removeMember = useCallback(
     async (partyId: string, userId: string): Promise<boolean> => {
-      if (isOnline && isLoggedIn()) {
+      if (isOnline && (await isLoggedIn())) {
         try {
           console.info('removing member from party', { partyId, userId });
           const response = await fetch(
@@ -502,7 +514,7 @@ function useServerStorage({
 
   const deleteParty = useCallback(
     async (partyId: string): Promise<boolean> => {
-      if (isOnline && isLoggedIn()) {
+      if (isOnline && (await isLoggedIn())) {
         try {
           console.info('deleting party', partyId);
           const response = await fetch(
@@ -528,7 +540,7 @@ function useServerStorage({
       partyId: string,
       updates: { maxSize?: number; partyName?: string }
     ): Promise<boolean> => {
-      if (isOnline && isLoggedIn()) {
+      if (isOnline && (await isLoggedIn())) {
         try {
           console.info('updating party', { partyId, updates });
           const response = await fetch(
@@ -551,7 +563,7 @@ function useServerStorage({
   );
 
   const deleteAccount = useCallback(async (): Promise<boolean> => {
-    if (isOnline && isLoggedIn() && user) {
+    if (isOnline && (await isLoggedIn()) && user) {
       try {
         console.info('deleting account', user.sub);
         const response = await fetch(

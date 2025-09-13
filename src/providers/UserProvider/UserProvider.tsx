@@ -5,7 +5,7 @@ import { pkce } from '@/helpers/pkce';
 import { UserProfile } from '@/types/userProfile';
 import { useRouter } from 'next/navigation';
 import { useFetch } from '@/hooks/fetch';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Browser } from '@capacitor/browser';
 
 interface UserContextInterface {
@@ -50,20 +50,78 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   const clientId =
     isElectron() || isCapacitor() ? 'bubbly-sudoku-native' : 'bubbly-sudoku';
 
+  const restoreCapacitorState = React.useCallback(
+    async (
+      handleUser: (
+        user?: UserProfile,
+        isRestoreState?: boolean
+      ) => Promise<void>,
+      restoreState: (stateString: string) => Promise<UserProfile | undefined>,
+      attempt = 0
+    ) => {
+      if (user) {
+        console.info('restoreCapacitorState already got user skipping');
+        return;
+      }
+      try {
+        console.info(
+          `restoreCapacitorState getCapacitorState attempt ${attempt}`
+        );
+        const capacitorState = await getCapacitorState();
+        if (capacitorState) {
+          console.info('restoreCapacitorState getCapacitorState restoring..');
+          const newUser = await restoreState(capacitorState);
+          if (newUser) {
+            console.info(
+              'restoreCapacitorState calling handleUser with newUser'
+            );
+            await handleUser(newUser, true);
+            return;
+          } else {
+            console.info('restoreCapacitorState getCapacitorState no user');
+          }
+        } else {
+          console.info('restoreCapacitorState getCapacitorState none');
+        }
+        if (attempt < 5) {
+          // Firefox mobile launches a new instance which processed login
+          // We need to check to see if it handled it when we launch..
+          console.info(
+            'restoreCapacitorState try again shortly for firefox mobile..'
+          );
+          new Promise((res) => {
+            setTimeout(async () => {
+              await restoreCapacitorState(
+                handleUser,
+                restoreState,
+                attempt + 1
+              );
+              res(undefined);
+            }, 1000);
+          });
+        }
+      } catch (e) {
+        console.warn(e);
+      }
+    },
+    [user]
+  );
+
   const loginRedirect = React.useCallback(
     async ({ userInitiated }: { userInitiated: boolean }) => {
       console.info('loginRedirect..');
       setIsLoggingIn(true);
-      sessionStorage.setItem(
+      // We use localStorage instead of sessionStorage as Firefox Mobile redirects with a new instance
+      localStorage.setItem(
         'restorePathname',
         `${window.location.pathname}${window.location.search}`
       );
 
       const state = window.crypto.randomUUID();
-      sessionStorage.setItem('state', state);
+      localStorage.setItem('state', state);
 
       const { codeChallenge, codeVerifier, codeChallengeMethod } = await pkce();
-      sessionStorage.setItem('code_verifier', codeVerifier);
+      localStorage.setItem('code_verifier', codeVerifier);
 
       const redirectUri = buildRedirectUri();
       const scope = [
@@ -94,6 +152,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
       if (isElectron()) {
         await openBrowser(url);
       } else if (isCapacitor()) {
+        // Note browserFinished listener added below!!
         await Browser.open({ url, windowName: '_self' });
       } else {
         window.location.href = url;
@@ -112,25 +171,19 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
       console.info('user received', user);
       if (user) {
         console.info('handleUser', user);
-        setUser(user);
-        if (!isElectron()) {
+        setUser((currentUser) => {
+          if (currentUser) {
+            console.warn('handleUser ignoring new user, already got user');
+          }
+          return currentUser || user;
+        });
+        if (!isElectron() && !isCapacitor()) {
           // Indicate that if browser closes, next reopen we can try to recover our session
           localStorage.setItem('recoverSession', 'true');
         }
       } else if (!isRestoreState) {
         if (isCapacitor()) {
-          try {
-            const capacitorState = await getCapacitorState();
-            if (capacitorState) {
-              const user = await restoreState(capacitorState);
-              if (user) {
-                await handleUser(user, true);
-                return;
-              }
-            }
-          } catch (e) {
-            console.warn(e);
-          }
+          await restoreCapacitorState(handleUser, restoreState);
         }
         if (
           localStorage.getItem('recoverSession') === 'true' &&
@@ -143,7 +196,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         }
       }
     },
-    [loginRedirect, restoreState]
+    [loginRedirect, restoreState, restoreCapacitorState]
   );
 
   const handleAuthUrl = React.useCallback(async () => {
@@ -159,8 +212,9 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
           const state = query.get('state') || '';
           const redirectUri = buildRedirectUri();
 
-          const codeVerifier = sessionStorage.getItem('code_verifier');
-          if (state === sessionStorage.getItem('state') && codeVerifier) {
+          const codeVerifier = localStorage.getItem('code_verifier');
+          if (state === localStorage.getItem('state') && codeVerifier) {
+            console.info('handleAuthUrl requesting code exchange');
             const params = new URLSearchParams();
             params.set('grant_type', 'authorization_code');
             params.set('client_id', clientId);
@@ -179,12 +233,21 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
             if (response.ok) {
               // Modified response from public/user-provider-worker.js
               const { user } = await response.json();
-              console.info('user received from code exchange', user);
+              console.info(
+                'handleAuthUrl user received from code exchange',
+                user
+              );
               if (user) {
                 await handleUser(user);
               }
             }
+          } else {
+            console.info(
+              `handleAuthUrl skipping as state ${state} !== localStorage ${localStorage.getItem('state')} or codeVerifier ${codeVerifier} missing`
+            );
           }
+        } else {
+          console.info('handleAuthUrl skipping as isExhanging');
         }
       } catch (e) {
         console.error(e);
@@ -194,7 +257,13 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
       isExhanging = false;
 
       // Navigate back to previous location
-      const restorePathname = sessionStorage.getItem('restorePathname');
+      const restorePathname = localStorage.getItem('restorePathname');
+
+      // Clear values from local storage
+      localStorage.removeItem('restorePathname');
+      localStorage.removeItem('state');
+      localStorage.removeItem('code_verifier');
+
       router.replace(
         restorePathname && restorePathname !== '/auth' ? restorePathname : '/'
       );
@@ -244,6 +313,24 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     await logout();
     router.replace('/');
   };
+
+  useEffect(() => {
+    let isActive = true;
+    // When browser closes, hopefully we will handle the success
+    // However, firefox mobile handles it in a new instance
+    // Therefore, restore capacitor state if we find we now have one..
+    Browser.addListener('browserFinished', () => {
+      if (isActive) {
+        console.info('browserFinished');
+        restoreCapacitorState(handleUser, restoreState);
+      }
+    });
+
+    return () => {
+      isActive = false;
+      Browser.removeAllListeners();
+    };
+  }, [handleUser, restoreState, restoreCapacitorState]);
 
   return (
     <UserContext.Provider
