@@ -83,6 +83,12 @@ export default class Processor extends (EventEmitter as {
    */
   async startVideo(video: HTMLVideoElement) {
     this.video = video;
+
+    // Check if getUserMedia is supported (for web browsers)
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      throw new Error('Camera not available, please check permissions.');
+    }
+
     // start up the video feed
     const stream = await navigator.mediaDevices.getUserMedia({
       video: { facingMode: 'environment', width: 640 },

@@ -60,5 +60,7 @@
 	<false/>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs camera access to detect sudoku puzzles</string>
 </dict>
 </plist>
