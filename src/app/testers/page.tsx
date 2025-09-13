@@ -1,11 +1,21 @@
 'use client';
 
-import { Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { Suspense, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { isCapacitor } from '@/helpers/capacitor';
 
 function TestersContent() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const inviteId = searchParams.get('inviteId');
+
+  useEffect(() => {
+    if (isCapacitor()) {
+      // Go straight to the invite page
+      router.replace(`/invite?inviteId=${inviteId}`);
+    }
+  }, [inviteId, router]);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-indigo-900 dark:to-purple-900">
       <div className="container mx-auto max-w-6xl px-4 py-12">
