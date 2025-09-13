@@ -36,6 +36,8 @@ import { useDocumentVisibility } from './documentVisibility';
 import { useSessions } from '@/providers/SessionsProvider/SessionsProvider';
 import { useParties } from './useParties';
 
+const INACTIVITY_MS = 5 * 60 * 1000; // 5 minutes in milliseconds
+
 function useGameState({
   final,
   initial,
@@ -63,9 +65,17 @@ function useGameState({
   const lastSaveTimeRef = useRef<number>(0);
   const pollingIgnoreCounterRef = useRef<number>(0);
 
+  // Track if timer is paused due to inactivity
+  const [isPausedDueToInactivity, setIsPausedDueToInactivity] = useState(false);
+  const isPausedDueToInactivityRef = useRef(isPausedDueToInactivity);
+
   useEffect(() => {
     timerRef.current = timer;
   }, [timer]);
+
+  useEffect(() => {
+    isPausedDueToInactivityRef.current = isPausedDueToInactivity;
+  }, [isPausedDueToInactivity]);
 
   const { getValue: getLocalValue, saveValue: saveLocalValue } =
     useLocalStorage({
@@ -118,13 +128,20 @@ function useGameState({
   const hasSessionParties = Object.keys(sessionParties).length;
 
   const [selectedCell, setSelectedCellState] = useState<null | string>(null);
+  const lastSelectedCellChangeRef = useRef<number>(Date.now());
   const setSelectedCell = useCallback(
     (selectedCell: string | null) => {
       if (!completed) {
+        lastSelectedCellChangeRef.current = Date.now();
+        // Resume timer if it was paused due to inactivity
+        if (isPausedDueToInactivityRef.current) {
+          setIsPausedDueToInactivity(false);
+          setPauseTimer(false);
+        }
         setSelectedCellState(selectedCell);
       }
     },
-    [completed]
+    [completed, setPauseTimer]
   );
 
   const getValue = useCallback((): {
@@ -453,16 +470,21 @@ function useGameState({
     const pollGetValue = () => {
       const now = Date.now();
       const timeSinceLastSave = now - lastSaveTimeRef.current;
+      const timeSinceLastSelectedCellChange =
+        now - lastSelectedCellChangeRef.current;
+      const fiveMinutesMs = 5 * 60 * 1000; // 5 minutes in milliseconds
 
       // Only poll if more than 30 seconds has passed since last saveValue call
       // And less than 30 minutes
       // And there are sessions still in progress
+      // And selectedCell has changed within the last 5 minutes
       if (
         !isPaused &&
         isDocumentVisible &&
         active &&
         timeSinceLastSave >= 30000 &&
         timeSinceLastSave < 60000 * 30 &&
+        (completed || timeSinceLastSelectedCellChange < fiveMinutesMs) &&
         Object.values(sessionParties).find(
           (party) =>
             party &&
@@ -517,6 +539,7 @@ function useGameState({
     hasSessionParties,
     sessionParties,
     user,
+    completed,
   ]);
 
   useEffect(() => {
@@ -690,6 +713,38 @@ function useGameState({
       setIsPolling(false);
     }
   }, [getValue, setSessionParties]);
+
+  // Check for inactivity and pause timer/polling if no selectedCell change in 5 minutes
+  useEffect(() => {
+    let intervalId: ReturnType<typeof setInterval>;
+
+    if (!completed) {
+      intervalId = setInterval(() => {
+        const now = Date.now();
+        const timeSinceLastChange = now - lastSelectedCellChangeRef.current;
+
+        if (timeSinceLastChange >= INACTIVITY_MS) {
+          if (!isPaused && !isPausedDueToInactivity) {
+            console.info('pausing due to inactivity');
+            setIsPausedDueToInactivity(true);
+            setPauseTimer(true);
+          }
+        } else {
+          if (isPausedDueToInactivity) {
+            console.info('resuming after inactivity');
+            setIsPausedDueToInactivity(false);
+            setPauseTimer(false);
+          }
+        }
+      }, 60000); // Check every minute
+    }
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [completed, isPaused, isPausedDueToInactivity, setPauseTimer]);
 
   return {
     answer,
