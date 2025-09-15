@@ -472,7 +472,6 @@ function useGameState({
       const timeSinceLastSave = now - lastSaveTimeRef.current;
       const timeSinceLastSelectedCellChange =
         now - lastSelectedCellChangeRef.current;
-      const fiveMinutesMs = 5 * 60 * 1000; // 5 minutes in milliseconds
 
       // Only poll if more than 30 seconds has passed since last saveValue call
       // And less than 30 minutes
@@ -484,7 +483,7 @@ function useGameState({
         active &&
         timeSinceLastSave >= 30000 &&
         timeSinceLastSave < 60000 * 30 &&
-        (completed || timeSinceLastSelectedCellChange < fiveMinutesMs) &&
+        (completed || timeSinceLastSelectedCellChange < INACTIVITY_MS) &&
         Object.values(sessionParties).find(
           (party) =>
             party &&
