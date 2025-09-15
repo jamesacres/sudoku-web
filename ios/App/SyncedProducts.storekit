@@ -15,12 +15,12 @@
   ],
   "products" : [
     {
-      "displayPrice" : "15.0",
+      "displayPrice" : "5.99",
       "familyShareable" : true,
       "internalID" : "6748365554",
       "localizations" : [
         {
-          "description" : "Unlocks access to features in Sudoku Share",
+          "description" : "Unlocks access to features in Sudoku Race",
           "displayName" : "Plus Lifetime",
           "locale" : "en_GB"
         }
@@ -34,7 +34,7 @@
     "_applicationInternalID" : "6517357180",
     "_developerTeamID" : "78YLR64HV2",
     "_failTransactionsEnabled" : false,
-    "_lastSynchronizedDate" : 774720672.84376705,
+    "_lastSynchronizedDate" : 779660114.53356004,
     "_locale" : "en_US",
     "_storefront" : "USA",
     "_storeKitErrors" : [
@@ -100,14 +100,14 @@
           "codeOffers" : [
 
           ],
-          "displayPrice" : "2.0",
+          "displayPrice" : "0.99",
           "familyShareable" : false,
           "groupNumber" : 1,
           "internalID" : "6748365688",
           "introductoryOffer" : null,
           "localizations" : [
             {
-              "description" : "Unlocks access to features in Sudoku Share",
+              "description" : "Unlocks access to features in Sudoku Race",
               "displayName" : "Plus Monthly",
               "locale" : "en_GB"
             }
