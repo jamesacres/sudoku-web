@@ -10,7 +10,7 @@ const HeaderOnline = () => {
   return (
     <button
       onClick={() => {
-        window.alert('You are online!');
+        window.alert(`You are ${isOnline ? 'online' : 'offline'}!`);
         //(!isOnline ||
         //  window.confirm('Are you sure you wish to force offline mode?')) &&
         //  forceOffline(isOnline);
