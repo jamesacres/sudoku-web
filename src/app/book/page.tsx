@@ -29,7 +29,7 @@ export default function BookPage() {
     sessions,
     isLoading: sessionsLoading,
     fetchSessions,
-    fetchFriendSessions,
+    lazyLoadFriendSessions,
   } = useSessions();
   const { parties } = useParties();
 
@@ -79,9 +79,9 @@ export default function BookPage() {
   // Fetch friend sessions when parties are available
   useEffect(() => {
     if (parties && parties.length > 0) {
-      fetchFriendSessions(parties);
+      lazyLoadFriendSessions(parties);
     }
-  }, [parties, fetchFriendSessions]);
+  }, [parties, lazyLoadFriendSessions]);
 
   const getPuzzleSession = useCallback(
     async (puzzle: { initial: string; final: string }) => {
