@@ -62,13 +62,17 @@ export const SessionsProvider = ({ children }: SessionsProviderProps) => {
   const [hasFriendSessionsInitialized, setHasFriendSessionsInitialized] =
     useState(false);
   const friendSessionsRef = useRef<UserSessions>({});
+  const isLoadingRef = useRef(false);
+  const sessionsRef = useRef<ServerStateResult<ServerState>[] | null>(null);
   const { listValues: listServerValues } = useServerStorage();
 
-  // Update ref whenever friendSessions state changes
+  // Update refs whenever state changes
   friendSessionsRef.current = friendSessions;
+  sessionsRef.current = sessions;
 
   useEffect(() => {
-    setSessionsState(null);
+    // Only clear friend sessions when user changes, not local sessions
+    // Local sessions are stored in localStorage and don't depend on user identity
     setFriendSessions({});
     setHasFriendSessionsInitialized(false);
   }, [user]);
@@ -133,47 +137,75 @@ export const SessionsProvider = ({ children }: SessionsProviderProps) => {
     [prefix, saveLocalPuzzle, saveLocalTimer]
   );
 
-  const loadSessionsData = useCallback(async () => {
-    setIsLoading(true);
+  const loadSessionsData = useCallback(
+    async (forceReload = false) => {
+      // Get current sessions from ref to avoid dependency
+      const currentSessions = sessionsRef.current;
 
-    try {
-      // Clear existing sessions first
-      setSessionsState(null);
-
-      // Load local sessions
-      const localGameStates = listLocalPuzzles<GameState>();
-      const localTimers = listLocalTimers<Timer>();
-      const localSessions: ServerStateResult<ServerState>[] =
-        localGameStates.map((localGameState) => {
-          return {
-            ...localGameState,
-            updatedAt: new Date(localGameState.lastUpdated),
-            state: {
-              ...localGameState.state,
-              timer: localTimers.find(
-                (timer) => timer.sessionId === localGameState.sessionId
-              )?.state,
-            },
-          };
-        });
-      mergeSessions(localSessions);
-
-      // Load server sessions
-      const serverSessions = await listServerValues<ServerState>();
-      if (serverSessions) {
-        // Filter out server sessions older than a month
-        const oneMonthAgo = new Date().getTime() - 32 * 24 * 60 * 60 * 1000;
-        const recentServerSessions = serverSessions.filter(
-          (session) => session.updatedAt.getTime() >= oneMonthAgo
-        );
-        mergeSessions(recentServerSessions);
+      // Skip if sessions already exist and we're not forcing a reload
+      if (!forceReload && currentSessions && currentSessions.length > 0) {
+        return;
       }
-    } catch (error) {
-      console.error('Error loading sessions:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [listLocalPuzzles, listLocalTimers, listServerValues, mergeSessions]);
+
+      // Prevent multiple simultaneous calls using ref
+      if (isLoadingRef.current) {
+        return;
+      }
+
+      isLoadingRef.current = true;
+      setIsLoading(true);
+
+      try {
+        // Load local sessions ONLY - no server sessions when offline
+        const localGameStates = listLocalPuzzles<GameState>();
+        const localTimers = listLocalTimers<Timer>();
+
+        const localSessions: ServerStateResult<ServerState>[] =
+          localGameStates.map((localGameState) => {
+            const updatedAt = new Date(localGameState.lastUpdated);
+            return {
+              ...localGameState,
+              updatedAt,
+              state: {
+                ...localGameState.state,
+                timer: localTimers.find(
+                  (timer) => timer.sessionId === localGameState.sessionId
+                )?.state,
+              },
+            };
+          });
+
+        // Sort and set sessions directly instead of using mergeSessions
+        if (localSessions.length > 0) {
+          const sortedSessions = localSessions.sort(
+            (a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()
+          );
+          setSessionsState(sortedSessions);
+        }
+
+        // Try to load server sessions if online
+        try {
+          const serverSessions = await listServerValues<ServerState>();
+          if (serverSessions && serverSessions.length > 0) {
+            // Filter out server sessions older than a month
+            const oneMonthAgo = new Date().getTime() - 32 * 24 * 60 * 60 * 1000;
+            const recentServerSessions = serverSessions.filter(
+              (session) => session.updatedAt.getTime() >= oneMonthAgo
+            );
+            mergeSessions(recentServerSessions);
+          }
+        } catch (serverError) {
+          // Ignore server errors when offline
+        }
+      } catch (error) {
+        console.error('Error loading sessions:', error);
+      } finally {
+        isLoadingRef.current = false;
+        setIsLoading(false);
+      }
+    },
+    [listLocalPuzzles, listLocalTimers, listServerValues, mergeSessions]
+  );
 
   const fetchSessions = useCallback(async () => {
     // If sessions already exist or currently loading, don't fetch again
@@ -181,12 +213,12 @@ export const SessionsProvider = ({ children }: SessionsProviderProps) => {
       return;
     }
 
-    await loadSessionsData();
+    await loadSessionsData(false);
   }, [sessions, isLoading, loadSessionsData]);
 
   const refetchSessions = useCallback(async () => {
     // Force refetch regardless of current state
-    await loadSessionsData();
+    await loadSessionsData(true);
   }, [loadSessionsData]);
 
   const setSessions = useCallback(
