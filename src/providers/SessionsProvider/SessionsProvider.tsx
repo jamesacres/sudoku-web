@@ -92,7 +92,7 @@ export const SessionsProvider = ({ children }: SessionsProviderProps) => {
   const mergeSessions = useCallback(
     (newSessions: ServerStateResult<ServerState>[]) => {
       setSessionsState((previousSessions) => {
-        if (previousSessions) {
+        if (previousSessions !== null) {
           // If missing previously, update local with server value
           const missingLocally = newSessions.filter(
             (serverValue) =>
@@ -176,12 +176,10 @@ export const SessionsProvider = ({ children }: SessionsProviderProps) => {
           });
 
         // Sort and set sessions directly instead of using mergeSessions
-        if (localSessions.length > 0) {
-          const sortedSessions = localSessions.sort(
-            (a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()
-          );
-          setSessionsState(sortedSessions);
-        }
+        const sortedSessions = localSessions.sort(
+          (a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()
+        );
+        setSessionsState(sortedSessions);
 
         // Try to load server sessions if online
         try {
