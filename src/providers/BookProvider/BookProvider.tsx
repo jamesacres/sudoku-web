@@ -9,6 +9,7 @@ import {
 } from 'react';
 import { SudokuBookOfTheMonth } from '@/types/serverTypes';
 import { useServerStorage } from '@/hooks/serverStorage';
+import { useOnline } from '@/hooks/online';
 
 interface BookContextType {
   bookData: SudokuBookOfTheMonth | null;
@@ -105,6 +106,7 @@ export const BookProvider = ({ children }: BookProviderProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { getSudokuBookOfTheMonth } = useServerStorage();
+  const { isOnline } = useOnline();
 
   const fetchBookData = useCallback(async () => {
     // If data already exists or currently loading, don't fetch again
@@ -129,14 +131,19 @@ export const BookProvider = ({ children }: BookProviderProps) => {
         // Cache the fetched data
         saveCachedBookData(result);
       } else {
-        setError('Failed to load book data');
+        if (!isOnline) {
+          setError('You are offline, please check your connection');
+        } else {
+          setError('Failed to load puzzle book');
+        }
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load book data');
+      console.error(err);
+      setError('Failed to load puzzle book');
     } finally {
       setIsLoading(false);
     }
-  }, [bookData, isLoading, getSudokuBookOfTheMonth]);
+  }, [bookData, isLoading, getSudokuBookOfTheMonth, isOnline]);
 
   const clearBookData = useCallback(() => {
     setBookData(null);

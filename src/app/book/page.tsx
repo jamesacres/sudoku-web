@@ -15,6 +15,7 @@ import { SudokuBookPuzzle, ServerStateResult } from '@/types/serverTypes';
 import IntegratedSessionRow from '@/components/IntegratedSessionRow';
 import { ServerState } from '@/types/state';
 import { sha256 } from '@/helpers/sha256';
+import { useOnline } from '@/hooks/online';
 
 export default function BookPage() {
   const router = useRouter();
@@ -32,6 +33,7 @@ export default function BookPage() {
     lazyLoadFriendSessions,
   } = useSessions();
   const { parties } = useParties();
+  const { isOnline } = useOnline();
 
   // State for mock sessions
   const [mockSessions, setMockSessions] = useState<{
@@ -169,15 +171,15 @@ export default function BookPage() {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
-          <p className="text-gray-600 dark:text-gray-400">
-            Error loading puzzle book: {bookError}
-          </p>
-          <button
-            onClick={() => fetchBookData()}
-            className="mt-4 mr-2 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-          >
-            Try Again
-          </button>
+          <p className="text-gray-600 dark:text-gray-400">{bookError}</p>
+          {isOnline && (
+            <button
+              onClick={() => fetchBookData()}
+              className="mt-4 mr-2 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+            >
+              Try Again
+            </button>
+          )}
           <button
             onClick={() => router.push('/')}
             className="mt-4 rounded-lg bg-gray-600 px-4 py-2 text-white hover:bg-gray-700"
