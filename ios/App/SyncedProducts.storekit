@@ -20,7 +20,7 @@
       "internalID" : "6748365554",
       "localizations" : [
         {
-          "description" : "Unlocks access to features in Sudoku Race",
+          "description" : "Unlimited races, extra teams, themes & undo",
           "displayName" : "Plus Lifetime",
           "locale" : "en_GB"
         }
@@ -34,7 +34,7 @@
     "_applicationInternalID" : "6517357180",
     "_developerTeamID" : "78YLR64HV2",
     "_failTransactionsEnabled" : false,
-    "_lastSynchronizedDate" : 779660114.53356004,
+    "_lastSynchronizedDate" : 780262824.82961297,
     "_locale" : "en_US",
     "_storefront" : "USA",
     "_storeKitErrors" : [
@@ -107,8 +107,8 @@
           "introductoryOffer" : null,
           "localizations" : [
             {
-              "description" : "Unlocks access to features in Sudoku Race",
-              "displayName" : "Plus Monthly",
+              "description" : "Unlimited races, extra teams, themes & undo",
+              "displayName" : "Monthly Plus Access",
               "locale" : "en_GB"
             }
           ],
