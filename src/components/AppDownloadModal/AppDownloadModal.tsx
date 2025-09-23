@@ -31,7 +31,7 @@ export const AppDownloadModal = ({
     // Replace with actual App Store URL
     window.open(
       // 'https://apps.apple.com/app/sudoku-race/id6517357180',
-      'https://sudoku.bubblyclouds.com/testers',
+      'https://apps.apple.com/app/sudoku-race/id6517357180',
       '_blank'
     );
   };
@@ -40,7 +40,7 @@ export const AppDownloadModal = ({
     // Replace with actual Google Play URL
     window.open(
       // 'https://play.google.com/store/apps/details?id=com.bubblyclouds.sudoku',
-      'https://sudoku.bubblyclouds.com/testers',
+      'https://play.google.com/store/apps/details?id=com.bubblyclouds.sudoku',
       '_blank'
     );
   };
