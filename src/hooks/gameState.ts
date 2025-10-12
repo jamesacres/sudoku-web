@@ -65,6 +65,9 @@ function useGameState({
   const lastSaveTimeRef = useRef<number>(0);
   const pollingIgnoreCounterRef = useRef<number>(0);
 
+  // Track last saved answer to prevent unnecessary saves
+  const lastSavedAnswerRef = useRef<Puzzle | null>(null);
+
   // Track if timer is paused due to inactivity
   const [isPausedDueToInactivity, setIsPausedDueToInactivity] = useState(false);
   const isPausedDueToInactivityRef = useRef(isPausedDueToInactivity);
@@ -179,6 +182,26 @@ function useGameState({
       localValue: { lastUpdated: number; state: GameState } | undefined;
       serverValuePromise?: Promise<ServerStateResult<GameState> | undefined>;
     } => {
+      if (state.answerStack.length > 0) {
+        // Get current answer (last item in answerStack)
+        const currentAnswer = state.answerStack[state.answerStack.length - 1];
+
+        // Check if answer has changed since last save
+        const hasAnswerChanged =
+          !lastSavedAnswerRef.current ||
+          JSON.stringify(currentAnswer) !==
+            JSON.stringify(lastSavedAnswerRef.current);
+
+        // If nothing has changed, skip saving
+        if (!hasAnswerChanged) {
+          console.info('nothing changed skipping save');
+          return { localValue: undefined, serverValuePromise: undefined };
+        }
+
+        // Update the last saved answer reference
+        lastSavedAnswerRef.current = currentAnswer;
+      }
+
       const localValue = saveLocalValue<GameState>({
         ...state,
         answerStack: shrinkAnswerStackLocal(state.answerStack, state.completed),
