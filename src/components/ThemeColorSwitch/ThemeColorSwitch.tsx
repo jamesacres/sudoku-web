@@ -2,7 +2,7 @@
 
 import { useThemeColor } from '@/providers/ThemeColorProvider';
 import { RevenueCatContext } from '@/providers/RevenueCatProvider';
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect, useRef } from 'react';
 import { SubscriptionContext } from '@/types/subscriptionContext';
 
 const colors = [
@@ -134,6 +134,7 @@ const ThemeColorSwitch = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [showRainbow, setShowRainbow] = useState(false);
   const [rainbowIndex, setRainbowIndex] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const currentColor = colors.find((c) => c.name === themeColor) || colors[0];
 
@@ -158,6 +159,26 @@ const ThemeColorSwitch = () => {
     };
   }, []);
 
+  // Handle clicks outside to close the menu
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
+
   const handleColorClick = (colorName: string) => {
     const colorIndex = colors.findIndex((c) => c.name === colorName);
 
@@ -179,7 +200,7 @@ const ThemeColorSwitch = () => {
   };
 
   return (
-    <div className="relative">
+    <div className="relative" ref={containerRef}>
       <button
         aria-label="Change Theme Color"
         onClick={() => setIsOpen(!isOpen)}
