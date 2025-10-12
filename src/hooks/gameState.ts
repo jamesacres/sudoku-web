@@ -164,9 +164,9 @@ function useGameState({
       if (completed) {
         return answerStack.slice(-2);
       }
-      // For in-progress puzzles, store last 20 moves to support undo/redo
+      // For in-progress puzzles, store last 10 moves to support undo/redo
       // while preventing excessive storage usage
-      return answerStack.slice(-20);
+      return answerStack.slice(-10);
     },
     []
   );
