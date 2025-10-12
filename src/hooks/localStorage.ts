@@ -92,10 +92,97 @@ function useLocalStorage({
     ): StateResult<T> => {
       const lastUpdated = new Date().getTime();
       const result = { lastUpdated, state };
-      localStorage.setItem(getStateKey(overrideId), JSON.stringify(result));
+      try {
+        localStorage.setItem(getStateKey(overrideId), JSON.stringify(result));
+      } catch (e) {
+        if (e instanceof DOMException && e.name === 'QuotaExceededError') {
+          console.error(
+            'localStorage quota exceeded, attempting to clear old data'
+          );
+          try {
+            // Strategy 1: Remove corrupted/unparseable items first
+            Object.keys(localStorage).forEach((key) => {
+              if (key.startsWith(prefix)) {
+                try {
+                  const item = localStorage.getItem(key);
+                  if (item) {
+                    JSON.parse(item); // Just verify it's valid JSON
+                  }
+                } catch {
+                  // If we can't parse it, remove it
+                  console.log('Removing corrupted item:', key);
+                  localStorage.removeItem(key);
+                }
+              }
+            });
+
+            // Strategy 2: Remove old puzzle data (older than 3 days)
+            const threeDaysAgo = new Date().getTime() - 3 * 24 * 60 * 60 * 1000;
+            Object.keys(localStorage).forEach((key) => {
+              if (key.startsWith(prefix)) {
+                try {
+                  const item = localStorage.getItem(key);
+                  if (item) {
+                    const parsed = JSON.parse(item);
+                    if (
+                      parsed.lastUpdated &&
+                      parsed.lastUpdated < threeDaysAgo
+                    ) {
+                      console.log('Removing old item:', key);
+                      localStorage.removeItem(key);
+                    }
+                  }
+                } catch {
+                  // Already removed in strategy 1
+                }
+              }
+            });
+
+            // Strategy 3: If still not enough space, remove oldest 50% of remaining items
+            const items: Array<{ key: string; lastUpdated: number }> = [];
+            Object.keys(localStorage).forEach((key) => {
+              if (key.startsWith(prefix)) {
+                try {
+                  const item = localStorage.getItem(key);
+                  if (item) {
+                    const parsed = JSON.parse(item);
+                    if (parsed.lastUpdated) {
+                      items.push({ key, lastUpdated: parsed.lastUpdated });
+                    }
+                  }
+                } catch {
+                  // Ignore
+                }
+              }
+            });
+
+            if (items.length > 0) {
+              items.sort((a, b) => a.lastUpdated - b.lastUpdated);
+              const toRemove = Math.ceil(items.length / 2);
+              for (let i = 0; i < toRemove; i++) {
+                console.log('Removing item to free space:', items[i].key);
+                localStorage.removeItem(items[i].key);
+              }
+            }
+
+            // Try saving again after cleanup
+            localStorage.setItem(
+              getStateKey(overrideId),
+              JSON.stringify(result)
+            );
+          } catch (retryError) {
+            console.error(
+              'Failed to save to localStorage even after cleanup:',
+              retryError
+            );
+          }
+        } else {
+          console.error('Error saving to localStorage:', e);
+        }
+      }
       return result;
     },
-    [getStateKey]
+    [getStateKey, prefix]
   );
 
   return { prefix, listValues, getValue, saveValue };

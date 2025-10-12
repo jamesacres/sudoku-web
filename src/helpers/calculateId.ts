@@ -25,6 +25,16 @@ const splitCellId = (
       Number(m[4]) as PuzzleRowOrColumn,
     ]
   )[0];
+
+  if (!matches) {
+    console.error(`Invalid cellId format: ${cellId}`);
+    // Return default values to prevent crash
+    return {
+      box: { x: 0, y: 0 },
+      cell: { x: 0, y: 0 },
+    };
+  }
+
   return {
     box: { x: matches[0], y: matches[1] },
     cell: { x: matches[2], y: matches[3] },

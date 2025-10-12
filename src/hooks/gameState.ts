@@ -158,6 +158,19 @@ function useGameState({
     return answerStack.slice(-3);
   }, []);
 
+  const shrinkAnswerStackLocal = useCallback(
+    (answerStack: Puzzle[], completed?: GameState['completed']): Puzzle[] => {
+      // For completed puzzles, only store the last 2 states (needed for cheat detection)
+      if (completed) {
+        return answerStack.slice(-2);
+      }
+      // For in-progress puzzles, store last 20 moves to support undo/redo
+      // while preventing excessive storage usage
+      return answerStack.slice(-20);
+    },
+    []
+  );
+
   const saveValue = useCallback(
     (
       state: GameState,
@@ -166,7 +179,10 @@ function useGameState({
       localValue: { lastUpdated: number; state: GameState } | undefined;
       serverValuePromise?: Promise<ServerStateResult<GameState> | undefined>;
     } => {
-      const localValue = saveLocalValue<GameState>(state);
+      const localValue = saveLocalValue<GameState>({
+        ...state,
+        answerStack: shrinkAnswerStackLocal(state.answerStack, state.completed),
+      });
       const serverValuePromise = isSaveServerValue
         ? saveServerValue<ServerState>({
             ...state,
@@ -176,7 +192,13 @@ function useGameState({
         : undefined;
       return { localValue, serverValuePromise };
     },
-    [saveLocalValue, saveServerValue, timerRef, shrinkAnswerStack]
+    [
+      saveLocalValue,
+      saveServerValue,
+      timerRef,
+      shrinkAnswerStack,
+      shrinkAnswerStackLocal,
+    ]
   );
   const handleServerResponse = useCallback(
     (
