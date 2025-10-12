@@ -379,6 +379,7 @@ const getFriendSessions = (
     completionPercentage: number;
     completionTime: number | null;
     isCompleted: boolean;
+    isCheated: boolean;
   }> = [];
 
   Object.entries(friendSessions).forEach(
@@ -413,6 +414,7 @@ const getFriendSessions = (
           completionPercentage,
           completionTime: matchingSession.state.completed?.seconds || null,
           isCompleted: !!matchingSession.state.completed,
+          isCheated: isPuzzleCheated(matchingSession.state),
         });
       }
     }
@@ -504,6 +506,7 @@ export const IntegratedSessionRow = ({
       completionPercentage: number;
       completionTime: number | null;
       isCompleted: boolean;
+      isCheated: boolean;
       isCurrentUser: boolean;
       isWinner: boolean;
     }> = [];
@@ -516,6 +519,7 @@ export const IntegratedSessionRow = ({
         completionPercentage: myPercentage,
         completionTime: actualSession?.state.completed?.seconds || null,
         isCompleted,
+        isCheated: actualSession ? isPuzzleCheated(actualSession.state) : false,
         isCurrentUser: true,
         isWinner: false, // Will be determined later
       });
@@ -674,6 +678,7 @@ export const IntegratedSessionRow = ({
                   completionPercentage,
                   completionTime,
                   isCompleted,
+                  isCheated,
                   isCurrentUser,
                   isWinner,
                 }) => (
@@ -696,8 +701,14 @@ export const IntegratedSessionRow = ({
                     <div className="flex items-center gap-1">
                       {isCompleted ? (
                         <>
-                          <span className="text-green-600 dark:text-green-400">
-                            ✅
+                          <span
+                            className={
+                              isCheated
+                                ? 'text-orange-600 dark:text-orange-400'
+                                : 'text-green-600 dark:text-green-400'
+                            }
+                          >
+                            {isCheated ? '❌' : '✅'}
                           </span>
                           {completionTime && (
                             <span className="text-xs opacity-75">
@@ -729,8 +740,16 @@ export const IntegratedSessionRow = ({
                 <div className="flex items-center gap-1">
                   {isCompleted ? (
                     <>
-                      <span className="text-green-600 dark:text-green-400">
-                        ✅
+                      <span
+                        className={
+                          actualSession && isPuzzleCheated(actualSession.state)
+                            ? 'text-orange-600 dark:text-orange-400'
+                            : 'text-green-600 dark:text-green-400'
+                        }
+                      >
+                        {actualSession && isPuzzleCheated(actualSession.state)
+                          ? '❌'
+                          : '✅'}
                       </span>
                       {session.state.completed && (
                         <span className="text-xs opacity-75">
