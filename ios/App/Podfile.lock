@@ -1,28 +1,28 @@
 PODS:
-  - Capacitor (7.4.1):
+  - Capacitor (7.4.3):
     - CapacitorCordova
-  - CapacitorApp (7.0.1):
+  - CapacitorApp (7.1.0):
     - Capacitor
-  - CapacitorBrowser (7.0.1):
+  - CapacitorBrowser (7.0.2):
     - Capacitor
   - CapacitorCommunityInAppReview (7.0.1):
     - Capacitor
-  - CapacitorCordova (7.4.1)
-  - CapacitorKeyboard (7.0.2):
+  - CapacitorCordova (7.4.3)
+  - CapacitorKeyboard (7.0.3):
     - Capacitor
   - CapacitorSecureStoragePlugin (0.11.0):
     - Capacitor
     - SwiftKeychainWrapper
   - CapacitorShare (7.0.2):
     - Capacitor
-  - CapacitorStatusBar (7.0.1):
+  - CapacitorStatusBar (7.0.3):
     - Capacitor
-  - PurchasesHybridCommon (15.0.0):
-    - RevenueCat (= 5.33.0)
-  - RevenueCat (5.33.0)
-  - RevenuecatPurchasesCapacitor (11.0.0):
+  - PurchasesHybridCommon (17.10.0):
+    - RevenueCat (= 5.43.0)
+  - RevenueCat (5.43.0)
+  - RevenuecatPurchasesCapacitor (11.2.6):
     - Capacitor
-    - PurchasesHybridCommon (= 15.0.0)
+    - PurchasesHybridCommon (= 17.10.0)
   - SwiftKeychainWrapper (4.0.1)
 
 DEPENDENCIES:
@@ -66,18 +66,18 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@revenuecat/purchases-capacitor"
 
 SPEC CHECKSUMS:
-  Capacitor: 78ad32d4b0d9dfa25402eb8b0ac46c2b8a4696b8
-  CapacitorApp: febecbb9582cb353aed037e18ec765141f880fe9
-  CapacitorBrowser: 6299776d496e968505464884d565992faa20444a
+  Capacitor: 28d6c01026a9a3f7156529498ec1f389a2a28dbc
+  CapacitorApp: 26587c2ce485d88ddb39adb21cac64f8e481afe3
+  CapacitorBrowser: 22541e48442de44dc629c214388290d6eecc6ae9
   CapacitorCommunityInAppReview: a8f26c4e48a8ccc9df0acf1c7bca39844c325572
-  CapacitorCordova: 34618fa1b14b6b091fd60a7658f7654044ae8d8a
-  CapacitorKeyboard: a86aa9e4741b6444a802df26440a92ae041b34a6
+  CapacitorCordova: 435121e81a2df4d0034f0fb11fcefab5104cfdb5
+  CapacitorKeyboard: 62f36104f26d53d8b3a2a43f2a69fe714f1777d5
   CapacitorSecureStoragePlugin: 450d402026ee3bcc018fa206504d9c0572fee78d
   CapacitorShare: be166411fa995ead2d39b104aa0aae56d8615c66
-  CapacitorStatusBar: 6e7af040d8fc4dd655999819625cae9c2d74c36f
-  PurchasesHybridCommon: 18b65ad813f50460d4af7e033abb5cc44a686a6f
-  RevenueCat: 9fd6fc0ea8a22fd9d11242feb298f3bb6f9f86db
-  RevenuecatPurchasesCapacitor: f6c2e988a785b401dc7ff75836d688abc65a0db7
+  CapacitorStatusBar: 0659ddc7b1713764a05831463d215b177a15d054
+  PurchasesHybridCommon: b7b4eafb55fbaaac19b4c36d4082657a3f0d8490
+  RevenueCat: a51003d4cb33820cc504cf177c627832b462a98e
+  RevenuecatPurchasesCapacitor: fc904c3f4da985cc3498f57f956cda169698a983
   SwiftKeychainWrapper: 807ba1d63c33a7d0613288512399cd1eda1e470c
 
 PODFILE CHECKSUM: a75ea2141db3ecd0f97f819fdd4da94c6951998e
