@@ -100,23 +100,8 @@ function useLocalStorage({
             'localStorage quota exceeded, attempting to clear old data'
           );
           try {
-            // Strategy 1: Remove corrupted/unparseable items first
-            Object.keys(localStorage).forEach((key) => {
-              if (key.startsWith(prefix)) {
-                try {
-                  const item = localStorage.getItem(key);
-                  if (item) {
-                    JSON.parse(item); // Just verify it's valid JSON
-                  }
-                } catch {
-                  // If we can't parse it, remove it
-                  console.log('Removing corrupted item:', key);
-                  localStorage.removeItem(key);
-                }
-              }
-            });
-
-            // Strategy 2: Remove old puzzle data (older than 3 days)
+            // Remove old puzzle data (older than 3 days)
+            let removedOldPuzzles = false;
             const threeDaysAgo = new Date().getTime() - 3 * 24 * 60 * 60 * 1000;
             Object.keys(localStorage).forEach((key) => {
               if (key.startsWith(prefix)) {
@@ -130,38 +115,43 @@ function useLocalStorage({
                     ) {
                       console.log('Removing old item:', key);
                       localStorage.removeItem(key);
+                      removedOldPuzzles = true;
                     }
                   }
                 } catch {
-                  // Already removed in strategy 1
+                  // If we can't parse it, remove it
+                  console.log('Removing corrupted item:', key);
+                  localStorage.removeItem(key);
                 }
               }
             });
 
-            // Strategy 3: If still not enough space, remove oldest 50% of remaining items
-            const items: Array<{ key: string; lastUpdated: number }> = [];
-            Object.keys(localStorage).forEach((key) => {
-              if (key.startsWith(prefix)) {
-                try {
-                  const item = localStorage.getItem(key);
-                  if (item) {
-                    const parsed = JSON.parse(item);
-                    if (parsed.lastUpdated) {
-                      items.push({ key, lastUpdated: parsed.lastUpdated });
+            if (!removedOldPuzzles) {
+              // If still not enough space, remove oldest 50% of remaining items
+              const items: Array<{ key: string; lastUpdated: number }> = [];
+              Object.keys(localStorage).forEach((key) => {
+                if (key.startsWith(prefix)) {
+                  try {
+                    const item = localStorage.getItem(key);
+                    if (item) {
+                      const parsed = JSON.parse(item);
+                      if (parsed.lastUpdated) {
+                        items.push({ key, lastUpdated: parsed.lastUpdated });
+                      }
                     }
+                  } catch {
+                    // Ignore
                   }
-                } catch {
-                  // Ignore
                 }
-              }
-            });
+              });
 
-            if (items.length > 0) {
-              items.sort((a, b) => a.lastUpdated - b.lastUpdated);
-              const toRemove = Math.ceil(items.length / 2);
-              for (let i = 0; i < toRemove; i++) {
-                console.log('Removing item to free space:', items[i].key);
-                localStorage.removeItem(items[i].key);
+              if (items.length > 0) {
+                items.sort((a, b) => a.lastUpdated - b.lastUpdated);
+                const toRemove = Math.ceil(items.length / 2);
+                for (let i = 0; i < toRemove; i++) {
+                  console.log('Removing item to free space:', items[i].key);
+                  localStorage.removeItem(items[i].key);
+                }
               }
             }
 
