@@ -48,7 +48,7 @@ const CopyButton = ({
         await navigator.clipboard.writeText(text);
         setShowCopied(true);
         if (canShare) {
-          Share.share({
+          await Share.share({
             title: `You're invited to a Sudoku Race!`,
             text: `Join the${partyName ? ` ${partyName}` : ''} racing team`,
             url: text,
