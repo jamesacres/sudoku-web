@@ -11,7 +11,7 @@ export default function Home() {
       handleAuthUrl();
     } else {
       console.info(
-        `auth skipping due to isInitialised ${isInitialised} handleAuthUrl ${handleAuthUrl}`
+        `auth skipping due to isInitialised ${isInitialised} handleAuthUrl ${!!handleAuthUrl}`
       );
     }
   }, [isInitialised, handleAuthUrl]);
