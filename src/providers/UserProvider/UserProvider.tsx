@@ -14,7 +14,7 @@ interface UserContextInterface {
   isLoggingIn: boolean;
   isInitialised: boolean;
   logout: () => void;
-  handleAuthUrl: () => void;
+  handleAuthUrl: (options: { active: boolean }) => void;
   handleRestoreState: () => void;
 }
 
@@ -199,77 +199,85 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     [loginRedirect, restoreState, restoreCapacitorState]
   );
 
-  const handleAuthUrl = React.useCallback(async () => {
-    console.info('handleAuthUrl');
-    setIsLoggingIn(true);
+  const handleAuthUrl = React.useCallback(
+    async (options: { active: boolean }) => {
+      console.info('handleAuthUrl');
+      setIsLoggingIn(true);
 
-    const codeExchange = async () => {
-      try {
-        if (!isExhanging) {
-          isExhanging = true;
-          const query = new URLSearchParams(window.location.search);
-          const code = query.get('code') || '';
-          const state = query.get('state') || '';
-          const redirectUri = buildRedirectUri();
+      const codeExchange = async () => {
+        try {
+          if (!isExhanging && options.active) {
+            isExhanging = true;
+            const query = new URLSearchParams(window.location.search);
+            const code = query.get('code') || '';
+            const state = query.get('state') || '';
+            const redirectUri = buildRedirectUri();
 
-          const codeVerifier = localStorage.getItem('code_verifier');
-          if (state === localStorage.getItem('state') && codeVerifier) {
-            console.info('handleAuthUrl requesting code exchange');
-            const params = new URLSearchParams();
-            params.set('grant_type', 'authorization_code');
-            params.set('client_id', clientId);
-            params.set('code_verifier', codeVerifier);
-            params.set('code', code);
-            params.set('redirect_uri', redirectUri);
-            const response = await fetch(
-              new Request(`${iss}/oidc/token`, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: params.toString(),
-              })
-            );
-            if (response.ok) {
-              // Modified response from public/user-provider-worker.js
-              const { user } = await response.json();
-              console.info(
-                'handleAuthUrl user received from code exchange',
-                user
+            const codeVerifier = localStorage.getItem('code_verifier');
+            if (state === localStorage.getItem('state') && codeVerifier) {
+              console.info('handleAuthUrl requesting code exchange');
+              const params = new URLSearchParams();
+              params.set('grant_type', 'authorization_code');
+              params.set('client_id', clientId);
+              params.set('code_verifier', codeVerifier);
+              params.set('code', code);
+              params.set('redirect_uri', redirectUri);
+              const response = await fetch(
+                new Request(`${iss}/oidc/token`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                  },
+                  body: params.toString(),
+                })
               );
-              if (user) {
-                await handleUser(user);
+              if (response.ok && options.active) {
+                // Modified response from public/user-provider-worker.js
+                const { user } = await response.json();
+                console.info(
+                  'handleAuthUrl user received from code exchange',
+                  user
+                );
+                if (user && options.active) {
+                  await handleUser(user);
+                }
               }
+            } else {
+              console.info(
+                `handleAuthUrl skipping as state ${state} !== localStorage ${localStorage.getItem('state')} or codeVerifier ${codeVerifier} missing`
+              );
             }
           } else {
-            console.info(
-              `handleAuthUrl skipping as state ${state} !== localStorage ${localStorage.getItem('state')} or codeVerifier ${codeVerifier} missing`
-            );
+            console.info('handleAuthUrl skipping as isExhanging');
           }
-        } else {
-          console.info('handleAuthUrl skipping as isExhanging');
+        } catch (e) {
+          console.error(e);
         }
-      } catch (e) {
-        console.error(e);
-      }
 
-      setIsLoggingIn(false);
-      isExhanging = false;
+        if (options.active) {
+          setIsLoggingIn(false);
+          isExhanging = false;
 
-      // Navigate back to previous location
-      const restorePathname = localStorage.getItem('restorePathname');
+          // Navigate back to previous location
+          const restorePathname = localStorage.getItem('restorePathname');
+          console.info('restorePathname', restorePathname);
 
-      // Clear values from local storage
-      localStorage.removeItem('restorePathname');
-      localStorage.removeItem('state');
-      localStorage.removeItem('code_verifier');
+          // Clear values from local storage
+          localStorage.removeItem('restorePathname');
+          localStorage.removeItem('state');
+          localStorage.removeItem('code_verifier');
 
-      router.replace(
-        restorePathname && restorePathname !== '/auth' ? restorePathname : '/'
-      );
-    };
-    await codeExchange();
-  }, [clientId, router, handleUser, fetch]);
+          router.replace(
+            restorePathname && restorePathname !== '/auth'
+              ? restorePathname
+              : '/'
+          );
+        }
+      };
+      await codeExchange();
+    },
+    [clientId, router, handleUser, fetch]
+  );
 
   const handleRestoreState = React.useCallback(async () => {
     console.info('restoreState');

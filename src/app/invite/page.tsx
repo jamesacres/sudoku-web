@@ -78,6 +78,8 @@ function InviteComponent() {
       }
 
       console.info('redirect', uri);
+      // Scroll to top before redirecting
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       router.replace(uri);
     },
     [router]
@@ -108,6 +110,7 @@ function InviteComponent() {
 
   // Load invite data (only after parties are loaded to ensure membership check works)
   useEffect(() => {
+    console.info('invite page loading..');
     let active = true;
 
     // Don't proceed until parties are loaded
