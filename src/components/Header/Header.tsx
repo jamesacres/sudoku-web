@@ -21,7 +21,7 @@ const Header = () => {
           </div>
         </div>
       </nav>
-      <div className="pt-[calc(var(--ion-safe-area-top)+4rem)]"></div>
+      <div className="pt-[calc(var(--ion-safe-area-top)+3.25rem)]"></div>
     </>
   );
 };
