@@ -266,6 +266,20 @@ const PartyRow = ({
           </div>
         )}
 
+        {!isOwner && (
+          <div className="mt-2 rounded-lg border border-blue-200 bg-blue-50/50 p-3 dark:border-blue-800 dark:bg-blue-900/20">
+            <p className="mb-2 text-xs text-gray-600 dark:text-gray-400">
+              Share this link with current team members to join this puzzle
+            </p>
+            <CopyButton
+              getText={() =>
+                `https://sudoku.bubblyclouds.com${window.location.pathname}${window.location.search}`
+              }
+              partyName={partyName}
+            />
+          </div>
+        )}
+
         <ul className="mt-4 space-y-4">
           {members.map(({ memberNickname, userId, isUser }) => {
             // Calculate completion percentage if session data exists
