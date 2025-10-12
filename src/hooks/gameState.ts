@@ -65,6 +65,9 @@ function useGameState({
   const lastSaveTimeRef = useRef<number>(0);
   const pollingIgnoreCounterRef = useRef<number>(0);
 
+  // Track last saved answer to prevent unnecessary saves
+  const lastSavedAnswerRef = useRef<Puzzle | null>(null);
+
   // Track if timer is paused due to inactivity
   const [isPausedDueToInactivity, setIsPausedDueToInactivity] = useState(false);
   const isPausedDueToInactivityRef = useRef(isPausedDueToInactivity);
@@ -158,6 +161,19 @@ function useGameState({
     return answerStack.slice(-3);
   }, []);
 
+  const shrinkAnswerStackLocal = useCallback(
+    (answerStack: Puzzle[], completed?: GameState['completed']): Puzzle[] => {
+      // For completed puzzles, only store the last 2 states (needed for cheat detection)
+      if (completed) {
+        return answerStack.slice(-2);
+      }
+      // For in-progress puzzles, store last 10 moves to support undo/redo
+      // while preventing excessive storage usage
+      return answerStack.slice(-10);
+    },
+    []
+  );
+
   const saveValue = useCallback(
     (
       state: GameState,
@@ -166,7 +182,30 @@ function useGameState({
       localValue: { lastUpdated: number; state: GameState } | undefined;
       serverValuePromise?: Promise<ServerStateResult<GameState> | undefined>;
     } => {
-      const localValue = saveLocalValue<GameState>(state);
+      if (state.answerStack.length > 0) {
+        // Get current answer (last item in answerStack)
+        const currentAnswer = state.answerStack[state.answerStack.length - 1];
+
+        // Check if answer has changed since last save
+        const hasAnswerChanged =
+          !lastSavedAnswerRef.current ||
+          JSON.stringify(currentAnswer) !==
+            JSON.stringify(lastSavedAnswerRef.current);
+
+        // If nothing has changed, skip saving
+        if (!hasAnswerChanged) {
+          console.info('nothing changed skipping save');
+          return { localValue: undefined, serverValuePromise: undefined };
+        }
+
+        // Update the last saved answer reference
+        lastSavedAnswerRef.current = currentAnswer;
+      }
+
+      const localValue = saveLocalValue<GameState>({
+        ...state,
+        answerStack: shrinkAnswerStackLocal(state.answerStack, state.completed),
+      });
       const serverValuePromise = isSaveServerValue
         ? saveServerValue<ServerState>({
             ...state,
@@ -176,7 +215,13 @@ function useGameState({
         : undefined;
       return { localValue, serverValuePromise };
     },
-    [saveLocalValue, saveServerValue, timerRef, shrinkAnswerStack]
+    [
+      saveLocalValue,
+      saveServerValue,
+      timerRef,
+      shrinkAnswerStack,
+      shrinkAnswerStackLocal,
+    ]
   );
   const handleServerResponse = useCallback(
     (

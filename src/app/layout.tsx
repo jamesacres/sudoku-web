@@ -5,6 +5,8 @@ import React from 'react';
 import { Providers } from './providers';
 import Header from '@/components/Header';
 import SudokuPlusModal from '@/components/SudokuPlusModal';
+import ErrorBoundary from '@/components/ErrorBoundary';
+import GlobalErrorHandler from '@/components/GlobalErrorHandler';
 
 const inter = Inter({ subsets: ['latin'] });
 const orbitron = Orbitron({
@@ -86,11 +88,14 @@ export default function RootLayout({
       <body
         className={`${inter.className} ${orbitron.variable} ${pacifico.variable}`}
       >
-        <Providers>
-          <Header />
-          <div className="mb-24">{children}</div>
-          <SudokuPlusModal />
-        </Providers>
+        <GlobalErrorHandler />
+        <ErrorBoundary>
+          <Providers>
+            <Header />
+            <div className="mb-24">{children}</div>
+            <SudokuPlusModal />
+          </Providers>
+        </ErrorBoundary>
       </body>
     </html>
   );

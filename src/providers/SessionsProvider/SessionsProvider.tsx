@@ -105,8 +105,19 @@ export const SessionsProvider = ({ children }: SessionsProviderProps) => {
             if (sessionIdWithPrefix.startsWith(prefix) && state) {
               const sessionId = sessionIdWithPrefix.replace(prefix, '');
               const { timer: serverTimerState, ...serverGameState } = state;
+
+              // Apply the same shrinking logic as gameState for consistency
+              // Completed puzzles only need 2 states for cheat detection
+              const optimizedGameState: GameState = {
+                ...serverGameState,
+                answerStack:
+                  serverGameState.completed && serverGameState.answerStack
+                    ? serverGameState.answerStack.slice(-2)
+                    : serverGameState.answerStack,
+              };
+
               console.info('Saving missing local puzzle', sessionId);
-              saveLocalPuzzle<GameState>(serverGameState, {
+              saveLocalPuzzle<GameState>(optimizedGameState, {
                 overrideId: sessionId,
               });
               if (serverTimerState) {
