@@ -20,10 +20,11 @@ export const calculateCompletionPercentage = (
           if (!initial[boxX][boxY][cellX][cellY]) {
             totalEmptyCells++;
 
-            // Check if the cell has been filled correctly
+            // Check if the cell has been filled correctly (must not be 0)
             if (
               latest[boxX][boxY][cellX][cellY] ===
-              final[boxX][boxY][cellX][cellY]
+                final[boxX][boxY][cellX][cellY] &&
+              latest[boxX][boxY][cellX][cellY] !== 0
             ) {
               correctlySolvedCells++;
             }
