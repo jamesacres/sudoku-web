@@ -29,7 +29,8 @@ describe('TimerDisplay', () => {
       const { container } = render(<TimerDisplay seconds={0} />);
 
       const paragraph = container.querySelector('p');
-      expect(paragraph).toHaveClass('min-h-8', 'font-mono');
+      expect(paragraph).toHaveClass('min-h-8');
+      expect(paragraph).toHaveClass('font-mono');
     });
   });
 
@@ -68,10 +69,8 @@ describe('TimerDisplay', () => {
       const { container } = render(<TimerDisplay seconds={90} />);
 
       const svg = container.querySelector('svg');
-      expect(svg).toHaveClass(
-        'text-theme-primary',
-        'dark:text-theme-primary-light'
-      );
+      expect(svg).toHaveClass('text-theme-primary');
+      expect(svg).toHaveClass('dark:text-theme-primary-light');
     });
 
     it('should have watch icon with size 24', () => {
@@ -254,7 +253,7 @@ describe('TimerDisplay', () => {
 
   describe('timer transitions', () => {
     it('should transition from timer to completion', () => {
-      const { rerender, container } = render(<TimerDisplay seconds={90} />);
+      const { rerender } = render(<TimerDisplay seconds={90} />);
 
       expect(screen.getByText(/1:30/)).toBeInTheDocument();
 

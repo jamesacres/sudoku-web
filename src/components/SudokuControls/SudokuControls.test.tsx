@@ -4,10 +4,8 @@ import {
   screen,
   fireEvent,
   waitFor,
-  within,
   act,
 } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import SudokuControls from './SudokuControls';
 
 // Mock the canUseUndo and canUseCheckGrid functions
@@ -69,7 +67,7 @@ describe('SudokuControls', () => {
     });
 
     it('should render number pad', () => {
-      const { container } = render(<SudokuControls {...defaultProps} />);
+      render(<SudokuControls {...defaultProps} />);
 
       // Check for number buttons 1-9
       for (let i = 1; i <= 9; i++) {
@@ -483,18 +481,14 @@ describe('SudokuControls', () => {
 
   describe('zoom mode styling', () => {
     it('should highlight zoom button when isZoomMode is true', () => {
-      const { container } = render(
-        <SudokuControls {...defaultProps} isZoomMode={true} />
-      );
+      render(<SudokuControls {...defaultProps} isZoomMode={true} />);
 
       const zoomButton = screen.getByText('Zoom').closest('button');
       expect(zoomButton).toHaveClass('bg-theme-primary');
     });
 
     it('should not highlight zoom button when isZoomMode is false', () => {
-      const { container } = render(
-        <SudokuControls {...defaultProps} isZoomMode={false} />
-      );
+      render(<SudokuControls {...defaultProps} isZoomMode={false} />);
 
       const zoomButton = screen.getByText('Zoom').closest('button');
       expect(zoomButton).not.toHaveClass('bg-theme-primary');

@@ -164,10 +164,8 @@ describe('NumberPad', () => {
 
       const buttons = container.querySelectorAll('button');
       buttons.forEach((button) => {
-        expect(button).toHaveClass(
-          'disabled:opacity-50',
-          'disabled:cursor-not-allowed'
-        );
+        expect(button).toHaveClass('disabled:opacity-50');
+        expect(button).toHaveClass('disabled:cursor-not-allowed');
       });
     });
 
@@ -220,7 +218,8 @@ describe('NumberPad', () => {
 
       const buttons = container.querySelectorAll('button');
       buttons.forEach((button) => {
-        expect(button).toHaveClass('px-4', 'py-2');
+        expect(button).toHaveClass('px-4');
+        expect(button).toHaveClass('py-2');
       });
     });
 
@@ -242,7 +241,9 @@ describe('NumberPad', () => {
 
       const buttons = container.querySelectorAll('button');
       buttons.forEach((button) => {
-        expect(button).toHaveClass('flex', 'items-center', 'justify-center');
+        expect(button).toHaveClass('flex');
+        expect(button).toHaveClass('items-center');
+        expect(button).toHaveClass('justify-center');
       });
     });
 
@@ -253,7 +254,8 @@ describe('NumberPad', () => {
 
       const buttons = container.querySelectorAll('button');
       buttons.forEach((button) => {
-        expect(button).toHaveClass('h-full', 'w-full');
+        expect(button).toHaveClass('h-full');
+        expect(button).toHaveClass('w-full');
       });
     });
 
@@ -264,7 +266,8 @@ describe('NumberPad', () => {
 
       const buttons = container.querySelectorAll('button');
       buttons.forEach((button) => {
-        expect(button).toHaveClass('text-black', 'dark:text-white');
+        expect(button).toHaveClass('text-black');
+        expect(button).toHaveClass('dark:text-white');
       });
     });
   });
@@ -276,7 +279,9 @@ describe('NumberPad', () => {
       );
 
       const gridContainer = container.querySelector('.grid');
-      expect(gridContainer).toHaveClass('mb-0', 'h-full', 'w-full');
+      expect(gridContainer).toHaveClass('mb-0');
+      expect(gridContainer).toHaveClass('h-full');
+      expect(gridContainer).toHaveClass('w-full');
     });
 
     it('should have different layouts for mobile and desktop', () => {

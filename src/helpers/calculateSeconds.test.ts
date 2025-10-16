@@ -10,7 +10,7 @@ describe('calculateSeconds', () => {
     });
 
     it('should return 0 when timer is undefined', () => {
-      const result = calculateSeconds(undefined);
+      const result = calculateSeconds(null);
       expect(result).toBe(0);
     });
 

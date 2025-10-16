@@ -45,7 +45,10 @@ describe('useOnline', () => {
 
   describe('initialization', () => {
     it('should initialize with online status', () => {
-      window.navigator.onLine = true;
+      Object.defineProperty(window.navigator, 'onLine', {
+        writable: true,
+        value: true,
+      });
 
       const Wrapper = createContextWrapper();
       const { result } = renderHook(() => useOnline(), { wrapper: Wrapper });
@@ -56,7 +59,10 @@ describe('useOnline', () => {
     });
 
     it('should reflect offline status on init', () => {
-      window.navigator.onLine = false;
+      Object.defineProperty(window.navigator, 'onLine', {
+        writable: true,
+        value: false,
+      });
 
       const Wrapper = createContextWrapper();
       const { result } = renderHook(() => useOnline(), { wrapper: Wrapper });
@@ -74,7 +80,10 @@ describe('useOnline', () => {
 
   describe('online status detection', () => {
     it('should detect when coming online', () => {
-      window.navigator.onLine = false;
+      Object.defineProperty(window.navigator, 'onLine', {
+        writable: true,
+        value: false,
+      });
 
       const Wrapper = createContextWrapper();
       const { result } = renderHook(() => useOnline(), { wrapper: Wrapper });
@@ -82,7 +91,10 @@ describe('useOnline', () => {
       expect(result.current.isOnline).toBe(false);
 
       act(() => {
-        window.navigator.onLine = true;
+        Object.defineProperty(window.navigator, 'onLine', {
+          writable: true,
+          value: true,
+        });
         const event = new Event('online');
         window.dispatchEvent(event);
       });
@@ -91,7 +103,10 @@ describe('useOnline', () => {
     });
 
     it('should detect when going offline', () => {
-      window.navigator.onLine = true;
+      Object.defineProperty(window.navigator, 'onLine', {
+        writable: true,
+        value: true,
+      });
 
       const Wrapper = createContextWrapper();
       const { result } = renderHook(() => useOnline(), { wrapper: Wrapper });
@@ -99,7 +114,10 @@ describe('useOnline', () => {
       expect(result.current.isOnline).toBe(true);
 
       act(() => {
-        window.navigator.onLine = false;
+        Object.defineProperty(window.navigator, 'onLine', {
+          writable: true,
+          value: false,
+        });
         const event = new Event('offline');
         window.dispatchEvent(event);
       });
@@ -113,21 +131,30 @@ describe('useOnline', () => {
 
       // Start online
       act(() => {
-        window.navigator.onLine = true;
+        Object.defineProperty(window.navigator, 'onLine', {
+          writable: true,
+          value: true,
+        });
         window.dispatchEvent(new Event('online'));
       });
       expect(result.current.isOnline).toBe(true);
 
       // Go offline
       act(() => {
-        window.navigator.onLine = false;
+        Object.defineProperty(window.navigator, 'onLine', {
+          writable: true,
+          value: false,
+        });
         window.dispatchEvent(new Event('offline'));
       });
       expect(result.current.isOnline).toBe(false);
 
       // Go back online
       act(() => {
-        window.navigator.onLine = true;
+        Object.defineProperty(window.navigator, 'onLine', {
+          writable: true,
+          value: true,
+        });
         window.dispatchEvent(new Event('online'));
       });
       expect(result.current.isOnline).toBe(true);
@@ -136,7 +163,10 @@ describe('useOnline', () => {
 
   describe('forceOffline', () => {
     it('should force offline status', async () => {
-      window.navigator.onLine = true;
+      Object.defineProperty(window.navigator, 'onLine', {
+        writable: true,
+        value: true,
+      });
 
       const Wrapper = createContextWrapper();
       const { result } = renderHook(() => useOnline(), { wrapper: Wrapper });
@@ -156,7 +186,10 @@ describe('useOnline', () => {
     });
 
     it('should restore online status when force offline is disabled', async () => {
-      window.navigator.onLine = true;
+      Object.defineProperty(window.navigator, 'onLine', {
+        writable: true,
+        value: true,
+      });
 
       const Wrapper = createContextWrapper();
       const { result } = renderHook(() => useOnline(), { wrapper: Wrapper });
@@ -179,7 +212,10 @@ describe('useOnline', () => {
     });
 
     it('should keep offline even when navigator says online', async () => {
-      window.navigator.onLine = true;
+      Object.defineProperty(window.navigator, 'onLine', {
+        writable: true,
+        value: true,
+      });
 
       const Wrapper = createContextWrapper();
       const { result } = renderHook(() => useOnline(), { wrapper: Wrapper });
@@ -194,7 +230,10 @@ describe('useOnline', () => {
 
       // Even though navigator.onLine is true
       act(() => {
-        window.navigator.onLine = true;
+        Object.defineProperty(window.navigator, 'onLine', {
+          writable: true,
+          value: true,
+        });
         window.dispatchEvent(new Event('online'));
       });
 
@@ -205,7 +244,10 @@ describe('useOnline', () => {
     });
 
     it('should respect forceOffline over actual offline status', () => {
-      window.navigator.onLine = false;
+      Object.defineProperty(window.navigator, 'onLine', {
+        writable: true,
+        value: false,
+      });
 
       const Wrapper = createContextWrapper();
       const { result } = renderHook(() => useOnline(), { wrapper: Wrapper });
@@ -214,7 +256,10 @@ describe('useOnline', () => {
 
       act(() => {
         result.current.forceOffline(false);
-        window.navigator.onLine = true;
+        Object.defineProperty(window.navigator, 'onLine', {
+          writable: true,
+          value: true,
+        });
         window.dispatchEvent(new Event('online'));
       });
 
@@ -288,7 +333,10 @@ describe('useOnline', () => {
       });
 
       act(() => {
-        window.navigator.onLine = true;
+        Object.defineProperty(window.navigator, 'onLine', {
+          writable: true,
+          value: true,
+        });
         window.dispatchEvent(new Event('online'));
       });
 
@@ -303,7 +351,10 @@ describe('useOnline', () => {
       // Loop ends with i=4 (even), so online event is last
       for (let i = 0; i < 5; i++) {
         act(() => {
-          window.navigator.onLine = i % 2 === 0;
+          Object.defineProperty(window.navigator, 'onLine', {
+            writable: true,
+            value: i % 2 === 0,
+          });
           window.dispatchEvent(new Event(i % 2 === 0 ? 'online' : 'offline'));
         });
       }
@@ -346,7 +397,10 @@ describe('useOnline', () => {
 
       // Network comes back online
       act(() => {
-        window.navigator.onLine = true;
+        Object.defineProperty(window.navigator, 'onLine', {
+          writable: true,
+          value: true,
+        });
         window.dispatchEvent(new Event('online'));
       });
 
@@ -365,7 +419,10 @@ describe('useOnline', () => {
 
       // Network goes down
       act(() => {
-        window.navigator.onLine = false;
+        Object.defineProperty(window.navigator, 'onLine', {
+          writable: true,
+          value: false,
+        });
         window.dispatchEvent(new Event('offline'));
       });
 

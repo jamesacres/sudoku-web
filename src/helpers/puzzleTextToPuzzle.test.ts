@@ -66,6 +66,7 @@ describe('puzzleTextToPuzzle', () => {
       const cellY = row % 3;
 
       // Check first cell of each row
+      // @ts-expect-error - Puzzle type doesn't have numeric index signature
       expect(puzzle[0][boxY][0][cellY]).toBe(expectedValue);
     }
   });
@@ -85,6 +86,7 @@ describe('puzzleTextToPuzzle', () => {
       const expectedValue = row + 1; // Row 0 has 1s, row 1 has 2s, row 2 has 3s, etc.
       const boxY = Math.floor(row / 3);
       const cellY = row % 3;
+      // @ts-expect-error - Puzzle type doesn't have numeric index signature
       expect(puzzle[0][boxY][0][cellY]).toBe(expectedValue);
     }
   });
@@ -98,6 +100,7 @@ describe('puzzleTextToPuzzle', () => {
       for (let by = 0; by < 3; by++) {
         for (let cx = 0; cx < 3; cx++) {
           for (let cy = 0; cy < 3; cy++) {
+            // @ts-expect-error - Puzzle type doesn't have numeric index signature
             expect(puzzle[bx][by][cx][cy]).toBe(0);
           }
         }
@@ -115,7 +118,9 @@ describe('puzzleTextToPuzzle', () => {
       for (let by = 0; by < 3; by++) {
         for (let cx = 0; cx < 3; cx++) {
           for (let cy = 0; cy < 3; cy++) {
+            // @ts-expect-error - Puzzle type doesn't have numeric index signature
             expect(puzzle[bx][by][cx][cy]).toBeGreaterThan(0);
+            // @ts-expect-error - Puzzle type doesn't have numeric index signature
             expect(puzzle[bx][by][cx][cy]).toBeLessThanOrEqual(9);
           }
         }

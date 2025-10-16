@@ -12,7 +12,6 @@ jest.mock('../SudokuInput', () => {
     selectedCell,
     validation,
     setSelectedCell,
-    selectNumber,
     onDragStart,
     isZoomMode,
   }: any) {
@@ -97,7 +96,9 @@ describe('SudokuBox', () => {
 
       const boxElement = container.querySelector('[data-box-id="0-0"]');
       expect(boxElement).toBeInTheDocument();
-      expect(boxElement).toHaveClass('grid', 'grid-cols-3', 'grid-rows-3');
+      expect(boxElement).toHaveClass('grid');
+      expect(boxElement).toHaveClass('grid-cols-3');
+      expect(boxElement).toHaveClass('grid-rows-3');
     });
 
     it('should render 9 SudokuInput components (one for each cell)', () => {
@@ -152,7 +153,8 @@ describe('SudokuBox', () => {
       );
 
       const boxElement = container.querySelector('[data-box-id="0-0"]');
-      expect(boxElement).toHaveClass('border', 'border-2');
+      expect(boxElement).toHaveClass('border');
+      expect(boxElement).toHaveClass('border-2');
     });
   });
 
@@ -299,7 +301,8 @@ describe('SudokuBox', () => {
       const cell = container.querySelector(
         '[data-cell-container-id="0-0,cell:0,0"]'
       );
-      expect(cell).not.toHaveClass('bg-green-600', 'bg-red-600');
+      expect(cell).not.toHaveClass('bg-green-600');
+      expect(cell).not.toHaveClass('bg-red-600');
     });
   });
 
@@ -538,7 +541,7 @@ describe('SudokuBox', () => {
         2: [0, 0, 9],
       };
 
-      const { container } = render(
+      render(
         <SudokuBox
           boxId="0-0"
           selectedCell={null}
@@ -556,7 +559,7 @@ describe('SudokuBox', () => {
     });
 
     it('should handle changing answer between renders', () => {
-      const { rerender, container } = render(
+      const { rerender } = render(
         <SudokuBox
           boxId="0-0"
           selectedCell={null}

@@ -372,9 +372,9 @@ describe('SessionsProvider', () => {
       const mockSessions: ServerStateResult<ServerState>[] = [
         {
           sessionId: 'session-1',
-          state: { answerStack: [], initial: {}, final: {} } as ServerState,
+          state: { answerStack: [], initial: {}, final: {} } as any,
           updatedAt: new Date(),
-        } as ServerStateResult<ServerState>,
+        } as any,
       ];
 
       act(() => {
@@ -390,9 +390,9 @@ describe('SessionsProvider', () => {
       let sessions: ServerStateResult<ServerState>[] | null = [
         {
           sessionId: 'session-1',
-          state: { answerStack: [], initial: {}, final: {} } as ServerState,
+          state: { answerStack: [], initial: {}, final: {} } as any,
           updatedAt: new Date(),
-        } as ServerStateResult<ServerState>,
+        } as any,
       ];
       let clearSessions: any;
 
@@ -430,12 +430,10 @@ describe('SessionsProvider', () => {
   describe('user context changes', () => {
     it('should clear friend sessions when user changes', () => {
       let friendSessions: any = { userId1: { sessions: [] } };
-      let clearFriendSessions: any;
 
       const TestComponent = () => {
         const context = useSessions();
         friendSessions = context.friendSessions;
-        clearFriendSessions = context.clearFriendSessions;
         return <div>Friends: {Object.keys(friendSessions).length}</div>;
       };
 
@@ -495,7 +493,7 @@ describe('SessionsProvider', () => {
           {
             partyId: 'party-1',
             members: [{ userId: 'user-1', displayName: 'User 1' }],
-          } as Party,
+          } as unknown as Party,
         ];
 
         result = getSessionParties(parties, 'session-1');
@@ -643,9 +641,9 @@ describe('SessionsProvider', () => {
       const mockSessions: ServerStateResult<ServerState>[] = [
         {
           sessionId: 'session-1',
-          state: { answerStack: [], initial: {}, final: {} } as ServerState,
+          state: { answerStack: [], initial: {}, final: {} } as any,
           updatedAt: new Date(),
-        } as ServerStateResult<ServerState>,
+        } as any,
       ];
 
       act(() => {

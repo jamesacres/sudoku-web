@@ -105,7 +105,9 @@ describe('useLocalStorage', () => {
       });
 
       expect(returnedValue).toBeDefined();
+      // @ts-expect-error - returnedValue type inference issue in test
       expect(returnedValue?.lastUpdated).toBeDefined();
+      // @ts-expect-error - returnedValue type inference issue in test
       expect(returnedValue?.state).toEqual(testData);
     });
 
@@ -173,6 +175,7 @@ describe('useLocalStorage', () => {
           callCount++;
           if (callCount === 1) {
             const error = new DOMException('QuotaExceededError');
+            // @ts-expect-error - name is read-only but we need to set it for testing
             error.name = 'QuotaExceededError';
             throw error;
           }
@@ -329,8 +332,12 @@ describe('useLocalStorage', () => {
       const listedValues = result.current.listValues();
 
       expect(listedValues).toHaveLength(2);
-      expect(listedValues?.some((v) => v.state.test === 'data1')).toBeTruthy();
-      expect(listedValues?.some((v) => v.state.test === 'data2')).toBeTruthy();
+      expect(
+        listedValues?.some((v: any) => v.state.test === 'data1')
+      ).toBeTruthy();
+      expect(
+        listedValues?.some((v: any) => v.state.test === 'data2')
+      ).toBeTruthy();
     });
 
     it('should list values with sessionId', () => {
@@ -408,10 +415,10 @@ describe('useLocalStorage', () => {
       const listedValues = result.current.listValues();
 
       expect(
-        listedValues?.some((v) => v.sessionId === 'sudoku-old-puzzle')
+        listedValues?.some((v: any) => v.sessionId === 'sudoku-old-puzzle')
       ).toBeFalsy();
       expect(
-        listedValues?.some((v) => v.sessionId === 'sudoku-recent-puzzle')
+        listedValues?.some((v: any) => v.sessionId === 'sudoku-recent-puzzle')
       ).toBeTruthy();
     });
 
@@ -445,7 +452,8 @@ describe('useLocalStorage', () => {
       const listedValues = result.current.listValues();
 
       expect(listedValues).toHaveLength(1);
-      expect(listedValues?.[0]?.state.test).toBe('valid');
+      // @ts-expect-error - state is unknown type but we know it's valid in this test
+      expect(listedValues?.[0]?.state?.test).toBe('valid');
     });
   });
 
@@ -568,7 +576,8 @@ describe('useLocalStorage', () => {
       result.current.saveValue({ items: largeArray });
       const retrievedValue = result.current.getValue();
 
-      expect(retrievedValue?.state.items).toHaveLength(1000);
+      // @ts-expect-error - state is unknown type but we know structure in this test
+      expect(retrievedValue?.state?.items).toHaveLength(1000);
     });
 
     it('should handle null and undefined values', () => {
@@ -584,7 +593,8 @@ describe('useLocalStorage', () => {
       result.current.saveValue(data);
       const retrievedValue = result.current.getValue();
 
-      expect(retrievedValue?.state.nullValue).toBeNull();
+      // @ts-expect-error - state is unknown type but we know structure in this test
+      expect(retrievedValue?.state?.nullValue).toBeNull();
     });
   });
 });

@@ -154,7 +154,7 @@ describe('ThemeColorProvider', () => {
 
       if (setThemeColor) {
         act(() => {
-          setThemeColor('red');
+          setThemeColor!('red');
         });
       }
 
@@ -180,7 +180,7 @@ describe('ThemeColorProvider', () => {
 
       if (setThemeColor) {
         act(() => {
-          setThemeColor('green');
+          setThemeColor!('green');
         });
       }
 
@@ -208,7 +208,7 @@ describe('ThemeColorProvider', () => {
 
       if (setThemeColor) {
         act(() => {
-          setThemeColor('purple');
+          setThemeColor!('purple');
         });
       }
 
@@ -261,7 +261,7 @@ describe('ThemeColorProvider', () => {
       for (const color of validColors) {
         if (setThemeColor) {
           act(() => {
-            setThemeColor(color as any);
+            setThemeColor!(color as any);
           });
         }
         expect(
@@ -419,7 +419,7 @@ describe('ThemeColorProvider', () => {
 
       if (setThemeColor) {
         act(() => {
-          setThemeColor('cyan');
+          setThemeColor!('cyan');
         });
       }
 
@@ -498,7 +498,7 @@ describe('ThemeColorProvider', () => {
       act(() => {
         for (const color of colors) {
           if (setThemeColor) {
-            setThemeColor(color as any);
+            setThemeColor!(color as any);
           }
         }
       });
@@ -537,9 +537,9 @@ describe('ThemeColorProvider', () => {
       act(() => {
         if (setThemeColor) {
           for (let i = 0; i < 100; i++) {
-            setThemeColor('red');
-            setThemeColor('green');
-            setThemeColor('blue');
+            setThemeColor!('red');
+            setThemeColor!('green');
+            setThemeColor!('blue');
           }
         }
       });
@@ -566,9 +566,9 @@ describe('ThemeColorProvider', () => {
 
       act(() => {
         if (setThemeColor) {
-          setThemeColor('red');
-          setThemeColor('red');
-          setThemeColor('red');
+          setThemeColor!('red');
+          setThemeColor!('red');
+          setThemeColor!('red');
         }
       });
 
@@ -594,7 +594,7 @@ describe('ThemeColorProvider', () => {
 
       act(() => {
         if (setThemeColor) {
-          setThemeColor('invalid' as any);
+          setThemeColor!('invalid' as any);
         }
       });
 
@@ -653,7 +653,7 @@ describe('ThemeColorProvider', () => {
       for (const color of colors) {
         act(() => {
           if (setThemeColor) {
-            setThemeColor(color as any);
+            setThemeColor!(color as any);
           }
         });
         expect(localStorage.getItem('theme-color')).toBe(color);

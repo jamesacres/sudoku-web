@@ -8,7 +8,7 @@ import { useFetch } from '@/hooks/fetch';
 import React, { useEffect } from 'react';
 import { Browser } from '@capacitor/browser';
 
-interface UserContextInterface {
+export interface UserContextInterface {
   user?: UserProfile;
   loginRedirect: (config: { userInitiated: boolean }) => Promise<void>;
   isLoggingIn: boolean;

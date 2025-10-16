@@ -1,8 +1,7 @@
 'use client';
 
-import { renderHook, act, waitFor } from '@testing-library/react';
+import { renderHook, act } from '@testing-library/react';
 import { useTimer } from './timer';
-import { StateType } from '@/types/StateType';
 
 // Mock useDocumentVisibility
 const mockUseDocumentVisibility = jest.fn(() => false);
@@ -410,8 +409,6 @@ describe('useTimer', () => {
       act(() => {
         result.current.setTimerNewSession();
       });
-
-      const firstSession = result.current.timer?.inProgress.start;
 
       act(() => {
         jest.advanceTimersByTime(1000);

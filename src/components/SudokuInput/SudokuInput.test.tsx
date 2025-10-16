@@ -82,7 +82,7 @@ describe('SudokuInput', () => {
 
     it('should display numbers 1-9 correctly', () => {
       for (let i = 1; i <= 9; i++) {
-        const { container } = render(
+        render(
           <SudokuInput
             cellId={`0-0-0-${i}`}
             selectedCell={null}
@@ -269,7 +269,8 @@ describe('SudokuInput', () => {
       const cellContainer = container.querySelector(
         '[data-cell-container-id="0-0-0-0"]'
       );
-      expect(cellContainer).not.toHaveClass('bg-green-600', 'bg-red-600');
+      expect(cellContainer).not.toHaveClass('bg-green-600');
+      expect(cellContainer).not.toHaveClass('bg-red-600');
     });
 
     it('should not show validation color when value is 0', () => {
@@ -288,7 +289,8 @@ describe('SudokuInput', () => {
       const cellContainer = container.querySelector(
         '[data-cell-container-id="0-0-0-0"]'
       );
-      expect(cellContainer).not.toHaveClass('bg-green-600', 'bg-red-600');
+      expect(cellContainer).not.toHaveClass('bg-green-600');
+      expect(cellContainer).not.toHaveClass('bg-red-600');
     });
 
     it('should prioritize validation display over selection color', () => {

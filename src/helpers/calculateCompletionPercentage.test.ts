@@ -49,6 +49,7 @@ describe('calculateCompletionPercentage', () => {
         for (let by = 0; by < 3; by++) {
           for (let cx = 0; cx < 3; cx++) {
             for (let cy = 0; cy < 3; cy++) {
+              // @ts-expect-error
               if (!initial[bx][by][cx][cy]) {
                 final = setCellValue(final, bx, by, cx, cy, 5);
                 latest = setCellValue(latest, bx, by, cx, cy, 5);
@@ -94,6 +95,7 @@ describe('calculateCompletionPercentage', () => {
         for (let by = 0; by < 3; by++) {
           for (let cx = 0; cx < 3; cx++) {
             for (let cy = 0; cy < 3; cy++) {
+              // @ts-expect-error
               if (!initial[bx][by][cx][cy]) {
                 cellCount++;
                 final = setCellValue(final, bx, by, cx, cy, 5);
@@ -185,6 +187,7 @@ describe('calculateCompletionPercentage', () => {
         for (let by = 0; by < 3; by++) {
           for (let cx = 0; cx < 3; cx++) {
             for (let cy = 0; cy < 3; cy++) {
+              // @ts-expect-error
               if (!initial[bx][by][cx][cy]) {
                 final = setCellValue(final, bx, by, cx, cy, 5);
                 latest = setCellValue(latest, bx, by, cx, cy, 5);

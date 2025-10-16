@@ -31,10 +31,12 @@ const createSession = (
       initial: createEmptyPuzzle(),
       final: createEmptyPuzzle(),
       completed:
-        seconds !== undefined ? { at: '2024-01-01', seconds } : undefined,
+        seconds !== undefined
+          ? ({ at: '2024-01-01', seconds } as any)
+          : undefined,
       metadata,
     },
-  };
+  } as any;
 };
 
 describe('scoringUtils', () => {
@@ -317,11 +319,11 @@ describe('scoringUtils', () => {
           partyId: 'party-1',
           createdBy: 'user-1',
           members: [
-            { userId: 'user-1', memberNickname: 'Alice' },
-            { userId: 'user-2', memberNickname: 'Bob' },
+            { userId: 'user-1', memberNickname: 'Alice' } as any,
+            { userId: 'user-2', memberNickname: 'Bob' } as any,
           ],
         },
-      ];
+      ] as any;
 
       expect(getUsernameFromParties('user-2', parties)).toBe('Bob');
     });
@@ -331,9 +333,9 @@ describe('scoringUtils', () => {
         {
           partyId: 'party-1',
           createdBy: 'user-1',
-          members: [{ userId: 'user-1', memberNickname: 'Alice' }],
+          members: [{ userId: 'user-1', memberNickname: 'Alice' } as any],
         },
-      ];
+      ] as any;
 
       expect(getUsernameFromParties('user-999', parties)).toBe('Unknown User');
     });
@@ -343,14 +345,14 @@ describe('scoringUtils', () => {
         {
           partyId: 'party-1',
           createdBy: 'user-1',
-          members: [{ userId: 'user-2', memberNickname: 'Bob' }],
+          members: [{ userId: 'user-2', memberNickname: 'Bob' } as any],
         },
         {
           partyId: 'party-2',
           createdBy: 'user-1',
-          members: [{ userId: 'user-2', memberNickname: 'Charlie' }],
+          members: [{ userId: 'user-2', memberNickname: 'Charlie' } as any],
         },
-      ];
+      ] as any;
 
       expect(getUsernameFromParties('user-2', parties)).toBe('Bob');
     });

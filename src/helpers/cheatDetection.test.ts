@@ -100,6 +100,7 @@ describe('cheatDetection', () => {
 
     it('should return false if answerStack is missing', () => {
       const serverState: ServerState = {
+        // @ts-expect-error - testing undefined answerStack
         answerStack: undefined,
         initial: createEmptyPuzzle(),
         final: createEmptyPuzzle(),

@@ -174,7 +174,7 @@ describe('UserProvider', () => {
       });
 
       if (loginRedirect) {
-        const promise = loginRedirect({ userInitiated: true });
+        loginRedirect({ userInitiated: true });
         // Don't await - just check that it's called
         expect(isLoggingIn).toBeDefined();
       }
@@ -548,10 +548,8 @@ describe('UserProvider', () => {
 
   describe('error handling', () => {
     it('should handle errors gracefully', async () => {
-      let context: UserContextInterface | undefined;
-
       const TestComponent = () => {
-        context = useContext(UserContext);
+        useContext(UserContext);
         return <div>Test</div>;
       };
 
