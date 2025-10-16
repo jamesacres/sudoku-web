@@ -121,15 +121,13 @@ describe('dailyPuzzleCounter', () => {
     });
 
     it('should handle localStorage errors gracefully', () => {
-      const originalSetItem = localStorage.setItem;
-      localStorage.setItem = () => {
+      // Mock setItem to throw error
+      (localStorage.setItem as jest.Mock).mockImplementationOnce(() => {
         throw new Error('Storage full');
-      };
+      });
 
       const count = addDailyPuzzleId('puzzle-1');
       expect(count).toBe(0);
-
-      localStorage.setItem = originalSetItem;
     });
 
     it('should handle window undefined', () => {

@@ -40,24 +40,29 @@ function useLocalStorage({
     return Object.entries(localStorage)
       .filter(([key]) => {
         if (type !== StateType.PUZZLE) {
-          return key.endsWith(`-${type}`);
+          return key.startsWith(prefix) && key.endsWith(`-${type}`);
         }
-        return RegExp(`^${prefix}[^-]+$`).test(key);
+        // For PUZZLE type, match keys that start with prefix and don't end with a type suffix
+        return key.startsWith(prefix) && !key.match(/-[A-Z]+$/);
       })
       .map(([key, value]) => {
         try {
           const parsedValue = JSON.parse(value);
-          const matches = key.match(RegExp(`^(${prefix}[^-]+)`));
-          if (matches?.length) {
-            if (
-              parsedValue.lastUpdated &&
-              parsedValue.lastUpdated < oneMonthAgo
-            ) {
-              localStorage.removeItem(key);
-              return undefined;
-            }
-            return { ...parsedValue, sessionId: matches[1] };
+          // For PUZZLE type, the sessionId is the full key (minus any type suffix)
+          // For other types, extract the base key before the type suffix
+          let sessionId = key;
+          if (type !== StateType.PUZZLE) {
+            sessionId = key.replace(new RegExp(`-${type}$`), '');
           }
+
+          if (
+            parsedValue.lastUpdated &&
+            parsedValue.lastUpdated <= oneMonthAgo
+          ) {
+            localStorage.removeItem(key);
+            return undefined;
+          }
+          return { ...parsedValue, sessionId };
         } catch (e) {
           console.error(e);
         }
@@ -72,13 +77,13 @@ function useLocalStorage({
     }: {
       overrideId?: string;
     } = {}): StateResult<T> | undefined => {
-      try {
-        const savedState = localStorage.getItem(getStateKey(overrideId));
-        if (savedState) {
+      const savedState = localStorage.getItem(getStateKey(overrideId));
+      if (savedState) {
+        try {
           return JSON.parse(savedState);
+        } catch (e) {
+          console.error(e);
         }
-      } catch (e) {
-        console.error(e);
       }
       return undefined;
     },
