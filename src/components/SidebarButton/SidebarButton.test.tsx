@@ -20,7 +20,9 @@ describe('SidebarButton', () => {
 
     it('should render with Sidebar icon from react-feather', () => {
       const mockClick = jest.fn();
-      const { container } = render(<SidebarButton friendsOnClick={mockClick} />);
+      const { container } = render(
+        <SidebarButton friendsOnClick={mockClick} />
+      );
 
       const svg = container.querySelector('svg');
       expect(svg).toBeInTheDocument();
@@ -55,7 +57,9 @@ describe('SidebarButton', () => {
 
     it('should have proper icon spacing', () => {
       const mockClick = jest.fn();
-      const { container } = render(<SidebarButton friendsOnClick={mockClick} />);
+      const { container } = render(
+        <SidebarButton friendsOnClick={mockClick} />
+      );
 
       const icon = container.querySelector('svg');
       expect(icon).toHaveClass('float-left');
@@ -158,7 +162,9 @@ describe('SidebarButton', () => {
 
     it('should render icon before text', () => {
       const mockClick = jest.fn();
-      const { container } = render(<SidebarButton friendsOnClick={mockClick} />);
+      const { container } = render(
+        <SidebarButton friendsOnClick={mockClick} />
+      );
 
       const icon = container.querySelector('svg');
       const button = screen.getByRole('button');
@@ -179,9 +185,7 @@ describe('SidebarButton', () => {
   describe('memoization', () => {
     it('should render correctly', () => {
       const mockClick = jest.fn();
-      const { rerender } = render(
-        <SidebarButton friendsOnClick={mockClick} />
-      );
+      const { rerender } = render(<SidebarButton friendsOnClick={mockClick} />);
 
       expect(screen.getByText('Races')).toBeInTheDocument();
 
@@ -262,9 +266,7 @@ describe('SidebarButton', () => {
   describe('edge cases', () => {
     it('should handle click with undefined handler gracefully', () => {
       const mockClick = jest.fn();
-      const { rerender } = render(
-        <SidebarButton friendsOnClick={mockClick} />
-      );
+      const { rerender } = render(<SidebarButton friendsOnClick={mockClick} />);
 
       const button = screen.getByRole('button');
 

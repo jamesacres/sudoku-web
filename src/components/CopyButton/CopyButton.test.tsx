@@ -1,5 +1,11 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  act,
+} from '@testing-library/react';
 import { CopyButton } from './CopyButton';
 
 // Mock Capacitor
@@ -67,12 +73,7 @@ describe('CopyButton', () => {
 
     it('should use custom className when provided', () => {
       const customClass = 'custom-test-class';
-      render(
-        <CopyButton
-          getText={() => 'test'}
-          className={customClass}
-        />
-      );
+      render(<CopyButton getText={() => 'test'} className={customClass} />);
       const button = screen.getByRole('button');
       expect(button).toHaveClass(customClass);
     });
@@ -88,7 +89,9 @@ describe('CopyButton', () => {
 
       await waitFor(() => {
         expect(getText).toHaveBeenCalled();
-        expect(navigator.clipboard.writeText).toHaveBeenCalledWith('invite link');
+        expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
+          'invite link'
+        );
       });
     });
 
@@ -100,7 +103,9 @@ describe('CopyButton', () => {
       fireEvent.click(button);
 
       await waitFor(() => {
-        expect(navigator.clipboard.writeText).toHaveBeenCalledWith('async text');
+        expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
+          'async text'
+        );
       });
     });
 
@@ -131,7 +136,9 @@ describe('CopyButton', () => {
       });
 
       await waitFor(() => {
-        expect(screen.queryByText(/Copied to clipboard!/i)).not.toBeInTheDocument();
+        expect(
+          screen.queryByText(/Copied to clipboard!/i)
+        ).not.toBeInTheDocument();
       });
 
       jest.useRealTimers();
@@ -199,7 +206,9 @@ describe('CopyButton', () => {
       // Set canShare to return true BEFORE rendering the component
       Share.canShare.mockResolvedValue({ value: true });
 
-      render(<CopyButton getText={() => 'test link'} partyName="Racing Team" />);
+      render(
+        <CopyButton getText={() => 'test link'} partyName="Racing Team" />
+      );
 
       // Wait for the useEffect to complete and canShare state to be set
       await waitFor(() => {
@@ -225,10 +234,7 @@ describe('CopyButton', () => {
       Share.canShare.mockResolvedValue({ value: true });
 
       render(
-        <CopyButton
-          getText={() => 'invite link'}
-          partyName="Dragon Team"
-        />
+        <CopyButton getText={() => 'invite link'} partyName="Dragon Team" />
       );
 
       // Wait for the useEffect to complete and canShare state to be set
@@ -272,9 +278,7 @@ describe('CopyButton', () => {
 
     it('should handle canShare errors gracefully', async () => {
       const { Share } = require('@capacitor/share');
-      const consoleWarnSpy = jest
-        .spyOn(console, 'warn')
-        .mockImplementation();
+      const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
       Share.canShare.mockRejectedValueOnce(new Error('Share check failed'));
 
       render(<CopyButton getText={() => 'test'} />);
@@ -300,10 +304,7 @@ describe('CopyButton', () => {
     it('should show loading spinner while copy is in progress', async () => {
       jest.useFakeTimers();
       const getText: jest.Mock<Promise<string>, []> = jest.fn(
-        () =>
-          new Promise((resolve) =>
-            setTimeout(() => resolve('test'), 1000)
-          )
+        () => new Promise((resolve) => setTimeout(() => resolve('test'), 1000))
       );
 
       render(<CopyButton getText={getText} />);

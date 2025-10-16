@@ -42,7 +42,9 @@ describe('Footer', () => {
           <button>Single</button>
         </Footer>
       );
-      expect(screen.getByRole('button', { name: 'Single' })).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: 'Single' })
+      ).toBeInTheDocument();
     });
 
     it('should render multiple children in grid', () => {
@@ -163,8 +165,12 @@ describe('Footer', () => {
           <button>Button 2</button>
         </Footer>
       );
-      expect(screen.getByRole('button', { name: 'Button 1' })).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: 'Button 2' })).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: 'Button 1' })
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: 'Button 2' })
+      ).toBeInTheDocument();
     });
   });
 

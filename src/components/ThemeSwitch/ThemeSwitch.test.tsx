@@ -407,9 +407,7 @@ describe('ThemeSwitch', () => {
     it('should have descriptive aria-label', async () => {
       render(<ThemeSwitch />);
 
-      expect(
-        screen.getByLabelText('Toggle Dark Mode')
-      ).toBeInTheDocument();
+      expect(screen.getByLabelText('Toggle Dark Mode')).toBeInTheDocument();
     });
 
     it('should be clickable with keyboard Enter', async () => {

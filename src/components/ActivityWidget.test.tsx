@@ -11,7 +11,9 @@ jest.mock('react-feather', () => ({
 }));
 
 describe('ActivityWidget', () => {
-  const createMockSession = (daysAgo: number): ServerStateResult<ServerState> => {
+  const createMockSession = (
+    daysAgo: number
+  ): ServerStateResult<ServerState> => {
     const date = new Date();
     date.setDate(date.getDate() - daysAgo);
     return {
@@ -136,10 +138,7 @@ describe('ActivityWidget', () => {
     });
 
     it('should not count sessions beyond 30 days', () => {
-      const sessions = [
-        createMockSession(0),
-        createMockSession(31),
-      ];
+      const sessions = [createMockSession(0), createMockSession(31)];
 
       render(<ActivityWidget sessions={sessions} />);
       // Should only count today's session
@@ -156,7 +155,9 @@ describe('ActivityWidget', () => {
 
       render(<ActivityWidget sessions={sessions} />);
       // Should have at least a streak (depends on current day)
-      expect(screen.getByText('Days played in past 30 days')).toBeInTheDocument();
+      expect(
+        screen.getByText('Days played in past 30 days')
+      ).toBeInTheDocument();
     });
 
     it('should handle sessions from same day multiple times', () => {
@@ -189,7 +190,9 @@ describe('ActivityWidget', () => {
       ];
 
       render(<ActivityWidget sessions={sessions} />);
-      expect(screen.getByText('Days played in past 30 days')).toBeInTheDocument();
+      expect(
+        screen.getByText('Days played in past 30 days')
+      ).toBeInTheDocument();
     });
   });
 
@@ -221,14 +224,16 @@ describe('ActivityWidget', () => {
 
     it('should have blue icon background for days played', () => {
       const { container } = render(<ActivityWidget sessions={[]} />);
-      const calendarIconContainer = screen.getByTestId('calendar-icon').parentElement;
+      const calendarIconContainer =
+        screen.getByTestId('calendar-icon').parentElement;
       expect(calendarIconContainer).toHaveClass('bg-blue-100');
       expect(calendarIconContainer).toHaveClass('dark:bg-blue-900/50');
     });
 
     it('should have orange icon background for streak', () => {
       const { container } = render(<ActivityWidget sessions={[]} />);
-      const activityIconContainer = screen.getByTestId('activity-icon').parentElement;
+      const activityIconContainer =
+        screen.getByTestId('activity-icon').parentElement;
       expect(activityIconContainer).toHaveClass('bg-orange-100');
       expect(activityIconContainer).toHaveClass('dark:bg-orange-900/50');
     });
@@ -303,17 +308,18 @@ describe('ActivityWidget', () => {
       );
 
       render(<ActivityWidget sessions={sessions} />);
-      expect(screen.getByText('Days played in past 30 days')).toBeInTheDocument();
+      expect(
+        screen.getByText('Days played in past 30 days')
+      ).toBeInTheDocument();
     });
 
     it('should handle sessions from exactly 30 days ago', () => {
-      const sessions = [
-        createMockSession(0),
-        createMockSession(30),
-      ];
+      const sessions = [createMockSession(0), createMockSession(30)];
 
       render(<ActivityWidget sessions={sessions} />);
-      expect(screen.getByText('Days played in past 30 days')).toBeInTheDocument();
+      expect(
+        screen.getByText('Days played in past 30 days')
+      ).toBeInTheDocument();
     });
 
     it('should handle single session', () => {

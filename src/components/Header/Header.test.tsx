@@ -64,8 +64,10 @@ describe('Header', () => {
 
     it('should render spacing div below header', () => {
       const { container } = render(<Header />);
-      const spacingDiv = container.querySelector('.pt-\\[calc\\(var\\(--ion-safe-area-top\\)\\+3\\.25rem\\)\\]') ||
-                        container.querySelector('div[class*="pt-"]');
+      const spacingDiv =
+        container.querySelector(
+          '.pt-\\[calc\\(var\\(--ion-safe-area-top\\)\\+3\\.25rem\\)\\]'
+        ) || container.querySelector('div[class*="pt-"]');
       expect(spacingDiv).toBeInTheDocument();
     });
   });
@@ -329,7 +331,9 @@ describe('Header', () => {
       const centerSection = nav?.querySelector('.block.flex.grow');
 
       const leftIndex = Array.from(nav?.children || []).indexOf(leftSection!);
-      const centerIndex = Array.from(nav?.children || []).indexOf(centerSection!);
+      const centerIndex = Array.from(nav?.children || []).indexOf(
+        centerSection!
+      );
 
       expect(leftIndex).toBeLessThan(centerIndex);
     });

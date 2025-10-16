@@ -234,11 +234,7 @@ describe('HintBox', () => {
 
   describe('children content', () => {
     it('should render text children', () => {
-      render(
-        <HintBox>
-          Text content
-        </HintBox>
-      );
+      render(<HintBox>Text content</HintBox>);
 
       expect(screen.getByText('Text content')).toBeInTheDocument();
     });
@@ -309,11 +305,7 @@ describe('HintBox', () => {
     });
 
     it('should have readable text content', () => {
-      render(
-        <HintBox>
-          Important hint message
-        </HintBox>
-      );
+      render(<HintBox>Important hint message</HintBox>);
 
       expect(screen.getByText('Important hint message')).toBeVisible();
     });
@@ -382,32 +374,20 @@ describe('HintBox', () => {
 
   describe('edge cases', () => {
     it('should handle empty children gracefully', () => {
-      const { container } = render(
-        <HintBox>
-          {null}
-        </HintBox>
-      );
+      const { container } = render(<HintBox>{null}</HintBox>);
 
       expect(container.querySelector('.bg-amber-100')).toBeInTheDocument();
     });
 
     it('should handle undefined children gracefully', () => {
-      const { container } = render(
-        <HintBox>
-          {undefined}
-        </HintBox>
-      );
+      const { container } = render(<HintBox>{undefined}</HintBox>);
 
       expect(container.querySelector('.bg-amber-100')).toBeInTheDocument();
     });
 
     it('should handle very long content', () => {
       const longText = 'a'.repeat(500);
-      render(
-        <HintBox>
-          {longText}
-        </HintBox>
-      );
+      render(<HintBox>{longText}</HintBox>);
 
       expect(screen.getByText(longText)).toBeInTheDocument();
     });
