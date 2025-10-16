@@ -29,6 +29,21 @@ if (typeof window !== 'undefined' && typeof window.PointerEvent === 'undefined')
   global.PointerEvent = window.PointerEvent;
 }
 
+// Mock ResizeObserver for Node environment
+if (typeof global.ResizeObserver === 'undefined') {
+  global.ResizeObserver = class ResizeObserver {
+    constructor(callback) {
+      this.callback = callback;
+    }
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  };
+  if (typeof window !== 'undefined') {
+    window.ResizeObserver = global.ResizeObserver;
+  }
+}
+
 // Mock TextEncoder/TextDecoder for Node environment
 if (typeof global.TextEncoder === 'undefined') {
   const { TextEncoder, TextDecoder } = require('util');
