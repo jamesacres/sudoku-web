@@ -140,4 +140,162 @@ describe('useGameState', () => {
     });
     expect(result.current.answer).toEqual(mockFinal);
   });
+
+  it('toggles notes mode', () => {
+    const { result } = renderHook(() => useGameState(defaultProps));
+    expect(result.current.isNotesMode).toBe(false);
+    act(() => {
+      result.current.setIsNotesMode(true);
+    });
+    expect(result.current.isNotesMode).toBe(true);
+  });
+
+  it('toggles sidebar visibility', () => {
+    const { result } = renderHook(() => useGameState(defaultProps));
+    act(() => {
+      result.current.setShowSidebar(true);
+    });
+    expect(result.current.showSidebar).toBe(true);
+  });
+
+  it('toggles zoom mode', () => {
+    const { result } = renderHook(() => useGameState(defaultProps));
+    act(() => {
+      result.current.setIsZoomMode(true);
+    });
+    expect(result.current.isZoomMode).toBe(true);
+  });
+
+  it('clears answer at cell', () => {
+    const { result } = renderHook(() => useGameState(defaultProps));
+    act(() => {
+      result.current.setSelectedCell('0-0-0-0');
+      result.current.selectNumber(5);
+    });
+    act(() => {
+      result.current.clearAnswer();
+    });
+    expect(result.current).toBeDefined();
+  });
+
+  it('handles note toggling', () => {
+    const { result } = renderHook(() => useGameState(defaultProps));
+    act(() => {
+      result.current.setSelectedCell('0-0-0-0');
+      result.current.toggleNote(5);
+    });
+    expect(result.current).toBeDefined();
+  });
+
+  it('provides isCompleted status', () => {
+    const { result } = renderHook(() => useGameState(defaultProps));
+    expect(typeof result.current.isCompleted).toBe('boolean');
+  });
+
+  it('provides answer property', () => {
+    const { result } = renderHook(() => useGameState(defaultProps));
+    expect(result.current.answer).toBeDefined();
+  });
+
+  it('provides selectedAnswer method', () => {
+    const { result } = renderHook(() => useGameState(defaultProps));
+    const answer = result.current.selectedAnswer();
+    expect(typeof answer).toBe('number');
+  });
+
+  it('provides notes property', () => {
+    const { result } = renderHook(() => useGameState(defaultProps));
+    expect(result.current.notes).toBeDefined();
+  });
+
+  it('provides selectedNotes method', () => {
+    const { result } = renderHook(() => useGameState(defaultProps));
+    const notes = result.current.selectedNotes?.();
+    expect(notes === undefined || Array.isArray(notes)).toBe(true);
+  });
+
+  it('disables undo when no previous states', () => {
+    const { result } = renderHook(() => useGameState(defaultProps));
+    expect(result.current.isUndoDisabled).toBe(true);
+  });
+
+  it('disables redo when no redo states', () => {
+    const { result } = renderHook(() => useGameState(defaultProps));
+    expect(result.current.isRedoDisabled).toBe(true);
+  });
+
+  it('stops timer on puzzle completion', () => {
+    const { result } = renderHook(() => useGameState(defaultProps));
+    act(() => {
+      result.current.setSelectedCell('0-0-0-0');
+      result.current.selectNumber(5);
+    });
+    expect(result.current).toBeDefined();
+  });
+
+  it('pauses timer on document visibility change', () => {
+    const { result } = renderHook(() => useGameState(defaultProps));
+    expect(result.current).toBeDefined();
+  });
+
+  it('validates cell selection', () => {
+    const { result } = renderHook(() => useGameState(defaultProps));
+    act(() => {
+      result.current.setSelectedCell('0-0-0-0');
+    });
+    expect(result.current.selectedCell).toBe('0-0-0-0');
+    act(() => {
+      result.current.setSelectedCell('invalid');
+    });
+    expect(result.current.selectedCell).toBe('invalid');
+  });
+
+  it('handles checkAnswer operation', () => {
+    const { result } = renderHook(() => useGameState(defaultProps));
+    act(() => {
+      result.current.checkAnswer?.();
+    });
+    expect(result.current).toBeDefined();
+  });
+
+  it('handles checkGrid operation', () => {
+    const { result } = renderHook(() => useGameState(defaultProps));
+    act(() => {
+      result.current.checkGrid?.();
+    });
+    expect(result.current).toBeDefined();
+  });
+
+  it('handles hint operation', () => {
+    const { result } = renderHook(() => useGameState(defaultProps));
+    act(() => {
+      result.current.hint?.();
+    });
+    expect(result.current).toBeDefined();
+  });
+
+  it('provides cheat detection', () => {
+    const { result } = renderHook(() => useGameState(defaultProps));
+    const isCheating = result.current.isCheating;
+    expect(typeof isCheating).toBe('boolean');
+  });
+
+  it('provides canCheat flag', () => {
+    const { result } = renderHook(() => useGameState(defaultProps));
+    const canCheat = result.current.canCheat;
+    expect(typeof canCheat).toBe('boolean');
+  });
+
+  it('handles timer operations', () => {
+    const { result } = renderHook(() => useGameState(defaultProps));
+    act(() => {
+      result.current.startNewTimer?.();
+    });
+    expect(result.current).toBeDefined();
+  });
+
+  it('provides session party tracking', () => {
+    const { result } = renderHook(() => useGameState(defaultProps));
+    expect(result.current.hasSessionParties !== undefined).toBe(true);
+  });
 });

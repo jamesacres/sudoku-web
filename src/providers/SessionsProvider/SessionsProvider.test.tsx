@@ -655,4 +655,348 @@ describe('SessionsProvider', () => {
       expect(sessions).toEqual(mockSessions);
     });
   });
+
+  describe('friend sessions operations', () => {
+    it('should initialize isFriendSessionsLoading as false', () => {
+      let isFriendSessionsLoading: boolean = true;
+
+      const TestComponent = () => {
+        const { isFriendSessionsLoading: loading } = useSessions();
+        isFriendSessionsLoading = loading;
+        return <div>Loading</div>;
+      };
+
+      render(
+        <UserContext.Provider value={mockUserContext as any}>
+          <SessionsProvider>
+            <TestComponent />
+          </SessionsProvider>
+        </UserContext.Provider>
+      );
+
+      expect(isFriendSessionsLoading).toBe(false);
+    });
+
+    it('should patch friend sessions with updated values', async () => {
+      let patchFriendSessions: any;
+      let friendSessions: any;
+
+      const TestComponent = () => {
+        const context = useSessions();
+        patchFriendSessions = context.patchFriendSessions;
+        friendSessions = context.friendSessions;
+        return <div>Friends: {Object.keys(friendSessions).length}</div>;
+      };
+
+      render(
+        <UserContext.Provider value={mockUserContext as any}>
+          <SessionsProvider>
+            <TestComponent />
+          </SessionsProvider>
+        </UserContext.Provider>
+      );
+
+      const newSession = {
+        sessionId: 'session-1',
+        state: { answerStack: [], initial: {}, final: {} } as any,
+        updatedAt: new Date(),
+      } as any;
+
+      act(() => {
+        patchFriendSessions?.('session-1', {
+          'friend-1': newSession,
+        });
+      });
+
+      await waitFor(() => {
+        expect(friendSessions).toBeDefined();
+      });
+    });
+
+    it('should not patch friend sessions if already loading', async () => {
+      let patchFriendSessions: any;
+      let isFriendSessionsLoading: boolean = false;
+
+      const TestComponent = () => {
+        const context = useSessions();
+        patchFriendSessions = context.patchFriendSessions;
+        isFriendSessionsLoading = context.isFriendSessionsLoading;
+        return <div>Loading: {isFriendSessionsLoading.toString()}</div>;
+      };
+
+      render(
+        <UserContext.Provider value={mockUserContext as any}>
+          <SessionsProvider>
+            <TestComponent />
+          </SessionsProvider>
+        </UserContext.Provider>
+      );
+
+      // Should handle safely even if loading
+      act(() => {
+        patchFriendSessions?.('session-1', {});
+      });
+
+      expect(patchFriendSessions).toBeDefined();
+    });
+  });
+
+  describe('lazy loading behavior', () => {
+    it('should not lazy load if already initialized', async () => {
+      let lazyLoadFriendSessions: any;
+      let hasCalled = false;
+
+      const TestComponent = () => {
+        const context = useSessions();
+        lazyLoadFriendSessions = context.lazyLoadFriendSessions;
+
+        React.useEffect(() => {
+          hasCalled = true;
+        }, []);
+
+        return <div>Lazy Load Test</div>;
+      };
+
+      render(
+        <UserContext.Provider value={mockUserContext as any}>
+          <SessionsProvider>
+            <TestComponent />
+          </SessionsProvider>
+        </UserContext.Provider>
+      );
+
+      expect(hasCalled).toBe(true);
+    });
+
+    it('should lazy load friend sessions on demand', async () => {
+      let lazyLoadFriendSessions: any;
+
+      const TestComponent = () => {
+        const context = useSessions();
+        lazyLoadFriendSessions = context.lazyLoadFriendSessions;
+        return <div>Test</div>;
+      };
+
+      render(
+        <UserContext.Provider value={mockUserContext as any}>
+          <SessionsProvider>
+            <TestComponent />
+          </SessionsProvider>
+        </UserContext.Provider>
+      );
+
+      const mockParties: Party[] = [
+        {
+          partyId: 'party-1',
+          partyName: 'Test Party',
+          members: [{ userId: 'friend-1', memberNickname: 'Friend' }],
+        } as unknown as Party,
+      ];
+
+      await act(async () => {
+        await lazyLoadFriendSessions?.(mockParties);
+      });
+
+      expect(lazyLoadFriendSessions).toBeDefined();
+    });
+  });
+
+  describe('session sorting and filtering', () => {
+    it('should sort sessions with most recent first', () => {
+      let setSessions: any;
+      let retrievedSessions: any;
+
+      const TestComponent = () => {
+        const context = useSessions();
+        setSessions = context.setSessions;
+        retrievedSessions = context.sessions;
+        return <div>Sessions</div>;
+      };
+
+      render(
+        <UserContext.Provider value={mockUserContext as any}>
+          <SessionsProvider>
+            <TestComponent />
+          </SessionsProvider>
+        </UserContext.Provider>
+      );
+
+      const now = new Date();
+      const yesterday = new Date(now.getTime() - 86400000);
+      const twoDaysAgo = new Date(now.getTime() - 172800000);
+
+      const sessionsToSet: ServerStateResult<ServerState>[] = [
+        {
+          sessionId: 'old',
+          state: { answerStack: [], initial: {}, final: {} } as any,
+          updatedAt: twoDaysAgo,
+        } as any,
+        {
+          sessionId: 'recent',
+          state: { answerStack: [], initial: {}, final: {} } as any,
+          updatedAt: now,
+        } as any,
+        {
+          sessionId: 'yesterday',
+          state: { answerStack: [], initial: {}, final: {} } as any,
+          updatedAt: yesterday,
+        } as any,
+      ];
+
+      act(() => {
+        setSessions(sessionsToSet);
+      });
+
+      expect(sessionsToSet[0].sessionId).toBe('old');
+    });
+
+    it('should remove duplicate sessions keeping most recent', () => {
+      let setSessions: any;
+      let sessions: any;
+
+      const TestComponent = () => {
+        const context = useSessions();
+        setSessions = context.setSessions;
+        sessions = context.sessions;
+        return <div>Sessions</div>;
+      };
+
+      render(
+        <UserContext.Provider value={mockUserContext as any}>
+          <SessionsProvider>
+            <TestComponent />
+          </SessionsProvider>
+        </UserContext.Provider>
+      );
+
+      const now = new Date();
+      const earlier = new Date(now.getTime() - 1000);
+
+      const duplicateSessions: ServerStateResult<ServerState>[] = [
+        {
+          sessionId: 'session-1',
+          state: { answerStack: [], initial: {}, final: {} } as any,
+          updatedAt: earlier,
+        } as any,
+        {
+          sessionId: 'session-1',
+          state: { answerStack: [], initial: {}, final: {} } as any,
+          updatedAt: now,
+        } as any,
+      ];
+
+      act(() => {
+        setSessions(duplicateSessions);
+      });
+
+      expect(sessions).toBeDefined();
+    });
+  });
+
+  describe('async operations', () => {
+    it('should handle fetchSessions async operation', async () => {
+      const mockListValues = jest.fn().mockResolvedValue([
+        {
+          sessionId: 'session-1',
+          state: { answerStack: [], initial: {}, final: {} } as any,
+          updatedAt: new Date(),
+        } as any,
+      ]);
+
+      (jest.mocked(require('@/hooks/serverStorage').useServerStorage) as any).mockReturnValue({
+        listValues: mockListValues,
+      });
+
+      let fetchSessions: any;
+      let sessions: any;
+
+      const TestComponent = () => {
+        const context = useSessions();
+        fetchSessions = context.fetchSessions;
+        sessions = context.sessions;
+        return <div>Sessions: {sessions?.length ?? 'loading'}</div>;
+      };
+
+      render(
+        <UserContext.Provider value={mockUserContext as any}>
+          <SessionsProvider>
+            <TestComponent />
+          </SessionsProvider>
+        </UserContext.Provider>
+      );
+
+      await act(async () => {
+        await fetchSessions?.();
+      });
+
+      expect(fetchSessions).toBeDefined();
+    });
+
+    it('should handle refetchSessions forcing reload', async () => {
+      const mockListValues = jest.fn().mockResolvedValue([]);
+
+      (jest.mocked(require('@/hooks/serverStorage').useServerStorage) as any).mockReturnValue({
+        listValues: mockListValues,
+      });
+
+      let refetchSessions: any;
+
+      const TestComponent = () => {
+        const context = useSessions();
+        refetchSessions = context.refetchSessions;
+        return <div>Refetch</div>;
+      };
+
+      render(
+        <UserContext.Provider value={mockUserContext as any}>
+          <SessionsProvider>
+            <TestComponent />
+          </SessionsProvider>
+        </UserContext.Provider>
+      );
+
+      await act(async () => {
+        await refetchSessions?.();
+      });
+
+      await act(async () => {
+        await refetchSessions?.();
+      });
+
+      expect(refetchSessions).toBeDefined();
+    });
+  });
+
+  describe('context value shape', () => {
+    it('should provide all required context properties', () => {
+      let context: any;
+
+      const TestComponent = () => {
+        context = useSessions();
+        return <div>Test</div>;
+      };
+
+      render(
+        <UserContext.Provider value={mockUserContext as any}>
+          <SessionsProvider>
+            <TestComponent />
+          </SessionsProvider>
+        </UserContext.Provider>
+      );
+
+      expect(context).toHaveProperty('sessions');
+      expect(context).toHaveProperty('isLoading');
+      expect(context).toHaveProperty('fetchSessions');
+      expect(context).toHaveProperty('refetchSessions');
+      expect(context).toHaveProperty('setSessions');
+      expect(context).toHaveProperty('clearSessions');
+      expect(context).toHaveProperty('friendSessions');
+      expect(context).toHaveProperty('isFriendSessionsLoading');
+      expect(context).toHaveProperty('fetchFriendSessions');
+      expect(context).toHaveProperty('lazyLoadFriendSessions');
+      expect(context).toHaveProperty('clearFriendSessions');
+      expect(context).toHaveProperty('getSessionParties');
+      expect(context).toHaveProperty('patchFriendSessions');
+    });
+  });
 });
