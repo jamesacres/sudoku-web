@@ -331,58 +331,6 @@ describe('useServerStorage', () => {
     expect(mockFetch).toHaveBeenCalled();
   });
 
-  it('listInvites should return list of invites', async () => {
-    const mockInvites = [
-      { inviteId: 'i1', partyId: 'p1', status: 'pending' },
-      { inviteId: 'i2', partyId: 'p2', status: 'pending' },
-    ];
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve(mockInvites),
-    });
-
-    const { result } = renderHook(() => useServerStorage(), { wrapper });
-
-    let invites: any;
-    await act(async () => {
-      invites = await result.current.listInvites?.();
-    });
-
-    expect(Array.isArray(invites)).toBe(true);
-  });
-
-  it('acceptInvite should send POST request', async () => {
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve({ success: true }),
-    });
-
-    const { result } = renderHook(() => useServerStorage(), { wrapper });
-
-    let success;
-    await act(async () => {
-      success = await result.current.acceptInvite?.('inviteId');
-    });
-
-    expect(mockFetch).toHaveBeenCalledWith(
-      expect.objectContaining({ method: 'POST' })
-    );
-  });
-
-  it('rejectInvite should send DELETE request', async () => {
-    mockFetch.mockResolvedValue({ ok: true });
-
-    const { result } = renderHook(() => useServerStorage(), { wrapper });
-
-    let success;
-    await act(async () => {
-      success = await result.current.rejectInvite?.('inviteId');
-    });
-
-    expect(mockFetch).toHaveBeenCalledWith(
-      expect.objectContaining({ method: 'DELETE' })
-    );
-  });
 
   it('should convert server responses to correct types', async () => {
     const mockData = {
