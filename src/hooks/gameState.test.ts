@@ -212,5 +212,4 @@ describe('useGameState', () => {
     });
     expect(result.current.selectedCell).toBe('invalid');
   });
-
 });

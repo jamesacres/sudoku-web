@@ -1,8 +1,8 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { PremiumFeatures } from './PremiumFeatures';
-import { RevenueCatContextInterface,
-
+import {
+  RevenueCatContextInterface,
   RevenueCatContext,
 } from '@/providers/RevenueCatProvider';
 
@@ -31,7 +31,14 @@ describe('PremiumFeatures', () => {
     } as unknown as RevenueCatContextInterface;
 
     return render(
-      <RevenueCatContext.Provider value={{ ...defaultContext, ...context } as unknown as RevenueCatContextInterface}>
+      <RevenueCatContext.Provider
+        value={
+          {
+            ...defaultContext,
+            ...context,
+          } as unknown as RevenueCatContextInterface
+        }
+      >
         <PremiumFeatures {...props} />
       </RevenueCatContext.Provider>
     );

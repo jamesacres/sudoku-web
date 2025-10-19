@@ -6,8 +6,8 @@ import Invite from './page';
 import * as serverStorageHook from '@/hooks/serverStorage';
 import * as usePartiesHook from '@/hooks/useParties';
 import { UserContext, UserContextInterface } from '@/providers/UserProvider';
-import { RevenueCatContextInterface,
-
+import {
+  RevenueCatContextInterface,
   RevenueCatContext,
 } from '@/providers/RevenueCatProvider';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -241,10 +241,16 @@ describe('Invite Page', () => {
 
       // Wait for the public invite to load first
       await waitFor(() => {
-        expect(screen.queryByText(/Loading invitation/i)).not.toBeInTheDocument();
+        expect(
+          screen.queryByText(/Loading invitation/i)
+        ).not.toBeInTheDocument();
       });
 
-      const signInButton = await screen.findByText(/Sign in to Continue/i, {}, { timeout: 3000 });
+      const signInButton = await screen.findByText(
+        /Sign in to Continue/i,
+        {},
+        { timeout: 3000 }
+      );
       await userEvent.click(signInButton);
 
       expect(mockUserContext.loginRedirect).toHaveBeenCalledWith({

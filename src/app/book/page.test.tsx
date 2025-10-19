@@ -356,7 +356,9 @@ describe('Book Page', () => {
 
       const { container } = render(<BookPage />);
       // Check that puzzles are rendered in grid (look for grid class or puzzle elements)
-      const grid = container.querySelector('.grid') || container.querySelector('[role="grid"]');
+      const grid =
+        container.querySelector('.grid') ||
+        container.querySelector('[role="grid"]');
       expect(grid).toBeInTheDocument();
     });
 
@@ -570,8 +572,9 @@ describe('Book Page', () => {
       fireEvent.scroll(window, { y: 400 });
 
       // Check for scroll-to-top button or any arrow-up icon
-      const scrollButton = container.querySelector('[data-testid*="arrow"]') ||
-                          container.querySelector('button[aria-label*="top"]');
+      const scrollButton =
+        container.querySelector('[data-testid*="arrow"]') ||
+        container.querySelector('button[aria-label*="top"]');
       // Component should render without error - button may not show in test environment
       expect(container).toBeInTheDocument();
     });
@@ -601,10 +604,12 @@ describe('Book Page', () => {
       fireEvent.scroll(window, { y: 400 });
 
       // Try to find scroll button by various methods
-      const scrollTopButton = screen.queryByRole('button', {
-        name: /scroll to top|scroll|top|arrow/i,
-      }) || container.querySelector('button[aria-label*="scroll"]') ||
-           container.querySelector('button[aria-label*="top"]');
+      const scrollTopButton =
+        screen.queryByRole('button', {
+          name: /scroll to top|scroll|top|arrow/i,
+        }) ||
+        container.querySelector('button[aria-label*="scroll"]') ||
+        container.querySelector('button[aria-label*="top"]');
 
       // If button is found, click it; otherwise just verify component rendered
       if (scrollTopButton) {

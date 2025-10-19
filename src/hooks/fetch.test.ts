@@ -60,9 +60,7 @@ describe('useFetch', () => {
     );
 
     await act(async () => {
-      await result.current.fetch(
-        new Request('https://example.com/test')
-      );
+      await result.current.fetch(new Request('https://example.com/test'));
     });
 
     // Verify fetch was called for non-API URLs
@@ -86,18 +84,20 @@ describe('useFetch', () => {
       });
 
       mockFetch.mockResolvedValue(
-        new Response(JSON.stringify({
-          access_token: 'new-token',
-          refresh_token: 'new-refresh',
-          id_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyLWlkIn0.test',
-          expires_in: 3600,
-        }), { status: 200 })
+        new Response(
+          JSON.stringify({
+            access_token: 'new-token',
+            refresh_token: 'new-refresh',
+            id_token:
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyLWlkIn0.test',
+            expires_in: 3600,
+          }),
+          { status: 200 }
+        )
       );
 
       await act(async () => {
-        await result.current.fetch(
-          new Request('https://example.com/test')
-        );
+        await result.current.fetch(new Request('https://example.com/test'));
       });
 
       expect(mockFetch).toHaveBeenCalled();
@@ -165,9 +165,7 @@ describe('useFetch', () => {
         wrapper: createWrapper(),
       });
 
-      mockFetch.mockResolvedValue(
-        new Response(null, { status: 401 })
-      );
+      mockFetch.mockResolvedValue(new Response(null, { status: 401 }));
 
       await act(async () => {
         const response = await result.current.fetch(
@@ -186,12 +184,16 @@ describe('useFetch', () => {
       });
 
       mockFetch.mockResolvedValue(
-        new Response(JSON.stringify({
-          access_token: 'token',
-          refresh_token: 'refresh',
-          id_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyLWlkIn0.test',
-          expires_in: 3600,
-        }), { status: 200 })
+        new Response(
+          JSON.stringify({
+            access_token: 'token',
+            refresh_token: 'refresh',
+            id_token:
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyLWlkIn0.test',
+            expires_in: 3600,
+          }),
+          { status: 200 }
+        )
       );
 
       await act(async () => {
@@ -208,12 +210,16 @@ describe('useFetch', () => {
       });
 
       mockFetch.mockResolvedValue(
-        new Response(JSON.stringify({
-          access_token: 'token',
-          refresh_token: 'refresh',
-          id_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyLWlkIiwibmFtZSI6IlRlc3QgVXNlciJ9.test',
-          expires_in: 3600,
-        }), { status: 200 })
+        new Response(
+          JSON.stringify({
+            access_token: 'token',
+            refresh_token: 'refresh',
+            id_token:
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyLWlkIiwibmFtZSI6IlRlc3QgVXNlciJ9.test',
+            expires_in: 3600,
+          }),
+          { status: 200 }
+        )
       );
 
       await act(async () => {
@@ -238,7 +244,9 @@ describe('useFetch', () => {
 
       await act(async () => {
         const response = await result.current.fetch(
-          new Request('https://api.bubblyclouds.com/invites/123', { method: 'GET' })
+          new Request('https://api.bubblyclouds.com/invites/123', {
+            method: 'GET',
+          })
         );
         expect(response.status).toBe(200);
       });
@@ -249,13 +257,13 @@ describe('useFetch', () => {
         wrapper: createWrapper(),
       });
 
-      mockFetch.mockResolvedValue(
-        new Response(null, { status: 401 })
-      );
+      mockFetch.mockResolvedValue(new Response(null, { status: 401 }));
 
       await act(async () => {
         const response = await result.current.fetch(
-          new Request('https://api.bubblyclouds.com/invites/123', { method: 'POST' })
+          new Request('https://api.bubblyclouds.com/invites/123', {
+            method: 'POST',
+          })
         );
         expect(response.status).toBe(401);
       });
@@ -305,15 +313,19 @@ describe('useFetch', () => {
       });
 
       // Base64 encoded JWT payload: {"sub":"user-123","name":"Test User"}
-      const validToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyLTEyMyIsIm5hbWUiOiJUZXN0IFVzZXIifQ.test';
+      const validToken =
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyLTEyMyIsIm5hbWUiOiJUZXN0IFVzZXIifQ.test';
 
       mockFetch.mockResolvedValue(
-        new Response(JSON.stringify({
-          access_token: 'token',
-          refresh_token: 'refresh',
-          id_token: validToken,
-          expires_in: 3600,
-        }), { status: 200 })
+        new Response(
+          JSON.stringify({
+            access_token: 'token',
+            refresh_token: 'refresh',
+            id_token: validToken,
+            expires_in: 3600,
+          }),
+          { status: 200 }
+        )
       );
 
       await act(async () => {
@@ -331,9 +343,7 @@ describe('useFetch', () => {
         wrapper: createWrapper(),
       });
 
-      mockFetch.mockResolvedValue(
-        new Response('OK', { status: 200 })
-      );
+      mockFetch.mockResolvedValue(new Response('OK', { status: 200 }));
 
       await act(async () => {
         const response = await result.current.fetch(
@@ -354,9 +364,7 @@ describe('useFetch', () => {
 
       await act(async () => {
         try {
-          await result.current.fetch(
-            new Request('https://example.com/test')
-          );
+          await result.current.fetch(new Request('https://example.com/test'));
         } catch (e) {
           expect(e).toBeDefined();
         }
@@ -373,9 +381,7 @@ describe('useFetch', () => {
 
       await act(async () => {
         try {
-          await result.current.fetch(
-            new Request('https://example.com/test')
-          );
+          await result.current.fetch(new Request('https://example.com/test'));
         } catch (e) {
           // Expected
         }

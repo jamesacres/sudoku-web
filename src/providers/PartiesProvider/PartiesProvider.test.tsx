@@ -230,7 +230,9 @@ describe('PartiesProvider', () => {
       await context.updateParty('party-1', { partyName: 'Updated' });
     });
 
-    expect(mockUpdateParty).toHaveBeenCalledWith('party-1', { partyName: 'Updated' });
+    expect(mockUpdateParty).toHaveBeenCalledWith('party-1', {
+      partyName: 'Updated',
+    });
   });
 
   it('handles leaveParty method', async () => {

@@ -128,7 +128,9 @@ function useGameState({
     },
     [patchFriendSessions, puzzleId]
   );
-  const hasSessionParties = sessionParties ? Object.keys(sessionParties).length : 0;
+  const hasSessionParties = sessionParties
+    ? Object.keys(sessionParties).length
+    : 0;
 
   const [selectedCell, setSelectedCellState] = useState<null | string>(null);
   const lastSelectedCellChangeRef = useRef<number>(Date.now());

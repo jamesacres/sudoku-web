@@ -331,7 +331,6 @@ describe('useServerStorage', () => {
     expect(mockFetch).toHaveBeenCalled();
   });
 
-
   it('should convert server responses to correct types', async () => {
     const mockData = {
       state: { puzzle: 'data' },

@@ -2,8 +2,8 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { UserPanel } from './UserPanel';
 import { UserProfile } from '@/types/userProfile';
-import { RevenueCatContextInterface,
-
+import {
+  RevenueCatContextInterface,
   RevenueCatContext,
 } from '@/providers/RevenueCatProvider';
 import * as serverStorage from '@/hooks/serverStorage';
@@ -94,7 +94,10 @@ describe('UserPanel', () => {
     return render(
       <RevenueCatContext.Provider
         value={
-          { ...mockRevenueCatContext, ...context } as unknown as RevenueCatContextInterface
+          {
+            ...mockRevenueCatContext,
+            ...context,
+          } as unknown as RevenueCatContextInterface
         }
       >
         <UserPanel

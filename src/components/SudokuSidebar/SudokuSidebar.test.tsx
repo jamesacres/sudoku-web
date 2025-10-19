@@ -2,8 +2,8 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import SudokuSidebar from './SudokuSidebar';
 import { UserContext, UserContextInterface } from '@/providers/UserProvider';
-import { RevenueCatContextInterface,
-
+import {
+  RevenueCatContextInterface,
   RevenueCatContext,
 } from '@/providers/RevenueCatProvider';
 import { useParties } from '@/hooks/useParties';
@@ -52,7 +52,9 @@ describe('SudokuSidebar', () => {
 
     return render(
       <UserContext.Provider value={userContext}>
-        <RevenueCatContext.Provider value={revenueCatContext as unknown as RevenueCatContextInterface}>
+        <RevenueCatContext.Provider
+          value={revenueCatContext as unknown as RevenueCatContextInterface}
+        >
           <SudokuSidebar {...defaultProps} {...props} />
         </RevenueCatContext.Provider>
       </UserContext.Provider>

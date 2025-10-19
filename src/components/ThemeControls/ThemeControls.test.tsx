@@ -11,7 +11,9 @@ jest.mock('../ThemeSwitch', () => ({
 
 jest.mock('../ThemeColorSwitch', () => ({
   __esModule: true,
-  default: () => <div data-testid="theme-color-switch-mock">Theme Color Switch</div>,
+  default: () => (
+    <div data-testid="theme-color-switch-mock">Theme Color Switch</div>
+  ),
 }));
 
 describe('ThemeControls', () => {
@@ -52,8 +54,12 @@ describe('ThemeControls', () => {
       const children = flexContainer?.children;
 
       expect(children?.length).toBe(2);
-      expect(children?.[0]?.getAttribute('data-testid')).toBe('theme-switch-mock');
-      expect(children?.[1]?.getAttribute('data-testid')).toBe('theme-color-switch-mock');
+      expect(children?.[0]?.getAttribute('data-testid')).toBe(
+        'theme-switch-mock'
+      );
+      expect(children?.[1]?.getAttribute('data-testid')).toBe(
+        'theme-color-switch-mock'
+      );
     });
 
     it('should pass no props to child components', () => {

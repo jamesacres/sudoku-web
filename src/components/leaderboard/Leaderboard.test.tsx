@@ -106,7 +106,7 @@ const createParty = (
   createdAt: new Date(),
   updatedAt: new Date(),
   isOwner: true,
-  members: members.map(m => ({
+  members: members.map((m) => ({
     userId: m.userId,
     resourceId: partyId,
     memberNickname: m.memberNickname,

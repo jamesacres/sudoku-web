@@ -37,7 +37,9 @@ describe('HeaderUser', () => {
     mockUseOnline.mockReturnValue({ isOnline: true });
   });
 
-  const renderWithContext = (contextValue: Partial<UserContextInterface> | null) => {
+  const renderWithContext = (
+    contextValue: Partial<UserContextInterface> | null
+  ) => {
     return render(
       <UserContext.Provider value={contextValue as UserContextInterface}>
         <HeaderUser />
@@ -114,7 +116,12 @@ describe('HeaderUser', () => {
 
       rerender(
         <UserContext.Provider
-          value={{ user: mockUser, logout: mockLogout } as unknown as UserContextInterface}
+          value={
+            {
+              user: mockUser,
+              logout: mockLogout,
+            } as unknown as UserContextInterface
+          }
         >
           <HeaderUser />
         </UserContext.Provider>

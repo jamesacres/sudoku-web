@@ -903,7 +903,9 @@ describe('SessionsProvider', () => {
         } as any,
       ]);
 
-      (jest.mocked(require('@/hooks/serverStorage').useServerStorage) as any).mockReturnValue({
+      (
+        jest.mocked(require('@/hooks/serverStorage').useServerStorage) as any
+      ).mockReturnValue({
         listValues: mockListValues,
       });
 
@@ -935,7 +937,9 @@ describe('SessionsProvider', () => {
     it('should handle refetchSessions forcing reload', async () => {
       const mockListValues = jest.fn().mockResolvedValue([]);
 
-      (jest.mocked(require('@/hooks/serverStorage').useServerStorage) as any).mockReturnValue({
+      (
+        jest.mocked(require('@/hooks/serverStorage').useServerStorage) as any
+      ).mockReturnValue({
         listValues: mockListValues,
       });
 

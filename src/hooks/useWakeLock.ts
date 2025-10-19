@@ -27,14 +27,14 @@ export function useWakeLock() {
           'screen'
         );
         wakeLockRef.current = wakeLock;
-        setUpdateTrigger(prev => prev + 1);
+        setUpdateTrigger((prev) => prev + 1);
         console.info('Screen wake lock activated');
 
         // Listen for wake lock release (e.g., when tab becomes hidden)
         wakeLock.addEventListener('release', () => {
           console.info('Screen wake lock released');
           wakeLockRef.current = null;
-          setUpdateTrigger(prev => prev + 1);
+          setUpdateTrigger((prev) => prev + 1);
         });
 
         return wakeLock;
@@ -52,7 +52,7 @@ export function useWakeLock() {
       try {
         await wakeLockRef.current.release();
         wakeLockRef.current = null;
-        setUpdateTrigger(prev => prev + 1);
+        setUpdateTrigger((prev) => prev + 1);
         console.info('Screen wake lock manually released');
       } catch (error) {
         console.error('Failed to release screen wake lock:', error);

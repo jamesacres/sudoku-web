@@ -239,7 +239,9 @@ describe('Providers', () => {
       expect(globalStateProvider).toBeInTheDocument();
       // GlobalStateProvider should be a direct child of the render container
       // Its parent should not have a data-testid (meaning it's not wrapped by another provider)
-      expect(globalStateProvider?.parentElement?.hasAttribute('data-testid')).toBe(false);
+      expect(
+        globalStateProvider?.parentElement?.hasAttribute('data-testid')
+      ).toBe(false);
     });
 
     it('should have FetchProvider inside GlobalStateProvider', () => {

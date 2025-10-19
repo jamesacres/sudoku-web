@@ -134,9 +134,7 @@ describe('ScoringLegend', () => {
       render(<ScoringLegend isOpen={true} onClose={mockOnClose} />);
 
       // Check racing bonus section exists (text may be split)
-      expect(
-        screen.getByText(/points for each friend/i)
-      ).toBeInTheDocument();
+      expect(screen.getByText(/points for each friend/i)).toBeInTheDocument();
     });
 
     it('should show racing bonus calculation example', () => {

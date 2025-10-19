@@ -350,7 +350,7 @@ describe('useWakeLock', () => {
       await act(async () => {
         document.dispatchEvent(new Event('visibilitychange'));
         // Give the async handler time to execute
-        await new Promise(resolve => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 0));
       });
 
       // Should have requested again

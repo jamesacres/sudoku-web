@@ -3,8 +3,8 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { PartyRow } from './PartyRow';
 import { Party } from '@/types/serverTypes';
 import { UserContext, UserContextInterface } from '@/providers/UserProvider';
-import { RevenueCatContextInterface,
-
+import {
+  RevenueCatContextInterface,
   RevenueCatContext,
 } from '@/providers/RevenueCatProvider';
 import * as usePartiesModule from '@/hooks/useParties';
@@ -104,7 +104,9 @@ describe('PartyRow', () => {
       subscribeModal: { showModalIfRequired: jest.fn() } as any,
     };
     return render(
-      <UserContext.Provider value={userContext as unknown as UserContextInterface}>
+      <UserContext.Provider
+        value={userContext as unknown as UserContextInterface}
+      >
         <RevenueCatContext.Provider
           value={revenueCatContext as unknown as RevenueCatContextInterface}
         >
@@ -138,8 +140,8 @@ describe('PartyRow', () => {
     // Delete button is rendered as a trash icon button without text
     // Find all buttons and click the red delete button
     const buttons = screen.getAllByRole('button');
-    const deleteButton = buttons.find(btn =>
-      btn.className && btn.className.includes('bg-red-100')
+    const deleteButton = buttons.find(
+      (btn) => btn.className && btn.className.includes('bg-red-100')
     );
     if (deleteButton) {
       fireEvent.click(deleteButton);
@@ -155,8 +157,8 @@ describe('PartyRow', () => {
     renderComponent({ party: nonOwnerParty });
     // Leave button is rendered as a logout icon button without text
     const buttons = screen.getAllByRole('button');
-    const leaveButton = buttons.find(btn =>
-      btn.className && btn.className.includes('bg-red-100')
+    const leaveButton = buttons.find(
+      (btn) => btn.className && btn.className.includes('bg-red-100')
     );
     if (leaveButton) {
       fireEvent.click(leaveButton);

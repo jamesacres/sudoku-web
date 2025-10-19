@@ -51,7 +51,9 @@ describe('Testers Page', () => {
       const externalLinks = screen.queryAllByRole('link');
       const inviteLinks = externalLinks.filter(
         (link) =>
-          link.getAttribute('href')?.includes('sudoku.bubblyclouds.com/invite') || false
+          link
+            .getAttribute('href')
+            ?.includes('sudoku.bubblyclouds.com/invite') || false
       );
       expect(inviteLinks.length).toBe(0);
     });
@@ -68,7 +70,9 @@ describe('Testers Page', () => {
         (link) =>
           link
             .getAttribute('href')
-            ?.includes('sudoku.bubblyclouds.com/invite?inviteId=test-invite-123') || false
+            ?.includes(
+              'sudoku.bubblyclouds.com/invite?inviteId=test-invite-123'
+            ) || false
       );
       expect(externalInviteLinks.length).toBeGreaterThan(0);
     });

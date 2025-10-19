@@ -449,9 +449,7 @@ describe('SocialProof', () => {
     });
 
     it('should not break if Math.random returns 0', async () => {
-      const mathRandomSpy = jest
-        .spyOn(Math, 'random')
-        .mockReturnValue(0);
+      const mathRandomSpy = jest.spyOn(Math, 'random').mockReturnValue(0);
 
       render(<SocialProof />);
 
@@ -466,9 +464,7 @@ describe('SocialProof', () => {
     });
 
     it('should not break if Math.random returns nearly 1', async () => {
-      const mathRandomSpy = jest
-        .spyOn(Math, 'random')
-        .mockReturnValue(0.9999);
+      const mathRandomSpy = jest.spyOn(Math, 'random').mockReturnValue(0.9999);
 
       render(<SocialProof />);
 
@@ -773,7 +769,9 @@ describe('SocialProof', () => {
         expect(pulse).toHaveClass('bg-yellow-400');
 
         // User sees a polished UI
-        expect(container.querySelector('.backdrop-blur-sm')).toBeInTheDocument();
+        expect(
+          container.querySelector('.backdrop-blur-sm')
+        ).toBeInTheDocument();
       });
     });
   });

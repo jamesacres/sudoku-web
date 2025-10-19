@@ -45,7 +45,9 @@ describe('useLocalStorage', () => {
     expect(puzzleValues.length).toBeGreaterThanOrEqual(2);
     // Find the values we just saved
     const savedValues = puzzleValues.filter(
-      (v) => v.state && ((v.state as any).puzzle === 1 || (v.state as any).puzzle === 2)
+      (v) =>
+        v.state &&
+        ((v.state as any).puzzle === 1 || (v.state as any).puzzle === 2)
     );
     expect(savedValues).toHaveLength(2);
   });
