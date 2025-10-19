@@ -57,7 +57,24 @@ describe('PartiesProvider', () => {
     mockListParties.mockResolvedValue(mockParties);
     const user = { sub: 'user1', name: 'Test' };
 
-    renderWithUser(user);
+    let context: any;
+    const Consumer = () => {
+      context = useContext(PartiesContext);
+      return <div>{context?.parties.length} parties</div>;
+    };
+
+    render(
+      <UserContext.Provider value={{ user } as any}>
+        <PartiesProvider>
+          <Consumer />
+        </PartiesProvider>
+      </UserContext.Provider>
+    );
+
+    // Explicitly call lazyLoadParties since it's not called automatically on mount
+    await act(async () => {
+      await context.lazyLoadParties();
+    });
 
     await waitFor(() => {
       expect(mockListParties).toHaveBeenCalled();

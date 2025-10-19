@@ -55,7 +55,7 @@ describe('BookProvider', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText('Test Book')).toBeInTheDocument();
+      expect(screen.getByText('book-1')).toBeInTheDocument();
     });
   });
 
@@ -70,7 +70,7 @@ describe('BookProvider', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Test Book')).toBeInTheDocument();
+      expect(screen.getByText('book-1')).toBeInTheDocument();
     });
     expect(mockGetSudokuBookOfTheMonth).not.toHaveBeenCalled();
   });

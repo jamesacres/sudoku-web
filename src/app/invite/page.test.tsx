@@ -222,20 +222,29 @@ describe('Invite Page', () => {
 
       renderWithProviders(<Invite />);
 
-      await waitFor(() => {
-        expect(mockRouterReplace).toHaveBeenCalledWith(
-          '/puzzle?initial=1&final=9'
-        );
-      });
+      await waitFor(
+        () => {
+          expect(mockRouterReplace).toHaveBeenCalledWith(
+            '/puzzle?initial=1&final=9&showRacingPrompt=false'
+          );
+        },
+        { timeout: 3000 }
+      );
     });
   });
 
   describe('Sign In Flow', () => {
     it('should call loginRedirect when sign-in button is clicked', async () => {
       mockUserContext.user = undefined;
+      mockUseParties.mockReturnValue({ ...mockUsePartiesValue, parties: [] });
       renderWithProviders(<Invite />);
 
-      const signInButton = await screen.findByText(/Sign in to Continue/i);
+      // Wait for the public invite to load first
+      await waitFor(() => {
+        expect(screen.queryByText(/Loading invitation/i)).not.toBeInTheDocument();
+      });
+
+      const signInButton = await screen.findByText(/Sign in to Continue/i, {}, { timeout: 3000 });
       await userEvent.click(signInButton);
 
       expect(mockUserContext.loginRedirect).toHaveBeenCalledWith({

@@ -263,29 +263,29 @@ describe('ScoringLegend', () => {
       render(<ScoringLegend isOpen={true} onClose={mockOnClose} />);
 
       // Check speed bonus section exists
-      expect(screen.getByText('⏱️ Speed Bonuses')).toBeInTheDocument();
+      expect(screen.getByText('⚡ Speed Bonuses')).toBeInTheDocument();
     });
 
     it('should display steady speed bonus', () => {
       render(<ScoringLegend isOpen={true} onClose={mockOnClose} />);
 
       // Component renders successfully
-      expect(screen.getByText('⏱️ Speed Bonuses')).toBeInTheDocument();
+      expect(screen.getByText('⚡ Speed Bonuses')).toBeInTheDocument();
     });
 
     it('should display speed tiers with emojis', () => {
       render(<ScoringLegend isOpen={true} onClose={mockOnClose} />);
 
-      // Check that all emoji elements exist (may be multiple)
-      expect(screen.getAllByText('🔥').length).toBeGreaterThan(0); // FAST
-      expect(screen.getAllByText('💨').length).toBeGreaterThan(0); // QUICK
+      // Check that speed tier emojis exist (may be multiple instances)
+      expect(screen.getAllByText(/🔥/).length).toBeGreaterThan(0); // FAST
+      expect(screen.getAllByText(/💨/).length).toBeGreaterThan(0); // QUICK
     });
 
     it('should display time thresholds correctly', () => {
       render(<ScoringLegend isOpen={true} onClose={mockOnClose} />);
 
       // Just verify component renders
-      expect(screen.getByText('⏱️ Speed Bonuses')).toBeInTheDocument();
+      expect(screen.getByText('⚡ Speed Bonuses')).toBeInTheDocument();
     });
 
     it('should sort speed tiers by time descending', () => {
@@ -460,10 +460,11 @@ describe('ScoringLegend', () => {
     it('should display all difficulty tiers', () => {
       render(<ScoringLegend isOpen={true} onClose={mockOnClose} />);
 
-      // Verify all daily difficulties are present
+      // Verify all daily difficulties are present - use getAllByText since "Hard" appears multiple times
       expect(screen.getByText(/Tricky/)).toBeInTheDocument();
       expect(screen.getByText(/Challenging/)).toBeInTheDocument();
-      expect(screen.getByText(/Hard/)).toBeInTheDocument();
+      const hardElements = screen.getAllByText(/Hard/);
+      expect(hardElements.length).toBeGreaterThan(0);
     });
   });
 
