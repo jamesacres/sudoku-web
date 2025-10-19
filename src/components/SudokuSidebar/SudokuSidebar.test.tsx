@@ -90,8 +90,25 @@ describe('SudokuSidebar', () => {
   });
 
   it('displays existing parties', () => {
-    mockUseParties.mockReturnValueOnce({
-      parties: [{ partyId: '1' }, { partyId: '2' }],
+    mockUseParties.mockReturnValue({
+      parties: [
+        {
+          partyId: '1',
+          partyName: 'Party 1',
+          isOwner: true,
+          maxMembers: 5,
+          members: [],
+          createdAt: new Date(),
+        },
+        {
+          partyId: '2',
+          partyName: 'Party 2',
+          isOwner: false,
+          maxMembers: 5,
+          members: [],
+          createdAt: new Date(),
+        },
+      ],
     });
     renderComponent();
     expect(screen.getAllByTestId('party-row')).toHaveLength(2);
