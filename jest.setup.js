@@ -65,6 +65,50 @@ if (typeof global.structuredClone === 'undefined') {
   };
 }
 
+// Mock Response class for Node.js environment
+if (typeof global.Response === 'undefined') {
+  global.Response = class {
+    constructor(body, init = {}) {
+      this.body = body;
+      this.status = init.status || 200;
+      this.statusText = init.statusText || 'OK';
+      this.headers = new Map(Object.entries(init.headers || {}));
+      this.ok = this.status >= 200 && this.status < 300;
+    }
+
+    async json() {
+      if (typeof this.body === 'string') {
+        return JSON.parse(this.body);
+      }
+      return this.body;
+    }
+
+    async text() {
+      return String(this.body);
+    }
+
+    clone() {
+      return new Response(this.body, {
+        status: this.status,
+        statusText: this.statusText,
+        headers: Object.fromEntries(this.headers),
+      });
+    }
+  };
+}
+
+// Mock Request class for Node.js environment
+if (typeof global.Request === 'undefined') {
+  global.Request = class {
+    constructor(input, init = {}) {
+      this.url = typeof input === 'string' ? input : input.url;
+      this.method = init.method || 'GET';
+      this.headers = new Map(Object.entries(init.headers || {}));
+      this.body = init.body || null;
+    }
+  };
+}
+
 // Mock PointerEvent for Node environment
 if (typeof window !== 'undefined' && typeof window.PointerEvent === 'undefined') {
   window.PointerEvent = class PointerEvent extends MouseEvent {
