@@ -11,6 +11,8 @@ const config = {
     '!src/**/*.test.{ts,tsx}',
     '!src/app/layout.tsx',
     '!src/app/providers.tsx',
+    '!src/augmentedReality/**',
+    '!src/**/index.{ts,tsx}',
   ],
   coverageThreshold: {
     global: {
