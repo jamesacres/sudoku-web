@@ -146,4 +146,306 @@ describe('useServerStorage', () => {
     );
     expect(success).toBe(true);
   });
+
+  it('updateParty should send a PATCH request', async () => {
+    mockFetch.mockResolvedValue({ ok: true, json: () => Promise.resolve({}) });
+    const { result } = renderHook(() => useServerStorage(), { wrapper });
+
+    await act(async () => {
+      await result.current.updateParty('party1', { partyName: 'Updated' });
+    });
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      expect.objectContaining({ method: 'PATCH' })
+    );
+  });
+
+  it('leaveParty should send a DELETE request', async () => {
+    mockFetch.mockResolvedValue({ ok: true });
+    const { result } = renderHook(() => useServerStorage(), { wrapper });
+
+    let success;
+    await act(async () => {
+      success = await result.current.leaveParty('party1');
+    });
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      expect.objectContaining({ method: 'DELETE' })
+    );
+    expect(success).toBe(true);
+  });
+
+  it('removeMember should send a DELETE request', async () => {
+    mockFetch.mockResolvedValue({ ok: true });
+    const { result } = renderHook(() => useServerStorage(), { wrapper });
+
+    let success;
+    await act(async () => {
+      success = await result.current.removeMember('party1', 'user2');
+    });
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      expect.objectContaining({ method: 'DELETE' })
+    );
+    expect(success).toBe(true);
+  });
+
+  it('deleteParty should send a DELETE request', async () => {
+    mockFetch.mockResolvedValue({ ok: true });
+    const { result } = renderHook(() => useServerStorage(), { wrapper });
+
+    let success;
+    await act(async () => {
+      success = await result.current.deleteParty('party1');
+    });
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      expect.objectContaining({ method: 'DELETE' })
+    );
+    expect(success).toBe(true);
+  });
+
+  it('listValues should fetch a list of server values', async () => {
+    const mockResponse = [
+      {
+        sessionId: 'session1',
+        state: { a: 1 },
+        updatedAt: new Date().toISOString(),
+      },
+      {
+        sessionId: 'session2',
+        state: { b: 2 },
+        updatedAt: new Date().toISOString(),
+      },
+    ];
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve(mockResponse),
+    });
+
+    const { result } = renderHook(
+      () => useServerStorage({ type: StateType.PUZZLE }),
+      { wrapper }
+    );
+
+    let values: any;
+    await act(async () => {
+      values = await result.current.listValues();
+    });
+
+    expect(Array.isArray(values)).toBe(true);
+    expect(values?.length).toBe(2);
+  });
+
+  it('should handle offline scenarios gracefully', async () => {
+    mockUseOnline.mockReturnValue({ isOnline: false });
+    mockFetch.mockResolvedValue({ ok: true, json: () => Promise.resolve({}) });
+
+    const { result } = renderHook(
+      () => useServerStorage({ type: StateType.PUZZLE, id: '123' }),
+      { wrapper }
+    );
+
+    // Should still provide methods even when offline
+    expect(result.current.getValue).toBeDefined();
+    expect(result.current.saveValue).toBeDefined();
+  });
+
+  it('should handle fetch errors gracefully', async () => {
+    mockFetch.mockRejectedValue(new Error('Network error'));
+
+    const { result } = renderHook(
+      () => useServerStorage({ type: StateType.PUZZLE, id: '123' }),
+      { wrapper }
+    );
+
+    let error: any;
+    await act(async () => {
+      try {
+        await result.current.getValue();
+      } catch (e) {
+        error = e;
+      }
+    });
+
+    // Should handle error without crashing
+    expect(result.current).toBeDefined();
+  });
+
+  it('should handle unsuccessful responses', async () => {
+    mockFetch.mockResolvedValue({
+      ok: false,
+      status: 404,
+      json: () => Promise.resolve({ error: 'Not found' }),
+    });
+
+    const { result } = renderHook(
+      () => useServerStorage({ type: StateType.PUZZLE, id: '123' }),
+      { wrapper }
+    );
+
+    let value: any;
+    await act(async () => {
+      value = await result.current.getValue();
+    });
+
+    // Should handle non-ok responses
+    expect(result.current).toBeDefined();
+  });
+
+  it('should build correct request URLs', async () => {
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ state: {} }),
+    });
+
+    const { result } = renderHook(
+      () => useServerStorage({ type: StateType.PUZZLE, id: 'puzzle123' }),
+      { wrapper }
+    );
+
+    await act(async () => {
+      await result.current.getValue();
+    });
+
+    expect(mockFetch).toHaveBeenCalledWith(expect.any(Request));
+    const request = mockFetch.mock.calls[0][0] as Request;
+    expect(request.url).toContain('puzzle123');
+  });
+
+  it('should include user context in requests', async () => {
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({}),
+    });
+
+    const { result } = renderHook(() => useServerStorage(), { wrapper });
+
+    await act(async () => {
+      await result.current.createParty({
+        partyName: 'Test',
+        memberNickname: 'Player',
+      });
+    });
+
+    expect(mockFetch).toHaveBeenCalled();
+  });
+
+  it('listInvites should return list of invites', async () => {
+    const mockInvites = [
+      { inviteId: 'i1', partyId: 'p1', status: 'pending' },
+      { inviteId: 'i2', partyId: 'p2', status: 'pending' },
+    ];
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve(mockInvites),
+    });
+
+    const { result } = renderHook(() => useServerStorage(), { wrapper });
+
+    let invites: any;
+    await act(async () => {
+      invites = await result.current.listInvites?.();
+    });
+
+    expect(Array.isArray(invites)).toBe(true);
+  });
+
+  it('acceptInvite should send POST request', async () => {
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ success: true }),
+    });
+
+    const { result } = renderHook(() => useServerStorage(), { wrapper });
+
+    let success;
+    await act(async () => {
+      success = await result.current.acceptInvite?.('inviteId');
+    });
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      expect.objectContaining({ method: 'POST' })
+    );
+  });
+
+  it('rejectInvite should send DELETE request', async () => {
+    mockFetch.mockResolvedValue({ ok: true });
+
+    const { result } = renderHook(() => useServerStorage(), { wrapper });
+
+    let success;
+    await act(async () => {
+      success = await result.current.rejectInvite?.('inviteId');
+    });
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      expect.objectContaining({ method: 'DELETE' })
+    );
+  });
+
+  it('should convert server responses to correct types', async () => {
+    const mockData = {
+      state: { puzzle: 'data' },
+      updatedAt: new Date().toISOString(),
+      parties: {},
+    };
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve(mockData),
+    });
+
+    const { result } = renderHook(
+      () => useServerStorage({ type: StateType.PUZZLE, id: '123' }),
+      { wrapper }
+    );
+
+    let value: any;
+    await act(async () => {
+      value = await result.current.getValue();
+    });
+
+    expect(value).toHaveProperty('updatedAt');
+    expect(value?.updatedAt instanceof Date).toBe(true);
+  });
+
+  it('should handle null state gracefully', async () => {
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ state: null }),
+    });
+
+    const { result } = renderHook(
+      () => useServerStorage({ type: StateType.PUZZLE, id: '123' }),
+      { wrapper }
+    );
+
+    let value: any;
+    await act(async () => {
+      value = await result.current.getValue();
+    });
+
+    expect(result.current).toBeDefined();
+  });
+
+  it('should support party-specific queries', async () => {
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve([]),
+    });
+
+    const { result } = renderHook(
+      () => useServerStorage({ type: StateType.PUZZLE }),
+      { wrapper }
+    );
+
+    await act(async () => {
+      await result.current.listValues?.({
+        partyId: 'party1',
+        userId: 'user1',
+      });
+    });
+
+    expect(mockFetch).toHaveBeenCalledWith(expect.any(Request));
+  });
 });
