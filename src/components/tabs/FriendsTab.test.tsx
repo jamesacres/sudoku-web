@@ -80,7 +80,8 @@ describe('FriendsTab', () => {
     renderComponent();
     expect(screen.getByText('Racing Teams')).toBeInTheDocument();
     expect(screen.getByText('All')).toBeInTheDocument();
-    expect(screen.getByText('Test Party')).toBeInTheDocument();
+    // Test Party appears in multiple places (tabs, rows), so check all exist
+    expect(screen.getAllByText('Test Party').length).toBeGreaterThan(0);
   });
 
   it('renders the leaderboard and friends list', () => {

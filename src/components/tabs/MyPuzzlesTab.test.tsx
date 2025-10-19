@@ -249,8 +249,9 @@ describe('MyPuzzlesTab', () => {
 
       const { container } = render(<MyPuzzlesTab sessions={sessions} />);
 
-      const listItems = container.querySelectorAll('li');
-      expect(listItems).toHaveLength(2);
+      // IntegratedSessionRow is mocked to render divs, not li elements
+      const sessionDivs = screen.getAllByTestId(/session-/);
+      expect(sessionDivs).toHaveLength(2);
     });
   });
 

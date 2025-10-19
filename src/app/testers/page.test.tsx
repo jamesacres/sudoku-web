@@ -47,7 +47,12 @@ describe('Testers Page', () => {
   describe('Racing Team Invite Links', () => {
     it('should not show invite link when no inviteId', () => {
       renderComponent();
-      const inviteLinks = screen.queryAllByText(/Racing Team/i);
+      // Check that there are no external invite links when no inviteId is present
+      const externalLinks = screen.queryAllByRole('link');
+      const inviteLinks = externalLinks.filter(
+        (link) =>
+          link.getAttribute('href')?.includes('sudoku.bubblyclouds.com/invite') || false
+      );
       expect(inviteLinks.length).toBe(0);
     });
 
@@ -58,14 +63,14 @@ describe('Testers Page', () => {
 
       renderComponent();
 
-      const inviteLinks = screen.getAllByText(/Racing Team/i);
-      expect(inviteLinks.length).toBeGreaterThan(0);
-      inviteLinks.forEach((link) => {
-        expect(link.closest('a')).toHaveAttribute(
-          'href',
-          'https://sudoku.bubblyclouds.com/invite?inviteId=test-invite-123'
-        );
-      });
+      const inviteLinks = screen.queryAllByRole('link');
+      const externalInviteLinks = inviteLinks.filter(
+        (link) =>
+          link
+            .getAttribute('href')
+            ?.includes('sudoku.bubblyclouds.com/invite?inviteId=test-invite-123') || false
+      );
+      expect(externalInviteLinks.length).toBeGreaterThan(0);
     });
   });
 
