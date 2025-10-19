@@ -11,7 +11,6 @@ const config = {
     '!src/**/*.test.{ts,tsx}',
     '!src/app/layout.tsx',
     '!src/app/providers.tsx',
-    '!src/app/page.tsx',
   ],
   coverageThreshold: {
     global: {
@@ -26,6 +25,9 @@ const config = {
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   testTimeout: 10000,
+  transformIgnorePatterns: [
+    'node_modules/(?!@revenuecat|@capacitor|capacitor-secure-storage-plugin)',
+  ],
   transform: {
     '^.+\\.tsx?$': [
       'ts-jest',
@@ -33,6 +35,7 @@ const config = {
         tsconfig: {
           jsx: 'react-jsx',
           esModuleInterop: true,
+          allowSyntheticDefaultImports: true,
         },
       },
     ],

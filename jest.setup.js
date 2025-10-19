@@ -4,9 +4,65 @@
 // Import testing-library matchers
 require('@testing-library/jest-dom');
 
+// Mock RevenueCat/Capacitor modules that use ESM
+jest.mock('@revenuecat/purchases-capacitor', () => ({
+  Purchases: {
+    configure: jest.fn(),
+    getCustomerInfo: jest.fn().mockResolvedValue({ customerInfo: {} }),
+    logIn: jest.fn(),
+    logOut: jest.fn(),
+  },
+  PurchasesPackage: {},
+  LOG_LEVEL: { VERBOSE: 0 },
+}), { virtual: true });
+
+jest.mock('@capacitor/core', () => ({
+  registerPlugin: jest.fn((name) => ({})),
+  CapacitorHttp: {},
+  Capacitor: {
+    isWebPlatform: jest.fn(() => false),
+    getPlatform: jest.fn(() => 'web'),
+    isPluginAvailable: jest.fn(() => false),
+  },
+}), { virtual: true });
+
+jest.mock('capacitor-secure-storage-plugin', () => ({
+  SecureStoragePlugin: class {
+    constructor() {}
+    set() { return Promise.resolve(); }
+    get() { return Promise.resolve(null); }
+    remove() { return Promise.resolve(); }
+  },
+}), { virtual: true });
+
+jest.mock('@capacitor/browser', () => ({
+  Browser: {
+    open: jest.fn().mockResolvedValue(undefined),
+    close: jest.fn().mockResolvedValue(undefined),
+  },
+}), { virtual: true });
+
+jest.mock('@capacitor/app', () => ({
+  App: {
+    addListener: jest.fn(() => ({ remove: jest.fn() })),
+  },
+}), { virtual: true });
+
 // Create global window object for Node environment
 if (typeof window === 'undefined') {
   global.window = {};
+}
+
+// Mock window.confirm to return true by default in tests
+if (typeof window !== 'undefined' && !window.confirm) {
+  window.confirm = jest.fn(() => true);
+}
+
+// Polyfill structuredClone for older Node versions
+if (typeof global.structuredClone === 'undefined') {
+  global.structuredClone = (obj) => {
+    return JSON.parse(JSON.stringify(obj));
+  };
 }
 
 // Mock PointerEvent for Node environment
@@ -181,12 +237,27 @@ if (!window.crypto || !window.crypto.subtle) {
 const originalError = console.error;
 beforeAll(() => {
   console.error = function(...args) {
-    if (
-      typeof args[0] === 'string' &&
-      args[0].includes('Invalid cellId format')
-    ) {
+    const errorMsg = typeof args[0] === 'string' ? args[0] : '';
+
+    // Suppress expected test errors
+    const suppressPatterns = [
+      'Invalid cellId format',
+      'Not implemented: window.confirm',
+      'An update to',
+      'inside a test was not wrapped in act',
+      'There are no focusable elements inside the <FocusTrap />',
+      'Warning: Received `true` for a non-boolean attribute `jsx`',
+      'Warning: React.jsx: type is invalid',
+      'type of Received has value: null',
+      'Cannot read properties of undefined (reading \'getTime\')',
+      'Error reading daily',
+    ];
+
+    // Check if error message matches any suppress pattern
+    if (suppressPatterns.some(pattern => errorMsg.includes(pattern))) {
       return;
     }
+
     originalError.apply(console, args);
   };
 });

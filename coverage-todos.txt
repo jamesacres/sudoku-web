@@ -1,0 +1,83 @@
+  Test Coverage Tasks - 100% Coverage Roadmap
+
+  Summary
+
+  - Total files needing tests: 108
+  - Total batches: 12
+  - Files per batch: 5 (except final batch with 4)
+
+  ---
+  Priority Phase 1: Critical Infrastructure (Batches 1-2)
+
+  Batch 1: Core Hooks (5 files)
+  1. src/hooks/documentVisibility.ts - Hook utility
+  2. src/hooks/fetch.ts - Hook utility
+  3. src/hooks/gameState.ts - Hook utility
+  4. src/hooks/localStorage.ts - Hook utility
+  5. src/hooks/serverStorage.ts - Hook utility
+
+  Batch 2: Remaining Hooks & Providers (5 files)
+  1. src/hooks/useParties.ts - Hook utility
+  2. src/hooks/useWakeLock.ts - Hook utility
+  3. src/providers/FetchProvider/FetchProvider.tsx - Context provider
+  4. src/providers/PartiesProvider/PartiesProvider.tsx - Context provider
+  5. src/providers/BookProvider/BookProvider.tsx - Context provider
+
+  ---
+  Priority Phase 2: Core Pages (Batch 3)
+
+  Batch 3: Critical Pages (5 files)
+  1. src/app/page.tsx - Home page
+  2. src/app/puzzle/page.tsx - Puzzle game page
+  3. src/app/book/page.tsx - Book selection page
+  4. src/app/auth/page.tsx - Authentication page
+  5. src/app/import/page.tsx - Import puzzle page
+
+  ---
+  Priority Phase 3: Core Components (Batches 4-6)
+
+  Batch 4: Sudoku Components (5 files)
+  1. src/components/Sudoku/Sudoku.tsx - Main Sudoku component
+  2. src/components/SimpleSudoku/SimpleSudoku.tsx - Simplified display
+  3. src/components/SudokuInputNotes/SudokuInputNotes.tsx - Notes input
+  4. src/components/SudokuSidebar/SudokuSidebar.tsx - Sidebar
+  5. src/components/NumberPad/NumberPad.tsx - Number input pad
+
+  Batch 5: Leaderboard Components (5 files)
+  1. src/components/leaderboard/Leaderboard.tsx - Main leaderboard
+  2. src/components/leaderboard/ScoreBreakdown.tsx - Score display
+  3. src/components/leaderboard/ScoringLegend.tsx - Legend component
+  4. src/components/leaderboard/FriendLeaderboardEntry.tsx - Friend entry
+  5. src/components/leaderboard/FriendsList.tsx - Friends list
+
+  Batch 6: Header & User Components (5 files)
+  1. src/components/HeaderUser/HeaderUser.tsx - User header component
+  2. src/components/HeaderUser/UserButton.tsx - User button
+  3. src/components/HeaderUser/UserPanel.tsx - User panel
+  4. src/components/HeaderBack/HeaderBack.tsx - Back navigation
+  5. src/components/HeaderOnline/HeaderOnline.tsx - Online status
+
+  ---
+  Priority Phase 4: Remaining Providers & Secondary Components (Batches 7-9)
+
+  Batch 7: Remaining Providers & Root Layout (5 files)
+  1. src/providers/CapacitorProvider/CapacitorProvider.tsx - Mobile platform
+  2. src/providers/RevenueCatProvider/RevenueCatProvider.tsx - Subscription
+  3. src/app/providers.tsx - Root providers setup
+  4. src/components/tabs/MyPuzzlesTab.tsx - Tab component
+  5. src/components/tabs/FriendsTab.tsx - Tab component
+
+  Batch 8: Secondary Components (5 files)
+  1. src/components/RaceTrack/RaceTrack.tsx - Race feature
+  2. src/components/PartyRow/PartyRow.tsx - Party display
+  3. src/components/PartyInviteButton/PartyInviteButton.tsx - Invite button
+  4. src/components/PremiumFeatures/PremiumFeatures.tsx - Premium UI
+  5. src/components/BookCovers/BookCover.tsx - Book cover display
+
+  Batch 9: Remaining Pages (5 files)
+  1. src/app/invite/page.tsx - Invite page
+  2. src/app/restoreState/page.tsx - State restore
+  3. src/app/test-covers/page.tsx - Test utilities
+  4. src/app/test-errors/page.tsx - Error testing
+  5. src/app/testers/page.tsx - Tester utilities
+

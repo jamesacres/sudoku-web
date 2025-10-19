@@ -112,12 +112,12 @@ function useGameState({
       `sudoku-${puzzleId}`
     );
     console.info('initialSessionParties', initialSessionParties);
-    return initialSessionParties;
+    return initialSessionParties || {};
   });
   const setSessionParties = useCallback(
     (sessionParties: Parties<Session<ServerState>>) => {
       setSessionPartiesLocal(sessionParties);
-      const partySessions = Object.values(sessionParties);
+      const partySessions = Object.values(sessionParties || {});
       const userSessions: { [userId: string]: Session<ServerState> } = {};
       for (const partySession of partySessions) {
         if (partySession?.memberSessions) {
@@ -128,7 +128,7 @@ function useGameState({
     },
     [patchFriendSessions, puzzleId]
   );
-  const hasSessionParties = Object.keys(sessionParties).length;
+  const hasSessionParties = sessionParties ? Object.keys(sessionParties).length : 0;
 
   const [selectedCell, setSelectedCellState] = useState<null | string>(null);
   const lastSelectedCellChangeRef = useRef<number>(Date.now());
@@ -245,12 +245,12 @@ function useGameState({
     (nextAnswer: Puzzle) => {
       let completed: GameState['completed'] = undefined;
       if (
-        timerRef.current?.inProgress.lastInteraction &&
+        timerRef.current?.inProgress?.lastInteraction &&
         checkGrid(initial, final, nextAnswer).isComplete
       ) {
         stopTimer();
         completed = {
-          at: timerRef.current.inProgress.lastInteraction,
+          at: timerRef.current.inProgress!.lastInteraction,
           seconds: calculateSeconds(timerRef.current),
         };
         setSelectedCell(null);

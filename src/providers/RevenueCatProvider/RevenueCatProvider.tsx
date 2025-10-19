@@ -17,7 +17,7 @@ import {
 import { UserContext } from '../UserProvider';
 import { SubscriptionContext } from '@/types/subscriptionContext';
 
-interface RevenueCatContextInterface {
+export interface RevenueCatContextInterface {
   isLoading: boolean;
   isSubscribed: boolean;
   packages: (WebPackage | CapacitorPackage)[];

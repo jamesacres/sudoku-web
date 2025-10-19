@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface WakeLockSentinel {
   released: boolean;
@@ -17,6 +17,7 @@ interface Navigator {
 
 export function useWakeLock() {
   const wakeLockRef = useRef<WakeLockSentinel | null>(null);
+  const [, setUpdateTrigger] = useState(0);
 
   const requestWakeLock = async () => {
     try {
@@ -26,12 +27,14 @@ export function useWakeLock() {
           'screen'
         );
         wakeLockRef.current = wakeLock;
+        setUpdateTrigger(prev => prev + 1);
         console.info('Screen wake lock activated');
 
         // Listen for wake lock release (e.g., when tab becomes hidden)
         wakeLock.addEventListener('release', () => {
           console.info('Screen wake lock released');
           wakeLockRef.current = null;
+          setUpdateTrigger(prev => prev + 1);
         });
 
         return wakeLock;
@@ -49,12 +52,16 @@ export function useWakeLock() {
       try {
         await wakeLockRef.current.release();
         wakeLockRef.current = null;
+        setUpdateTrigger(prev => prev + 1);
         console.info('Screen wake lock manually released');
       } catch (error) {
         console.error('Failed to release screen wake lock:', error);
       }
     }
   };
+
+  // Compute isActive based on current ref state
+  const isActive = wakeLockRef.current ? !wakeLockRef.current.released : false;
 
   // Re-request wake lock when document becomes visible again
   useEffect(() => {
@@ -83,6 +90,6 @@ export function useWakeLock() {
   return {
     requestWakeLock,
     releaseWakeLock,
-    isActive: wakeLockRef.current && !wakeLockRef.current.released,
+    isActive,
   };
 }

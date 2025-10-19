@@ -1,0 +1,493 @@
+{
+  "summary": {
+    "total_tests": 2100,
+    "passing": 1999,
+    "failing": 92,
+    "skipped": 9,
+    "failing_files": 26,
+    "pass_rate": "95.2%"
+  },
+  "categories": [
+    {
+      "id": 1,
+      "name": "BookCover Component - Inline Style Assertions",
+      "priority": "HIGHEST",
+      "test_count": 31,
+      "impact_percentage": 33.7,
+      "file": "/Users/jamesacres/Documents/git/sudoku-web/src/components/BookCovers/BookCover.test.tsx",
+      "error_pattern": "expect(element).toHaveStyle()",
+      "root_cause": "Component uses Tailwind CSS classes instead of inline styles",
+      "fix_strategy": "Replace inline style assertions with computed style checks or class assertions",
+      "estimated_time": "30 min",
+      "affected_lines": [28, 35, 42, 49, 104, 111, 352, 356, 360, 369, 403, 414],
+      "fix_example": "const styles = window.getComputedStyle(cover as Element);\nexpect(styles.width).toBe('180px');",
+      "tests": [
+        "should render with small size",
+        "should render with medium size (default)",
+        "should render with large size",
+        "should default to medium size when not specified",
+        "should apply border radius",
+        "should apply box shadow",
+        "should handle all sizes correctly",
+        "should scale width correctly for small",
+        "should scale border radius",
+        "should scale shadow",
+        "All 12 month rendering tests"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "PremiumFeatures - Invalid Component Type",
+      "priority": "HIGH",
+      "test_count": 7,
+      "impact_percentage": 7.6,
+      "file": "/Users/jamesacres/Documents/git/sudoku-web/src/components/PremiumFeatures/PremiumFeatures.test.tsx",
+      "error_pattern": "Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined",
+      "root_cause": "Named import used but component exported as default (or vice versa)",
+      "fix_strategy": "Fix import statement to match component export",
+      "estimated_time": "2 min",
+      "affected_lines": [3],
+      "fix_example": "import PremiumFeatures from './PremiumFeatures'; // if default export",
+      "tests": [
+        "renders default title and subtitle",
+        "renders custom title and subtitle",
+        "shows lock icons for non-subscribers",
+        "shows check icons for subscribers",
+        "triggers subscription modal on click for non-subscribers",
+        "does not trigger modal for subscribers",
+        "renders compact view"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "ScoringLegend - Text Fragment Matching",
+      "priority": "HIGH",
+      "test_count": 7,
+      "impact_percentage": 7.6,
+      "file": "/Users/jamesacres/Documents/git/sudoku-web/src/components/leaderboard/ScoringLegend.test.tsx",
+      "error_pattern": "Unable to find an element with the text: +100 points for each friend. This could be because the text is broken up by multiple elements.",
+      "root_cause": "Text content split across multiple DOM elements",
+      "fix_strategy": "Use flexible text matchers (regex, container.textContent, or function matchers)",
+      "estimated_time": "10 min",
+      "fix_example": "expect(screen.getByText(/\\+100 points for each friend/i)).toBeInTheDocument();",
+      "tests": [
+        "should display racing bonus per person",
+        "should display book puzzle base points",
+        "should display book puzzle difficulty multipliers",
+        "should display quick speed bonus",
+        "should display speed tiers with emojis",
+        "should sort speed tiers by time descending",
+        "should display all difficulty tiers"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "RevenueCatProvider - Mock Configuration",
+      "priority": "MEDIUM",
+      "test_count": 4,
+      "impact_percentage": 4.3,
+      "file": "/Users/jamesacres/Documents/git/sudoku-web/src/providers/RevenueCatProvider/RevenueCatProvider.test.tsx",
+      "error_pattern": "TypeError: Cannot read properties of undefined (reading 'mockResolvedValue')",
+      "root_cause": "Incomplete mock setup for Purchases API",
+      "fix_strategy": "Add complete mock implementation for all Purchases methods",
+      "estimated_time": "5 min",
+      "affected_lines": [36, 37, 38, 39, 40, 41, 42, 43],
+      "fix_example": "mockPurchases.configure = jest.fn().mockResolvedValue(undefined);\nmockPurchases.getCustomerInfo = jest.fn().mockResolvedValue({...});\nmockPurchases.getOfferings = jest.fn().mockResolvedValue({...});",
+      "tests": [
+        "initializes and checks subscription status for a logged-in user",
+        "does not initialize for a logged-out user",
+        "sets isSubscribed to true if the user has active entitlements",
+        "provides a function to purchase a package"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "CapacitorProvider - Missing Mock Method",
+      "priority": "MEDIUM",
+      "test_count": 4,
+      "impact_percentage": 4.3,
+      "file": "/Users/jamesacres/Documents/git/sudoku-web/src/providers/CapacitorProvider/CapacitorProvider.test.tsx",
+      "error_pattern": "TypeError: app_1.App.removeAllListeners is not a function",
+      "root_cause": "Capacitor App mock missing removeAllListeners method",
+      "fix_strategy": "Add complete Capacitor App mock",
+      "estimated_time": "5 min",
+      "fix_example": "jest.mock('@capacitor/app', () => ({\n  App: {\n    removeAllListeners: jest.fn().mockResolvedValue(undefined),\n    addListener: jest.fn().mockReturnValue({ remove: jest.fn() }),\n  }\n}));",
+      "tests": [
+        "should set up listeners on mount and clean up on unmount",
+        "handles appUrlOpen event and navigates",
+        "handles backButton event on home page by minimizing",
+        "handles backButton event on other pages by navigating back"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "useServerStorage - Request API Not Defined",
+      "priority": "MEDIUM",
+      "test_count": 5,
+      "impact_percentage": 5.4,
+      "file": "/Users/jamesacres/Documents/git/sudoku-web/src/hooks/serverStorage.test.ts",
+      "error_pattern": "ReferenceError: Request is not defined",
+      "root_cause": "Node.js test environment lacks global Request constructor",
+      "fix_strategy": "Replace expect.any(Request) with specific matchers or add polyfill",
+      "estimated_time": "10 min",
+      "affected_lines": [54, 69, 70],
+      "fix_example": "expect(mockFetch).toHaveBeenCalled();\nconst callArg = mockFetch.mock.calls[0][0];\nexpect(callArg).toContain('/api/state');",
+      "alternative_fix": "Add 'whatwg-fetch' polyfill to jest.setup.js",
+      "tests": [
+        "getValue should fetch data from the server",
+        "saveValue should send a PATCH request",
+        "listParties should fetch parties and their members",
+        "createParty should send a POST request and return a party",
+        "deleteAccount should send a DELETE request"
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Book Page - Text Mismatch",
+      "priority": "MEDIUM",
+      "test_count": 4,
+      "impact_percentage": 4.3,
+      "file": "/Users/jamesacres/Documents/git/sudoku-web/src/app/book/page.test.tsx",
+      "error_pattern": "Unable to find an element with the text: /Loading puzzle book/",
+      "actual_text": "Loading puzzles...",
+      "root_cause": "Test expects different text than what component renders",
+      "fix_strategy": "Update test expectations to match actual text",
+      "estimated_time": "2 min",
+      "fix_example": "expect(screen.getByText(/Loading puzzles/i)).toBeInTheDocument();",
+      "tests": [
+        "should show loading spinner when book is loading",
+        "should render puzzle grid",
+        "should show scroll to top button when scrolled down",
+        "should scroll to top when button clicked"
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Home Page - Multiple Elements with Same testid",
+      "priority": "LOW",
+      "test_count": 1,
+      "impact_percentage": 1.1,
+      "file": "/Users/jamesacres/Documents/git/sudoku-web/src/app/page.test.tsx",
+      "error_pattern": "Found multiple elements by: [data-testid=\"users-icon\"]",
+      "root_cause": "Same testid used for multiple elements (header and footer)",
+      "fix_strategy": "Use getAllByTestId or make testids unique",
+      "estimated_time": "2 min",
+      "fix_example": "const usersIcons = screen.getAllByTestId('users-icon');\nexpect(usersIcons.length).toBeGreaterThan(0);",
+      "tests": [
+        "should display all footer tab buttons"
+      ]
+    },
+    {
+      "id": 9,
+      "name": "Home Page - Browse Puzzles Navigation",
+      "priority": "LOW",
+      "test_count": 1,
+      "impact_percentage": 1.1,
+      "file": "/Users/jamesacres/Documents/git/sudoku-web/src/app/page.test.tsx",
+      "root_cause": "Navigation or button rendering issue",
+      "fix_strategy": "Verify button exists and router mock configured",
+      "estimated_time": "5 min",
+      "tests": [
+        "should navigate to book page when Browse Puzzles is clicked"
+      ]
+    },
+    {
+      "id": 10,
+      "name": "PartyRow - Missing Delete Button",
+      "priority": "LOW",
+      "test_count": 2,
+      "impact_percentage": 2.2,
+      "file": "/Users/jamesacres/Documents/git/sudoku-web/src/components/PartyRow/PartyRow.test.tsx",
+      "error_pattern": "Unable to find an accessible element with the role \"button\" and name `/delete/i`",
+      "root_cause": "Delete button not rendering, likely due to owner check",
+      "fix_strategy": "Provide UserContext with matching owner ID",
+      "estimated_time": "5 min",
+      "fix_example": "const mockOwner = { sub: 'owner-123' };\nconst mockParty = { createdBy: 'owner-123', ... };",
+      "tests": [
+        "allows owner to delete party",
+        "allows non-owner to leave party"
+      ]
+    },
+    {
+      "id": 11,
+      "name": "Import Page - Video Attributes",
+      "priority": "LOW",
+      "test_count": 3,
+      "impact_percentage": 3.3,
+      "file": "/Users/jamesacres/Documents/git/sudoku-web/src/app/import/page.test.tsx",
+      "error_pattern": "expect(element).toHaveAttribute(\"muted\")",
+      "root_cause": "React renders boolean attributes differently",
+      "fix_strategy": "Check property instead of attribute",
+      "estimated_time": "3 min",
+      "affected_lines": [122, 123],
+      "fix_example": "expect(video).toHaveProperty('muted', true);\nexpect(video).toHaveProperty('playsInline', true);",
+      "tests": [
+        "should set video element attributes correctly",
+        "should have proper video dimensions",
+        "should load solve.js script"
+      ]
+    },
+    {
+      "id": 12,
+      "name": "Invite Page - Query Parameter Mismatch",
+      "priority": "LOW",
+      "test_count": 2,
+      "impact_percentage": 2.2,
+      "file": "/Users/jamesacres/Documents/git/sudoku-web/src/app/invite/page.test.tsx",
+      "error_pattern": "Expected: \"/puzzle?initial=1&final=9\" Received: \"/puzzle?initial=1&final=9&showRacingPrompt=false\"",
+      "root_cause": "Component adds extra query parameter not expected in test",
+      "fix_strategy": "Update test to include showRacingPrompt parameter",
+      "estimated_time": "2 min",
+      "fix_example": "expect(mockPush).toHaveBeenCalledWith('/puzzle?initial=1&final=9&showRacingPrompt=false');",
+      "tests": [
+        "should redirect immediately if user is already a member",
+        "should call loginRedirect when sign-in button is clicked"
+      ]
+    },
+    {
+      "id": 13,
+      "name": "Test Covers Page - Element Assertions",
+      "priority": "LOW",
+      "test_count": 2,
+      "impact_percentage": 2.2,
+      "file": "/Users/jamesacres/Documents/git/sudoku-web/src/app/test-covers/page.test.tsx",
+      "fix_strategy": "Verify element selectors and rendering",
+      "estimated_time": "5 min",
+      "tests": [
+        "should render month heading as h2",
+        "should have text color for dark mode"
+      ]
+    },
+    {
+      "id": 14,
+      "name": "HeaderBack - Styling Assertions",
+      "priority": "LOW",
+      "test_count": 1,
+      "impact_percentage": 1.1,
+      "file": "/Users/jamesacres/Documents/git/sudoku-web/src/components/HeaderBack/HeaderBack.test.tsx",
+      "estimated_time": "3 min",
+      "tests": [
+        "should have correct styling on back button"
+      ]
+    },
+    {
+      "id": 15,
+      "name": "MyPuzzlesTab - Element Structure",
+      "priority": "LOW",
+      "test_count": 1,
+      "impact_percentage": 1.1,
+      "file": "/Users/jamesacres/Documents/git/sudoku-web/src/components/tabs/MyPuzzlesTab.test.tsx",
+      "estimated_time": "3 min",
+      "tests": [
+        "should render li elements for each session"
+      ]
+    },
+    {
+      "id": 16,
+      "name": "PartiesProvider - Lazy Loading",
+      "priority": "LOW",
+      "test_count": 1,
+      "impact_percentage": 1.1,
+      "file": "/Users/jamesacres/Documents/git/sudoku-web/src/providers/PartiesProvider/PartiesProvider.test.tsx",
+      "error_pattern": "expect(jest.fn()).toHaveBeenCalled() - Expected >= 1, Received 0",
+      "root_cause": "Mock not being called, async timing or missing context",
+      "fix_strategy": "Add waitFor and ensure UserContext provides user",
+      "estimated_time": "5 min",
+      "fix_example": "await waitFor(() => {\n  expect(mockLoadParties).toHaveBeenCalled();\n});",
+      "tests": [
+        "lazy loads parties for a logged-in user"
+      ]
+    },
+    {
+      "id": 17,
+      "name": "useDocumentVisibility - Rapid Changes",
+      "priority": "LOW",
+      "test_count": 1,
+      "impact_percentage": 1.1,
+      "file": "/Users/jamesacres/Documents/git/sudoku-web/src/hooks/documentVisibility.test.ts",
+      "fix_strategy": "Use proper act() wrapping",
+      "estimated_time": "5 min",
+      "tests": [
+        "should handle rapid visibility changes"
+      ]
+    },
+    {
+      "id": 18,
+      "name": "FetchProvider - State Updates",
+      "priority": "LOW",
+      "test_count": 1,
+      "impact_percentage": 1.1,
+      "file": "/Users/jamesacres/Documents/git/sudoku-web/src/providers/FetchProvider/FetchProvider.test.tsx",
+      "error_pattern": "Expected: shared-token, Received: empty",
+      "root_cause": "Async state updates not awaited",
+      "fix_strategy": "Add waitFor for async updates",
+      "estimated_time": "5 min",
+      "fix_example": "await waitFor(() => {\n  expect(screen.getByTestId('consumer-1')).toHaveTextContent('shared-token');\n});",
+      "tests": [
+        "should update all consumers when state changes"
+      ]
+    },
+    {
+      "id": 19,
+      "name": "SudokuSidebar - Party Display",
+      "priority": "LOW",
+      "test_count": 1,
+      "impact_percentage": 1.1,
+      "file": "/Users/jamesacres/Documents/git/sudoku-web/src/components/SudokuSidebar/SudokuSidebar.test.tsx",
+      "estimated_time": "5 min",
+      "tests": [
+        "displays existing parties"
+      ]
+    },
+    {
+      "id": 20,
+      "name": "useLocalStorage - Quota Exceeded",
+      "priority": "MEDIUM",
+      "test_count": 1,
+      "impact_percentage": 1.1,
+      "file": "/Users/jamesacres/Documents/git/sudoku-web/src/hooks/localStorage.test.ts",
+      "error_pattern": "expect(received).toBeNull() - Received: \"{...}\"",
+      "root_cause": "Old data not cleaned up in quota exceeded scenario",
+      "fix_strategy": "Mock setItem to throw QuotaExceededError properly",
+      "estimated_time": "10 min",
+      "affected_lines": [83],
+      "tests": [
+        "should handle quota exceeded error by cleaning up old data"
+      ]
+    },
+    {
+      "id": 21,
+      "name": "useLocalStorage - List Values",
+      "priority": "LOW",
+      "test_count": 1,
+      "impact_percentage": 1.1,
+      "file": "/Users/jamesacres/Documents/git/sudoku-web/src/hooks/localStorage.test.ts",
+      "estimated_time": "5 min",
+      "tests": [
+        "should list all values of a given type"
+      ]
+    },
+    {
+      "id": 22,
+      "name": "useGameState - Cell Selection",
+      "priority": "MEDIUM",
+      "test_count": 2,
+      "impact_percentage": 2.2,
+      "file": "/Users/jamesacres/Documents/git/sudoku-web/src/hooks/gameState.test.ts",
+      "error_pattern": "Expected: 5, Received: 0",
+      "root_cause": "selectedAnswer() returning wrong value, possible mock issue",
+      "fix_strategy": "Verify mocks are complete and add waitFor if needed",
+      "estimated_time": "15 min",
+      "affected_lines": [94, 106, 110],
+      "tests": [
+        "allows selecting a cell and a number",
+        "handles undo and redo operations"
+      ]
+    },
+    {
+      "id": 23,
+      "name": "FriendsTab - Rendering",
+      "priority": "LOW",
+      "test_count": 1,
+      "impact_percentage": 1.1,
+      "file": "/Users/jamesacres/Documents/git/sudoku-web/src/components/tabs/FriendsTab.test.tsx",
+      "estimated_time": "5 min",
+      "tests": [
+        "renders the main title and party tabs"
+      ]
+    },
+    {
+      "id": 24,
+      "name": "useFetch - User State",
+      "priority": "MEDIUM",
+      "test_count": 3,
+      "impact_percentage": 3.3,
+      "file": "/Users/jamesacres/Documents/git/sudoku-web/src/hooks/fetch.test.ts",
+      "error_pattern": "Expected: {\"name\": \"Test User\", \"sub\": \"user1\"}, Received: undefined",
+      "root_cause": "getUser() returning undefined, context not properly mocked",
+      "fix_strategy": "Ensure FetchContext mock provides user state",
+      "estimated_time": "10 min",
+      "tests": [
+        "should return user when state is valid",
+        "should add auth token to API requests",
+        "should handle token refresh and retry the request"
+      ]
+    },
+    {
+      "id": 25,
+      "name": "Testers Page - Invite Links",
+      "priority": "LOW",
+      "test_count": 2,
+      "impact_percentage": 2.2,
+      "file": "/Users/jamesacres/Documents/git/sudoku-web/src/app/testers/page.test.tsx",
+      "estimated_time": "5 min",
+      "tests": [
+        "should not show invite link when no inviteId",
+        "should show invite links when inviteId is present"
+      ]
+    },
+    {
+      "id": 26,
+      "name": "HeaderUser - Undefined Context",
+      "priority": "LOW",
+      "test_count": 1,
+      "impact_percentage": 1.1,
+      "file": "/Users/jamesacres/Documents/git/sudoku-web/src/components/HeaderUser/HeaderUser.test.tsx",
+      "estimated_time": "3 min",
+      "tests": [
+        "should handle undefined context gracefully"
+      ]
+    },
+    {
+      "id": 27,
+      "name": "BookProvider - Data Fetching",
+      "priority": "MEDIUM",
+      "test_count": 2,
+      "impact_percentage": 2.2,
+      "file": "/Users/jamesacres/Documents/git/sudoku-web/src/providers/BookProvider/BookProvider.test.tsx",
+      "error_pattern": "Unable to find an element with the text: Test Book",
+      "root_cause": "Book data not fetched or displayed",
+      "fix_strategy": "Mock fetch properly and await async data",
+      "estimated_time": "10 min",
+      "fix_example": "await waitFor(() => {\n  expect(screen.getByText('Test Book')).toBeInTheDocument();\n});",
+      "tests": [
+        "fetches and displays book data",
+        "loads data from cache on initial render"
+      ]
+    },
+    {
+      "id": 28,
+      "name": "Providers Nesting Order",
+      "priority": "LOW",
+      "test_count": 1,
+      "impact_percentage": 1.1,
+      "file": "/Users/jamesacres/Documents/git/sudoku-web/src/app/providers.test.tsx",
+      "estimated_time": "5 min",
+      "tests": [
+        "should have GlobalStateProvider at the top level"
+      ]
+    }
+  ],
+  "console_errors": {
+    "count": 113,
+    "main_error": "Error: Not implemented: window.confirm",
+    "fix": {
+      "file": "/Users/jamesacres/Documents/git/sudoku-web/jest.setup.js",
+      "code": "global.confirm = jest.fn(() => true);"
+    }
+  },
+  "implementation_order": [
+    "Global Setup (jest.setup.js) - window.confirm",
+    "Category 1: BookCover (31 tests)",
+    "Category 2: PremiumFeatures (7 tests)",
+    "Category 3: ScoringLegend (7 tests)",
+    "Category 6: useServerStorage (5 tests)",
+    "Category 4 & 5: RevenueCat & Capacitor (8 tests)",
+    "Category 7: Book Page (4 tests)",
+    "Categories 11, 12: Import & Invite Pages (5 tests)",
+    "Category 22, 24: useGameState & useFetch (5 tests)",
+    "Category 27: BookProvider (2 tests)",
+    "Remaining categories (18 tests)"
+  ],
+  "estimated_total_time": "4-6 hours"
+}
