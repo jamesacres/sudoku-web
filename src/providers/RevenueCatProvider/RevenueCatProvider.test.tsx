@@ -58,7 +58,7 @@ describe('RevenueCatProvider', () => {
 
   it('sets isSubscribed to true if the user has active entitlements', async () => {
     mockPurchases.getCustomerInfo.mockResolvedValue({
-      customerInfo: { entitlements: { active: { premium: {} } } },
+      customerInfo: { entitlements: { active: { Plus: {} } } },
     } as any);
     renderWithUser(mockUser);
     await waitFor(() => {
@@ -89,6 +89,8 @@ describe('RevenueCatProvider', () => {
       await context.purchasePackage('test_package');
     });
 
-    expect(mockPurchases.purchasePackage).toHaveBeenCalledWith('test_package');
+    expect(mockPurchases.purchasePackage).toHaveBeenCalledWith({
+      aPackage: 'test_package',
+    });
   });
 });

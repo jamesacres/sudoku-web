@@ -7,8 +7,11 @@ require('@testing-library/jest-dom');
 // Mock RevenueCat/Capacitor modules that use ESM
 jest.mock('@revenuecat/purchases-capacitor', () => ({
   Purchases: {
-    configure: jest.fn(),
+    configure: jest.fn().mockResolvedValue(undefined),
+    setLogLevel: jest.fn().mockResolvedValue(undefined),
     getCustomerInfo: jest.fn().mockResolvedValue({ customerInfo: {} }),
+    getOfferings: jest.fn().mockResolvedValue({ all: {} }),
+    purchasePackage: jest.fn().mockResolvedValue({}),
     logIn: jest.fn(),
     logOut: jest.fn(),
   },
@@ -45,6 +48,8 @@ jest.mock('@capacitor/browser', () => ({
 jest.mock('@capacitor/app', () => ({
   App: {
     addListener: jest.fn(() => ({ remove: jest.fn() })),
+    removeAllListeners: jest.fn().mockResolvedValue(undefined),
+    minimizeApp: jest.fn().mockResolvedValue(undefined),
   },
 }), { virtual: true });
 
