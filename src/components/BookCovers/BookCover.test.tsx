@@ -53,24 +53,19 @@ describe('BookCover', () => {
     it('should use medium size by default', () => {
       const { container } = render(<BookCover month="January" />);
       const bookCover = container.firstChild as HTMLElement;
-      const styles = window.getComputedStyle(bookCover);
       // Medium scale is 0.8, so width should be 300 * 0.8 = 240
       expect(bookCover).toBeInTheDocument();
     });
 
     it('should render with small size when specified', () => {
-      const { container } = render(
-        <BookCover month="January" size="small" />
-      );
+      const { container } = render(<BookCover month="January" size="small" />);
       const bookCover = container.firstChild as HTMLElement;
       expect(bookCover).toBeInTheDocument();
       // Small scale is 0.6
     });
 
     it('should render with large size when specified', () => {
-      const { container } = render(
-        <BookCover month="January" size="large" />
-      );
+      const { container } = render(<BookCover month="January" size="large" />);
       const bookCover = container.firstChild as HTMLElement;
       expect(bookCover).toBeInTheDocument();
       // Large scale is 1.0
@@ -92,9 +87,6 @@ describe('BookCover', () => {
     it('should render January with ice/winter theme', () => {
       render(<BookCover month="January" />);
       expect(screen.getByText('SUDOKU RACE')).toBeInTheDocument();
-      // Verify stats are rendered
-      const stats = screen.queryByText(/Winter Challenge/i) ||
-        screen.queryByText(/puzzles/i) || null;
       // January should be present
       expect(screen.getByText('January Edition')).toBeInTheDocument();
     });
@@ -126,7 +118,9 @@ describe('BookCover', () => {
     it('should render cells', () => {
       const { container } = render(<BookCover month="January" />);
       // Find elements with flex centering class (sudoku cells)
-      const cells = container.querySelectorAll('.flex.items-center.justify-center');
+      const cells = container.querySelectorAll(
+        '.flex.items-center.justify-center'
+      );
       expect(cells.length).toBeGreaterThan(0);
     });
 
@@ -197,7 +191,6 @@ describe('BookCover', () => {
 
     it('should center all content', () => {
       const { container } = render(<BookCover month="January" />);
-      const centerElements = container.querySelectorAll('[class*="text-center"]');
       // There should be centered content
       expect(container.querySelector('div')).toBeInTheDocument();
     });
@@ -242,7 +235,7 @@ describe('BookCover', () => {
     });
 
     it('should render component with stats', () => {
-      const { container } = render(<BookCover month="January" />);
+      render(<BookCover month="January" />);
       // Component renders successfully
       expect(screen.getByText('SUDOKU RACE')).toBeInTheDocument();
     });
@@ -257,9 +250,7 @@ describe('BookCover', () => {
 
   describe('responsive scaling', () => {
     it('should scale all elements with size prop', () => {
-      const { rerender } = render(
-        <BookCover month="January" size="small" />
-      );
+      const { rerender } = render(<BookCover month="January" size="small" />);
       expect(screen.getByText('SUDOKU RACE')).toBeInTheDocument();
 
       rerender(<BookCover month="January" size="large" />);
@@ -289,9 +280,7 @@ describe('BookCover', () => {
       ];
 
       sizes.forEach((size) => {
-        const { unmount } = render(
-          <BookCover month="January" size={size} />
-        );
+        const { unmount } = render(<BookCover month="January" size={size} />);
         expect(screen.getByText('SUDOKU RACE')).toBeInTheDocument();
         unmount();
       });
@@ -439,16 +428,12 @@ describe('BookCover', () => {
     });
 
     it('should match snapshot for small size', () => {
-      const { container } = render(
-        <BookCover month="January" size="small" />
-      );
+      const { container } = render(<BookCover month="January" size="small" />);
       expect(container).toMatchSnapshot();
     });
 
     it('should match snapshot for large size', () => {
-      const { container } = render(
-        <BookCover month="January" size="large" />
-      );
+      const { container } = render(<BookCover month="January" size="large" />);
       expect(container).toMatchSnapshot();
     });
   });

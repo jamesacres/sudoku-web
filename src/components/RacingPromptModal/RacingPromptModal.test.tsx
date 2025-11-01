@@ -159,7 +159,7 @@ describe('RacingPromptModal', () => {
     });
 
     it('should have hover scale animation', () => {
-      const { container } = render(
+      render(
         <RacingPromptModal
           isOpen={true}
           onClose={mockOnClose}
@@ -222,7 +222,7 @@ describe('RacingPromptModal', () => {
     });
 
     it('should display in less prominent styling than race button', () => {
-      const { container } = render(
+      render(
         <RacingPromptModal
           isOpen={true}
           onClose={mockOnClose}

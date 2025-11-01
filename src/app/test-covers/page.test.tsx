@@ -219,7 +219,7 @@ describe('Test Covers Page', () => {
 
   describe('Main Heading Styling', () => {
     it('should have correct heading styling', () => {
-      const { container } = render(<TestCoversPage />);
+      render(<TestCoversPage />);
       const mainHeading = screen.getByText(/All 12 Monthly Book Covers/i);
 
       expect(mainHeading).toHaveClass('mb-8');

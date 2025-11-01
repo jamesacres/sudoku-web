@@ -2,12 +2,7 @@ import { renderHook } from '@testing-library/react';
 import { useDocumentVisibility } from './documentVisibility';
 
 describe('useDocumentVisibility', () => {
-  let originalDocument: Document;
-
   beforeEach(() => {
-    // Save original document
-    originalDocument = document;
-
     // Reset all mocks before each test
     jest.clearAllMocks();
   });
@@ -261,8 +256,7 @@ describe('useDocumentVisibility', () => {
         value: false,
       });
 
-      const { unmount, rerender } = renderHook(() => useDocumentVisibility());
-      const initialState = rerender();
+      const { unmount } = renderHook(() => useDocumentVisibility());
 
       unmount();
 

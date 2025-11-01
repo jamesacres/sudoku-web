@@ -222,7 +222,7 @@ describe('SidebarButton', () => {
       render(<SidebarButton friendsOnClick={mockClick} />);
 
       const button = screen.getByRole('button');
-      const event = fireEvent.click(button);
+      fireEvent.click(button);
 
       expect(mockClick).toHaveBeenCalled();
     });
@@ -266,7 +266,7 @@ describe('SidebarButton', () => {
   describe('edge cases', () => {
     it('should handle click with undefined handler gracefully', () => {
       const mockClick = jest.fn();
-      const { rerender } = render(<SidebarButton friendsOnClick={mockClick} />);
+      render(<SidebarButton friendsOnClick={mockClick} />);
 
       const button = screen.getByRole('button');
 

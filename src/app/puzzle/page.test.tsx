@@ -13,11 +13,10 @@ jest.mock('@/components/Sudoku', () => {
   return {
     __esModule: true,
     default: function MockSudoku({
-      puzzle,
       alreadyCompleted,
       showRacingPrompt,
     }: {
-      puzzle: any;
+      puzzle?: any;
       alreadyCompleted: boolean;
       showRacingPrompt: boolean;
     }) {
@@ -40,13 +39,13 @@ jest.mock('@/hooks/useWakeLock', () => ({
 }));
 
 jest.mock('@/helpers/buildPuzzleUrl', () => ({
-  buildPuzzleUrl: jest.fn((initial, final, metadata) => {
+  buildPuzzleUrl: jest.fn((initial, final, _metadata) => {
     return `/puzzle?initial=${initial}&final=${final}`;
   }),
 }));
 
 jest.mock('@/helpers/puzzleTextToPuzzle', () => ({
-  puzzleTextToPuzzle: jest.fn((text) => {
+  puzzleTextToPuzzle: jest.fn((_text) => {
     return Array(9)
       .fill(null)
       .map(() => Array(9).fill(0));

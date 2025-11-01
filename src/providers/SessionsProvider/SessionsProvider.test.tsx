@@ -743,12 +743,12 @@ describe('SessionsProvider', () => {
 
   describe('lazy loading behavior', () => {
     it('should not lazy load if already initialized', async () => {
-      let lazyLoadFriendSessions: any;
+      let _lazyLoadFriendSessions: any;
       let hasCalled = false;
 
       const TestComponent = () => {
         const context = useSessions();
-        lazyLoadFriendSessions = context.lazyLoadFriendSessions;
+        _lazyLoadFriendSessions = context.lazyLoadFriendSessions;
 
         React.useEffect(() => {
           hasCalled = true;
@@ -804,12 +804,12 @@ describe('SessionsProvider', () => {
   describe('session sorting and filtering', () => {
     it('should sort sessions with most recent first', () => {
       let setSessions: any;
-      let retrievedSessions: any;
+      let _retrievedSessions: any;
 
       const TestComponent = () => {
         const context = useSessions();
         setSessions = context.setSessions;
-        retrievedSessions = context.sessions;
+        _retrievedSessions = context.sessions;
         return <div>Sessions</div>;
       };
 

@@ -22,7 +22,7 @@ jest.mock('@/components/BookCovers', () => ({
 
 jest.mock('@/components/IntegratedSessionRow', () => {
   return function MockIntegratedSessionRow({
-    session,
+    session: _session,
     bookPuzzle,
   }: {
     session: any;
@@ -60,12 +60,12 @@ jest.mock('@/hooks/online', () => ({
 }));
 
 jest.mock('@/helpers/puzzleTextToPuzzle', () => ({
-  puzzleTextToPuzzle: jest.fn((text) => {
+  puzzleTextToPuzzle: jest.fn((_text) => {
     return Array(9)
       .fill(null)
       .map(() => Array(9).fill(0));
   }),
-  puzzleToPuzzleText: jest.fn((puzzle) => 'puzzle-text'),
+  puzzleToPuzzleText: jest.fn((_puzzle) => 'puzzle-text'),
 }));
 
 jest.mock('@/helpers/sha256', () => ({
@@ -77,9 +77,6 @@ describe('Book Page', () => {
   const mockFetchBookData = jest.fn();
   const mockFetchSessions = jest.fn();
   const mockLazyLoadFriendSessions = jest.fn();
-  const mockFetchBookData2 = jest.fn();
-  const mockRefreshParties = jest.fn();
-  const mockFetchFriendSessions = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -572,7 +569,7 @@ describe('Book Page', () => {
       fireEvent.scroll(window, { y: 400 });
 
       // Check for scroll-to-top button or any arrow-up icon
-      const scrollButton =
+      const _scrollButton =
         container.querySelector('[data-testid*="arrow"]') ||
         container.querySelector('button[aria-label*="top"]');
       // Component should render without error - button may not show in test environment
@@ -707,7 +704,7 @@ describe('Book Page', () => {
         fetchBookData: mockFetchBookData,
       });
 
-      const { container } = render(<BookPage />);
+      render(<BookPage />);
       expect(document.getElementById('puzzle-0')).toBeInTheDocument();
       expect(document.getElementById('puzzle-1')).toBeInTheDocument();
     });

@@ -63,8 +63,6 @@ describe('useLocalStorage', () => {
       result.current.saveValue({ new: true });
     });
 
-    // Verify data was saved (or at least the operation didn't crash)
-    const saved = result.current.getValue();
     // Hook should maintain state even under pressure
     expect(result.current).toBeDefined();
   });
@@ -133,8 +131,6 @@ describe('useLocalStorage', () => {
     );
 
     // Both hooks can store values independently
-    const puzzleValue = puzzleResult.current.getValue();
-    const timerValue = timerResult.current.getValue();
     expect(typeof puzzleResult.current).toBe('object');
     expect(typeof timerResult.current).toBe('object');
   });

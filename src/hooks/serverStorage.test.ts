@@ -1,9 +1,9 @@
-import { renderHook, act, waitFor } from '@testing-library/react';
+import { renderHook, act } from '@testing-library/react';
 import { useServerStorage } from './serverStorage';
 import { useFetch } from './fetch';
 import { useOnline } from './online';
 import { StateType } from '@/types/StateType';
-import { UserContext, UserContextInterface } from '@/providers/UserProvider';
+import { UserContext } from '@/providers/UserProvider';
 import React from 'react';
 
 jest.mock('./fetch');
@@ -17,10 +17,11 @@ describe('useServerStorage', () => {
   let mockGetUser: jest.Mock;
 
   const wrapper = ({ children }: { children: React.ReactNode }) => {
-    return React.createElement(UserContext.Provider, {
-      value: { user: { sub: 'user123' } } as any,
-      children,
-    });
+    return React.createElement(
+      UserContext.Provider,
+      { value: { user: { sub: 'user123' } } as any },
+      children
+    );
   };
 
   beforeEach(() => {
@@ -259,12 +260,11 @@ describe('useServerStorage', () => {
       { wrapper }
     );
 
-    let error: any;
     await act(async () => {
       try {
         await result.current.getValue();
       } catch (e) {
-        error = e;
+        // Error expected
       }
     });
 
@@ -284,9 +284,8 @@ describe('useServerStorage', () => {
       { wrapper }
     );
 
-    let value: any;
     await act(async () => {
-      value = await result.current.getValue();
+      await result.current.getValue();
     });
 
     // Should handle non-ok responses
@@ -367,9 +366,8 @@ describe('useServerStorage', () => {
       { wrapper }
     );
 
-    let value: any;
     await act(async () => {
-      value = await result.current.getValue();
+      await result.current.getValue();
     });
 
     expect(result.current).toBeDefined();

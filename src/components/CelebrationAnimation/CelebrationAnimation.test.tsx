@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import { CelebrationAnimation } from './CelebrationAnimation';
 
 // Mock Capacitor
@@ -506,23 +506,30 @@ describe('CelebrationAnimation', () => {
 
     it('should set isAnimating to false after animation completes', () => {
       const gridRef = React.createRef<HTMLDivElement>();
-      const { container } = render(
+      const { container, rerender } = render(
         <div ref={gridRef}>
           <div data-cell-id="1">5</div>
           <CelebrationAnimation isVisible={true} gridRef={gridRef} />
         </div>
       );
 
+      // Animation should be active initially
+      let animationContainer = container.querySelector('.pointer-events-none');
+      expect(animationContainer).toBeInTheDocument();
+
       jest.advanceTimersByTime(9000);
 
-      // Animation should be inactive
-      const newComponent = render(
+      // After animation completes, rerender with isVisible false
+      rerender(
         <div ref={gridRef}>
+          <div data-cell-id="1">5</div>
           <CelebrationAnimation isVisible={false} gridRef={gridRef} />
         </div>
       );
 
-      expect(newComponent.container).toBeInTheDocument();
+      // Animation container should no longer be in the document
+      animationContainer = container.querySelector('.pointer-events-none');
+      expect(animationContainer).not.toBeInTheDocument();
     });
   });
 });

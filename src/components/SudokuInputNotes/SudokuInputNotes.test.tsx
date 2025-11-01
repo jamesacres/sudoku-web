@@ -80,11 +80,8 @@ describe('SudokuInputNotes', () => {
         8: false,
         9: false,
       };
-      const { container } = render(
-        <SudokuInputNotes notes={notes} selectNumber={() => {}} />
-      );
+      render(<SudokuInputNotes notes={notes} selectNumber={() => {}} />);
 
-      const textDivs = container.querySelectorAll('div:not(.grid)');
       // Only grid containers, no text content divs
       expect(screen.queryByText('1')).not.toBeInTheDocument();
       expect(screen.queryByText('9')).not.toBeInTheDocument();

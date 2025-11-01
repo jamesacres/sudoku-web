@@ -358,9 +358,7 @@ describe('ScoreBreakdown', () => {
       const breakdown = createBreakdown();
       const stats = createStats();
 
-      const { container } = render(
-        <ScoreBreakdown breakdown={breakdown} stats={stats} />
-      );
+      render(<ScoreBreakdown breakdown={breakdown} stats={stats} />);
 
       // The component uses react-feather icons
       // Check for volume bonus section

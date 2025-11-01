@@ -8,7 +8,7 @@ jest.mock('./UserPanel', () => ({
   __esModule: true,
   UserPanel: ({
     user,
-    logout,
+    logout: _logout,
     isMobile,
   }: {
     user: UserProfile;

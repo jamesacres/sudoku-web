@@ -220,9 +220,7 @@ describe('ScoringLegend', () => {
     });
 
     it('should sort book puzzle difficulties by multiplier', () => {
-      const { container } = render(
-        <ScoringLegend isOpen={true} onClose={mockOnClose} />
-      );
+      render(<ScoringLegend isOpen={true} onClose={mockOnClose} />);
 
       // Get all book difficulty items
       const bookSection = screen.getByText('📖 Book Puzzles').parentElement;

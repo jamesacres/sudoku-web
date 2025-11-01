@@ -292,7 +292,6 @@ describe('FetchProvider', () => {
 
   describe('state persistence', () => {
     it('should maintain state during re-renders', async () => {
-      let rerenderCount = 0;
       let stateRef: any;
       let setState: any;
 
@@ -300,7 +299,6 @@ describe('FetchProvider', () => {
         const [ref, setStateFunc] = useContext(FetchContext)!;
         stateRef = ref;
         setState = setStateFunc;
-        rerenderCount++;
         return (
           <div>
             <p>{ref.current.accessToken || 'null'}</p>
@@ -315,7 +313,6 @@ describe('FetchProvider', () => {
       );
 
       expect(screen.getByText('null')).toBeInTheDocument();
-      const initialRenderCount = rerenderCount;
 
       const newState: State = {
         accessToken: 'maintained-token',

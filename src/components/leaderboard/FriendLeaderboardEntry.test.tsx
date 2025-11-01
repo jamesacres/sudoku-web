@@ -4,7 +4,7 @@ import FriendLeaderboardEntry from './FriendLeaderboardEntry';
 import { FriendsLeaderboardScore } from './types';
 
 jest.mock('./ScoreBreakdown', () => {
-  return function MockScoreBreakdown({ breakdown, stats }: any) {
+  return function MockScoreBreakdown({ breakdown }: any) {
     return (
       <div data-testid="score-breakdown">
         <div data-testid="breakdown-volume">{breakdown.volumeScore}</div>

@@ -179,7 +179,7 @@ describe('Footer', () => {
       const { isCapacitor } = require('@/helpers/capacitor');
       isCapacitor.mockReturnValueOnce(true);
 
-      const { container, rerender } = render(
+      const { rerender } = render(
         <Footer>
           <div>Content</div>
         </Footer>
@@ -191,7 +191,6 @@ describe('Footer', () => {
         </Footer>
       );
 
-      const nav = container.querySelector('nav');
       // The isCapacitor mock should have been called in the first render
       expect(isCapacitor).toHaveBeenCalled();
     });

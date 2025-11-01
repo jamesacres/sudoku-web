@@ -6,7 +6,7 @@ import * as playerColorsModule from '@/utils/playerColors';
 import * as completionModule from '@/helpers/calculateCompletionPercentage';
 import * as cheatDetectionModule from '@/helpers/cheatDetection';
 import { Parties, Session } from '@/types/serverTypes';
-import { GameState, ServerState } from '@/types/state';
+import { ServerState } from '@/types/state';
 
 jest.mock('@/hooks/useParties');
 jest.mock('@/utils/playerColors');

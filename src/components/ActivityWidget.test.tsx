@@ -223,7 +223,7 @@ describe('ActivityWidget', () => {
     });
 
     it('should have blue icon background for days played', () => {
-      const { container } = render(<ActivityWidget sessions={[]} />);
+      render(<ActivityWidget sessions={[]} />);
       const calendarIconContainer =
         screen.getByTestId('calendar-icon').parentElement;
       expect(calendarIconContainer).toHaveClass('bg-blue-100');
@@ -231,7 +231,7 @@ describe('ActivityWidget', () => {
     });
 
     it('should have orange icon background for streak', () => {
-      const { container } = render(<ActivityWidget sessions={[]} />);
+      render(<ActivityWidget sessions={[]} />);
       const activityIconContainer =
         screen.getByTestId('activity-icon').parentElement;
       expect(activityIconContainer).toHaveClass('bg-orange-100');
@@ -252,14 +252,14 @@ describe('ActivityWidget', () => {
 
   describe('icon styling', () => {
     it('should have blue icon for calendar', () => {
-      const { container } = render(<ActivityWidget sessions={[]} />);
+      render(<ActivityWidget sessions={[]} />);
       const calendarIcon = screen.getByTestId('calendar-icon');
       expect(calendarIcon).toBeInTheDocument();
       expect(calendarIcon.tagName).toBe('svg');
     });
 
     it('should have orange icon for activity', () => {
-      const { container } = render(<ActivityWidget sessions={[]} />);
+      render(<ActivityWidget sessions={[]} />);
       const activityIcon = screen.getByTestId('activity-icon');
       expect(activityIcon).toBeInTheDocument();
       expect(activityIcon.tagName).toBe('svg');

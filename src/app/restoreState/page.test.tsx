@@ -1,6 +1,5 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { useContext, useEffect } from 'react';
 import Home from './page';
 import { UserContext } from '@/providers/UserProvider';
 
@@ -8,8 +7,9 @@ import { UserContext } from '@/providers/UserProvider';
 jest.mock('next/image', () => ({
   __esModule: true,
   default: (props: any) => {
-    // eslint-disable-next-line jsx-a11y/alt-text
-    return <img {...props} />;
+    const { ...rest } = props;
+    // eslint-disable-next-line jsx-a11y/alt-text, @next/next/no-img-element
+    return <img {...rest} />;
   },
 }));
 

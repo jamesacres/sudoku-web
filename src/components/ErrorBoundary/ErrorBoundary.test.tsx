@@ -243,7 +243,7 @@ describe('ErrorBoundary', () => {
         throw new Error('Test error');
       };
 
-      const { container } = render(
+      render(
         <ErrorBoundary>
           <ErrorComponent />
         </ErrorBoundary>
@@ -319,11 +319,7 @@ describe('ErrorBoundary', () => {
         throw new Error('Error 1');
       };
 
-      const ErrorComponent2 = () => {
-        throw new Error('Error 2');
-      };
-
-      const { container } = render(
+      render(
         <>
           <ErrorBoundary>
             <ErrorComponent1 />

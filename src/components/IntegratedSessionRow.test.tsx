@@ -1,7 +1,7 @@
 // @ts-nocheck
 'use client';
 import React from 'react';
-import { render, screen, within } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { IntegratedSessionRow } from './IntegratedSessionRow';
 import { ServerStateResult } from '@/types/serverTypes';
 import { ServerState } from '@/types/state';
@@ -16,11 +16,13 @@ jest.mock('react-feather', () => ({
 }));
 
 jest.mock('next/link', () => {
-  return ({ children, href }: any) => (
+  const MockLink = ({ children, href }: any) => (
     <a href={href} data-testid="puzzle-link">
       {children}
     </a>
   );
+  MockLink.displayName = 'Link';
+  return MockLink;
 });
 
 jest.mock('./SimpleSudoku', () => {
@@ -42,7 +44,7 @@ jest.mock('@/helpers/buildPuzzleUrl', () => ({
 }));
 
 jest.mock('@/helpers/puzzleTextToPuzzle', () => ({
-  puzzleTextToPuzzle: jest.fn((text) => ({ cells: [] })),
+  puzzleTextToPuzzle: jest.fn((_text) => ({ cells: [] })),
   puzzleToPuzzleText: jest.fn(() => '123456789' + '0'.repeat(73)),
 }));
 
@@ -182,7 +184,6 @@ describe('IntegratedSessionRow', () => {
       // Should render the puzzle link
       expect(screen.getByTestId('puzzle-link')).toBeInTheDocument();
     });
-
   });
 
   describe('puzzle title formatting', () => {
@@ -266,7 +267,8 @@ describe('IntegratedSessionRow', () => {
           <IntegratedSessionRow session={session} />
         </UserContext.Provider>
       );
-      const badge = screen.getByText(/challenging/i) || screen.getByText(/Challenging/i);
+      const badge =
+        screen.getByText(/challenging/i) || screen.getByText(/Challenging/i);
       expect(badge).toBeInTheDocument();
     });
 
@@ -288,7 +290,8 @@ describe('IntegratedSessionRow', () => {
           />
         </UserContext.Provider>
       );
-      const badge = screen.getByText(/Very Easy/i) || screen.getByText(/very-easy/i);
+      const badge =
+        screen.getByText(/Very Easy/i) || screen.getByText(/very-easy/i);
       expect(badge).toBeInTheDocument();
     });
   });

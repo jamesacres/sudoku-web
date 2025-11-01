@@ -376,7 +376,7 @@ describe('DeleteAccountDialog', () => {
       jest.spyOn(console, 'error').mockImplementation(() => {});
       mockOnConfirm.mockRejectedValueOnce(new Error('Deletion failed'));
 
-      const { rerender } = render(
+      render(
         <DeleteAccountDialog
           isOpen={true}
           onClose={mockOnClose}

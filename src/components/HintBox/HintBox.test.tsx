@@ -191,7 +191,7 @@ describe('HintBox', () => {
 
   describe('state management', () => {
     it('should toggle hint visibility state', () => {
-      const { container, rerender } = render(
+      const { container } = render(
         <HintBox>
           <span>Hint text</span>
         </HintBox>

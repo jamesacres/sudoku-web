@@ -25,10 +25,13 @@ describe('useParties', () => {
   };
 
   const wrapper = ({ children }: { children: React.ReactNode }) => {
-    return React.createElement(PartiesContext.Provider, {
-      value: mockContextValue,
-      children,
-    });
+    return React.createElement(
+      PartiesContext.Provider,
+      {
+        value: mockContextValue,
+      },
+      children
+    );
   };
 
   it('should return all values and functions from PartiesContext', () => {

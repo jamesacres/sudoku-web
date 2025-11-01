@@ -6,7 +6,7 @@ import { Party, ServerStateResult } from '@/types/serverTypes';
 import { UserProfile } from '@/types/userProfile';
 import { UserSessions } from '@/types/userSessions';
 import { Puzzle } from '@/types/puzzle';
-import { ServerState, GameState } from '@/types/state';
+import { ServerState } from '@/types/state';
 import { FriendsLeaderboardScore } from './types';
 
 // Mock child components
@@ -118,13 +118,8 @@ const createParty = (
 });
 
 describe('Leaderboard', () => {
-  let mockCalculateUserScore: jest.Mock;
-  let mockGetUsernameFromParties: jest.Mock;
-
   beforeEach(() => {
-    mockCalculateUserScore = (
-      scoringUtils.calculateUserScore as jest.Mock
-    ).mockReturnValue({
+    (scoringUtils.calculateUserScore as jest.Mock).mockReturnValue({
       volumeScore: 100,
       dailyPuzzleScore: 50,
       bookPuzzleScore: 75,
@@ -142,9 +137,9 @@ describe('Leaderboard', () => {
         racingWins: 5,
       },
     });
-    mockGetUsernameFromParties = (
-      scoringUtils.getUsernameFromParties as jest.Mock
-    ).mockReturnValue('Friend Name');
+    (scoringUtils.getUsernameFromParties as jest.Mock).mockReturnValue(
+      'Friend Name'
+    );
   });
 
   it('should render leaderboard with data', () => {

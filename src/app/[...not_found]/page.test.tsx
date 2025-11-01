@@ -1,10 +1,8 @@
 // @ts-nocheck
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { notFound } from 'next/navigation';
-import NotFoundCatchAll, {
-  generateStaticParams,
-} from './page';
+import NotFoundCatchAll, { generateStaticParams } from './page';
 
 // Mock next/navigation
 jest.mock('next/navigation', () => ({
@@ -36,9 +34,7 @@ describe('NotFoundCatchAll', () => {
     });
 
     it('should return the result of notFound()', () => {
-      (notFound as jest.Mock).mockReturnValue(
-        <div>Not Found</div>
-      );
+      (notFound as jest.Mock).mockReturnValue(<div>Not Found</div>);
       render(<NotFoundCatchAll />);
       expect(notFound as jest.Mock).toHaveBeenCalled();
     });
@@ -152,9 +148,7 @@ describe('generateStaticParams', () => {
       const params = await generateStaticParams();
       expect(params).toBeDefined();
       expect(Array.isArray(params)).toBe(true);
-      expect(
-        typeof params === 'object' || Array.isArray(params)
-      ).toBe(true);
+      expect(typeof params === 'object' || Array.isArray(params)).toBe(true);
     });
 
     it('should have string values in not_found array', async () => {

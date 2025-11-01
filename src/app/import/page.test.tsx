@@ -1,7 +1,6 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import ImportPage from './page';
-import * as nextNavigation from 'next/navigation';
 
 // Mock dependencies
 jest.mock('next/navigation', () => ({
@@ -32,14 +31,11 @@ jest.mock('next/script', () => {
 
 jest.mock('@/components/SimpleSudoku', () => {
   return function MockSimpleSudoku({
-    final,
-    initial,
-    latest,
     transparent,
   }: {
-    final: any;
-    initial: any;
-    latest: any;
+    final?: any;
+    initial?: any;
+    latest?: any;
     transparent: boolean;
   }) {
     return (
@@ -51,7 +47,7 @@ jest.mock('@/components/SimpleSudoku', () => {
 });
 
 jest.mock('@/helpers/buildPuzzleUrl', () => ({
-  buildPuzzleUrl: jest.fn((initial, final, metadata) => {
+  buildPuzzleUrl: jest.fn((initial, final, _metadata) => {
     return `/puzzle?initial=${initial}&final=${final}`;
   }),
 }));
@@ -70,16 +66,8 @@ jest.mock('@/augmentedReality/Processor', () => {
 });
 
 describe('Import Page', () => {
-  const mockPush = jest.fn();
-  const mockReplace = jest.fn();
-
   beforeEach(() => {
     jest.clearAllMocks();
-
-    (nextNavigation.useRouter as jest.Mock).mockReturnValue({
-      push: mockPush,
-      replace: mockReplace,
-    });
 
     // Mock HTMLMediaElement methods
     HTMLVideoElement.prototype.play = jest.fn();

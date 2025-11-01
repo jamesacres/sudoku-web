@@ -2,15 +2,6 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import SocialProof from './SocialProof';
 
-// Mock motivational messages for predictable testing
-const mockMessages = [
-  'Your friends are waiting for a challenge',
-  'Who will you race against today?',
-  'Time to show your speed',
-  'Challenge accepted?',
-  'Race to the finish line',
-];
-
 describe('SocialProof', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -260,7 +251,6 @@ describe('SocialProof', () => {
       const { unmount } = render(<SocialProof />);
 
       await waitFor(() => {
-        const setIntervalCalls = jest.fn().mock.calls.length;
         unmount();
 
         // After unmount, clearing interval should have been called
@@ -497,7 +487,7 @@ describe('SocialProof', () => {
     });
 
     it('should handle component being hidden from DOM', async () => {
-      const { container, rerender } = render(
+      const { container } = render(
         <div style={{ display: 'none' }}>
           <SocialProof />
         </div>

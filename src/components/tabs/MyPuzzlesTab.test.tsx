@@ -247,7 +247,7 @@ describe('MyPuzzlesTab', () => {
         createMockSession('session-2', '2024-01-14T10:00:00Z'),
       ];
 
-      const { container } = render(<MyPuzzlesTab sessions={sessions} />);
+      render(<MyPuzzlesTab sessions={sessions} />);
 
       // IntegratedSessionRow is mocked to render divs, not li elements
       const sessionDivs = screen.getAllByTestId(/session-/);

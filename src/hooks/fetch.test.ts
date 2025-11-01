@@ -1,6 +1,6 @@
-import { renderHook, act, waitFor } from '@testing-library/react';
+import { renderHook, act } from '@testing-library/react';
 import { useFetch } from './fetch';
-import FetchProvider, { State } from '@/providers/FetchProvider';
+import FetchProvider from '@/providers/FetchProvider';
 import React, { ReactNode } from 'react';
 
 // Mock global fetch
@@ -10,11 +10,11 @@ describe('useFetch', () => {
   const mockFetch = global.fetch as jest.Mock;
 
   const createWrapper = () => {
-    return ({ children }: { children: ReactNode }) => {
-      return React.createElement(FetchProvider, {
-        children,
-      });
+    const Wrapper = ({ children }: { children: ReactNode }) => {
+      return React.createElement(FetchProvider, null, children);
     };
+    Wrapper.displayName = 'TestWrapper';
+    return Wrapper;
   };
 
   beforeEach(() => {
@@ -38,7 +38,6 @@ describe('useFetch', () => {
   });
 
   it('should logout and clear state', async () => {
-    const user = { sub: 'user1', name: 'Test User' };
     const { result } = renderHook(() => useFetch(), {
       wrapper: createWrapper(),
     });

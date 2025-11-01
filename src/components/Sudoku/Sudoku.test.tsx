@@ -100,7 +100,7 @@ jest.mock('@/helpers/cheatDetection', () => ({
 }));
 
 jest.mock('@/helpers/puzzleTextToPuzzle', () => ({
-  puzzleTextToPuzzle: jest.fn((text) => Array(81).fill(0)),
+  puzzleTextToPuzzle: jest.fn((_text) => Array(81).fill(0)),
   puzzleToPuzzleText: jest.fn(() => '0'.repeat(81)),
 }));
 
@@ -109,7 +109,9 @@ jest.mock('@/helpers/checkAnswer', () => ({
 }));
 
 jest.mock('@/helpers/calculateId', () => ({
-  calculateBoxId: jest.fn((row, col) => Math.floor(row / 3) * 3 + Math.floor(col / 3)),
+  calculateBoxId: jest.fn(
+    (row, col) => Math.floor(row / 3) * 3 + Math.floor(col / 3)
+  ),
 }));
 
 jest.mock('@/helpers/calculateSeconds', () => ({
@@ -140,7 +142,9 @@ describe('Sudoku', () => {
     selectedCellHasNotes: false,
     isUndoDisabled: true,
     isRedoDisabled: true,
-    validation: Array(9).fill(null).map(() => Array(9).fill(null)),
+    validation: Array(9)
+      .fill(null)
+      .map(() => Array(9).fill(null)),
     validateCell: jest.fn(),
     validateGrid: jest.fn(),
     timer: 0,
