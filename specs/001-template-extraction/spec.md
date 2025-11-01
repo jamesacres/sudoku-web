@@ -19,7 +19,7 @@ As a developer building new apps on the Sudoku platform, I need a generic templa
 **Acceptance Scenarios**:
 
 1. **Given** a developer wants to start a new app, **When** they clone the template repository and run setup, **Then** they have a working app with 3-tab navigation, authentication, user profile, and theme switching with zero Sudoku code present
-2. **Given** a template app is running, **When** a user logs in via email/password, **Then** the session is created, persisted, and user profile is displayed
+2. **Given** a template app is running, **When** a user logs in, **Then** the session is created, persisted, and user profile is displayed
 3. **Given** a template app is running, **When** a user toggles dark/light theme, **Then** the preference is saved and restored on app restart
 4. **Given** the template is built, **When** it compiles for web/iOS/Android/Electron targets, **Then** all platforms build successfully without errors
 
@@ -73,7 +73,7 @@ As a Sudoku app maintainer, I need to refactor the Sudoku codebase to depend on 
 **Template Repository Requirements**
 
 - **FR-001**: Template MUST provide a working 3-tab navigation structure (Home, Sessions, Friends) that is visually consistent and extensible
-- **FR-002**: Template MUST implement a complete authentication system with email/password login, session management, and token refresh
+- **FR-002**: Template MUST provide a complete authentication system with session management and token refresh (authentication method provided by backend)
 - **FR-003**: Template MUST provide user profile management including display name, avatar, and user preferences
 - **FR-004**: Template MUST implement a theme system supporting light/dark mode with persistence and system preference detection
 - **FR-005**: Template MUST provide a generic Session<T> type with TypeScript generics to enable app-specific state extensions

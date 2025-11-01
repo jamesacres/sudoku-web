@@ -4,6 +4,8 @@
 
 **Input**: Feature specification from `/specs/002-turborepo-monorepo-setup/spec.md`
 
+⚠️ **Combined Features**: This feature (002) and Feature 001 (Template Extraction) are executed together for maximum efficiency. **[See `tasks.md` in this directory for the complete combined task list (181 tasks across 11 phases)](./tasks.md).**
+
 ## Summary
 
 Restructure the current sudoku-web repository into a Turborepo monorepo with two application workspaces (`/apps/template/` and `/apps/sudoku/`) and shared packages (`/packages/`). This enables efficient build caching, parallel task execution, and clear separation of concerns. The monorepo structure will support the subsequent template extraction (feature 001) and future multi-app platforms.
