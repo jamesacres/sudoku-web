@@ -4,6 +4,7 @@
 **Created**: 2025-11-01
 **Status**: Draft
 **Input**: User description: "read TEMPLATE_REFACTOR_SPEC.md and use this to build the spec"
+**Dependencies**: Requires `002-turborepo-monorepo-setup` to be completed first. Template extraction should occur within a monorepo structure to manage both template and Sudoku apps efficiently.
 
 ## User Scenarios & Testing
 
@@ -71,7 +72,7 @@ As a Sudoku app maintainer, I need to refactor the Sudoku codebase to depend on 
 
 **Template Repository Requirements**
 
-- **FR-001**: Template MUST provide a working 3-tab navigation structure (Home, Sessions, Profile) that is visually consistent and extensible
+- **FR-001**: Template MUST provide a working 3-tab navigation structure (Home, Sessions, Friends) that is visually consistent and extensible
 - **FR-002**: Template MUST implement a complete authentication system with email/password login, session management, and token refresh
 - **FR-003**: Template MUST provide user profile management including display name, avatar, and user preferences
 - **FR-004**: Template MUST implement a theme system supporting light/dark mode with persistence and system preference detection
@@ -136,7 +137,7 @@ As a Sudoku app maintainer, I need to refactor the Sudoku codebase to depend on 
 
 4. **RevenueCat Integration Is Non-App-Specific**: The RevenueCat setup can be parameterized via configuration (app IDs, entitlements) making it reusable across template and Sudoku without core logic changes.
 
-5. **Tab Structure Is Adequate**: The 3-tab structure (Home, Sessions, Profile) is sufficient for template and doesn't require dynamic tab registration beyond configuration.
+5. **Tab Structure Is Adequate**: The 3-tab structure (Home, Sessions, Friends) is sufficient for template and doesn't require dynamic tab registration beyond configuration.
 
 6. **Build Scripts Are Portable**: Existing npm scripts and build configurations can be adapted to work in both template and Sudoku without major restructuring.
 

@@ -21,6 +21,7 @@
 - [x] Edge cases are identified
 - [x] Scope is clearly bounded
 - [x] Dependencies and assumptions identified
+- [x] Prerequisite features clearly documented
 
 ## Feature Readiness
 
@@ -66,6 +67,8 @@ All checklist items have passed validation. The specification is clear, complete
 The specification is **ready for planning phase** (`/speckit.plan`).
 
 ## Notes
+
+- **Prerequisite dependency**: This feature requires `002-turborepo-monorepo-setup` to be completed first. The template should be extracted into the monorepo structure (`/apps/template/`) rather than as a separate repository, enabling efficient dependency management, shared caching, and clear workspace boundaries. The execution order is: 002 (setup monorepo) → 001 (extract template into `/apps/template/`).
 
 - **Why no clarification questions?** The source document (TEMPLATE_REFACTOR_SPEC.md) provided comprehensive detail on architecture, migration phases, and extension points. Spec extracts this into a user-centered format with clear success criteria and testable requirements. The 6 assumptions in "Assumptions" section document decisions that could be asked but have industry-standard defaults.
 

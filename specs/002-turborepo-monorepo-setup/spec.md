@@ -4,6 +4,7 @@
 **Created**: 2025-11-01
 **Status**: Draft
 **Input**: User description: "we likely want to introduce turborepo to import the generic template from a sub directory?"
+**Prerequisite For**: `001-template-extraction` depends on this feature. Turborepo monorepo structure must be established before extracting and organizing the template in `/apps/template/`.
 
 ## User Scenarios & Testing
 
