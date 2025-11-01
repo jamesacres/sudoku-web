@@ -4,6 +4,7 @@ import { Dialog, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
 import { Smartphone, Download } from 'react-feather';
 import { isCapacitor } from '@/helpers/capacitor';
+import Image from 'next/image';
 
 interface AppDownloadModalProps {
   isOpen: boolean;
@@ -119,10 +120,12 @@ export const AppDownloadModal = ({
                       onClick={handleAppStoreClick}
                       className="block w-full cursor-pointer transition-transform hover:scale-105 active:scale-95"
                     >
-                      <img
+                      <Image
                         src="/badges/download-on-app-store.svg"
                         alt="Download on the App Store"
                         className="mx-auto h-14 w-auto"
+                        width={168}
+                        height={56}
                       />
                     </button>
                   )}
@@ -133,10 +136,12 @@ export const AppDownloadModal = ({
                       onClick={handleGooglePlayClick}
                       className="block w-full cursor-pointer transition-transform hover:scale-105 active:scale-95"
                     >
-                      <img
+                      <Image
                         src="/badges/get-it-on-google-play.svg"
                         alt="Get it on Google Play"
                         className="mx-auto h-14 w-auto"
+                        width={168}
+                        height={56}
                       />
                     </button>
                   )}

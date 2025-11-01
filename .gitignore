@@ -39,5 +39,6 @@ next-env.d.ts
 /app
 
 .serena
+.claude
 
 android/app/release

@@ -63,7 +63,10 @@ const ActivityWidget = ({ sessions }: ActivityWidgetProps) => {
       <div className="flex gap-6">
         <div className="flex items-center space-x-2">
           <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/50">
-            <Calendar className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+            <Calendar
+              className="h-4 w-4 text-blue-600 dark:text-blue-400"
+              data-testid="calendar-icon"
+            />
           </div>
           <div>
             <p className="text-lg font-bold text-gray-800 dark:text-white">
@@ -77,7 +80,10 @@ const ActivityWidget = ({ sessions }: ActivityWidgetProps) => {
 
         <div className="flex items-center space-x-2">
           <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900/50">
-            <Activity className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+            <Activity
+              className="h-4 w-4 text-orange-600 dark:text-orange-400"
+              data-testid="activity-icon"
+            />
           </div>
           <div>
             <p className="text-lg font-bold text-gray-800 dark:text-white">

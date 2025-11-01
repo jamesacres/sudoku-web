@@ -90,6 +90,31 @@ export function ThemeColorProvider({
     if (!mounted) return;
 
     const root = document.documentElement;
+
+    // Remove all existing theme color classes
+    root.classList.remove(
+      'theme-blue',
+      'theme-red',
+      'theme-green',
+      'theme-purple',
+      'theme-amber',
+      'theme-cyan',
+      'theme-pink',
+      'theme-indigo',
+      'theme-orange',
+      'theme-teal',
+      'theme-slate',
+      'theme-rose',
+      'theme-emerald',
+      'theme-sky',
+      'theme-violet',
+      'theme-lime',
+      'theme-fuchsia',
+      'theme-yellow',
+      'theme-stone',
+      'theme-zinc'
+    );
+
     root.classList.add(`theme-${themeColor}`);
 
     return () => {
