@@ -2,7 +2,7 @@ import type { Cell } from './Cell';
 
 // Sudoku grid types
 export interface SudokuGrid {
-  cells: Cell[];                 // 81 cells
+  cells: Cell[]; // 81 cells
   difficulty: 'easy' | 'medium' | 'hard' | 'expert';
 }
 

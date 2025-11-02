@@ -50,10 +50,7 @@ interface AuthProviderProps {
   useFetch: () => AuthFetchHook;
 }
 
-const AuthProvider: React.FC<AuthProviderProps> = ({
-  children,
-  useFetch,
-}) => {
+const AuthProvider: React.FC<AuthProviderProps> = ({ children, useFetch }) => {
   const [user, setUser] = React.useState<UserProfile | undefined>(undefined);
   const { fetch, getUser, logout, restoreState } = useFetch();
   const [isLoggingIn, setIsLoggingIn] = React.useState(false);

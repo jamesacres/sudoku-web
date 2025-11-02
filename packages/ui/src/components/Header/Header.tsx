@@ -26,11 +26,7 @@ const Header = ({
         <div className="block flex grow items-center">
           <div className="grow text-center font-medium">{centerContent}</div>
           <div className="flex h-12 items-center">
-            {rightContent || (
-              <>
-                {showThemeControls && <ThemeControls />}
-              </>
-            )}
+            {rightContent || <>{showThemeControls && <ThemeControls />}</>}
           </div>
         </div>
       </nav>

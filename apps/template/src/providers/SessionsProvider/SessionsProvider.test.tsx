@@ -904,7 +904,9 @@ describe('SessionsProvider', () => {
       ]);
 
       (
-        jest.mocked(require('../../hooks/serverStorage').useServerStorage) as any
+        jest.mocked(
+          require('../../hooks/serverStorage').useServerStorage
+        ) as any
       ).mockReturnValue({
         listValues: mockListValues,
       });
@@ -938,7 +940,9 @@ describe('SessionsProvider', () => {
       const mockListValues = jest.fn().mockResolvedValue([]);
 
       (
-        jest.mocked(require('../../hooks/serverStorage').useServerStorage) as any
+        jest.mocked(
+          require('../../hooks/serverStorage').useServerStorage
+        ) as any
       ).mockReturnValue({
         listValues: mockListValues,
       });

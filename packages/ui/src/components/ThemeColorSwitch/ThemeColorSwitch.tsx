@@ -135,7 +135,7 @@ interface ThemeColorSwitchProps {
 const ThemeColorSwitch = ({
   isSubscribed = true,
   onPremiumColorClick,
-  showRainbowAnimation = true
+  showRainbowAnimation = true,
 }: ThemeColorSwitchProps) => {
   const { themeColor, setThemeColor } = useThemeColor();
   const [isOpen, setIsOpen] = useState(false);

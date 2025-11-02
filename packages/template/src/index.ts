@@ -1,25 +1,86 @@
-// @sudoku-web/template - Template/Party/Session Package
-// Public API exports
+/**
+ * @sudoku-web/template - Template/Party/Session Package
+ *
+ * Generic collaboration and application infrastructure package - game-agnostic
+ * party/session management that can be used by any collaborative application.
+ *
+ * Provides party management, session tracking, member invitations, multi-platform
+ * provider infrastructure, and application state management.
+ *
+ * @packageDocumentation
+ */
 
 // ===== Components =====
+/**
+ * UI components for error handling and app promotion
+ * - ErrorBoundary: React error boundary component
+ * - AppDownloadModal: Modal promoting mobile app downloads
+ * - GlobalErrorHandler: Global error handler for uncaught errors
+ */
 export * from './components';
 
 // ===== Hooks =====
+/**
+ * React hooks for common functionality
+ * - useOnline: Detect online/offline network status
+ * - useLocalStorage: Persistent local storage with React state
+ * - useWakeLock: Prevent device from sleeping
+ * - useFetch: Authenticated API requests with error handling
+ * - useDocumentVisibility: Track document visibility state (tab focus)
+ * - useServerStorage: Sync state with server storage
+ */
 export * from './hooks';
 
 // ===== Providers =====
+/**
+ * React context providers for application infrastructure
+ * - CapacitorProvider: Capacitor platform initialization
+ * - RevenueCatProvider: RevenueCat subscription integration
+ * - UserProvider: User profile and authentication state
+ * - FetchProvider: Authenticated API request handling
+ * - ThemeColorProvider: Theme color management
+ * - GlobalStateProvider: Global application state
+ * - PartyProvider: Party/group management and collaboration
+ */
 export * from './providers';
 
 // ===== Types =====
+/**
+ * TypeScript type definitions
+ * - Party: Party/group information
+ * - PartyMember: Party member information
+ * - PartyInvitation: Party invitation details
+ * - Session<T>: Generic session with custom state type
+ * - CollaborativeSession: Session for collaborative activities
+ * - Server response types (SessionResponse, PartyResponse, etc.)
+ */
 export * from './types';
 
 // ===== Utilities =====
+/**
+ * Utility functions
+ * - dailyActionCounter: Track and limit daily actions
+ * - playerColors: Assign consistent colors to players
+ */
 export * from './utils';
 
 // ===== Helpers =====
+/**
+ * Helper functions (re-exported from other packages)
+ * - calculateSeconds: Time calculations
+ * - formatSeconds: Format seconds as MM:SS
+ * - isCapacitor: Platform detection
+ * - isElectron: Platform detection
+ * - pkce: OAuth PKCE utilities
+ */
 export * from './helpers';
 
 // ===== Config =====
+/**
+ * Configuration constants
+ * - dailyLimits: Daily action limits configuration
+ * - premiumFeatures: Premium feature configuration
+ */
 export * from './config';
 
 // Note: We don't re-export from @sudoku-web/auth, @sudoku-web/ui, or @sudoku-web/shared here

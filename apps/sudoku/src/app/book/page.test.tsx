@@ -44,7 +44,7 @@ jest.mock('@/hooks/useParties', () => ({
   useParties: jest.fn(),
 }));
 
-jest.mock("@sudoku-web/template", () => ({
+jest.mock('@sudoku-web/template', () => ({
   useSessions: jest.fn(() => ({
     sessions: [],
     isLoading: false,

@@ -283,12 +283,16 @@ describe('Header', () => {
     });
 
     it('should allow custom leftContent', async () => {
-      const { getByText } = render(<Header leftContent={<div>Custom Left</div>} />);
+      const { getByText } = render(
+        <Header leftContent={<div>Custom Left</div>} />
+      );
       expect(getByText('Custom Left')).toBeInTheDocument();
     });
 
     it('should allow custom rightContent', async () => {
-      const { getByText } = render(<Header rightContent={<div>Custom Right</div>} />);
+      const { getByText } = render(
+        <Header rightContent={<div>Custom Right</div>} />
+      );
       expect(getByText('Custom Right')).toBeInTheDocument();
     });
   });

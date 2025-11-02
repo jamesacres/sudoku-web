@@ -10,7 +10,11 @@ interface HeaderBackProps {
   backText?: string;
 }
 
-const HeaderBack = ({ appName, homeTab, backText = 'Back' }: HeaderBackProps) => {
+const HeaderBack = ({
+  appName,
+  homeTab,
+  backText = 'Back',
+}: HeaderBackProps) => {
   const router = useRouter();
   const pathname = usePathname();
   return pathname === '/' && appName ? (

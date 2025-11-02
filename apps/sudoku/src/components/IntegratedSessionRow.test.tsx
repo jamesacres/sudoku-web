@@ -30,7 +30,7 @@ jest.mock('./SimpleSudoku', () => {
   };
 });
 
-jest.mock("@sudoku-web/template", () => ({
+jest.mock('@sudoku-web/template', () => ({
   useSessions: jest.fn(),
   calculateSeconds: jest.fn(() => 120),
   UserContext: React.createContext({}),

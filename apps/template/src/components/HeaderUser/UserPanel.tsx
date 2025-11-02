@@ -7,7 +7,7 @@ import { RevenueCatContext } from '../../providers/RevenueCatProvider';
 
 // TODO: Define useServerStorage or import from correct location - creating stub for now
 const useServerStorage = () => ({
-  deleteAccount: async () => false
+  deleteAccount: async () => false,
 });
 import { Plus, LogOut, X } from 'react-feather';
 

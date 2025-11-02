@@ -10,15 +10,17 @@ import React from 'react';
 
 describe('useServerStorage', () => {
   let mockFetch: jest.Mock;
-  let mockGetUser: jest.Mock;
+  let _mockGetUser: jest.Mock;
   let mockLogout: jest.Mock;
-  let mockRestoreState: jest.Mock;
+  let _mockRestoreState: jest.Mock;
   let mockStateRef: React.MutableRefObject<any>;
   let mockSetState: jest.Mock;
 
-  const wrapper = ({ children }: { children: React.ReactNode }) => {
+  const Wrapper = ({ children }: { children: React.ReactNode }) => {
     // Create GlobalStateContext value
-    const [globalState, setGlobalState] = React.useState({ isForceOffline: false });
+    const [globalState, setGlobalState] = React.useState({
+      isForceOffline: false,
+    });
 
     // Provide UserContext
     const userContextElement = React.createElement(
@@ -44,9 +46,9 @@ describe('useServerStorage', () => {
 
   beforeEach(() => {
     mockFetch = jest.fn();
-    mockGetUser = jest.fn(() => ({ sub: 'user123' }));
+    _mockGetUser = jest.fn(() => ({ sub: 'user123' }));
     mockLogout = jest.fn();
-    mockRestoreState = jest.fn();
+    _mockRestoreState = jest.fn();
     mockSetState = jest.fn();
     mockStateRef = {
       current: {
@@ -56,7 +58,7 @@ describe('useServerStorage', () => {
         refreshExpiry: new Date(Date.now() + 86400000),
         user: { sub: 'user123' },
         userExpiry: new Date(Date.now() + 86400000),
-      }
+      },
     };
 
     // Mock global fetch to intercept API calls
@@ -76,7 +78,7 @@ describe('useServerStorage', () => {
 
     const { result } = renderHook(
       () => useServerStorage({ type: StateType.PUZZLE, id: '123' }),
-      { wrapper }
+      { wrapper: Wrapper }
     );
 
     let value: any;
@@ -92,7 +94,7 @@ describe('useServerStorage', () => {
     mockFetch.mockResolvedValue({ ok: true, json: () => Promise.resolve({}) });
     const { result } = renderHook(
       () => useServerStorage({ type: StateType.PUZZLE, id: '123' }),
-      { wrapper }
+      { wrapper: Wrapper }
     );
 
     await act(async () => {
@@ -125,7 +127,9 @@ describe('useServerStorage', () => {
       json: () => Promise.resolve(mockMemberResponse),
     });
 
-    const { result } = renderHook(() => useServerStorage(), { wrapper });
+    const { result } = renderHook(() => useServerStorage(), {
+      wrapper: Wrapper,
+    });
 
     let parties: any;
     await act(async () => {
@@ -149,7 +153,9 @@ describe('useServerStorage', () => {
       ok: true,
       json: () => Promise.resolve(mockPartyResponse),
     });
-    const { result } = renderHook(() => useServerStorage(), { wrapper });
+    const { result } = renderHook(() => useServerStorage(), {
+      wrapper: Wrapper,
+    });
 
     let party: any;
     await act(async () => {
@@ -167,7 +173,9 @@ describe('useServerStorage', () => {
 
   it('deleteAccount should send a DELETE request', async () => {
     mockFetch.mockResolvedValue({ ok: true });
-    const { result } = renderHook(() => useServerStorage(), { wrapper });
+    const { result } = renderHook(() => useServerStorage(), {
+      wrapper: Wrapper,
+    });
 
     let success;
     await act(async () => {
@@ -182,7 +190,9 @@ describe('useServerStorage', () => {
 
   it('updateParty should send a PATCH request', async () => {
     mockFetch.mockResolvedValue({ ok: true, json: () => Promise.resolve({}) });
-    const { result } = renderHook(() => useServerStorage(), { wrapper });
+    const { result } = renderHook(() => useServerStorage(), {
+      wrapper: Wrapper,
+    });
 
     await act(async () => {
       await result.current.updateParty('party1', { partyName: 'Updated' });
@@ -195,7 +205,9 @@ describe('useServerStorage', () => {
 
   it('leaveParty should send a DELETE request', async () => {
     mockFetch.mockResolvedValue({ ok: true });
-    const { result } = renderHook(() => useServerStorage(), { wrapper });
+    const { result } = renderHook(() => useServerStorage(), {
+      wrapper: Wrapper,
+    });
 
     let success;
     await act(async () => {
@@ -210,7 +222,9 @@ describe('useServerStorage', () => {
 
   it('removeMember should send a DELETE request', async () => {
     mockFetch.mockResolvedValue({ ok: true });
-    const { result } = renderHook(() => useServerStorage(), { wrapper });
+    const { result } = renderHook(() => useServerStorage(), {
+      wrapper: Wrapper,
+    });
 
     let success;
     await act(async () => {
@@ -225,7 +239,9 @@ describe('useServerStorage', () => {
 
   it('deleteParty should send a DELETE request', async () => {
     mockFetch.mockResolvedValue({ ok: true });
-    const { result } = renderHook(() => useServerStorage(), { wrapper });
+    const { result } = renderHook(() => useServerStorage(), {
+      wrapper: Wrapper,
+    });
 
     let success;
     await act(async () => {
@@ -258,7 +274,7 @@ describe('useServerStorage', () => {
 
     const { result } = renderHook(
       () => useServerStorage({ type: StateType.PUZZLE }),
-      { wrapper }
+      { wrapper: Wrapper }
     );
 
     let values: any;
@@ -281,7 +297,7 @@ describe('useServerStorage', () => {
 
     const { result } = renderHook(
       () => useServerStorage({ type: StateType.PUZZLE, id: '123' }),
-      { wrapper }
+      { wrapper: Wrapper }
     );
 
     // Should still provide methods even when offline
@@ -300,7 +316,7 @@ describe('useServerStorage', () => {
 
     const { result } = renderHook(
       () => useServerStorage({ type: StateType.PUZZLE, id: '123' }),
-      { wrapper }
+      { wrapper: Wrapper }
     );
 
     await act(async () => {
@@ -324,7 +340,7 @@ describe('useServerStorage', () => {
 
     const { result } = renderHook(
       () => useServerStorage({ type: StateType.PUZZLE, id: '123' }),
-      { wrapper }
+      { wrapper: Wrapper }
     );
 
     await act(async () => {
@@ -343,7 +359,7 @@ describe('useServerStorage', () => {
 
     const { result } = renderHook(
       () => useServerStorage({ type: StateType.PUZZLE, id: 'puzzle123' }),
-      { wrapper }
+      { wrapper: Wrapper }
     );
 
     await act(async () => {
@@ -361,7 +377,9 @@ describe('useServerStorage', () => {
       json: () => Promise.resolve({}),
     });
 
-    const { result } = renderHook(() => useServerStorage(), { wrapper });
+    const { result } = renderHook(() => useServerStorage(), {
+      wrapper: Wrapper,
+    });
 
     await act(async () => {
       await result.current.createParty({
@@ -386,7 +404,7 @@ describe('useServerStorage', () => {
 
     const { result } = renderHook(
       () => useServerStorage({ type: StateType.PUZZLE, id: '123' }),
-      { wrapper }
+      { wrapper: Wrapper }
     );
 
     let value: any;
@@ -406,7 +424,7 @@ describe('useServerStorage', () => {
 
     const { result } = renderHook(
       () => useServerStorage({ type: StateType.PUZZLE, id: '123' }),
-      { wrapper }
+      { wrapper: Wrapper }
     );
 
     await act(async () => {
@@ -424,7 +442,7 @@ describe('useServerStorage', () => {
 
     const { result } = renderHook(
       () => useServerStorage({ type: StateType.PUZZLE }),
-      { wrapper }
+      { wrapper: Wrapper }
     );
 
     await act(async () => {

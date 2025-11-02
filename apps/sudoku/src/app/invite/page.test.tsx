@@ -24,7 +24,7 @@ jest.mock('next/image', () => ({
     return <img {...rest} />;
   },
 }));
-jest.mock("@sudoku-web/template", () => ({
+jest.mock('@sudoku-web/template', () => ({
   useServerStorage: jest.fn(),
   UserContext: React.createContext({}),
   RevenueCatContext: React.createContext({}),

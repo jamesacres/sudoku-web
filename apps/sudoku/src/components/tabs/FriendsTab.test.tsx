@@ -20,7 +20,7 @@ jest.mock('../leaderboard/Leaderboard', () => ({
   __esModule: true,
   default: () => <div data-testid="leaderboard" />,
 }));
-jest.mock("@sudoku-web/template");
+jest.mock('@sudoku-web/template');
 
 const mockUseSessions = useSessions as jest.Mock;
 

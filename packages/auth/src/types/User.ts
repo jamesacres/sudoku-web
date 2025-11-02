@@ -6,11 +6,11 @@ export interface UserPreferences {
 }
 
 export interface User {
-  sub: string;                    // Unique identifier (from OAuth provider)
-  email: string;                  // User email
-  name?: string;                  // User display name
-  profileImage?: string;          // Avatar/profile picture URL
-  preferences?: UserPreferences;  // User settings
-  createdAt: Date;               // Account creation time
-  updatedAt: Date;               // Last profile update
+  sub: string; // Unique identifier (from OAuth provider)
+  email: string; // User email
+  name?: string; // User display name
+  profileImage?: string; // Avatar/profile picture URL
+  preferences?: UserPreferences; // User settings
+  createdAt: Date; // Account creation time
+  updatedAt: Date; // Last profile update
 }

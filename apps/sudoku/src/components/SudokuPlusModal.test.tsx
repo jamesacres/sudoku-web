@@ -7,7 +7,11 @@ import { PREMIUM_FEATURES } from '@sudoku-web/template';
 // Mock dependencies
 jest.mock('@sudoku-web/template', () => ({
   RevenueCatContext: React.createContext({}),
-  SubscriptionContext: { UNDO: 'undo', CHECK_GRID: 'check_grid', REVEAL: 'reveal' },
+  SubscriptionContext: {
+    UNDO: 'undo',
+    CHECK_GRID: 'check_grid',
+    REVEAL: 'reveal',
+  },
   PREMIUM_FEATURES: [
     {
       title: '🏁 Unlimited play and race',
@@ -19,7 +23,8 @@ jest.mock('@sudoku-web/template', () => ({
     },
     {
       title: 'Racing team management',
-      description: 'Create large parties up to 15 people, and remove members from your team.',
+      description:
+        'Create large parties up to 15 people, and remove members from your team.',
     },
     {
       title: 'All themes unlocked',

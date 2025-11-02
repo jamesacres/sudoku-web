@@ -22,17 +22,21 @@ body {
   --breakpoint-xl: 90rem;
 }
 
-/* Font families for book covers */
+/* Font families for book covers - using system fonts as fallback */
 .font-orbitron {
-  font-family: 'Orbitron', var(--font-orbitron), 'Arial Black', sans-serif;
+  font-family: 'Arial Black', 'Arial', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.05em;
 }
 
 .font-pacifico {
-  font-family: 'Pacifico', var(--font-pacifico), cursive;
+  font-family: 'Comic Sans MS', cursive;
+  font-weight: 400;
 }
 
 .font-creepster {
-  font-family: 'Creepster', fantasy;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-weight: 700;
 }
 
 /* Book cover animations */

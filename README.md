@@ -129,14 +129,47 @@ npm run type-check
 
 ## Package Documentation
 
-Each package has its own README with detailed API documentation:
+Each package has comprehensive documentation including API reference, integration guides, and examples:
 
-- [Auth Package](/home/node/sudoku-web/packages/auth/README.md) - Authentication & user management
-- [UI Package](/home/node/sudoku-web/packages/ui/README.md) - Shared UI components & theming
-- [Template Package](/home/node/sudoku-web/packages/template/README.md) - Collaborative features
-- [Sudoku Package](/home/node/sudoku-web/packages/sudoku/README.md) - Game-specific logic
-- [Shared Package](/home/node/sudoku-web/packages/shared/README.md) - Generic utilities
-- [Types Package](/home/node/sudoku-web/packages/types/README.md) - Shared TypeScript types
+### Core Packages
+
+- **[@sudoku-web/auth](./packages/auth/README.md)** - Authentication & user management
+  - OAuth 2.0 with PKCE flow
+  - Multi-platform support (web, iOS, Android, Electron)
+  - User profile management
+  - Session persistence
+
+- **[@sudoku-web/ui](./packages/ui/README.md)** - Shared UI components & theming
+  - Dark/light mode support
+  - Custom theme colors
+  - Responsive layout components
+  - Platform-specific adaptations
+
+- **[@sudoku-web/template](./packages/template/README.md)** - Collaborative features (game-agnostic)
+  - Party/group management
+  - Session tracking
+  - Member invitations
+  - Application infrastructure
+  - Premium features integration
+
+- **[@sudoku-web/sudoku](./packages/sudoku/README.md)** - Sudoku game logic & components
+  - Puzzle validation and solving
+  - Grid calculations
+  - Game state management
+  - Timer functionality
+  - Daily puzzle tracking
+
+### Utility Packages
+
+- **[@sudoku-web/shared](./packages/shared/README.md)** - Generic utilities
+  - Time formatting
+  - Platform detection
+  - Helper functions
+
+- **[@sudoku-web/types](./packages/types/README.md)** - Shared TypeScript types
+  - Type definitions
+  - Interfaces
+  - Enums
 
 ## Application Documentation
 
@@ -163,16 +196,30 @@ The sudoku app extends the template with:
 - Player rankings
 - Game history tracking
 
-## Developer Guide
+## Developer Resources
 
-For detailed information on:
+### Architecture & Design
+- **[ARCHITECTURE.md](./ARCHITECTURE.md)** - Detailed package architecture, dependency graph, and design decisions
+- **[MIGRATION.md](./MIGRATION.md)** - Migration guide from v1.x to v2.0.0
+
+### Package Documentation
+Each package includes:
+- Purpose and responsibility
+- Public API documentation
+- Integration guides with examples
+- Type definitions
+- Development commands
+
+### Specifications
+- **[specs/](./specs/)** - Feature specifications and documentation
+  - [003-modular-turborepo-architecture](./specs/003-modular-turborepo-architecture/) - Current architecture spec
+
+### Development Guides
 - Creating new packages
 - Understanding package dependencies
 - Importing from packages
 - Common development tasks
 - Troubleshooting
-
-See the [Quick Start Guide](/home/node/sudoku-web/QUICKSTART.md)
 
 ## Migration Guide
 

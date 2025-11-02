@@ -1,7 +1,10 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import HeaderUser from './HeaderUser';
-import { UserContext, UserContextInterface } from '../../providers/UserProvider';
+import {
+  UserContext,
+  UserContextInterface,
+} from '../../providers/UserProvider';
 import { UserProfile } from '../../types/userProfile';
 import { useOnline } from '../../hooks/online';
 

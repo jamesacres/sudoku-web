@@ -3,10 +3,7 @@ import { useContext } from 'react';
 import { RevenueCatContext } from '../../providers/RevenueCatProvider';
 import { SubscriptionContext } from '../../types/subscriptionContext';
 import { Star, CheckCircle, Lock } from 'react-feather';
-// TODO: import { PREMIUM_FEATURES } from '../../config/premiumFeatures'; // File not yet migrated from sudoku app
-
-// TODO: Define PREMIUM_FEATURES or import from correct location - creating stub for now
-const PREMIUM_FEATURES: Array<{ title: string; description: string; icon: any }> = [];
+import { PREMIUM_FEATURES } from '../../config/premiumFeatures';
 
 interface PremiumFeaturesProps {
   className?: string;

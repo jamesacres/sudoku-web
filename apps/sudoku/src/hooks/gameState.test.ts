@@ -18,7 +18,7 @@ jest.mock('@sudoku-web/template', () => ({
     patchFriendSessions: jest.fn(),
   }),
   StateType: { TIMER: 'timer', SERVER: 'server' },
-  splitCellId: jest.fn((cellId: string) => ({
+  splitCellId: jest.fn((_cellId: string) => ({
     box: { x: 0, y: 0 },
     cell: { x: 0, y: 0 },
   })),

@@ -26,7 +26,8 @@ describe('useTimer', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.useFakeTimers();
-    mockUseDocumentVisibility = require('@sudoku-web/template').useDocumentVisibility;
+    mockUseDocumentVisibility =
+      require('@sudoku-web/template').useDocumentVisibility;
     mockUseDocumentVisibility.mockReturnValue(false);
   });
 

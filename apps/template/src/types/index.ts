@@ -25,7 +25,11 @@ export type {
   SudokuBookOfTheMonth,
   SudokuBookOfTheMonthResponse,
 } from './serverTypes';
-export { Difficulty, BookPuzzleDifficulty, EntitlementDuration } from './serverTypes';
+export {
+  Difficulty,
+  BookPuzzleDifficulty,
+  EntitlementDuration,
+} from './serverTypes';
 export type { Puzzle } from './puzzle';
 export type { Notes } from './notes';
 export type { UserSession } from './userSessions';

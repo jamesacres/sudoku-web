@@ -27,7 +27,9 @@ jest.mock('@sudoku-web/template', () => ({
   ),
   isCapacitor: jest.fn(() => false),
   CelebrationAnimation: () => <div data-testid="celebration">Celebration</div>,
-  calculateBoxId: jest.fn((row, col) => Math.floor(row / 3) * 3 + Math.floor(col / 3)),
+  calculateBoxId: jest.fn(
+    (row, col) => Math.floor(row / 3) * 3 + Math.floor(col / 3)
+  ),
   calculateSeconds: jest.fn(() => 120),
 }));
 jest.mock('@/hooks/useParties', () => ({

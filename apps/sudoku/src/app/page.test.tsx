@@ -40,7 +40,7 @@ jest.mock('@/hooks/useParties', () => ({
   })),
 }));
 
-jest.mock("@sudoku-web/template", () => ({
+jest.mock('@sudoku-web/template', () => ({
   Footer: function MockFooter({ children }: { children: React.ReactNode }) {
     return <footer data-testid="footer">{children}</footer>;
   },
