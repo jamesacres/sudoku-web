@@ -9,12 +9,6 @@ jest.mock('next/navigation', () => ({
   useSearchParams: jest.fn(),
 }));
 
-jest.mock('@/components/Footer', () => {
-  return function MockFooter({ children }: { children: React.ReactNode }) {
-    return <footer data-testid="footer">{children}</footer>;
-  };
-});
-
 jest.mock('@/components/tabs/MyPuzzlesTab', () => {
   return function MockMyPuzzlesTab() {
     return <div data-testid="my-puzzles-tab">My Puzzles Tab</div>;
@@ -33,32 +27,10 @@ jest.mock('@/components/ActivityWidget', () => {
   };
 });
 
-jest.mock('@/components/SocialProof/SocialProof', () => {
-  return function MockSocialProof() {
-    return <div data-testid="social-proof">Social Proof</div>;
-  };
-});
-
-jest.mock('@/components/PremiumFeatures', () => ({
-  PremiumFeatures: function MockPremiumFeatures() {
-    return <div data-testid="premium-features">Premium Features</div>;
-  },
-}));
-
 jest.mock('@/components/BookCovers', () => ({
   BookCover: function MockBookCover() {
     return <div data-testid="book-cover">Book Cover</div>;
   },
-}));
-
-jest.mock('@/hooks/online', () => ({
-  useOnline: jest.fn(),
-}));
-
-jest.mock('@/hooks/serverStorage', () => ({
-  useServerStorage: jest.fn(() => ({
-    getSudokuOfTheDay: jest.fn(),
-  })),
 }));
 
 jest.mock('@/hooks/useParties', () => ({
@@ -68,21 +40,33 @@ jest.mock('@/hooks/useParties', () => ({
   })),
 }));
 
-jest.mock('@/providers/SessionsProvider/SessionsProvider', () => ({
+jest.mock("@sudoku-web/template", () => ({
+  Footer: function MockFooter({ children }: { children: React.ReactNode }) {
+    return <footer data-testid="footer">{children}</footer>;
+  },
+  SocialProof: function MockSocialProof() {
+    return <div data-testid="social-proof">Social Proof</div>;
+  },
+  PremiumFeatures: function MockPremiumFeatures() {
+    return <div data-testid="premium-features">Premium Features</div>;
+  },
+  useOnline: jest.fn(),
+  useServerStorage: jest.fn(() => ({
+    getSudokuOfTheDay: jest.fn(),
+  })),
   useSessions: jest.fn(() => ({
     sessions: [],
     refetchSessions: jest.fn(),
     lazyLoadFriendSessions: jest.fn(),
     fetchFriendSessions: jest.fn(),
   })),
-}));
-
-jest.mock('@/providers/UserProvider', () => ({
   UserContext: React.createContext({
     user: null,
     loginRedirect: jest.fn(),
     isInitialised: true,
   }),
+  Difficulty: {},
+  Tab: { START_PUZZLE: 'start' },
 }));
 
 jest.mock('next/image', () => ({
@@ -341,10 +325,9 @@ describe('Home Page', () => {
 
   describe('Daily Streak calculation', () => {
     it('should display daily streak', () => {
-      const {
-        useSessions,
-      } = require('@/providers/SessionsProvider/SessionsProvider');
-      useSessions.mockReturnValue({
+      // Mock useSessions from @sudoku-web/template which is already mocked
+      const templateModule = require('@sudoku-web/template');
+      templateModule.useSessions.mockReturnValue({
         sessions: [
           { updatedAt: new Date().toISOString() },
           {

@@ -15,11 +15,20 @@ jest.mock('@/hooks/gameState');
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
 }));
-jest.mock('@/providers/SessionsProvider/SessionsProvider', () => ({
+jest.mock('@sudoku-web/template', () => ({
   useSessions: jest.fn(),
-}));
-jest.mock('@/hooks/useDrag', () => ({
   useDrag: jest.fn(() => ({})),
+  UserContext: React.createContext({}),
+  RevenueCatContext: React.createContext({}),
+  AppDownloadModal: () => (
+    <div data-testid="app-download-modal">
+      <button data-testid="close-modal">Close</button>
+    </div>
+  ),
+  isCapacitor: jest.fn(() => false),
+  CelebrationAnimation: () => <div data-testid="celebration">Celebration</div>,
+  calculateBoxId: jest.fn((row, col) => Math.floor(row / 3) * 3 + Math.floor(col / 3)),
+  calculateSeconds: jest.fn(() => 120),
 }));
 jest.mock('@/hooks/useParties', () => ({
   useParties: jest.fn(() => ({ parties: [] })),
@@ -58,9 +67,8 @@ jest.mock('../SidebarButton/SidebarButton', () => {
   };
 });
 
-jest.mock('../CelebrationAnimation', () => ({
-  CelebrationAnimation: () => <div data-testid="celebration">Celebration</div>,
-}));
+// CelebrationAnimation is now imported from @sudoku-web/template in the actual component
+// so it will be mocked by the @sudoku-web/template mock below
 
 jest.mock('../RaceTrack', () => ({
   RaceTrack: () => <div data-testid="race-track">Race Track</div>,
@@ -81,22 +89,8 @@ jest.mock('../RacingPromptModal/RacingPromptModal', () => {
   };
 });
 
-jest.mock('../AppDownloadModal/AppDownloadModal', () => {
-  return function DummyAppDownloadModal({ onClose }: any) {
-    return (
-      <div data-testid="app-download-modal">
-        <button onClick={onClose} data-testid="close-modal">
-          Close
-        </button>
-      </div>
-    );
-  };
-});
-
-jest.mock('@/helpers/capacitor', () => ({
-  isCapacitor: jest.fn(() => false),
-}));
-
+// Mocks for AppDownloadModal and isCapacitor are now in @sudoku-web/template mock above
+// Local helper mocks for sudoku app
 jest.mock('@/helpers/cheatDetection', () => ({
   isPuzzleCheated: jest.fn(() => false),
 }));
@@ -110,16 +104,6 @@ jest.mock('@/helpers/checkAnswer', () => ({
   isInitialCell: jest.fn(() => false),
 }));
 
-jest.mock('@/helpers/calculateId', () => ({
-  calculateBoxId: jest.fn(
-    (row, col) => Math.floor(row / 3) * 3 + Math.floor(col / 3)
-  ),
-}));
-
-jest.mock('@/helpers/calculateSeconds', () => ({
-  calculateSeconds: jest.fn(() => 120),
-}));
-
 jest.mock('@/helpers/buildPuzzleUrl', () => ({
   buildPuzzleUrl: jest.fn(() => '/puzzle?id=test'),
 }));
@@ -128,6 +112,9 @@ jest.mock('@/utils/dailyPuzzleCounter', () => ({
   addDailyPuzzleId: jest.fn(),
   getDailyPuzzleCount: jest.fn(() => 1),
 }));
+
+// These are provided by the @sudoku-web/template mock above:
+// calculateBoxId, calculateSeconds
 
 describe('Sudoku', () => {
   const mockGameState = {

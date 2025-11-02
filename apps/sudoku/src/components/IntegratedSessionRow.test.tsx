@@ -30,8 +30,10 @@ jest.mock('./SimpleSudoku', () => {
   };
 });
 
-jest.mock('@/providers/SessionsProvider/SessionsProvider', () => ({
+jest.mock("@sudoku-web/template", () => ({
   useSessions: jest.fn(),
+  calculateSeconds: jest.fn(() => 120),
+  UserContext: React.createContext({}),
 }));
 
 jest.mock('@/hooks/useParties', () => ({
@@ -53,10 +55,6 @@ jest.mock('@/helpers/calculateCompletionPercentage', () => ({
 
 jest.mock('@/helpers/cheatDetection', () => ({
   isPuzzleCheated: jest.fn(() => false),
-}));
-
-jest.mock('@/helpers/calculateSeconds', () => ({
-  calculateSeconds: jest.fn(() => 120),
 }));
 
 // Mock context

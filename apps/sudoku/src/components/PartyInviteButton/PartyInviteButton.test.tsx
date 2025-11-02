@@ -3,9 +3,9 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { PartyInviteButton } from './PartyInviteButton';
 import * as serverStorageModule from '@sudoku-web/template';
 
-jest.mock('@/hooks/serverStorage');
-jest.mock('../CopyButton/CopyButton', () => ({
+jest.mock('@sudoku-web/template', () => ({
   __esModule: true,
+  useServerStorage: jest.fn(),
   CopyButton: ({
     getText,
     partyName,

@@ -3,24 +3,30 @@
 import { renderHook, act } from '@testing-library/react';
 import { useTimer } from './timer';
 
-// Mock useDocumentVisibility
-const mockUseDocumentVisibility = jest.fn(() => false);
-jest.mock('./documentVisibility', () => ({
-  useDocumentVisibility: () => mockUseDocumentVisibility(),
-}));
-
-// Mock useLocalStorage
-jest.mock('./localStorage', () => ({
+// Mock template hooks (must be before imports to avoid hoisting issues)
+jest.mock('@sudoku-web/template', () => ({
+  useDocumentVisibility: jest.fn(() => false),
   useLocalStorage: jest.fn(() => ({
     getValue: jest.fn(() => undefined),
     saveValue: jest.fn(),
   })),
+  StateType: { TIMER: 'timer' },
+  calculateSeconds: jest.fn((timer) => {
+    // Preserve the timer's seconds value if it exists (for session restoration)
+    if (timer && typeof timer === 'object' && 'seconds' in timer) {
+      return timer.seconds;
+    }
+    return 0;
+  }),
 }));
 
 describe('useTimer', () => {
+  let mockUseDocumentVisibility: any;
+
   beforeEach(() => {
     jest.clearAllMocks();
     jest.useFakeTimers();
+    mockUseDocumentVisibility = require('@sudoku-web/template').useDocumentVisibility;
     mockUseDocumentVisibility.mockReturnValue(false);
   });
 

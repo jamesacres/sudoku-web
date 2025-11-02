@@ -4,12 +4,34 @@ import SudokuPlusModal from './SudokuPlusModal';
 import { RevenueCatContext } from '@sudoku-web/template';
 import { PREMIUM_FEATURES } from '@sudoku-web/template';
 
-// Mock the helper functions
-jest.mock('@/helpers/capacitor', () => ({
+// Mock dependencies
+jest.mock('@sudoku-web/template', () => ({
+  RevenueCatContext: React.createContext({}),
+  SubscriptionContext: { UNDO: 'undo', CHECK_GRID: 'check_grid', REVEAL: 'reveal' },
+  PREMIUM_FEATURES: [
+    {
+      title: '🏁 Unlimited play and race',
+      description: 'Race friends in real-time more than once a day',
+    },
+    {
+      title: 'Create and join multiple racing teams',
+      description: 'Host private competitions with friends and family',
+    },
+    {
+      title: 'Racing team management',
+      description: 'Create large parties up to 15 people, and remove members from your team.',
+    },
+    {
+      title: 'All themes unlocked',
+      description: 'Personalise your racing experience',
+    },
+    {
+      title: 'Unlimited undo, check and reveal',
+      description: 'Remove daily undo, check and reveal limits',
+    },
+  ],
+  DAILY_LIMITS: { UNDO: 5, CHECK_GRID: 5, PUZZLE: 1 },
   isCapacitor: jest.fn(() => false),
-}));
-
-jest.mock('@/helpers/electron', () => ({
   isElectron: jest.fn(() => false),
 }));
 

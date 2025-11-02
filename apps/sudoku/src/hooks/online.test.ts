@@ -2,16 +2,10 @@
 
 import React from 'react';
 import { renderHook, act, waitFor } from '@testing-library/react';
-import { useOnline } from '@sudoku-web/template';
-
-// Don't mock the GlobalStateContext - we need the real context for proper state updates
+import { useOnline, GlobalStateContext } from '@sudoku-web/template';
 
 // Create a wrapper component that provides the context
 const createContextWrapper = () => {
-  const {
-    GlobalStateContext,
-  } = require('@/providers/GlobalStateProvider/GlobalStateProvider');
-
   const Wrapper = ({ children }: { children: React.ReactNode }) => {
     // Use actual useState to make the context reactive
     const [state, setState] = React.useState({ isForceOffline: false });

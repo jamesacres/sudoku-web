@@ -10,10 +10,6 @@ import {
 import * as usePartiesModule from '@/hooks/useParties';
 
 jest.mock('@/hooks/useParties');
-jest.mock('@/utils/playerColors', () => ({
-  getPlayerColor: jest.fn(() => 'bg-blue-500'),
-  getAllUserIds: jest.fn(() => ['userId1', 'userId2']),
-}));
 jest.mock('@/helpers/calculateCompletionPercentage', () => ({
   calculateCompletionPercentage: jest.fn(() => 50),
 }));
@@ -29,8 +25,14 @@ jest.mock('../PartyConfirmationDialog/PartyConfirmationDialog', () => ({
 jest.mock('../PartyInviteButton/PartyInviteButton', () => ({
   PartyInviteButton: () => <div data-testid="invite-button">Invite</div>,
 }));
-jest.mock('../CopyButton/CopyButton', () => ({
+jest.mock('@sudoku-web/template', () => ({
   CopyButton: () => <div data-testid="copy-button">Copy</div>,
+  getPlayerColor: jest.fn(() => 'bg-blue-500'),
+  getAllUserIds: jest.fn(() => ['userId1', 'userId2']),
+  calculateSeconds: jest.fn(() => 120),
+  UserContext: React.createContext({}),
+  RevenueCatContext: React.createContext({}),
+  SubscriptionContext: React.createContext({}),
 }));
 jest.mock('../SimpleSudoku', () => ({
   __esModule: true,

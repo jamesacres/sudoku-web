@@ -2,8 +2,8 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { TimerDisplay } from './TimerDisplay';
 
-// Mock the formatSeconds helper
-jest.mock('@/helpers/formatSeconds', () => ({
+// Mock the formatSeconds helper from template package
+jest.mock('@sudoku-web/template', () => ({
   formatSeconds: (seconds: number) => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);

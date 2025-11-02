@@ -4,17 +4,24 @@ import { useGameState } from './gameState';
 import { Puzzle } from '@/types/puzzle';
 import { GameStateMetadata } from '@/types/state';
 
-jest.mock('./documentVisibility', () => ({
+jest.mock('@sudoku-web/template', () => ({
   useDocumentVisibility: () => true,
-}));
-jest.mock('./localStorage', () => ({
   useLocalStorage: () => ({ getValue: jest.fn(), saveValue: jest.fn() }),
-}));
-jest.mock('./serverStorage', () => ({
   useServerStorage: () => ({
     getValue: jest.fn().mockResolvedValue(undefined),
     saveValue: jest.fn().mockResolvedValue(undefined),
   }),
+  UserContext: React.createContext({}),
+  RevenueCatContext: React.createContext({}),
+  useSessions: () => ({
+    getSessionParties: jest.fn(),
+    patchFriendSessions: jest.fn(),
+  }),
+  StateType: { TIMER: 'timer', SERVER: 'server' },
+  splitCellId: jest.fn((cellId: string) => ({
+    box: { x: 0, y: 0 },
+    cell: { x: 0, y: 0 },
+  })),
 }));
 jest.mock('./timer', () => ({
   useTimer: () => ({
@@ -26,18 +33,6 @@ jest.mock('./timer', () => ({
   }),
 }));
 jest.mock('./useParties', () => ({ useParties: () => ({ parties: [] }) }));
-jest.mock('../providers/UserProvider', () => ({
-  UserContext: React.createContext({}),
-}));
-jest.mock('../providers/RevenueCatProvider/RevenueCatProvider', () => ({
-  RevenueCatContext: React.createContext({}),
-}));
-jest.mock('../providers/SessionsProvider/SessionsProvider', () => ({
-  useSessions: () => ({
-    getSessionParties: jest.fn(),
-    patchFriendSessions: jest.fn(),
-  }),
-}));
 
 const createPuzzle = (value: number = 0): Puzzle<number> => {
   const createBox = () => ({

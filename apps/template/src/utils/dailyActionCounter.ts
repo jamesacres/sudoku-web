@@ -1,8 +1,5 @@
 // Utility to track daily premium action usage (undo, check cell, check grid)
-// TODO: import { DAILY_LIMITS } from '../config/dailyLimits'; // File not yet migrated from sudoku app
-
-// TODO: Define DAILY_LIMITS or import from correct location
-const DAILY_LIMITS = { UNDO: 3, CHECK_GRID: 3 };
+import { DAILY_LIMITS } from '../config/dailyLimits';
 
 interface DailyActionData {
   date: string;

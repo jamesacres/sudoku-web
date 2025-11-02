@@ -79,6 +79,56 @@ jest.mock(
   { virtual: true }
 );
 
+jest.mock(
+  '@capacitor/status-bar',
+  () => ({
+    StatusBar: {
+      show: jest.fn().mockResolvedValue(undefined),
+      hide: jest.fn().mockResolvedValue(undefined),
+      setStyle: jest.fn().mockResolvedValue(undefined),
+      setBackgroundColor: jest.fn().mockResolvedValue(undefined),
+      setOverlaysWebView: jest.fn().mockResolvedValue(undefined),
+    },
+    Style: { DEFAULT: 'DEFAULT', LIGHT: 'LIGHT', DARK: 'DARK' },
+  }),
+  { virtual: true }
+);
+
+jest.mock(
+  '@capacitor/keyboard',
+  () => ({
+    Keyboard: {
+      show: jest.fn().mockResolvedValue(undefined),
+      hide: jest.fn().mockResolvedValue(undefined),
+      addListener: jest.fn(() => ({ remove: jest.fn() })),
+    },
+  }),
+  { virtual: true }
+);
+
+jest.mock(
+  '@capacitor-community/in-app-review',
+  () => ({
+    InAppReview: class InAppReview {
+      constructor() {}
+      requestReview() {
+        return Promise.resolve();
+      }
+    },
+  }),
+  { virtual: true }
+);
+
+jest.mock(
+  '@capacitor/share',
+  () => ({
+    Share: {
+      share: jest.fn().mockResolvedValue(undefined),
+    },
+  }),
+  { virtual: true }
+);
+
 // Create global window object for Node environment
 if (typeof window === 'undefined') {
   global.window = {};

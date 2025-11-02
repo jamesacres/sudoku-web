@@ -5,7 +5,7 @@ import TestErrorsPage from './page';
 import * as calculateIdHelper from '@sudoku-web/template';
 
 // Mock dependencies
-jest.mock('@/helpers/calculateId', () => ({
+jest.mock('@sudoku-web/template', () => ({
   splitCellId: jest.fn(),
 }));
 

@@ -36,27 +36,24 @@ jest.mock('@/components/IntegratedSessionRow', () => {
   };
 });
 
-jest.mock('@/providers/UserProvider', () => ({
-  UserContext: React.createContext({
-    user: { sub: 'test-user-123' },
-    loginRedirect: jest.fn(),
-  }),
-}));
-
 jest.mock('@/providers/BookProvider/BookProvider', () => ({
   useBook: jest.fn(),
-}));
-
-jest.mock('@/providers/SessionsProvider/SessionsProvider', () => ({
-  useSessions: jest.fn(),
 }));
 
 jest.mock('@/hooks/useParties', () => ({
   useParties: jest.fn(),
 }));
 
-jest.mock('@/hooks/online', () => ({
-  useOnline: jest.fn(),
+jest.mock("@sudoku-web/template", () => ({
+  useSessions: jest.fn(() => ({
+    sessions: [],
+    isLoading: false,
+  })),
+  useOnline: jest.fn(() => ({ isOnline: true })),
+  UserContext: React.createContext({
+    user: { sub: 'test-user-123' },
+    loginRedirect: jest.fn(),
+  }),
 }));
 
 jest.mock('@/helpers/puzzleTextToPuzzle', () => ({
@@ -93,8 +90,7 @@ describe('Book Page', () => {
       fetchBookData: mockFetchBookData,
     });
 
-    const useSessions =
-      require('@/providers/SessionsProvider/SessionsProvider').useSessions;
+    const { useSessions } = require('@sudoku-web/template');
     useSessions.mockReturnValue({
       sessions: [],
       isLoading: false,
@@ -107,7 +103,7 @@ describe('Book Page', () => {
       parties: [],
     });
 
-    const useOnline = require('@/hooks/online').useOnline;
+    const { useOnline } = require('@sudoku-web/template');
     useOnline.mockReturnValue({
       isOnline: true,
     });
@@ -130,8 +126,7 @@ describe('Book Page', () => {
     });
 
     it('should show loading spinner when sessions are loading', () => {
-      const useSessions =
-        require('@/providers/SessionsProvider/SessionsProvider').useSessions;
+      const { useSessions } = require('@sudoku-web/template');
       useSessions.mockReturnValue({
         sessions: [],
         isLoading: true,
@@ -152,8 +147,7 @@ describe('Book Page', () => {
         fetchBookData: mockFetchBookData,
       });
 
-      const useSessions =
-        require('@/providers/SessionsProvider/SessionsProvider').useSessions;
+      const { useSessions } = require('@sudoku-web/template');
       useSessions.mockReturnValue({
         sessions: [],
         isLoading: false,
@@ -189,7 +183,7 @@ describe('Book Page', () => {
         fetchBookData: mockFetchBookData,
       });
 
-      const useOnline = require('@/hooks/online').useOnline;
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({
         isOnline: true,
       });
@@ -208,7 +202,7 @@ describe('Book Page', () => {
         fetchBookData: mockFetchBookData,
       });
 
-      const useOnline = require('@/hooks/online').useOnline;
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({
         isOnline: true,
       });
@@ -257,7 +251,7 @@ describe('Book Page', () => {
         fetchBookData: mockFetchBookData,
       });
 
-      const useOnline = require('@/hooks/online').useOnline;
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({
         isOnline: false,
       });
@@ -456,8 +450,7 @@ describe('Book Page', () => {
         fetchBookData: mockFetchBookData,
       });
 
-      const useSessions =
-        require('@/providers/SessionsProvider/SessionsProvider').useSessions;
+      const { useSessions } = require('@sudoku-web/template');
       useSessions.mockReturnValue({
         sessions: [
           {
@@ -497,8 +490,7 @@ describe('Book Page', () => {
         fetchBookData: mockFetchBookData,
       });
 
-      const useSessions =
-        require('@/providers/SessionsProvider/SessionsProvider').useSessions;
+      const { useSessions } = require('@sudoku-web/template');
       useSessions.mockReturnValue({
         sessions: [
           {

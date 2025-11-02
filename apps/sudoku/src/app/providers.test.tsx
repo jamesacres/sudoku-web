@@ -2,28 +2,33 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { Providers } from './providers';
 
-// Mock all providers
-jest.mock('@/providers/FetchProvider', () => ({
+// Mock template providers
+jest.mock('@sudoku-web/template', () => ({
   __esModule: true,
-  default: ({ children }: { children: React.ReactNode }) => (
+  FetchProvider: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="fetch-provider">{children}</div>
   ),
-}));
-
-jest.mock('@/providers/CapacitorProvider', () => ({
-  __esModule: true,
-  default: ({ children }: { children: React.ReactNode }) => (
+  CapacitorProvider: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="capacitor-provider">{children}</div>
   ),
-}));
-
-jest.mock('@/providers/UserProvider', () => ({
-  __esModule: true,
-  default: ({ children }: { children: React.ReactNode }) => (
+  UserProvider: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="user-provider">{children}</div>
+  ),
+  GlobalStateProvider: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="global-state-provider">{children}</div>
+  ),
+  ThemeColorProvider: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="theme-color-provider">{children}</div>
+  ),
+  RevenueCatProvider: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="revenue-cat-provider">{children}</div>
+  ),
+  SessionsProvider: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="sessions-provider">{children}</div>
   ),
 }));
 
+// Mock local providers
 jest.mock('@/providers/PartiesProvider', () => ({
   __esModule: true,
   default: ({ children }: { children: React.ReactNode }) => (
@@ -35,34 +40,6 @@ jest.mock('@/providers/BookProvider/BookProvider', () => ({
   __esModule: true,
   BookProvider: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="book-provider">{children}</div>
-  ),
-}));
-
-jest.mock('@/providers/SessionsProvider/SessionsProvider', () => ({
-  __esModule: true,
-  SessionsProvider: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="sessions-provider">{children}</div>
-  ),
-}));
-
-jest.mock('@/providers/GlobalStateProvider', () => ({
-  __esModule: true,
-  default: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="global-state-provider">{children}</div>
-  ),
-}));
-
-jest.mock('@/providers/ThemeColorProvider', () => ({
-  __esModule: true,
-  ThemeColorProvider: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="theme-color-provider">{children}</div>
-  ),
-}));
-
-jest.mock('@/providers/RevenueCatProvider', () => ({
-  __esModule: true,
-  default: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="revenue-cat-provider">{children}</div>
   ),
 }));
 

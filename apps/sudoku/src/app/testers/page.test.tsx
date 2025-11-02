@@ -6,7 +6,9 @@ import * as capacitorHelper from '@sudoku-web/template';
 
 // Mock dependencies
 jest.mock('next/navigation');
-jest.mock('@/helpers/capacitor');
+jest.mock('@sudoku-web/template', () => ({
+  isCapacitor: jest.fn(() => false),
+}));
 
 const mockUseRouter = useRouter as jest.Mock;
 const mockUseSearchParams = useSearchParams as jest.Mock;

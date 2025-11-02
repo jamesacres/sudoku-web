@@ -9,7 +9,25 @@ import { Parties, Session } from '@/types/serverTypes';
 import { ServerState } from '@/types/state';
 
 jest.mock('@/hooks/useParties');
-jest.mock('@/utils/playerColors');
+jest.mock('@sudoku-web/template', () => ({
+  getPlayerColor: jest.fn(() => 'bg-blue-500'),
+  getAllUserIds: jest.fn(() => ['userId1', 'userId2']),
+  formatSeconds: jest.fn((seconds: number) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    if (hours > 0) {
+      return `${hours}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+    return `${minutes}:${String(secs).padStart(2, '0')}`;
+  }),
+  Tab: {
+    HOME: 'home',
+    FRIENDS: 'friends',
+    BOOK: 'book',
+    SETTINGS: 'settings',
+  },
+}));
 jest.mock('@/helpers/calculateCompletionPercentage');
 jest.mock('@/helpers/cheatDetection');
 jest.mock('@/components/TrafficLight', () => ({

@@ -2,7 +2,9 @@
 
 **Input**: Design documents from `/specs/002-turborepo-monorepo-setup/` and `/specs/001-template-extraction/`
 **Prerequisites**: Both plan.md and spec.md files reviewed
-**Status**: Ready for implementation (combined approach)
+**Status**: IN PROGRESS - Phases 1-6 largely complete, Phases 7-11 in progress
+**Last Updated**: 2025-11-02
+**Current Blocker**: Root `/src/` directory still exists (needs deletion), Jest imports need updating
 **Context**: These features are interdependent. Feature 002 (Turborepo monorepo) must establish the structure, then feature 001 (Template extraction) leverages that structure. This task list executes them together in phases.
 
 ## Overview: Combined Implementation Strategy
@@ -28,12 +30,12 @@
 
 ### Feature 002 (Turborepo) - US1: Configure Monorepo Structure
 
-- [ ] T001 [P] [F002-US1] Create Turborepo configuration file at `turbo.json` with workspace globs for `/apps/*` and `/packages/*`, task pipelines for build/dev/lint/test, and caching rules
-- [ ] T002 [P] [F002-US1] Update root `package.json` with workspace list (`"workspaces": ["apps/*", "packages/*"]`) and add Turborepo as dev dependency
-- [ ] T003 [P] [F002-US1] Create shared TypeScript configuration at root `tsconfig.json` with strict mode, path aliases for `@sudoku-web/*` imports, and base configs for workspace inheritance
-- [ ] T004 [P] [F002-US1] Create workspace directory structure: `mkdir -p apps/template apps/sudoku packages/types packages/shared`
-- [ ] T005 [P] [F002-US1] Initialize `packages/types/package.json` as shared types package with `"name": "@sudoku-web/types"` and TypeScript build configuration
-- [ ] T006 [P] [F002-US1] Initialize `packages/shared/package.json` as shared utilities package with `"name": "@sudoku-web/shared"` and helper functions
+- [x] T001 [P] [F002-US1] Create Turborepo configuration file at `turbo.json` with workspace globs for `/apps/*` and `/packages/*`, task pipelines for build/dev/lint/test, and caching rules
+- [x] T002 [P] [F002-US1] Update root `package.json` with workspace list (`"workspaces": ["apps/*", "packages/*"]`) and add Turborepo as dev dependency
+- [x] T003 [P] [F002-US1] Create shared TypeScript configuration at root `tsconfig.json` with strict mode, path aliases for `@sudoku-web/*` imports, and base configs for workspace inheritance
+- [x] T004 [P] [F002-US1] Create workspace directory structure: `mkdir -p apps/template apps/sudoku packages/types packages/shared`
+- [x] T005 [P] [F002-US1] Initialize `packages/types/package.json` as shared types package with `"name": "@sudoku-web/types"` and TypeScript build configuration
+- [x] T006 [P] [F002-US1] Initialize `packages/shared/package.json` as shared utilities package with `"name": "@sudoku-web/shared"` and helper functions
 
 **Checkpoint**: Monorepo structure ready, workspaces discoverable by npm and Turborepo
 
@@ -49,15 +51,15 @@
 
 ### Feature 002 (Turborepo) - US1 & US2: Workspace Configuration & Boundaries
 
-- [ ] T007 [P] [F002-US1] Copy and adjust root `next.config.js` to support monorepo workspace resolution, ensuring both `/apps/template/` and `/apps/sudoku/` can be built as independent Next.js apps
-- [ ] T008 [P] [F002-US1] Copy and adjust ESLint configuration at root `eslint.config.js` with workspace-aware linting rules that enforce import boundaries (Sudoku can import from template, template cannot import from Sudoku)
-- [ ] T009 [P] [F002-US1] Set up Jest configuration at root `jest.config.js` with workspace-specific test patterns for parallel test execution across all workspaces
-- [ ] T010 [F002-US2] Create `.eslintrc` rules in root that enforce workspace dependency direction: add eslint-plugin-import rules to block template importing from sudoku apps (violation = build failure)
-- [ ] T011 [F002-US1] Copy `apps/sudoku/` entire source tree to create initial workspace shell, preserving all existing code (we'll refactor in next phases)
-- [ ] T012 [P] [F002-US1] Create `apps/sudoku/package.json` with `"name": "@sudoku-web/sudoku"` and dependencies on `@sudoku-web/types` and `@sudoku-web/shared` via workspace protocol
-- [ ] T013 [P] [F002-US1] Create `apps/sudoku/tsconfig.json` extending root config with path aliases pointing to workspace packages
-- [ ] T014 [F002-US2] Create `apps/template/package.json` as placeholder with `"name": "@sudoku-web/template"` (will be populated in feature 001)
-- [ ] T015 [F002-US2] Create `apps/template/tsconfig.json` extending root config
+- [x] T007 [P] [F002-US1] Copy and adjust root `next.config.js` to support monorepo workspace resolution, ensuring both `/apps/template/` and `/apps/sudoku/` can be built as independent Next.js apps
+- [x] T008 [P] [F002-US1] Copy and adjust ESLint configuration at root `eslint.config.js` with workspace-aware linting rules that enforce import boundaries (Sudoku can import from template, template cannot import from Sudoku)
+- [x] T009 [P] [F002-US1] Set up Jest configuration at root `jest.config.js` with workspace-specific test patterns for parallel test execution across all workspaces
+- [x] T010 [F002-US2] Create `.eslintrc` rules in root that enforce workspace dependency direction: add eslint-plugin-import rules to block template importing from sudoku apps (violation = build failure)
+- [x] T011 [F002-US1] Copy `apps/sudoku/` entire source tree to create initial workspace shell, preserving all existing code (we'll refactor in next phases)
+- [x] T012 [P] [F002-US1] Create `apps/sudoku/package.json` with `"name": "@sudoku-web/sudoku"` and dependencies on `@sudoku-web/types` and `@sudoku-web/shared` via workspace protocol
+- [x] T013 [P] [F002-US1] Create `apps/sudoku/tsconfig.json` extending root config with path aliases pointing to workspace packages
+- [x] T014 [F002-US2] Create `apps/template/package.json` as placeholder with `"name": "@sudoku-web/template"` (will be populated in feature 001)
+- [x] T015 [F002-US2] Create `apps/template/tsconfig.json` extending root config
 
 **Checkpoint**: Turborepo workspaces configured, ESLint boundary enforcement active, initial workspace structure in place
 
@@ -73,16 +75,16 @@
 
 ### Implementation
 
-- [ ] T016 [P] [F002-US1] Configure Turborepo task pipeline in `turbo.json`: define `build` task with inputs (src/, tsconfig.json, package.json) and outputs (.next/, dist/) for both apps
-- [ ] T017 [P] [F002-US1] Configure Turborepo task pipeline in `turbo.json`: define `dev` task with no caching (always run), enable `--parallel` flag for concurrent dev servers
-- [ ] T018 [P] [F002-US1] Configure Turborepo task pipeline in `turbo.json`: define `lint` task with workspace filtering, running across all workspaces
-- [ ] T019 [P] [F002-US1] Configure Turborepo task pipeline in `turbo.json`: define `test` task with workspace parallelization and coverage reporting
-- [ ] T020 [F002-US1] Create npm scripts in root `package.json`: `npm run build`, `npm run dev`, `npm run lint`, `npm run test`, `npm run build:sudoku`, `npm run dev:sudoku` with Turborepo filters
-- [ ] T021 [P] [F002-US1] Update `apps/sudoku/package.json` npm scripts: ensure `build`, `dev`, `lint`, `test` scripts reference correct locations (no breaking changes to existing scripts)
-- [ ] T022 [P] [F002-US1] Create `apps/template/package.json` npm scripts: placeholder `build`, `dev`, `lint`, `test` commands (will reference correct paths in phase 4)
-- [ ] T023 [F002-US3] Test Turborepo build caching: run `npm run build` (should complete, save artifacts), then run again (should use cache and complete in <30 seconds)
-- [ ] T024 [F002-US3] Test Turborepo parallel execution: verify that multiple workspaces build/lint/test simultaneously (check logs for concurrent execution)
-- [ ] T025 [P] [F002-US1] Update `.gitignore` to exclude Turborepo cache: add `.turbo/` directory
+- [x] T016 [P] [F002-US1] Configure Turborepo task pipeline in `turbo.json`: define `build` task with inputs (src/, tsconfig.json, package.json) and outputs (.next/, dist/) for both apps
+- [x] T017 [P] [F002-US1] Configure Turborepo task pipeline in `turbo.json`: define `dev` task with no caching (always run), enable `--parallel` flag for concurrent dev servers
+- [x] T018 [P] [F002-US1] Configure Turborepo task pipeline in `turbo.json`: define `lint` task with workspace filtering, running across all workspaces
+- [x] T019 [P] [F002-US1] Configure Turborepo task pipeline in `turbo.json`: define `test` task with workspace parallelization and coverage reporting
+- [x] T020 [F002-US1] Create npm scripts in root `package.json`: `npm run build`, `npm run dev`, `npm run lint`, `npm run test`, `npm run build:sudoku`, `npm run dev:sudoku` with Turborepo filters
+- [x] T021 [P] [F002-US1] Update `apps/sudoku/package.json` npm scripts: ensure `build`, `dev`, `lint`, `test` scripts reference correct locations (no breaking changes to existing scripts)
+- [x] T022 [P] [F002-US1] Create `apps/template/package.json` npm scripts: placeholder `build`, `dev`, `lint`, `test` commands (will reference correct paths in phase 4)
+- [ ] T023 [F002-US3] Test Turborepo build caching: run `npm run build` (should complete, save artifacts), then run again (should use cache and complete in <30 seconds) **NEEDS VERIFICATION**
+- [ ] T024 [F002-US3] Test Turborepo parallel execution: verify that multiple workspaces build/lint/test simultaneously (check logs for concurrent execution) **NEEDS VERIFICATION**
+- [x] T025 [P] [F002-US1] Update `.gitignore` to exclude Turborepo cache: add `.turbo/` directory
 
 **Checkpoint**: Turborepo build pipeline working with caching enabled, <30 second cached builds verified
 
@@ -165,17 +167,17 @@
 
 ### Initialize Template Package
 
-- [ ] T054 [P] [F001-US1] Create directory structure in `apps/template/src/`: `mkdir -p components hooks providers services types utils config lib`
-- [ ] T055 [P] [F001-US1] Create `apps/template/src/__mocks__/` directory for Jest mocks (Capacitor, RevenueCat, platform-specific code)
-- [ ] T056 [P] [F001-US1] Create `apps/template/tests/` directory with subdirectories: `unit/`, `integration/`, `contract/`
-- [ ] T057 [F001-US1] Create `apps/template/package.json` with dependencies: copy from sudoku app, adjust name to `"@sudoku-web/template"`, remove sudoku-specific deps, add workspace dependencies to `@sudoku-web/types` and `@sudoku-web/shared`
-- [ ] T058 [F001-US1] Copy `apps/sudoku/tailwind.config.ts` to `apps/template/tailwind.config.ts` (shared Tailwind configuration)
-- [ ] T059 [F001-US1] Copy `apps/sudoku/next.config.js` to `apps/template/next.config.js` and adjust for monorepo workspace paths
-- [ ] T060 [F001-US1] Create `apps/template/tsconfig.json` extending root config with path aliases for template-local imports
-- [ ] T061 [P] [F001-US1] Create `apps/template/.eslintrc.json` extending root eslint config
-- [ ] T062 [P] [F001-US1] Create `apps/template/jest.config.js` with template-specific test configuration
-- [ ] T063 [P] [F001-US1] Create `apps/template/public/` directory for static assets (will be populated from sudoku)
-- [ ] T064 [P] [F001-US1] Create `apps/template/README.md` with description of template purpose, contents, and extension points
+- [x] T054 [P] [F001-US1] Create directory structure in `apps/template/src/`: `mkdir -p components hooks providers services types utils config lib`
+- [x] T055 [P] [F001-US1] Create `apps/template/src/__mocks__/` directory for Jest mocks (Capacitor, RevenueCat, platform-specific code)
+- [x] T056 [P] [F001-US1] Create `apps/template/tests/` directory with subdirectories: `unit/`, `integration/`, `contract/`
+- [x] T057 [F001-US1] Create `apps/template/package.json` with dependencies: copy from sudoku app, adjust name to `"@sudoku-web/template"`, remove sudoku-specific deps, add workspace dependencies to `@sudoku-web/types` and `@sudoku-web/shared`
+- [x] T058 [F001-US1] Copy `apps/sudoku/tailwind.config.ts` to `apps/template/tailwind.config.ts` (shared Tailwind configuration)
+- [x] T059 [F001-US1] Copy `apps/sudoku/next.config.js` to `apps/template/next.config.js` and adjust for monorepo workspace paths
+- [x] T060 [F001-US1] Create `apps/template/tsconfig.json` extending root config with path aliases for template-local imports
+- [x] T061 [P] [F001-US1] Create `apps/template/.eslintrc.json` extending root eslint config
+- [x] T062 [P] [F001-US1] Create `apps/template/jest.config.js` with template-specific test configuration
+- [x] T063 [P] [F001-US1] Create `apps/template/public/` directory for static assets (will be populated from sudoku)
+- [x] T064 [P] [F001-US1] Create `apps/template/README.md` with description of template purpose, contents, and extension points
 
 **Checkpoint**: Template workspace structure created, all configuration files in place, ready for code extraction
 
@@ -189,76 +191,97 @@
 
 ### Extract Generic Components
 
-- [ ] T065 [P] [F001-US1] Copy generic components from `apps/sudoku/src/components/Navigation*` to `apps/template/src/components/Navigation.tsx` (3-tab navigation structure)
-- [ ] T066 [P] [F001-US1] Copy generic components from `apps/sudoku/src/components/Profile*` to `apps/template/src/components/Profile.tsx`
-- [ ] T067 [P] [F001-US1] Copy generic components from `apps/sudoku/src/components/Settings*` to `apps/template/src/components/Settings.tsx`
-- [ ] T068 [P] [F001-US1] Copy generic components from `apps/sudoku/src/components/UserAvatar*` to `apps/template/src/components/UserAvatar.tsx`
-- [ ] T069 [P] [F001-US1] Copy generic components from `apps/sudoku/src/components/ThemeToggle*` to `apps/template/src/components/ThemeToggle.tsx`
-- [ ] T070 [P] [F001-US1] Copy generic components from `apps/sudoku/src/components/ErrorBoundary*` to `apps/template/src/components/ErrorBoundary.tsx`
-- [ ] T071 [P] [F001-US1] Copy generic loading and skeleton components from `apps/sudoku/src/components/` to `apps/template/src/components/Loading.tsx`, `Skeleton.tsx`, etc.
-- [ ] T072 [P] [F001-US1] Copy generic form components (Input, Button, Modal, etc.) from `apps/sudoku/src/components/` to `apps/template/src/components/`
+- [x] T065 [P] [F001-US1] Copy generic components from `apps/sudoku/src/components/Navigation*` to `apps/template/src/components/Navigation.tsx` (3-tab navigation structure)
+- [x] T066 [P] [F001-US1] Copy generic components from `apps/sudoku/src/components/Profile*` to `apps/template/src/components/Profile.tsx`
+- [x] T067 [P] [F001-US1] Copy generic components from `apps/sudoku/src/components/Settings*` to `apps/template/src/components/Settings.tsx`
+- [x] T068 [P] [F001-US1] Copy generic components from `apps/sudoku/src/components/UserAvatar*` to `apps/template/src/components/UserAvatar.tsx`
+- [x] T069 [P] [F001-US1] Copy generic components from `apps/sudoku/src/components/ThemeToggle*` to `apps/template/src/components/ThemeToggle.tsx`
+- [x] T070 [P] [F001-US1] Copy generic components from `apps/sudoku/src/components/ErrorBoundary*` to `apps/template/src/components/ErrorBoundary.tsx`
+- [x] T071 [P] [F001-US1] Copy generic loading and skeleton components from `apps/sudoku/src/components/` to `apps/template/src/components/Loading.tsx`, `Skeleton.tsx`, etc.
+- [x] T072 [P] [F001-US1] Copy generic form components (Input, Button, Modal, etc.) from `apps/sudoku/src/components/` to `apps/template/src/components/`
 
 ### Extract Generic Hooks
 
-- [ ] T073 [P] [F001-US1] Copy `apps/sudoku/src/hooks/useAuth.ts` to `apps/template/src/hooks/useAuth.ts` - no changes needed
-- [ ] T074 [P] [F001-US1] Copy `apps/sudoku/src/hooks/useUser.ts` to `apps/template/src/hooks/useUser.ts`
-- [ ] T075 [P] [F001-US1] Copy `apps/sudoku/src/hooks/useTheme.ts` to `apps/template/src/hooks/useTheme.ts`
-- [ ] T076 [P] [F001-US1] Copy `apps/sudoku/src/hooks/useSession.ts` to `apps/template/src/hooks/useSession.ts` - ensure it's generic with TypeScript generics `useSession<T>()`
-- [ ] T077 [P] [F001-US1] Copy `apps/sudoku/src/hooks/useParty.ts` to `apps/template/src/hooks/useParty.ts` - ensure generic party management
-- [ ] T078 [P] [F001-US1] Copy `apps/sudoku/src/hooks/useError.ts` to `apps/template/src/hooks/useError.ts`
-- [ ] T079 [P] [F001-US1] Copy `apps/sudoku/src/hooks/useOnline.ts` to `apps/template/src/hooks/useOnline.ts` (online/offline detection)
-- [ ] T080 [P] [F001-US1] Copy other generic hooks (useFetch, useLocalStorage, etc.) to `apps/template/src/hooks/`
+- [x] T073 [P] [F001-US1] Copy `apps/sudoku/src/hooks/useAuth.ts` to `apps/template/src/hooks/useAuth.ts` - no changes needed
+- [x] T074 [P] [F001-US1] Copy `apps/sudoku/src/hooks/useUser.ts` to `apps/template/src/hooks/useUser.ts`
+- [x] T075 [P] [F001-US1] Copy `apps/sudoku/src/hooks/useTheme.ts` to `apps/template/src/hooks/useTheme.ts`
+- [x] T076 [P] [F001-US1] Copy `apps/sudoku/src/hooks/useSession.ts` to `apps/template/src/hooks/useSession.ts` - ensure it's generic with TypeScript generics `useSession<T>()`
+- [x] T077 [P] [F001-US1] Copy `apps/sudoku/src/hooks/useParty.ts` to `apps/template/src/hooks/useParty.ts` - ensure generic party management
+- [x] T078 [P] [F001-US1] Copy `apps/sudoku/src/hooks/useError.ts` to `apps/template/src/hooks/useError.ts`
+- [x] T079 [P] [F001-US1] Copy `apps/sudoku/src/hooks/useOnline.ts` to `apps/template/src/hooks/useOnline.ts` (online/offline detection)
+- [x] T080 [P] [F001-US1] Copy other generic hooks (useFetch, useLocalStorage, etc.) to `apps/template/src/hooks/`
 
 ### Extract Generic Providers
 
-- [ ] T081 [P] [F001-US1] Copy `apps/sudoku/src/providers/AuthProvider.tsx` to `apps/template/src/providers/AuthProvider.tsx`
-- [ ] T082 [P] [F001-US1] Copy `apps/sudoku/src/providers/UserProvider.tsx` to `apps/template/src/providers/UserProvider.tsx`
-- [ ] T083 [P] [F001-US1] Copy `apps/sudoku/src/providers/ThemeProvider.tsx` to `apps/template/src/providers/ThemeProvider.tsx`
-- [ ] T084 [P] [F001-US1] Copy `apps/sudoku/src/providers/SessionProvider.tsx` to `apps/template/src/providers/SessionProvider.tsx`
-- [ ] T085 [P] [F001-US1] Copy `apps/sudoku/src/providers/PartyProvider.tsx` to `apps/template/src/providers/PartyProvider.tsx`
-- [ ] T086 [P] [F001-US1] Copy `apps/sudoku/src/providers/ErrorProvider.tsx` to `apps/template/src/providers/ErrorProvider.tsx`
+- [x] T081 [P] [F001-US1] Copy `apps/sudoku/src/providers/AuthProvider.tsx` to `apps/template/src/providers/AuthProvider.tsx`
+- [x] T082 [P] [F001-US1] Copy `apps/sudoku/src/providers/UserProvider.tsx` to `apps/template/src/providers/UserProvider.tsx`
+- [x] T083 [P] [F001-US1] Copy `apps/sudoku/src/providers/ThemeProvider.tsx` to `apps/template/src/providers/ThemeProvider.tsx`
+- [x] T084 [P] [F001-US1] Copy `apps/sudoku/src/providers/SessionProvider.tsx` to `apps/template/src/providers/SessionProvider.tsx`
+- [x] T085 [P] [F001-US1] Copy `apps/sudoku/src/providers/PartyProvider.tsx` to `apps/template/src/providers/PartyProvider.tsx`
+- [x] T086 [P] [F001-US1] Copy `apps/sudoku/src/providers/ErrorProvider.tsx` to `apps/template/src/providers/ErrorProvider.tsx`
 
 ### Extract Generic Services
 
-- [ ] T087 [P] [F001-US1] Copy `apps/sudoku/src/services/authService.ts` to `apps/template/src/services/authService.ts`
-- [ ] T088 [P] [F001-US1] Copy `apps/sudoku/src/services/userService.ts` to `apps/template/src/services/userService.ts`
-- [ ] T089 [P] [F001-US1] Copy `apps/sudoku/src/services/sessionService.ts` to `apps/template/src/services/sessionService.ts`
-- [ ] T090 [P] [F001-US1] Copy `apps/sudoku/src/services/partyService.ts` to `apps/template/src/services/partyService.ts`
-- [ ] T091 [P] [F001-US1] Copy API client configuration from `apps/sudoku/src/services/apiClient.ts` to `apps/template/src/services/apiClient.ts` - backend-agnostic
+- [x] T087 [P] [F001-US1] Copy `apps/sudoku/src/services/authService.ts` to `apps/template/src/services/authService.ts`
+- [x] T088 [P] [F001-US1] Copy `apps/sudoku/src/services/userService.ts` to `apps/template/src/services/userService.ts`
+- [x] T089 [P] [F001-US1] Copy `apps/sudoku/src/services/sessionService.ts` to `apps/template/src/services/sessionService.ts`
+- [x] T090 [P] [F001-US1] Copy `apps/sudoku/src/services/partyService.ts` to `apps/template/src/services/partyService.ts`
+- [x] T091 [P] [F001-US1] Copy API client configuration from `apps/sudoku/src/services/apiClient.ts` to `apps/template/src/services/apiClient.ts` - backend-agnostic
 
 ### Extract Generic Types
 
-- [ ] T092 [P] [F001-US1] Copy generic type definitions from `apps/sudoku/src/types/` to `apps/template/src/types/`: User, Session<T>, Party, Member, Invite
-- [ ] T093 [P] [F001-US1] Copy generic auth types to `apps/template/src/types/auth.ts`
-- [ ] T094 [P] [F001-US1] Copy generic session/party types to `apps/template/src/types/session.ts` and `party.ts`
+- [x] T092 [P] [F001-US1] Copy generic type definitions from `apps/sudoku/src/types/` to `apps/template/src/types/`: User, Session<T>, Party, Member, Invite
+- [x] T093 [P] [F001-US1] Copy generic auth types to `apps/template/src/types/auth.ts`
+- [x] T094 [P] [F001-US1] Copy generic session/party types to `apps/template/src/types/session.ts` and `party.ts`
 
 ### Extract Generic Utilities
 
-- [ ] T095 [P] [F001-US1] Copy generic utility functions to `apps/template/src/utils/`: formatting functions (formatDate, formatTime), validators, storage helpers
-- [ ] T096 [P] [F001-US1] Copy generic constants to `apps/template/src/config/constants.ts`
-- [ ] T097 [P] [F001-US1] Copy `apps/sudoku/src/lib/` generic helpers to `apps/template/src/lib/`
+- [x] T095 [P] [F001-US1] Copy generic utility functions to `apps/template/src/utils/`: formatting functions (formatDate, formatTime), validators, storage helpers
+- [x] T096 [P] [F001-US1] Copy generic constants to `apps/template/src/config/constants.ts`
+- [x] T097 [P] [F001-US1] Copy `apps/sudoku/src/lib/` generic helpers to `apps/template/src/lib/`
 
 ### Extract Configuration & Constants
 
-- [ ] T098 [P] [F001-US1] Copy environment configuration patterns to `apps/template/src/config/`
-- [ ] T099 [P] [F001-US1] Copy app configuration interfaces to `apps/template/src/config/appConfig.ts` for extensibility
+- [x] T098 [P] [F001-US1] Copy environment configuration patterns to `apps/template/src/config/`
+- [x] T099 [P] [F001-US1] Copy app configuration interfaces to `apps/template/src/config/appConfig.ts` for extensibility
 
 ### Extract Tests
 
-- [ ] T100 [P] [F001-US1] Copy generic component tests to `apps/template/tests/unit/components/`
-- [ ] T101 [P] [F001-US1] Copy generic hook tests to `apps/template/tests/unit/hooks/`
-- [ ] T102 [P] [F001-US1] Copy generic service tests to `apps/template/tests/unit/services/`
-- [ ] T103 [P] [F001-US1] Copy integration tests to `apps/template/tests/integration/`
+- [x] T100 [P] [F001-US1] Copy generic component tests to `apps/template/tests/unit/components/`
+- [x] T101 [P] [F001-US1] Copy generic hook tests to `apps/template/tests/unit/hooks/`
+- [x] T102 [P] [F001-US1] Copy generic service tests to `apps/template/tests/unit/services/`
+- [x] T103 [P] [F001-US1] Copy integration tests to `apps/template/tests/integration/`
 
 ### Create Template Barrel Exports
 
-- [ ] T104 [F001-US1] Create `apps/template/src/index.ts` barrel export file exporting all public hooks: `useAuth`, `useUser`, `useTheme`, `useSession`, `useParty`, `useError`, `useOnline`
-- [ ] T105 [F001-US1] Create `apps/template/src/components/index.ts` barrel export for all components: `Navigation`, `Profile`, `Settings`, `UserAvatar`, `ThemeToggle`, `ErrorBoundary`
-- [ ] T106 [F001-US1] Create `apps/template/src/providers/index.ts` barrel export for all providers
-- [ ] T107 [F001-US1] Create `apps/template/src/types/index.ts` barrel export for all type definitions
-- [ ] T108 [F001-US1] Create `apps/template/src/services/index.ts` barrel export for all services
+- [x] T104 [F001-US1] Create `apps/template/src/index.ts` barrel export file exporting all public hooks: `useAuth`, `useUser`, `useTheme`, `useSession`, `useParty`, `useError`, `useOnline`
+- [x] T105 [F001-US1] Create `apps/template/src/components/index.ts` barrel export for all components: `Navigation`, `Profile`, `Settings`, `UserAvatar`, `ThemeToggle`, `ErrorBoundary`
+- [x] T106 [F001-US1] Create `apps/template/src/providers/index.ts` barrel export for all providers
+- [x] T107 [F001-US1] Create `apps/template/src/types/index.ts` barrel export for all type definitions
+- [x] T108 [F001-US1] Create `apps/template/src/services/index.ts` barrel export for all services
 
 **Checkpoint**: All generic code copied to template, barrel exports created, template is now a standalone package (not yet tested)
+
+---
+
+## ⚠️ **CRITICAL BLOCKER BEFORE PROCEEDING TO PHASE 7**
+
+**Status**: ROOT `/src/` DIRECTORY STILL EXISTS - MUST DELETE FIRST
+- The original `/src/` directory at repository root was copied to `/apps/sudoku/src/` but never deleted
+- This creates code duplication and import path confusion
+- `/src/` contains old imports (e.g., `@/providers/UserProvider`) that don't match new template paths
+- **ACTION REQUIRED**: Delete root `/src/` directory before continuing with import path updates
+- After deletion: Root should have only `/apps/`, `/packages/`, `/public/`, etc. - NO `/src/`
+
+**Test failures caused by this blocker**:
+- 33+ tests in sudoku failing due to module resolution errors
+- Jest moduleNameMapper trying to resolve `@/` paths that no longer exist locally
+- Test mocks importing from paths that have been moved to template
+
+**Next steps after deleting /src/**:
+1. Update Jest moduleNameMapper in apps/sudoku to resolve `@sudoku-web/template` imports
+2. Update all test mocks to import from `@sudoku-web/template` instead of `@/`
+3. Fix remaining import paths in sudoku app
 
 ---
 

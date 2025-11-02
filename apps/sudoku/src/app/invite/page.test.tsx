@@ -15,7 +15,6 @@ import { EntitlementDuration, PublicInvite, Party } from '@sudoku-web/template';
 
 // Mock dependencies
 jest.mock('next/navigation');
-jest.mock('@/hooks/serverStorage');
 jest.mock('@/hooks/useParties');
 jest.mock('next/image', () => ({
   __esModule: true,
@@ -25,11 +24,18 @@ jest.mock('next/image', () => ({
     return <img {...rest} />;
   },
 }));
-jest.mock('@/components/PremiumFeatures', () => {
-  return {
-    PremiumFeatures: () => <div>Premium Features Mock</div>,
-  };
-});
+jest.mock("@sudoku-web/template", () => ({
+  useServerStorage: jest.fn(),
+  UserContext: React.createContext({}),
+  RevenueCatContext: React.createContext({}),
+  SubscriptionContext: React.createContext({}),
+  PremiumFeatures: function MockPremiumFeatures() {
+    return <div data-testid="premium-features">Premium Features Mock</div>;
+  },
+  PublicInvite: {},
+  EntitlementDuration: { ONE_MONTH: '1m' },
+  Party: {},
+}));
 
 const mockUseRouter = useRouter as jest.Mock;
 const mockUseSearchParams = useSearchParams as jest.Mock;

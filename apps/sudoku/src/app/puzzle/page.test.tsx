@@ -9,6 +9,12 @@ jest.mock('next/navigation', () => ({
   useSearchParams: jest.fn(),
 }));
 
+jest.mock('@sudoku-web/template', () => ({
+  useWakeLock: jest.fn(() => ({
+    requestWakeLock: jest.fn(),
+  })),
+}));
+
 jest.mock('@/components/Sudoku', () => {
   return {
     __esModule: true,
@@ -32,11 +38,7 @@ jest.mock('@/components/Sudoku', () => {
   };
 });
 
-jest.mock('@/hooks/useWakeLock', () => ({
-  useWakeLock: jest.fn(() => ({
-    requestWakeLock: jest.fn(),
-  })),
-}));
+// useWakeLock is mocked as part of @sudoku-web/template mock
 
 jest.mock('@/helpers/buildPuzzleUrl', () => ({
   buildPuzzleUrl: jest.fn((initial, final, _metadata) => {

@@ -24,6 +24,8 @@ const config = {
     },
   },
   moduleNameMapper: {
+    '^@sudoku-web/template$': '<rootDir>/../template/src/index.ts',
+    '^@sudoku-web/template/(.*)$': '<rootDir>/../template/src/$1',
     '^@/(.*)$': '<rootDir>/src/$1',
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],

@@ -5,8 +5,8 @@ import { useServerStorage } from '@sudoku-web/template';
 import { useOnline } from '@sudoku-web/template';
 import { SudokuBookOfTheMonth } from '@/types/serverTypes';
 
-jest.mock('@/hooks/serverStorage');
-jest.mock('@/hooks/online');
+jest.mock("@sudoku-web/template");
+jest.mock("@sudoku-web/template");
 
 const mockUseServerStorage = useServerStorage as jest.Mock;
 const mockUseOnline = useOnline as jest.Mock;

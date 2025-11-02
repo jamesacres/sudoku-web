@@ -5,7 +5,7 @@ import { useServerStorage } from '@sudoku-web/template';
 import { UserContext, UserContextInterface } from '@sudoku-web/template';
 import { Party } from '@/types/serverTypes';
 
-jest.mock('@/hooks/serverStorage');
+jest.mock("@sudoku-web/template");
 
 const mockUseServerStorage = useServerStorage as jest.Mock;
 

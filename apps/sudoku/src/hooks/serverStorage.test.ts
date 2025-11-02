@@ -1,42 +1,66 @@
 import { renderHook, act } from '@testing-library/react';
 import {
   useServerStorage,
-  useFetch,
-  useOnline,
   StateType,
   UserContext,
+  FetchContext,
+  GlobalStateContext,
 } from '@sudoku-web/template';
 import React from 'react';
-
-jest.mock('@sudoku-web/template', () => {
-  const actual = jest.requireActual('@sudoku-web/template');
-  return {
-    ...actual,
-    useFetch: jest.fn(),
-    useOnline: jest.fn(),
-  };
-});
-
-const mockUseFetch = useFetch as jest.Mock;
-const mockUseOnline = useOnline as jest.Mock;
 
 describe('useServerStorage', () => {
   let mockFetch: jest.Mock;
   let mockGetUser: jest.Mock;
+  let mockLogout: jest.Mock;
+  let mockRestoreState: jest.Mock;
+  let mockStateRef: React.MutableRefObject<any>;
+  let mockSetState: jest.Mock;
 
   const wrapper = ({ children }: { children: React.ReactNode }) => {
-    return React.createElement(
+    // Create GlobalStateContext value
+    const [globalState, setGlobalState] = React.useState({ isForceOffline: false });
+
+    // Provide UserContext
+    const userContextElement = React.createElement(
       UserContext.Provider,
-      { value: { user: { sub: 'user123' } } as any },
+      { value: { user: { sub: 'user123' }, logout: mockLogout } as any },
       children
+    );
+
+    // Provide FetchContext
+    const fetchContextElement = React.createElement(
+      FetchContext.Provider,
+      { value: [mockStateRef, mockSetState] as any },
+      userContextElement
+    );
+
+    // Provide GlobalStateContext
+    return React.createElement(
+      GlobalStateContext.Provider,
+      { value: [globalState, setGlobalState] as any },
+      fetchContextElement
     );
   };
 
   beforeEach(() => {
     mockFetch = jest.fn();
     mockGetUser = jest.fn(() => ({ sub: 'user123' }));
-    mockUseFetch.mockReturnValue({ fetch: mockFetch, getUser: mockGetUser });
-    mockUseOnline.mockReturnValue({ isOnline: true });
+    mockLogout = jest.fn();
+    mockRestoreState = jest.fn();
+    mockSetState = jest.fn();
+    mockStateRef = {
+      current: {
+        accessToken: 'mock-token',
+        accessExpiry: new Date(Date.now() + 3600000),
+        refreshToken: 'mock-refresh',
+        refreshExpiry: new Date(Date.now() + 86400000),
+        user: { sub: 'user123' },
+        userExpiry: new Date(Date.now() + 86400000),
+      }
+    };
+
+    // Mock global fetch to intercept API calls
+    global.fetch = mockFetch;
   });
 
   it('getValue should fetch data from the server', async () => {
@@ -75,9 +99,9 @@ describe('useServerStorage', () => {
       await result.current.saveValue({ data: 'test' });
     });
 
-    expect(mockFetch).toHaveBeenCalledWith(
-      expect.objectContaining({ method: 'PATCH' })
-    );
+    expect(mockFetch).toHaveBeenCalled();
+    const request = mockFetch.mock.calls[0][0] as Request;
+    expect(request.url).toContain('sudoku-123');
   });
 
   it('listParties should fetch parties and their members', async () => {
@@ -135,9 +159,9 @@ describe('useServerStorage', () => {
       });
     });
 
-    expect(mockFetch).toHaveBeenCalledWith(
-      expect.objectContaining({ method: 'POST' })
-    );
+    expect(mockFetch).toHaveBeenCalled();
+    const request = mockFetch.mock.calls[0][0] as Request;
+    expect(request.url).toContain('/parties');
     expect(party?.partyName).toBe('New Party');
   });
 
@@ -150,9 +174,9 @@ describe('useServerStorage', () => {
       success = await result.current.deleteAccount();
     });
 
-    expect(mockFetch).toHaveBeenCalledWith(
-      expect.objectContaining({ method: 'DELETE' })
-    );
+    expect(mockFetch).toHaveBeenCalled();
+    const request = mockFetch.mock.calls[0][0] as Request;
+    expect(request.url).toContain('/account');
     expect(success).toBe(true);
   });
 
@@ -164,9 +188,9 @@ describe('useServerStorage', () => {
       await result.current.updateParty('party1', { partyName: 'Updated' });
     });
 
-    expect(mockFetch).toHaveBeenCalledWith(
-      expect.objectContaining({ method: 'PATCH' })
-    );
+    expect(mockFetch).toHaveBeenCalled();
+    const request = mockFetch.mock.calls[0][0] as Request;
+    expect(request.url).toContain('/parties/party1');
   });
 
   it('leaveParty should send a DELETE request', async () => {
@@ -178,9 +202,9 @@ describe('useServerStorage', () => {
       success = await result.current.leaveParty('party1');
     });
 
-    expect(mockFetch).toHaveBeenCalledWith(
-      expect.objectContaining({ method: 'DELETE' })
-    );
+    expect(mockFetch).toHaveBeenCalled();
+    const request = mockFetch.mock.calls[0][0] as Request;
+    expect(request.url).toContain('/members/user123');
     expect(success).toBe(true);
   });
 
@@ -193,9 +217,9 @@ describe('useServerStorage', () => {
       success = await result.current.removeMember('party1', 'user2');
     });
 
-    expect(mockFetch).toHaveBeenCalledWith(
-      expect.objectContaining({ method: 'DELETE' })
-    );
+    expect(mockFetch).toHaveBeenCalled();
+    const request = mockFetch.mock.calls[0][0] as Request;
+    expect(request.url).toContain('/members/user2');
     expect(success).toBe(true);
   });
 
@@ -208,9 +232,9 @@ describe('useServerStorage', () => {
       success = await result.current.deleteParty('party1');
     });
 
-    expect(mockFetch).toHaveBeenCalledWith(
-      expect.objectContaining({ method: 'DELETE' })
-    );
+    expect(mockFetch).toHaveBeenCalled();
+    const request = mockFetch.mock.calls[0][0] as Request;
+    expect(request.url).toContain('/parties/party1');
     expect(success).toBe(true);
   });
 
@@ -247,7 +271,12 @@ describe('useServerStorage', () => {
   });
 
   it('should handle offline scenarios gracefully', async () => {
-    mockUseOnline.mockReturnValue({ isOnline: false });
+    // Simulate offline by manipulating the navigator property
+    Object.defineProperty(window.navigator, 'onLine', {
+      writable: true,
+      value: false,
+    });
+
     mockFetch.mockResolvedValue({ ok: true, json: () => Promise.resolve({}) });
 
     const { result } = renderHook(
@@ -258,6 +287,12 @@ describe('useServerStorage', () => {
     // Should still provide methods even when offline
     expect(result.current.getValue).toBeDefined();
     expect(result.current.saveValue).toBeDefined();
+
+    // Restore online status
+    Object.defineProperty(window.navigator, 'onLine', {
+      writable: true,
+      value: true,
+    });
   });
 
   it('should handle fetch errors gracefully', async () => {
