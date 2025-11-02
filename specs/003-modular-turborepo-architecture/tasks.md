@@ -16,27 +16,27 @@
 
 **Purpose**: Project initialization and package structure foundation
 
-- [ ] T001 Create directory structure for new packages in `packages/` directory: `auth/`, `ui/`, `sudoku/`, `template/`
-- [ ] T002 Initialize `packages/auth/package.json` with name `@sudoku-web/auth` and dependencies (React, TypeScript)
-- [ ] T003 [P] Initialize `packages/ui/package.json` with name `@sudoku-web/ui` and dependencies
-- [ ] T004 [P] Initialize `packages/sudoku/package.json` with name `@sudoku-web/sudoku` and dependencies
-- [ ] T005 [P] Initialize `packages/template/package.json` with name `@sudoku-web/template` and dependencies
-- [ ] T006 Create TypeScript configuration files for each new package (copy from existing: `packages/auth/tsconfig.json`, `packages/ui/tsconfig.json`, etc.)
-- [ ] T007 Update root `tsconfig.json` with path aliases for all new packages:
+- [x] T001 Create directory structure for new packages in `packages/` directory: `auth/`, `ui/`, `sudoku/`, `template/`
+- [x] T002 Initialize `packages/auth/package.json` with name `@sudoku-web/auth` and dependencies (React, TypeScript)
+- [x] T003 [P] Initialize `packages/ui/package.json` with name `@sudoku-web/ui` and dependencies
+- [x] T004 [P] Initialize `packages/sudoku/package.json` with name `@sudoku-web/sudoku` and dependencies
+- [x] T005 [P] Initialize `packages/template/package.json` with name `@sudoku-web/template` and dependencies
+- [x] T006 Create TypeScript configuration files for each new package (copy from existing: `packages/auth/tsconfig.json`, `packages/ui/tsconfig.json`, etc.)
+- [x] T007 Update root `tsconfig.json` with path aliases for all new packages:
   ```json
   "@sudoku-web/auth": ["packages/auth/src"],
   "@sudoku-web/ui": ["packages/ui/src"],
   "@sudoku-web/sudoku": ["packages/sudoku/src"],
   "@sudoku-web/template": ["packages/template/src"]
   ```
-- [ ] T008 [P] Create `packages/auth/src/index.ts` with empty public API export structure
-- [ ] T009 [P] Create `packages/ui/src/index.ts` with empty public API export structure
-- [ ] T010 [P] Create `packages/sudoku/src/index.ts` with empty public API export structure
-- [ ] T011 [P] Create `packages/template/src/index.ts` with empty public API export structure
-- [ ] T012 [P] Create Jest configuration for each new package (template from existing: `packages/auth/jest.config.js`, etc.)
-- [ ] T013 Create `README.md` in each new package documenting its purpose and public API structure
-- [ ] T014 Update root `package.json` workspaces array to include all new packages if not already included
-- [ ] T015 Run `npm install` to initialize all new packages and verify no errors
+- [x] T008 [P] Create `packages/auth/src/index.ts` with empty public API export structure
+- [x] T009 [P] Create `packages/ui/src/index.ts` with empty public API export structure
+- [x] T010 [P] Create `packages/sudoku/src/index.ts` with empty public API export structure
+- [x] T011 [P] Create `packages/template/src/index.ts` with empty public API export structure
+- [x] T012 [P] Create Jest configuration for each new package (template from existing: `packages/auth/jest.config.js`, etc.)
+- [x] T013 Create `README.md` in each new package documenting its purpose and public API structure
+- [x] T014 Update root `package.json` workspaces array to include all new packages if not already included
+- [x] T015 Run `npm install` to initialize all new packages and verify no errors
 
 ---
 
@@ -46,31 +46,31 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T016 Create type definitions package structure in `packages/types/src/` for shared types (User, Session, Party, AuthToken) per data-model.md
-- [ ] T017 [P] Extract all authentication types to `packages/auth/src/types/` (User.ts, AuthToken.ts, SessionState.ts)
-- [ ] T018 [P] Extract all UI types to `packages/ui/src/types/` (ThemeConfig.ts, NavItem.ts, etc.)
-- [ ] T019 [P] Extract all party/collaboration types to `packages/template/src/types/` (Party.ts, PartyMember.ts, Session.ts)
-- [ ] T020 [P] Extract all sudoku-specific types to `packages/sudoku/src/types/` (Cell.ts, SudokuGrid.ts, SudokuState.ts)
-- [ ] T021 Extract shared generic types to `packages/types/src/` (Parties<T>, CollaborativeSession<T>) that all packages import
-- [ ] T022 Create providers directory structure in each package:
+- [x] T016 Create type definitions package structure in `packages/types/src/` for shared types (User, Session, Party, AuthToken) per data-model.md
+- [x] T017 [P] Extract all authentication types to `packages/auth/src/types/` (User.ts, AuthToken.ts, SessionState.ts)
+- [x] T018 [P] Extract all UI types to `packages/ui/src/types/` (ThemeConfig.ts, NavItem.ts, etc.)
+- [x] T019 [P] Extract all party/collaboration types to `packages/template/src/types/` (Party.ts, PartyMember.ts, Session.ts)
+- [x] T020 [P] Extract all sudoku-specific types to `packages/sudoku/src/types/` (Cell.ts, SudokuGrid.ts, SudokuState.ts)
+- [x] T021 Extract shared generic types to `packages/types/src/` (Parties<T>, CollaborativeSession<T>) that all packages import
+- [x] T022 Create providers directory structure in each package:
   - `packages/auth/src/providers/AuthProvider.tsx`
   - `packages/ui/src/providers/ThemeProvider.tsx`
   - `packages/template/src/providers/PartyProvider.tsx`
-- [ ] T023 [P] Create hooks directory structure in each package (empty files for now):
+- [x] T023 [P] Create hooks directory structure in each package (empty files for now):
   - `packages/auth/src/hooks/` (useAuth.ts, useSession.ts, useUser.ts)
   - `packages/ui/src/hooks/` (useTheme.ts, useDarkMode.ts)
   - `packages/template/src/hooks/` (useParty.ts, useMembership.ts, useSession.ts)
   - `packages/sudoku/src/hooks/` (useTimer.ts, useSudokuState.ts)
-- [ ] T024 Create components directory structure in each package:
+- [x] T024 Create components directory structure in each package:
   - `packages/auth/src/components/` (LoginForm, RegisterForm)
   - `packages/ui/src/components/` (Header, Footer, Button, Modal)
   - `packages/template/src/components/` (PartyList, PartyDetails, SessionList)
   - `packages/sudoku/src/components/` (SudokuGrid, NumberPad, RaceTrack, Timer)
-- [ ] T025 Update import paths in root `jest.setup.js` and `jest.config.js` to use `@sudoku-web/` aliases instead of relative paths
-- [ ] T026 Update root `.eslintrc.json` to include new packages in linting scope
-- [ ] T027 Verify all packages can be built: `npm run build` (should succeed with empty packages)
-- [ ] T028 Verify TypeScript compilation passes for all packages: `npx tsc --noEmit` (should have zero errors)
-- [ ] T029 Create empty test files for each package to verify jest can find and run tests
+- [x] T025 Update import paths in root `jest.setup.js` and `jest.config.js` to use `@sudoku-web/` aliases instead of relative paths
+- [x] T026 Update root `.eslintrc.json` to include new packages in linting scope
+- [x] T027 Verify all packages can be built: `npm run build` (should succeed with empty packages)
+- [x] T028 Verify TypeScript compilation passes for all packages: `npx tsc --noEmit` (should have zero errors)
+- [x] T029 Create empty test files for each package to verify jest can find and run tests
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -84,34 +84,34 @@
 
 ### Implementation for User Story 1
 
-- [ ] T030 [P] [US1] Move authentication components from `apps/sudoku/src/components/auth/` to `packages/auth/src/components/`: LoginForm, RegisterForm, OAuthProviders
-- [ ] T031 [P] [US1] Move authentication hooks from `apps/sudoku/src/hooks/` to `packages/auth/src/hooks/`: useAuth, useSession, useUser with full implementations
-- [ ] T032 [P] [US1] Move AuthProvider from `apps/sudoku/src/providers/` to `packages/auth/src/providers/AuthProvider.tsx` with context implementation
-- [ ] T033 [P] [US1] Move authentication services from `apps/sudoku/src/services/` to `packages/auth/src/services/`: tokenService, sessionService
-- [ ] T034 [US1] Export public API from `packages/auth/src/index.ts`: AuthProvider, useAuth, useSession, useUser hooks, and types
-- [ ] T035 [P] [US1] Move UI components from `apps/sudoku/src/components/` to `packages/ui/src/components/`: Header, Footer, Navigation, Buttons, Modals (ensure generic - no sudoku refs)
-- [ ] T036 [P] [US1] Move theme/styling logic from `apps/sudoku/src/` to `packages/ui/src/`: ThemeProvider, useTheme, useDarkMode hooks, Tailwind config
-- [ ] T037 [US1] Update `packages/ui/src/components/Header.tsx` to be game-agnostic (remove sudoku-specific nav items)
-- [ ] T038 [US1] Export public API from `packages/ui/src/index.ts`: Header, Footer, Button, Modal, ThemeProvider, useTheme, useDarkMode
-- [ ] T039 [P] [US1] Move party management components from `apps/sudoku/src/components/` to `packages/template/src/components/`: PartyList, PartyDetails, InvitationForm, SessionList
-- [ ] T040 [P] [US1] Move party/session hooks from `apps/sudoku/src/hooks/` to `packages/template/src/hooks/`: useParty, useMembership, useSession, useInvitations
-- [ ] T041 [P] [US1] Move party/session providers from `apps/sudoku/src/providers/` to `packages/template/src/providers/`: PartyProvider
-- [ ] T042 [P] [US1] Move party/session services from `apps/sudoku/src/services/` to `packages/template/src/services/`: partyService, membershipService
-- [ ] T043 [US1] Ensure all types in `packages/template/` are game-agnostic (Party, Session, PartyMember use generics, not Sudoku-specific)
-- [ ] T044 [US1] Export public API from `packages/template/src/index.ts`: PartyProvider, useParty, useMembership, useSession hooks, types, re-exports from auth and ui packages
-- [ ] T045 [US1] Update `apps/template/src/layout.tsx` to wrap application with providers: AuthProvider, ThemeProvider, PartyProvider from new packages
-- [ ] T046 [US1] Update `apps/template/package.json` to import from new packages: `@sudoku-web/auth`, `@sudoku-web/ui`, `@sudoku-web/template`
-- [ ] T047 [US1] Update all imports in `apps/template/src/` from local paths to package aliases (e.g., `import { useAuth } from '@sudoku-web/auth'`)
-- [ ] T048 [US1] Remove old auth components/hooks/providers from `apps/template/src/` that are now in packages
-- [ ] T049 [US1] Create/update pages in `apps/template/src/app/`: profile page, sessions page, parties page, invitation management
-- [ ] T050 [US1] Update `apps/template/src/app/page.tsx` to show authenticated user interface (no sudoku game)
-- [ ] T051 [US1] Verify `apps/template` builds with zero errors: `npm run build -w apps/template`
-- [ ] T052 [US1] Search `apps/template` for game references - verify zero results: `grep -r "sudoku\|puzzle\|game\|cell\|grid" apps/template/src --include="*.ts" --include="*.tsx" --include="*.js"`
-- [ ] T053 [US1] Search `packages/template/src` for game references - verify zero results (ensure template package is game-agnostic)
-- [ ] T054 [US1] Run all tests for template app: `npm test -w apps/template` - should pass or have no test failures
-- [ ] T055 [US1] Run all tests for new packages: `npm test -w @sudoku-web/auth && npm test -w @sudoku-web/ui && npm test -w @sudoku-web/template`
-- [ ] T056 [US1] Update root test script to verify template app tests pass: `npm test` should include all new packages
-- [ ] T057 [US1] Verify TypeScript strict mode passes for all new packages and template app
+- [x] T030 [P] [US1] Move authentication components from `apps/sudoku/src/components/auth/` to `packages/auth/src/components/`: LoginForm, RegisterForm, OAuthProviders
+- [x] T031 [P] [US1] Move authentication hooks from `apps/sudoku/src/hooks/` to `packages/auth/src/hooks/`: useAuth, useSession, useUser with full implementations
+- [x] T032 [P] [US1] Move AuthProvider from `apps/sudoku/src/providers/` to `packages/auth/src/providers/AuthProvider.tsx` with context implementation
+- [x] T033 [P] [US1] Move authentication services from `apps/sudoku/src/services/` to `packages/auth/src/services/`: tokenService, sessionService
+- [x] T034 [US1] Export public API from `packages/auth/src/index.ts`: AuthProvider, useAuth, useSession, useUser hooks, and types
+- [x] T035 [P] [US1] Move UI components from `apps/sudoku/src/components/` to `packages/ui/src/components/`: Header, Footer, Navigation, Buttons, Modals (ensure generic - no sudoku refs)
+- [x] T036 [P] [US1] Move theme/styling logic from `apps/sudoku/src/` to `packages/ui/src/`: ThemeProvider, useTheme, useDarkMode hooks, Tailwind config
+- [x] T037 [US1] Update `packages/ui/src/components/Header.tsx` to be game-agnostic (remove sudoku-specific nav items)
+- [x] T038 [US1] Export public API from `packages/ui/src/index.ts`: Header, Footer, Button, Modal, ThemeProvider, useTheme, useDarkMode
+- [x] T039 [P] [US1] Move party management components from `apps/sudoku/src/components/` to `packages/template/src/components/`: PartyList, PartyDetails, InvitationForm, SessionList
+- [x] T040 [P] [US1] Move party/session hooks from `apps/sudoku/src/hooks/` to `packages/template/src/hooks/`: useParty, useMembership, useSession, useInvitations
+- [x] T041 [P] [US1] Move party/session providers from `apps/sudoku/src/providers/` to `packages/template/src/providers/`: PartyProvider
+- [x] T042 [P] [US1] Move party/session services from `apps/sudoku/src/services/` to `packages/template/src/services/`: partyService, membershipService
+- [x] T043 [US1] Ensure all types in `packages/template/` are game-agnostic (Party, Session, PartyMember use generics, not Sudoku-specific)
+- [x] T044 [US1] Export public API from `packages/template/src/index.ts`: PartyProvider, useParty, useMembership, useSession hooks, types, re-exports from auth and ui packages
+- [x] T045 [US1] Update `apps/template/src/layout.tsx` to wrap application with providers: AuthProvider, ThemeProvider, PartyProvider from new packages
+- [x] T046 [US1] Update `apps/template/package.json` to import from new packages: `@sudoku-web/auth`, `@sudoku-web/ui`, `@sudoku-web/template`
+- [x] T047 [US1] Update all imports in `apps/template/src/` from local paths to package aliases (e.g., `import { useAuth } from '@sudoku-web/auth'`)
+- [x] T048 [US1] Remove old auth components/hooks/providers from `apps/template/src/` that are now in packages
+- [x] T049 [US1] Create/update pages in `apps/template/src/app/`: profile page, sessions page, parties page, invitation management
+- [x] T050 [US1] Update `apps/template/src/app/page.tsx` to show authenticated user interface (no sudoku game)
+- [x] T051 [US1] Verify `apps/template` builds with zero errors: `npm run build -w apps/template`
+- [x] T052 [US1] Search `apps/template` for game references - verify zero results: `grep -r "sudoku\|puzzle\|game\|cell\|grid" apps/template/src --include="*.ts" --include="*.tsx" --include="*.js"`
+- [x] T053 [US1] Search `packages/template/src` for game references - verify zero results (ensure template package is game-agnostic)
+- [x] T054 [US1] Run all tests for template app: `npm test -w apps/template` - should pass or have no test failures
+- [x] T055 [US1] Run all tests for new packages: `npm test -w @sudoku-web/auth && npm test -w @sudoku-web/ui && npm test -w @sudoku-web/template`
+- [x] T056 [US1] Update root test script to verify template app tests pass: `npm test` should include all new packages
+- [x] T057 [US1] Verify TypeScript strict mode passes for all new packages and template app
 
 **Checkpoint**: User Story 1 complete - Template app is standalone, fully functional, with zero sudoku references
 
@@ -125,23 +125,23 @@
 
 ### Implementation for User Story 2
 
-- [ ] T058 [P] [US2] Move sudoku components from `apps/sudoku/src/components/` to `packages/sudoku/src/components/`: SudokuGrid, SudokuBox, NumberPad, RaceTrack, Timer, TrafficLight (game-specific only)
-- [ ] T059 [P] [US2] Move sudoku helpers from `apps/sudoku/src/helpers/` to `packages/sudoku/src/helpers/`: sudoku algorithms (solve, validate, generate, checkAnswer, etc.)
-- [ ] T060 [P] [US2] Move sudoku utilities from `apps/sudoku/src/utils/` to `packages/sudoku/src/utils/`: puzzle utils, cell calculations (including splitCellId if sudoku-specific)
-- [ ] T061 [P] [US2] Move sudoku hooks from `apps/sudoku/src/hooks/` to `packages/sudoku/src/hooks/`: useTimer, useSudokuState, useDrag (game-specific hooks only)
-- [ ] T062 [US2] Export public API from `packages/sudoku/src/index.ts`: SudokuGrid, RaceTrack, useTimer hooks, types (Cell, SudokuGrid, SudokuState), helpers
-- [ ] T063 [US2] Update `apps/sudoku/package.json` to import from new packages: `@sudoku-web/auth`, `@sudoku-web/ui`, `@sudoku-web/sudoku`, `@sudoku-web/template`
-- [ ] T064 [US2] Update all imports in `apps/sudoku/src/` from local paths to package aliases
-- [ ] T065 [US2] Remove game-specific components/hooks from `apps/sudoku/src/` that are now in `@sudoku-web/sudoku` package
-- [ ] T066 [US2] Update `apps/sudoku/src/layout.tsx` to use same providers as template app (AuthProvider, ThemeProvider, PartyProvider) from packages
-- [ ] T067 [US2] Verify header and footer in sudoku app match template app (should import from `@sudoku-web/ui`)
-- [ ] T068 [US2] Update sudoku game pages to use components from `@sudoku-web/sudoku` package
-- [ ] T069 [US2] Create or update racing page in `apps/sudoku/src/app/` to use party functionality from template package and game logic from sudoku package
-- [ ] T070 [US2] Verify `apps/sudoku` builds with zero errors: `npm run build -w apps/sudoku`
-- [ ] T071 [US2] Verify both apps run with consistent header/footer styling: `npm run dev -w apps/template &  npm run dev -w apps/sudoku`
-- [ ] T072 [US2] Verify user context is consistent between apps (log in one, check other is logged in too if same session)
-- [ ] T073 [US2] Run all tests for sudoku app: `npm test -w apps/sudoku` - should pass
-- [ ] T074 [US2] Verify new package tests still pass: `npm test` should show all packages passing
+- [x] T058 [P] [US2] Move sudoku components from `apps/sudoku/src/components/` to `packages/sudoku/src/components/`: SudokuGrid, SudokuBox, NumberPad, RaceTrack, Timer, TrafficLight (game-specific only)
+- [x] T058 [P] [US2] Move sudoku helpers from `apps/sudoku/src/helpers/` to `packages/sudoku/src/helpers/`: sudoku algorithms (solve, validate, generate, checkAnswer, etc.)
+- [x] T058 [P] [US2] Move sudoku utilities from `apps/sudoku/src/utils/` to `packages/sudoku/src/utils/`: puzzle utils, cell calculations (including splitCellId if sudoku-specific)
+- [x] T058 [P] [US2] Move sudoku hooks from `apps/sudoku/src/hooks/` to `packages/sudoku/src/hooks/`: useTimer, useSudokuState, useDrag (game-specific hooks only)
+- [x] T059 [P] [US2] Export public API from `packages/sudoku/src/index.ts`: SudokuGrid, RaceTrack, useTimer hooks, types (Cell, SudokuGrid, SudokuState), helpers
+- [x] T059 [P] [US2] Update `apps/sudoku/package.json` to import from new packages: `@sudoku-web/auth`, `@sudoku-web/ui`, `@sudoku-web/sudoku`, `@sudoku-web/template`
+- [x] T059 [P] [US2] Update all imports in `apps/sudoku/src/` from local paths to package aliases
+- [x] T059 [P] [US2] Remove game-specific components/hooks from `apps/sudoku/src/` that are now in `@sudoku-web/sudoku` package
+- [x] T059 [P] [US2] Update `apps/sudoku/src/layout.tsx` to use same providers as template app (AuthProvider, ThemeProvider, PartyProvider) from packages
+- [x] T059 [P] [US2] Verify header and footer in sudoku app match template app (should import from `@sudoku-web/ui`)
+- [x] T059 [P] [US2] Update sudoku game pages to use components from `@sudoku-web/sudoku` package
+- [x] T059 [P] [US2] Create or update racing page in `apps/sudoku/src/app/` to use party functionality from template package and game logic from sudoku package
+- [x] T059 [P] [US2] Verify `apps/sudoku` builds with zero errors: `npm run build -w apps/sudoku`
+- [x] T059 [P] [US2] Verify both apps run with consistent header/footer styling: `npm run dev -w apps/template &  npm run dev -w apps/sudoku`
+- [x] T059 [P] [US2] Verify user context is consistent between apps (log in one, check other is logged in too if same session)
+- [x] T059 [P] [US2] Run all tests for sudoku app: `npm test -w apps/sudoku` - should pass
+- [x] T059 [P] [US2] Verify new package tests still pass: `npm test` should show all packages passing
 
 **Checkpoint**: User Story 2 complete - Sudoku app extends template successfully with shared styling and auth
 
