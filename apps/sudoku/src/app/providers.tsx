@@ -1,6 +1,14 @@
 'use client';
 
-import { FetchProvider, CapacitorProvider, UserProvider, GlobalStateProvider, ThemeColorProvider, RevenueCatProvider, SessionsProvider } from '@sudoku-web/template';
+import {
+  FetchProvider,
+  CapacitorProvider,
+  UserProvider,
+  GlobalStateProvider,
+  ThemeColorProvider,
+  RevenueCatProvider,
+  SessionsProvider,
+} from '@sudoku-web/template';
 import PartiesProvider from '@/providers/PartiesProvider';
 import { BookProvider } from '@/providers/BookProvider/BookProvider';
 import { ThemeProvider } from 'next-themes';

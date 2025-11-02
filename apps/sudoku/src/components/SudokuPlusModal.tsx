@@ -1,6 +1,12 @@
 'use client';
 
-import { isCapacitor, isElectron, RevenueCatContext, SubscriptionContext, PREMIUM_FEATURES } from '@sudoku-web/template';
+import {
+  isCapacitor,
+  isElectron,
+  RevenueCatContext,
+  SubscriptionContext,
+  PREMIUM_FEATURES,
+} from '@sudoku-web/template';
 import { PurchasesPackage as CapacitorPackage } from '@revenuecat/purchases-capacitor';
 import { Package as WebPackage } from '@revenuecat/purchases-js';
 import Image from 'next/image';

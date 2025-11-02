@@ -4,7 +4,12 @@ import { GameState, ServerState } from '@/types/state';
 import { calculateCompletionPercentage } from '@/helpers/calculateCompletionPercentage';
 import { useParties } from '@/hooks/useParties';
 import { memo, useMemo } from 'react';
-import { getPlayerColor, getAllUserIds, formatSeconds, Tab } from '@sudoku-web/template';
+import {
+  getPlayerColor,
+  getAllUserIds,
+  formatSeconds,
+  Tab,
+} from '@sudoku-web/template';
 import { TrafficLight } from '@/components/TrafficLight';
 import Link from 'next/link';
 import { RefreshCw } from 'react-feather';

@@ -1,3 +1,5 @@
+'use client';
+
 import { isIOS } from '../../helpers/capacitor';
 import { Share } from '@capacitor/share';
 import { useEffect, useState } from 'react';

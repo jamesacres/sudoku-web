@@ -1,5 +1,13 @@
 'use client';
-import { Footer, useOnline, useServerStorage, UserContext, useSessions, Difficulty, Tab } from '@sudoku-web/template';
+import {
+  Footer,
+  useOnline,
+  useServerStorage,
+  UserContext,
+  useSessions,
+  Difficulty,
+  Tab,
+} from '@sudoku-web/template';
 import MyPuzzlesTab from '@/components/tabs/MyPuzzlesTab';
 import FriendsTab from '@/components/tabs/FriendsTab';
 import ActivityWidget from '@/components/ActivityWidget';

@@ -1,5 +1,11 @@
 import { renderHook, act } from '@testing-library/react';
-import { useServerStorage, useFetch, useOnline, StateType, UserContext } from '@sudoku-web/template';
+import {
+  useServerStorage,
+  useFetch,
+  useOnline,
+  StateType,
+  UserContext,
+} from '@sudoku-web/template';
 import React from 'react';
 
 jest.mock('@sudoku-web/template', () => {

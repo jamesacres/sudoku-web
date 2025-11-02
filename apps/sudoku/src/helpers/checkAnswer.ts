@@ -2,7 +2,59 @@ import { Puzzle, PuzzleRowOrColumn } from '@/types/puzzle';
 import { splitCellId } from '@sudoku-web/template';
 
 // eslint-disable-next-line
-const emptyValidatation = (): Puzzle<boolean|undefined> => [[[[undefined,undefined,undefined],[undefined,undefined,undefined],[undefined,undefined,undefined]],[[undefined,undefined,undefined],[undefined,undefined,undefined],[undefined,undefined,undefined]],[[undefined,undefined,undefined],[undefined,undefined,undefined],[undefined,undefined,undefined]]],[[[undefined,undefined,undefined],[undefined,undefined,undefined],[undefined,undefined,undefined]],[[undefined,undefined,undefined],[undefined,undefined,undefined],[undefined,undefined,undefined]],[[undefined,undefined,undefined],[undefined,undefined,undefined],[undefined,undefined,undefined]]],[[[undefined,undefined,undefined],[undefined,undefined,undefined],[undefined,undefined,undefined]],[[undefined,undefined,undefined],[undefined,undefined,undefined],[undefined,undefined,undefined]],[[undefined,undefined,undefined],[undefined,undefined,undefined],[undefined,undefined,undefined]]]];
+const emptyValidatation = (): Puzzle<boolean | undefined> => [
+  [
+    [
+      [undefined, undefined, undefined],
+      [undefined, undefined, undefined],
+      [undefined, undefined, undefined],
+    ],
+    [
+      [undefined, undefined, undefined],
+      [undefined, undefined, undefined],
+      [undefined, undefined, undefined],
+    ],
+    [
+      [undefined, undefined, undefined],
+      [undefined, undefined, undefined],
+      [undefined, undefined, undefined],
+    ],
+  ],
+  [
+    [
+      [undefined, undefined, undefined],
+      [undefined, undefined, undefined],
+      [undefined, undefined, undefined],
+    ],
+    [
+      [undefined, undefined, undefined],
+      [undefined, undefined, undefined],
+      [undefined, undefined, undefined],
+    ],
+    [
+      [undefined, undefined, undefined],
+      [undefined, undefined, undefined],
+      [undefined, undefined, undefined],
+    ],
+  ],
+  [
+    [
+      [undefined, undefined, undefined],
+      [undefined, undefined, undefined],
+      [undefined, undefined, undefined],
+    ],
+    [
+      [undefined, undefined, undefined],
+      [undefined, undefined, undefined],
+      [undefined, undefined, undefined],
+    ],
+    [
+      [undefined, undefined, undefined],
+      [undefined, undefined, undefined],
+      [undefined, undefined, undefined],
+    ],
+  ],
+];
 
 const checkGrid = (
   initial: Puzzle,

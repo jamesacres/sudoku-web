@@ -1,5 +1,9 @@
 import { describe, it, expect, beforeEach } from '@jest/globals';
-import { isElectron, openBrowser, saveElectronState } from '@sudoku-web/template';
+import {
+  isElectron,
+  openBrowser,
+  saveElectronState,
+} from '@sudoku-web/template';
 
 describe('electron helpers', () => {
   let mockElectronAPI: any;

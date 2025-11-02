@@ -16,7 +16,17 @@ import {
   useRef,
   useState,
 } from 'react';
-import { CelebrationAnimation, useDrag, UserContext, RevenueCatContext, SubscriptionContext, DAILY_LIMITS, isCapacitor, useSessions, AppDownloadModal } from '@sudoku-web/template';
+import {
+  CelebrationAnimation,
+  useDrag,
+  UserContext,
+  RevenueCatContext,
+  SubscriptionContext,
+  DAILY_LIMITS,
+  isCapacitor,
+  useSessions,
+  AppDownloadModal,
+} from '@sudoku-web/template';
 import { RaceTrack } from '../RaceTrack';
 import MemoisedSidebarButton from '../SidebarButton/SidebarButton';
 import {

@@ -10,7 +10,7 @@ import {
   canUseCheckGrid,
   getRemainingUndos,
   getRemainingCheckGrids,
-  DAILY_LIMITS
+  DAILY_LIMITS,
 } from '@sudoku-web/template';
 
 describe('dailyActionCounter', () => {

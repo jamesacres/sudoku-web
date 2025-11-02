@@ -1,7 +1,15 @@
 import { Party, SessionParty, Session } from '@/types/serverTypes';
 import { ServerState } from '@/types/state';
 import { PartyInviteButton } from '../PartyInviteButton/PartyInviteButton';
-import { CopyButton, calculateSeconds, UserContext, RevenueCatContext, SubscriptionContext, getPlayerColor, getAllUserIds } from '@sudoku-web/template';
+import {
+  CopyButton,
+  calculateSeconds,
+  UserContext,
+  RevenueCatContext,
+  SubscriptionContext,
+  getPlayerColor,
+  getAllUserIds,
+} from '@sudoku-web/template';
 import SimpleSudoku from '../SimpleSudoku';
 import { TimerDisplay } from '../TimerDisplay/TimerDisplay';
 import { calculateCompletionPercentage } from '@/helpers/calculateCompletionPercentage';

@@ -5,7 +5,7 @@ import {
   useLocalStorage,
   StateType,
   Timer,
-  calculateSeconds
+  calculateSeconds,
 } from '@sudoku-web/template';
 
 // eslint-disable-next-line no-undef

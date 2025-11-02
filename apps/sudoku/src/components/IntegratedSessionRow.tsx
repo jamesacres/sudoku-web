@@ -2,7 +2,11 @@
 import { useContext } from 'react';
 import { Party, ServerStateResult } from '@/types/serverTypes';
 import { ServerState } from '@/types/state';
-import { UserContext, calculateSeconds, useSessions } from '@sudoku-web/template';
+import {
+  UserContext,
+  calculateSeconds,
+  useSessions,
+} from '@sudoku-web/template';
 import { useParties } from '@/hooks/useParties';
 import { calculateCompletionPercentage } from '@/helpers/calculateCompletionPercentage';
 import {
