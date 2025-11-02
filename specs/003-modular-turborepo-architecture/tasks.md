@@ -155,24 +155,24 @@
 
 ### Implementation for User Story 3
 
-- [ ] T075 [P] [US3] Create comprehensive `README.md` in `packages/auth/` documenting: purpose, public API, components, hooks, types, integration guide, examples
-- [ ] T076 [P] [US3] Create comprehensive `README.md` in `packages/ui/` documenting: purpose, public API, components, styling, theming, integration guide
-- [ ] T077 [P] [US3] Create comprehensive `README.md` in `packages/template/` documenting: purpose, party/session management, public API, components, hooks, integration guide
-- [ ] T078 [P] [US3] Create comprehensive `README.md` in `packages/sudoku/` documenting: purpose, game logic, components, types, integration guide
-- [ ] T079 [P] [US3] Create `ARCHITECTURE.md` in repo root documenting: package organization, dependency graph, design decisions, how to create new apps
-- [ ] T080 [US3] Add inline documentation/JSDoc comments to all public exports in each package's `index.ts`
-- [ ] T081 [P] [US3] Verify zero sudoku references in `packages/shared/src/`: search for "sudoku\|puzzle\|game\|cell\|grid" - should return zero
-- [ ] T082 [P] [US3] Verify zero sudoku references in `packages/types/src/`: search for "sudoku\|puzzle\|game\|cell\|grid" - should return zero
-- [ ] T083 [P] [US3] Verify zero sudoku references in `packages/auth/src/`: search for "sudoku\|puzzle\|game" - should return zero
-- [ ] T084 [P] [US3] Verify zero sudoku references in `packages/ui/src/`: search for "sudoku\|puzzle\|game" - should return zero
-- [ ] T085 [P] [US3] Verify zero sudoku references in `packages/template/src/`: search for "sudoku\|puzzle" (ok for cell/grid in generic contexts) - document exceptions if any
-- [ ] T086 [US3] Create dependency graph diagram and document in ARCHITECTURE.md showing relationships between packages
-- [ ] T087 [P] [US3] Verify no circular dependencies: `npm run build 2>&1 | grep -i "circular"` should return empty
-- [ ] T088 [US3] Create MIGRATION.md documenting how imports changed from v1.x to v2.0.0 with before/after examples
-- [ ] T089 [US3] Add architecture diagram to main README.md showing package relationships and app composition
-- [ ] T090 [US3] Verify all packages have explicit exports in `index.ts` and document the public API contract in comments
-- [ ] T091 [US3] Verify TypeScript path aliases work correctly: `npx tsc --noEmit` should pass for all files using path aliases
-- [ ] T092 [US3] Run full test suite: `npm test` - all tests should pass, verify 100% pass rate
+- [x] T075 [P] [US3] Create comprehensive `README.md` in `packages/auth/` documenting: purpose, public API, components, hooks, types, integration guide, examples
+- [x] T076 [P] [US3] Create comprehensive `README.md` in `packages/ui/` documenting: purpose, public API, components, styling, theming, integration guide
+- [x] T077 [P] [US3] Create comprehensive `README.md` in `packages/template/` documenting: purpose, party/session management, public API, components, hooks, integration guide
+- [x] T078 [P] [US3] Create comprehensive `README.md` in `packages/sudoku/` documenting: purpose, game logic, components, types, integration guide
+- [x] T079 [P] [US3] Create `ARCHITECTURE.md` in repo root documenting: package organization, dependency graph, design decisions, how to create new apps
+- [x] T080 [US3] Add inline documentation/JSDoc comments to all public exports in each package's `index.ts`
+- [x] T081 [P] [US3] Verify zero sudoku references in `packages/shared/src/`: search for "sudoku\|puzzle\|game\|cell\|grid" - should return zero
+- [x] T082 [P] [US3] Verify zero sudoku references in `packages/types/src/`: search for "sudoku\|puzzle\|game\|cell\|grid" - should return zero
+- [x] T083 [P] [US3] Verify zero sudoku references in `packages/auth/src/`: search for "sudoku\|puzzle\|game" - should return zero
+- [x] T084 [P] [US3] Verify zero sudoku references in `packages/ui/src/`: search for "sudoku\|puzzle\|game" - should return zero
+- [x] T085 [P] [US3] Verify zero sudoku references in `packages/template/src/`: search for "sudoku\|puzzle" (ok for cell/grid in generic contexts) - document exceptions if any
+- [x] T086 [US3] Create dependency graph diagram and document in ARCHITECTURE.md showing relationships between packages
+- [x] T087 [P] [US3] Verify no circular dependencies: `npm run build 2>&1 | grep -i "circular"` should return empty
+- [x] T088 [US3] Create MIGRATION.md documenting how imports changed from v1.x to v2.0.0 with before/after examples
+- [x] T089 [US3] Add architecture diagram to main README.md showing package relationships and app composition
+- [x] T090 [US3] Verify all packages have explicit exports in `index.ts` and document the public API contract in comments
+- [x] T091 [US3] Verify TypeScript path aliases work correctly: `npx tsc --noEmit` should pass for all files using path aliases
+- [x] T092 [US3] Run full test suite: `npm test` - all tests should pass, verify 100% pass rate
 
 **Checkpoint**: Architecture is clearly organized and understandable. Package responsibilities are obvious.
 
@@ -186,19 +186,19 @@
 
 ### Implementation for User Story 4
 
-- [ ] T093 [P] [US4] Search `packages/shared/src/helpers/` for sudoku-specific logic (splitCellId, sudoku algorithms) and move to `packages/sudoku/src/helpers/`
-- [ ] T094 [P] [US4] Search `packages/shared/src/utils/` for sudoku-specific utilities and move to `packages/sudoku/src/utils/`
-- [ ] T095 [P] [US4] Verify generic utilities remain in shared: calculateSeconds, formatSeconds, date utilities, string utilities
-- [ ] T096 [P] [US4] Search `packages/types/src/` for sudoku-specific type definitions: Cell, Grid, Puzzle, SudokuState - move to `packages/sudoku/src/types/`
-- [ ] T097 [P] [US4] Verify generic types remain in types package: User, Session<T>, Party, PartyMember, AuthToken - these use generics for flexibility
-- [ ] T098 [US4] Update imports in `packages/sudoku/` to import moved types and utilities
-- [ ] T099 [US4] Update imports in any other packages that referenced sudoku types (should now import from @sudoku-web/sudoku)
-- [ ] T100 [P] [US4] Update `packages/shared/src/index.ts` to export only generic utilities (no sudoku references)
-- [ ] T101 [P] [US4] Update `packages/types/src/index.ts` to export only generic types (no sudoku references)
-- [ ] T102 [P] [US4] Verify `packages/sudoku/src/index.ts` exports all moved sudoku-specific utilities and types
-- [ ] T103 [US4] Run full test suite: `npm test` - all tests should still pass (only imports changed, not logic)
-- [ ] T104 [US4] Verify no package has circular dependencies after moves: `npm run build 2>&1 | grep -i "circular"`
-- [ ] T105 [US4] Verify shared and types packages can be used independently of sudoku package
+- [x] T093 [P] [US4] Search `packages/shared/src/helpers/` for sudoku-specific logic (splitCellId, sudoku algorithms) and move to `packages/sudoku/src/helpers/`
+- [x] T094 [P] [US4] Search `packages/shared/src/utils/` for sudoku-specific utilities and move to `packages/sudoku/src/utils/`
+- [x] T095 [P] [US4] Verify generic utilities remain in shared: calculateSeconds, formatSeconds, date utilities, string utilities
+- [x] T096 [P] [US4] Search `packages/types/src/` for sudoku-specific type definitions: Cell, Grid, Puzzle, SudokuState - move to `packages/sudoku/src/types/`
+- [x] T097 [P] [US4] Verify generic types remain in types package: User, Session<T>, Party, PartyMember, AuthToken - these use generics for flexibility
+- [x] T098 [US4] Update imports in `packages/sudoku/` to import moved types and utilities
+- [x] T099 [US4] Update imports in any other packages that referenced sudoku types (should now import from @sudoku-web/sudoku)
+- [x] T100 [P] [US4] Update `packages/shared/src/index.ts` to export only generic utilities (no sudoku references)
+- [x] T101 [P] [US4] Update `packages/types/src/index.ts` to export only generic types (no sudoku references)
+- [x] T102 [P] [US4] Verify `packages/sudoku/src/index.ts` exports all moved sudoku-specific utilities and types
+- [x] T103 [US4] Run full test suite: `npm test` - all tests should still pass (only imports changed, not logic)
+- [x] T104 [US4] Verify no package has circular dependencies after moves: `npm run build 2>&1 | grep -i "circular"`
+- [x] T105 [US4] Verify shared and types packages can be used independently of sudoku package
 
 **Checkpoint**: Shared packages are truly generic and reusable
 
@@ -212,19 +212,19 @@
 
 ### Implementation for User Story 5
 
-- [ ] T106 [P] [US5] Verify all theme configuration is in `packages/ui/src/styles/` (tailwind.config.js, theme utilities)
-- [ ] T107 [P] [US5] Move any remaining theme code from `apps/sudoku/src/styles/` to `packages/ui/src/styles/`
-- [ ] T108 [P] [US5] Move any remaining theme code from `apps/template/src/styles/` to `packages/ui/src/styles/`
-- [ ] T109 [US5] Update both app's `tailwind.config.js` to extend from shared UI package configuration
-- [ ] T110 [P] [US5] Extract Header component subparts if not already: navigation, user menu, logo (all in `packages/ui/src/components/Header/`)
-- [ ] T111 [P] [US5] Extract Footer component subparts: links, copyright, social icons (all in `packages/ui/src/components/Footer/`)
-- [ ] T112 [P] [US5] Verify both apps import Header and Footer from `@sudoku-web/ui`
-- [ ] T113 [P] [US5] Create theme switching functionality in `packages/ui/src/hooks/useTheme.ts` if not already present
-- [ ] T114 [US5] Verify dark mode works identically in both apps (toggle in template app, check sudoku app)
-- [ ] T115 [US5] Add theme customization example to `packages/ui/README.md`
-- [ ] T116 [US5] Ensure all shared UI components have TypeScript types exported from `packages/ui/src/index.ts`
-- [ ] T117 [P] [US5] Run visual regression tests if available to ensure consistent rendering across both apps
-- [ ] T118 [US5] Document styling conventions in `packages/ui/README.md` (Tailwind utilities, custom classes)
+- [x] T106 [P] [US5] Verify all theme configuration is in `packages/ui/src/styles/` (tailwind.config.js, theme utilities)
+- [x] T107 [P] [US5] Move any remaining theme code from `apps/sudoku/src/styles/` to `packages/ui/src/styles/`
+- [x] T108 [P] [US5] Move any remaining theme code from `apps/template/src/styles/` to `packages/ui/src/styles/`
+- [x] T109 [US5] Update both app's `tailwind.config.js` to extend from shared UI package configuration
+- [x] T110 [P] [US5] Extract Header component subparts if not already: navigation, user menu, logo (all in `packages/ui/src/components/Header/`)
+- [x] T111 [P] [US5] Extract Footer component subparts: links, copyright, social icons (all in `packages/ui/src/components/Footer/`)
+- [x] T112 [P] [US5] Verify both apps import Header and Footer from `@sudoku-web/ui`
+- [x] T113 [P] [US5] Create theme switching functionality in `packages/ui/src/hooks/useTheme.ts` if not already present
+- [x] T114 [US5] Verify dark mode works identically in both apps (toggle in template app, check sudoku app)
+- [x] T115 [US5] Add theme customization example to `packages/ui/README.md`
+- [x] T116 [US5] Ensure all shared UI components have TypeScript types exported from `packages/ui/src/index.ts`
+- [x] T117 [P] [US5] Run visual regression tests if available to ensure consistent rendering across both apps
+- [x] T118 [US5] Document styling conventions in `packages/ui/README.md` (Tailwind utilities, custom classes)
 
 **Checkpoint**: UI components and theme fully extracted and shared
 
@@ -238,21 +238,21 @@
 
 ### Implementation for User Story 6
 
-- [ ] T119 [P] [US6] Verify `packages/auth/src/components/` has all auth UI: LoginForm, RegisterForm, OAuthButton components
-- [ ] T120 [P] [US6] Verify `packages/auth/src/hooks/` has all auth hooks: useAuth, useSession, useUser
-- [ ] T121 [P] [US6] Verify `packages/auth/src/services/` has token management: tokenService, sessionService
-- [ ] T122 [US6] Ensure AuthProvider in `packages/auth/src/providers/AuthProvider.tsx` handles token refresh, session persistence, logout
-- [ ] T123 [P] [US6] Verify both apps' root layout wraps with AuthProvider from `@sudoku-web/auth`
-- [ ] T124 [P] [US6] Verify both apps import useAuth and other hooks from `@sudoku-web/auth`, not local files
-- [ ] T125 [US6] Test auth flow in template app: login → profile → logout
-- [ ] T126 [US6] Test auth flow in sudoku app: login → profile → logout
-- [ ] T127 [US6] Test session persistence: log in app, refresh page, verify still logged in
-- [ ] T128 [P] [US6] Test OAuth flow consistency: Google login in template app, verify works same way in sudoku app
-- [ ] T129 [P] [US6] Verify error handling is consistent: bad password, invalid email, token expired
-- [ ] T130 [US6] Update `packages/auth/README.md` with integration guide and examples for both template and sudoku apps
-- [ ] T131 [US6] Verify type safety: all auth types exported from `packages/auth/src/index.ts` and used in both apps
-- [ ] T132 [P] [US6] Run auth package tests: `npm test -w @sudoku-web/auth` - all should pass
-- [ ] T133 [US6] Test cross-app session: log in template app, check sudoku app recognizes same user (if same origin)
+- [x] T119 [P] [US6] Verify `packages/auth/src/components/` has all auth UI: LoginForm, RegisterForm, OAuthButton components
+- [x] T120 [P] [US6] Verify `packages/auth/src/hooks/` has all auth hooks: useAuth, useSession, useUser
+- [x] T121 [P] [US6] Verify `packages/auth/src/services/` has token management: tokenService, sessionService
+- [x] T122 [US6] Ensure AuthProvider in `packages/auth/src/providers/AuthProvider.tsx` handles token refresh, session persistence, logout
+- [x] T123 [P] [US6] Verify both apps' root layout wraps with AuthProvider from `@sudoku-web/auth`
+- [x] T124 [P] [US6] Verify both apps import useAuth and other hooks from `@sudoku-web/auth`, not local files
+- [x] T125 [US6] Test auth flow in template app: login → profile → logout
+- [x] T126 [US6] Test auth flow in sudoku app: login → profile → logout
+- [x] T127 [US6] Test session persistence: log in app, refresh page, verify still logged in
+- [x] T128 [P] [US6] Test OAuth flow consistency: Google login in template app, verify works same way in sudoku app
+- [x] T129 [P] [US6] Verify error handling is consistent: bad password, invalid email, token expired
+- [x] T130 [US6] Update `packages/auth/README.md` with integration guide and examples for both template and sudoku apps
+- [x] T131 [US6] Verify type safety: all auth types exported from `packages/auth/src/index.ts` and used in both apps
+- [x] T132 [P] [US6] Run auth package tests: `npm test -w @sudoku-web/auth` - all should pass
+- [x] T133 [US6] Test cross-app session: log in template app, check sudoku app recognizes same user (if same origin)
 
 **Checkpoint**: Auth package fully extracted and reusable across apps
 
@@ -262,26 +262,26 @@
 
 **Purpose**: Final improvements, documentation, and quality assurance
 
-- [ ] T134 [P] Update root `README.md` with architecture overview and quick start instructions
-- [ ] T135 [P] Update root `README.md` with links to each package's README
-- [ ] T136 [P] Create `QUICKSTART.md` at repo root (or link to `/specs/003-modular-turborepo-architecture/quickstart.md`)
-- [ ] T137 [P] Update CHANGELOG.md documenting major version change (v2.0.0) and refactoring
-- [ ] T138 Run complete test suite: `npm test` - verify 100% pass rate and >99% of tests passing (constitutional requirement)
-- [ ] T139 Run full build: `npm run build` - verify all packages and apps build successfully
-- [ ] T140 [P] Run linting: `npm run lint` - verify no errors or warnings
-- [ ] T141 [P] Run TypeScript check: `npx tsc --noEmit` - verify strict mode passes for all files
-- [ ] T142 Verify bundle sizes haven't increased: compare before/after for both apps
-- [ ] T143 [P] Update package.json version numbers to 2.0.0 for all packages that have breaking changes
-- [ ] T144 [P] Review import aliases in root `tsconfig.json` - ensure all match actual package names
-- [ ] T145 [P] Update `.github/workflows/` CI/CD pipelines if any to build and test all packages independently
-- [ ] T146 Create migration guide for any downstream packages or apps that depend on old structure
-- [ ] T147 [P] Run smoke tests: start both apps locally and verify basic functionality
+- [x] T134 [P] Update root `README.md` with architecture overview and quick start instructions
+- [x] T135 [P] Update root `README.md` with links to each package's README
+- [x] T136 [P] Create `QUICKSTART.md` at repo root (or link to `/specs/003-modular-turborepo-architecture/quickstart.md`)
+- [x] T137 [P] Update CHANGELOG.md documenting major version change (v2.0.0) and refactoring
+- [x] T138 Run complete test suite: `npm test` - verify 100% pass rate and >99% of tests passing (constitutional requirement)
+- [x] T139 Run full build: `npm run build` - verify all packages and apps build successfully
+- [x] T140 [P] Run linting: `npm run lint` - verify no errors or warnings
+- [x] T141 [P] Run TypeScript check: `npx tsc --noEmit` - verify strict mode passes for all files
+- [x] T142 Verify bundle sizes haven't increased: compare before/after for both apps
+- [x] T143 [P] Update package.json version numbers to 2.0.0 for all packages that have breaking changes
+- [x] T144 [P] Review import aliases in root `tsconfig.json` - ensure all match actual package names
+- [x] T145 [P] Update `.github/workflows/` CI/CD pipelines if any to build and test all packages independently
+- [x] T146 Create migration guide for any downstream packages or apps that depend on old structure
+- [x] T147 [P] Run smoke tests: start both apps locally and verify basic functionality
   - Template: login, create party, invite user
   - Sudoku: login, play puzzle, create race, invite players
-- [ ] T148 Document known limitations or edge cases from Edge Cases section in spec.md
-- [ ] T149 [P] Create example app documentation for future app creators (how to use template + auth packages)
-- [ ] T150 [P] Review all public APIs one final time - ensure exports are clean and complete
-- [ ] T151 Final verification: search entire `packages/` directory for sudoku references - document any exceptions
+- [x] T148 Document known limitations or edge cases from Edge Cases section in spec.md
+- [x] T149 [P] Create example app documentation for future app creators (how to use template + auth packages)
+- [x] T150 [P] Review all public APIs one final time - ensure exports are clean and complete
+- [x] T151 Final verification: search entire `packages/` directory for sudoku references - document any exceptions
 
 **Checkpoint**: Refactoring complete, all quality gates passed, ready for production
 
