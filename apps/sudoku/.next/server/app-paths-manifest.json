@@ -1,0 +1,16 @@
+{
+  "/auth/page": "app/auth/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/book/page": "app/book/page.js",
+  "/import/page": "app/import/page.js",
+  "/invite/page": "app/invite/page.js",
+  "/restoreState/page": "app/restoreState/page.js",
+  "/page": "app/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/test-covers/page": "app/test-covers/page.js",
+  "/testers/page": "app/testers/page.js",
+  "/test-errors/page": "app/test-errors/page.js",
+  "/puzzle/page": "app/puzzle/page.js",
+  "/[...not_found]/page": "app/[...not_found]/page.js",
+  "/icon.svg/route": "app/icon.svg/route.js"
+}

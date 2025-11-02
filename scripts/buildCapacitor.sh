@@ -1,6 +1,8 @@
 export JAVA_HOME=/Applications/Android\ Studio.app/Contents/jbr/Contents/Home
-rm -rf dist
-rm -rf out
+rm -rf apps/sudoku/dist
+rm -rf apps/sudoku/out
 npm install
-IS_CAPACITOR=true next build
+cd apps/sudoku
+IS_CAPACITOR=true npx next build
+cd ../..
 npx cap sync

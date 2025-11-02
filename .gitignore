@@ -12,6 +12,8 @@ node_modules
 # next.js
 /.next/
 /out/
+apps/*/.next/
+apps/*/out/
 
 # production
 /build
@@ -42,3 +44,6 @@ next-env.d.ts
 .claude
 
 android/app/release
+
+# turborepo
+.turbo

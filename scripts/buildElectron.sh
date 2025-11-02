@@ -1,12 +1,15 @@
 #!/bin/bash
-rm -rf dist
-rm -rf out
+rm -rf apps/sudoku/dist
+rm -rf apps/sudoku/out
+rm -rf app
 npm install
-IS_ELECTRON=true next build
+cd apps/sudoku
+IS_ELECTRON=true npx next build
+cd ../..
 cd electron
 npm install
 cd ..
 cp -R electron app
-cp -R out app/out
+cp -R apps/sudoku/out app/out
 electron-builder
 rm -rf app

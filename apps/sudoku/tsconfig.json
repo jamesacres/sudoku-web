@@ -1,0 +1,24 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@sudoku-web/template": ["../../apps/template/src"],
+      "@sudoku-web/template/*": ["../../apps/template/src/*"],
+      "@sudoku-web/types": ["../../packages/types/src"],
+      "@sudoku-web/types/*": ["../../packages/types/src/*"],
+      "@sudoku-web/shared": ["../../packages/shared/src"],
+      "@sudoku-web/shared/*": ["../../packages/shared/src/*"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

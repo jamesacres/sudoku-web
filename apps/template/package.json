@@ -1,0 +1,42 @@
+{
+  "name": "@sudoku-web/template",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./components": "./src/components/index.ts",
+    "./hooks": "./src/hooks/index.ts",
+    "./providers": "./src/providers/index.ts",
+    "./types": "./src/types/index.ts",
+    "./utils": "./src/utils/index.ts"
+  },
+  "scripts": {
+    "dev": "tsc --watch --noEmit",
+    "build": "tsc --noEmit",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src/",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@headlessui/react": "^1.7.19",
+    "@revenuecat/purchases-capacitor": "^11.2.6",
+    "@revenuecat/purchases-js": "^1.9.0",
+    "@capacitor/core": "^7.0.0",
+    "capacitor-secure-storage-plugin": "^0.11.0",
+    "next": "^14.1.0",
+    "next-themes": "^0.2.1",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-feather": "^2.0.10",
+    "@sudoku-web/types": "*",
+    "@sudoku-web/shared": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "typescript": "^5"
+  }
+}

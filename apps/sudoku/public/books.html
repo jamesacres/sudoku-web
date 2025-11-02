@@ -1,0 +1,2683 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sudoku Race Monthly Covers</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Orbitron:wght@400;700&family=Creepster&display=swap" rel="stylesheet">
+    <style>
+      
+      * {
+        box-sizing: border-box;
+      }
+      
+      body {
+        margin: 0;
+        padding: 20px;
+        font-family: "Arial", sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      .covers-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      .cover {
+        width: 300px;
+        height: 450px;
+        position: relative;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        margin: 0 auto;
+      }
+
+      .cover-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
+
+      .cover-content {
+        position: relative;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        padding: 30px 25px;
+        box-sizing: border-box;
+        color: white;
+        text-align: center;
+      }
+
+      .title {
+        font-size: 32px;
+        font-weight: bold;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        margin-bottom: 5px;
+        letter-spacing: 1px;
+      }
+
+      .subtitle {
+        font-size: 18px;
+        margin-bottom: 20px;
+        opacity: 0.9;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+      }
+
+      .sudoku-grid {
+        width: 120px;
+        height: 120px;
+        margin: 20px auto;
+        border: 3px solid rgba(255, 255, 255, 0.8);
+        border-radius: 8px;
+        display: grid;
+        grid-template-columns: repeat(9, 1fr);
+        grid-template-rows: repeat(9, 1fr);
+        background: rgba(255, 255, 255, 0.9);
+        gap: 1px;
+      }
+
+      .cell {
+        background: rgba(255, 255, 255, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 8px;
+        color: #333;
+        font-weight: bold;
+      }
+
+      .cell.thick-right {
+        border-right: 1px solid #333;
+      }
+      .cell.thick-bottom {
+        border-bottom: 1px solid #333;
+      }
+
+      .stats {
+        margin-top: auto;
+        background: rgba(0, 0, 0, 0.3);
+        padding: 15px;
+        border-radius: 10px;
+        backdrop-filter: blur(10px);
+      }
+
+      .stat-line {
+        margin: 3px 0;
+        font-size: 12px;
+      }
+
+      .decorative-element {
+        position: absolute;
+        opacity: 0.2;
+      }
+
+      /* Monthly themes with enhanced backgrounds */
+      .january {
+        background: /* Large snowflakes - scattered randomly */
+          radial-gradient(
+            circle 3px at 18% 22%,
+            white 50%,
+            rgba(255, 255, 255, 0.8) 60%,
+            transparent 70%
+          ),
+          radial-gradient(
+          circle 2px at 73% 31%,
+          white 50%,
+          rgba(255, 255, 255, 0.9) 60%,
+          transparent 70%
+        ),
+          radial-gradient(
+          circle 4px at 42% 68%,
+          white 50%,
+          rgba(255, 255, 255, 0.7) 60%,
+          transparent 70%
+        ),
+          radial-gradient(
+          circle 2px at 87% 79%,
+          white 50%,
+          rgba(255, 255, 255, 0.8) 60%,
+          transparent 70%
+        ),
+          radial-gradient(
+          circle 3px at 11% 63%,
+          white 50%,
+          rgba(255, 255, 255, 0.6) 60%,
+          transparent 70%
+        ),
+          radial-gradient(
+          circle 2px at 94% 38%,
+          white 50%,
+          rgba(255, 255, 255, 0.9) 60%,
+          transparent 70%
+        ),
+          radial-gradient(
+          circle 3px at 67% 15%,
+          white 50%,
+          rgba(255, 255, 255, 0.7) 60%,
+          transparent 70%
+        ),
+          radial-gradient(
+          circle 2px at 29% 89%,
+          white 50%,
+          rgba(255, 255, 255, 0.8) 60%,
+          transparent 70%
+        ),
+           /* Medium snowflakes */radial-gradient(
+          circle 2px at 56% 43%,
+          white 50%,
+          rgba(255, 255, 255, 0.7) 60%,
+          transparent 70%
+        ),
+          radial-gradient(
+          circle 1px at 35% 17%,
+          rgba(255, 255, 255, 0.9) 100%,
+          transparent 100%
+        ),
+          radial-gradient(
+          circle 1px at 81% 54%,
+          rgba(255, 255, 255, 0.8) 100%,
+          transparent 100%
+        ),
+          radial-gradient(
+          circle 1px at 24% 76%,
+          rgba(255, 255, 255, 0.7) 100%,
+          transparent 100%
+        ),
+           /* Small snow dots - more scattered */radial-gradient(
+          circle 1px at 62% 12%,
+          rgba(255, 255, 255, 0.8) 100%,
+          transparent 100%
+        ),
+          radial-gradient(
+          circle 1px at 8% 34%,
+          rgba(255, 255, 255, 0.6) 100%,
+          transparent 100%
+        ),
+          radial-gradient(
+          circle 1px at 91% 67%,
+          rgba(255, 255, 255, 0.9) 100%,
+          transparent 100%
+        ),
+          radial-gradient(
+          circle 1px at 37% 95%,
+          rgba(255, 255, 255, 0.7) 100%,
+          transparent 100%
+        ),
+          radial-gradient(
+          circle 1px at 74% 26%,
+          rgba(255, 255, 255, 0.5) 100%,
+          transparent 100%
+        ),
+          radial-gradient(
+          circle 1px at 15% 48%,
+          rgba(255, 255, 255, 0.8) 100%,
+          transparent 100%
+        ),
+          radial-gradient(
+          circle 1px at 88% 83%,
+          rgba(255, 255, 255, 0.6) 100%,
+          transparent 100%
+        ),
+          radial-gradient(
+          circle 1px at 46% 7%,
+          rgba(255, 255, 255, 0.9) 100%,
+          transparent 100%
+        ),
+           /* Base gradient */linear-gradient(
+          135deg,
+          #0f3460 0%,
+          #2c5282 50%,
+          #4299e1 100%
+        );
+        background-size:
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%;
+      }
+
+      .february {
+        background: linear-gradient(135deg, #ff6b9d 0%, #e91e63 50%, #ffc1cc 100%);
+      }
+      .february::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background:
+          radial-gradient(
+            ellipse at 30% 40%,
+            rgba(255, 182, 193, 0.8) 20px,
+            transparent 25px
+          ),
+          radial-gradient(
+          ellipse at 70% 60%,
+          rgba(255, 105, 180, 0.6) 15px,
+          transparent 20px
+        ),
+          radial-gradient(
+          ellipse at 20% 80%,
+          rgba(255, 20, 147, 0.7) 18px,
+          transparent 23px
+        ),
+          radial-gradient(
+          ellipse at 80% 20%,
+          rgba(255, 182, 193, 0.5) 12px,
+          transparent 17px
+        );
+        background-size: 150px 150px, 200px 200px, 180px 180px, 120px 120px;
+        opacity: 0.6;
+      }
+
+      .march {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 50%, #ffd89b 100%);
+      }
+      .march::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background:
+          conic-gradient(
+            from 0deg at 25% 25%,
+            rgba(255, 182, 193, 0.8) 36deg,
+            transparent 37deg,
+            transparent 71deg,
+            rgba(255, 192, 203, 0.6) 72deg,
+            rgba(255, 182, 193, 0.8) 108deg,
+            transparent 109deg
+          ),
+          conic-gradient(
+          from 45deg at 75% 35%,
+          rgba(255, 182, 193, 0.7) 36deg,
+          transparent 37deg,
+          transparent 71deg,
+          rgba(255, 192, 203, 0.5) 72deg,
+          rgba(255, 182, 193, 0.7) 108deg,
+          transparent 109deg
+        ),
+          conic-gradient(
+          from 90deg at 40% 80%,
+          rgba(255, 182, 193, 0.6) 36deg,
+          transparent 37deg,
+          transparent 71deg,
+          rgba(255, 192, 203, 0.4) 72deg,
+          rgba(255, 182, 193, 0.6) 108deg,
+          transparent 109deg
+        );
+        background-size: 80px 80px, 60px 60px, 100px 100px;
+        opacity: 0.5;
+      }
+
+      .april {
+        background: linear-gradient(
+          135deg,
+          #667eea 0%,
+          #764ba2 20%,
+          #f093fb 40%,
+          #f5576c 60%,
+          #4facfe 80%,
+          #00f2fe 100%
+        );
+      }
+      .april::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: /* Large dramatic rainbow arc */
+          conic-gradient(
+            from 270deg at 50% 150%,
+            transparent 0deg,
+            #ff0000 20deg,
+            #ff7f00 30deg,
+            #ffff00 40deg,
+            #00ff00 50deg,
+            #0000ff 60deg,
+            #4b0082 70deg,
+            #9400d3 80deg,
+            transparent 100deg
+          ),
+           /* Secondary rainbow (fainter) */conic-gradient(
+          from 270deg at 50% 160%,
+          transparent 0deg,
+          rgba(255, 0, 0, 0.4) 15deg,
+          rgba(255, 127, 0, 0.4) 25deg,
+          rgba(255, 255, 0, 0.4) 35deg,
+          rgba(0, 255, 0, 0.4) 45deg,
+          rgba(0, 0, 255, 0.4) 55deg,
+          rgba(75, 0, 130, 0.4) 65deg,
+          rgba(148, 0, 211, 0.4) 75deg,
+          transparent 90deg
+        ),
+           /* Heavy rain drops - diagonal */repeating-linear-gradient(
+          110deg,
+          transparent,
+          transparent 3px,
+          rgba(255, 255, 255, 0.6) 4px,
+          rgba(255, 255, 255, 0.6) 6px,
+          transparent 7px,
+          transparent 12px
+        ),
+          repeating-linear-gradient(
+          108deg,
+          transparent,
+          transparent 4px,
+          rgba(255, 255, 255, 0.4) 5px,
+          rgba(255, 255, 255, 0.4) 7px,
+          transparent 8px,
+          transparent 15px
+        ),
+          repeating-linear-gradient(
+          112deg,
+          transparent,
+          transparent 2px,
+          rgba(255, 255, 255, 0.5) 3px,
+          rgba(255, 255, 255, 0.5) 5px,
+          transparent 6px,
+          transparent 10px
+        ),
+           /* Storm clouds */radial-gradient(
+          ellipse at 20% 15%,
+          rgba(100, 100, 100, 0.7) 20px,
+          rgba(150, 150, 150, 0.5) 35px,
+          rgba(200, 200, 200, 0.3) 50px,
+          transparent 65px
+        ),
+          radial-gradient(
+          ellipse at 70% 20%,
+          rgba(80, 80, 80, 0.6) 25px,
+          rgba(130, 130, 130, 0.4) 40px,
+          rgba(180, 180, 180, 0.2) 55px,
+          transparent 70px
+        ),
+          radial-gradient(
+          ellipse at 85% 25%,
+          rgba(120, 120, 120, 0.5) 15px,
+          rgba(170, 170, 170, 0.3) 30px,
+          transparent 45px
+        );
+        background-size:
+          500px 500px,
+          600px 600px,
+          25px 150px,
+          30px 180px,
+          20px 120px,
+          200px 100px,
+          180px 120px,
+          150px 80px;
+        opacity: 0.9;
+        animation: aprilShowers 4s ease-in-out infinite alternate;
+      }
+
+      @keyframes aprilShowers {
+        0% {
+          opacity: 0.8;
+          transform: translateX(0px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateX(-3px);
+        }
+      }
+
+      .may {
+        background: linear-gradient(
+          135deg,
+          #ffeaa7 0%,
+          #fab1a0 30%,
+          #fd79a8 60%,
+          #fdcb6e 100%
+        );
+      }
+      .may::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background:
+          radial-gradient(
+            circle at 30% 20%,
+            rgba(255, 165, 0, 0.8) 10px,
+            rgba(255, 140, 0, 0.6) 15px,
+            transparent 20px
+          ),
+          radial-gradient(
+          circle at 70% 40%,
+          rgba(255, 165, 0, 0.7) 8px,
+          rgba(255, 140, 0, 0.5) 12px,
+          transparent 16px
+        ),
+          radial-gradient(
+          circle at 20% 70%,
+          rgba(255, 165, 0, 0.6) 12px,
+          rgba(255, 140, 0, 0.4) 18px,
+          transparent 22px
+        ),
+          radial-gradient(
+          circle at 80% 80%,
+          rgba(255, 165, 0, 0.7) 9px,
+          rgba(255, 140, 0, 0.5) 14px,
+          transparent 18px
+        );
+        background-size: 120px 120px, 80px 80px, 150px 150px, 100px 100px;
+        opacity: 0.6;
+      }
+
+      .june {
+        background: linear-gradient(135deg, #74b9ff 0%, #0984e3 50%, #00cec9 100%);
+      }
+      .june::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background:
+          radial-gradient(
+            circle at 50% 20%,
+            rgba(255, 255, 0, 0.9) 30px,
+            rgba(255, 215, 0, 0.7) 40px,
+            transparent 50px
+          ),
+          repeating-linear-gradient(
+          45deg,
+          transparent,
+          transparent 5px,
+          rgba(255, 255, 255, 0.1) 6px,
+          rgba(255, 255, 255, 0.1) 8px
+        );
+        background-size: 200px 200px, 30px 30px;
+        opacity: 0.7;
+      }
+
+      .july {
+        background: linear-gradient(
+          135deg,
+          #fd79a8 0%,
+          #fdcb6e 30%,
+          #e17055 60%,
+          #00b894 100%
+        );
+      }
+      .july::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background:
+          repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 8px,
+            rgba(255, 255, 255, 0.2) 10px,
+            rgba(255, 255, 255, 0.2) 12px
+          ),
+          radial-gradient(
+          ellipse at 20% 80%,
+          rgba(255, 165, 0, 0.4) 40px,
+          transparent 50px
+        ),
+          radial-gradient(
+          ellipse at 80% 90%,
+          rgba(255, 140, 0, 0.3) 60px,
+          transparent 70px
+        );
+        background-size: 100% 30px, 200px 200px, 300px 300px;
+      }
+
+      .august {
+        background: linear-gradient(
+          135deg,
+          #ff4757 0%,
+          #ff6348 20%,
+          #ff7675 40%,
+          #fd79a8 60%,
+          #fdcb6e 80%,
+          #e17055 100%
+        );
+      }
+      .august::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: /* Intense sun rays from top right */
+          conic-gradient(
+            from 0deg at 75% 25%,
+            rgba(255, 255, 0, 0.6) 0deg,
+            transparent 15deg,
+            rgba(255, 215, 0, 0.5) 30deg,
+            transparent 45deg,
+            rgba(255, 255, 0, 0.6) 60deg,
+            transparent 75deg,
+            rgba(255, 215, 0, 0.4) 90deg,
+            transparent 105deg,
+            rgba(255, 255, 0, 0.6) 120deg,
+            transparent 135deg,
+            rgba(255, 215, 0, 0.5) 150deg,
+            transparent 165deg,
+            rgba(255, 255, 0, 0.6) 180deg,
+            transparent 195deg,
+            rgba(255, 215, 0, 0.4) 210deg,
+            transparent 225deg,
+            rgba(255, 255, 0, 0.6) 240deg,
+            transparent 255deg,
+            rgba(255, 215, 0, 0.5) 270deg,
+            transparent 285deg,
+            rgba(255, 255, 0, 0.6) 300deg,
+            transparent 315deg,
+            rgba(255, 215, 0, 0.4) 330deg,
+            transparent 345deg
+          ),
+           /* Blazing sun core */radial-gradient(
+          circle at 75% 25%,
+          rgba(255, 255, 255, 0.9) 15px,
+          rgba(255, 255, 0, 0.8) 25px,
+          rgba(255, 215, 0, 0.6) 40px,
+          rgba(255, 140, 0, 0.4) 60px,
+          transparent 80px
+        ),
+           /* Heat shimmer waves */repeating-linear-gradient(
+          1deg,
+          transparent,
+          transparent 4px,
+          rgba(255, 255, 255, 0.08) 5px,
+          rgba(255, 255, 255, 0.08) 6px,
+          transparent 7px
+        ),
+          repeating-linear-gradient(
+          -1deg,
+          transparent,
+          transparent 6px,
+          rgba(255, 255, 255, 0.06) 7px,
+          rgba(255, 255, 255, 0.06) 8px,
+          transparent 9px
+        ),
+          repeating-linear-gradient(
+          2deg,
+          transparent,
+          transparent 8px,
+          rgba(255, 255, 255, 0.04) 9px,
+          rgba(255, 255, 255, 0.04) 10px,
+          transparent 11px
+        );
+        background-size: 400px 400px, 200px 200px, 100% 25px, 100% 30px, 100% 35px;
+        animation: heatShimmer 3s ease-in-out infinite alternate;
+      }
+
+      @keyframes heatShimmer {
+        0% {
+          opacity: 0.8;
+          transform: translateY(0px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(-2px);
+        }
+      }
+
+      .september {
+        background: linear-gradient(
+          135deg,
+          #a29bfe 0%,
+          #6c5ce7 30%,
+          #fd79a8 60%,
+          #fdcb6e 100%
+        );
+      }
+      .september::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: /* Book spine lines */
+          repeating-linear-gradient(
+            0deg,
+            rgba(139, 69, 19, 0.3) 0px,
+            rgba(139, 69, 19, 0.3) 2px,
+            transparent 3px,
+            transparent 8px
+          ),
+          repeating-linear-gradient(
+          0deg,
+          rgba(160, 82, 45, 0.2) 0px,
+          rgba(160, 82, 45, 0.2) 1px,
+          transparent 2px,
+          transparent 15px
+        ),
+           /* Pencil texture */linear-gradient(
+          45deg,
+          rgba(255, 215, 0, 0.2) 25%,
+          transparent 25%,
+          transparent 75%,
+          rgba(255, 215, 0, 0.2) 75%
+        ),
+          linear-gradient(
+          -45deg,
+          rgba(255, 215, 0, 0.2) 25%,
+          transparent 25%,
+          transparent 75%,
+          rgba(255, 215, 0, 0.2) 75%
+        ),
+           /* Apple shapes */radial-gradient(
+          circle at 80% 20%,
+          rgba(220, 20, 60, 0.6) 12px,
+          rgba(220, 20, 60, 0.3) 18px,
+          transparent 25px
+        ),
+          radial-gradient(
+          circle at 20% 80%,
+          rgba(220, 20, 60, 0.5) 10px,
+          rgba(220, 20, 60, 0.2) 15px,
+          transparent 22px
+        );
+        background-size:
+          100% 20px,
+          100% 30px,
+          20px 20px,
+          20px 20px,
+          150px 150px,
+          120px 120px;
+        opacity: 0.7;
+      }
+
+      .october {
+        background: linear-gradient(135deg, #2d1b69 0%, #8b008b 50%, #ff6347 100%);
+      }
+      .october::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: /* Single soft jack-o'-lantern glow */
+          radial-gradient(
+            ellipse at 25% 75%,
+            rgba(255, 140, 0, 0.4) 60px,
+            rgba(255, 69, 0, 0.2) 120px,
+            transparent 180px
+          ),
+           /* Soft moonlight */radial-gradient(
+          ellipse at 80% 25%,
+          rgba(220, 220, 220, 0.3) 50px,
+          rgba(200, 200, 200, 0.1) 100px,
+          transparent 150px
+        );
+        background-size: 400px 400px, 300px 300px;
+        opacity: 0.6;
+      }
+
+      .november {
+        background: linear-gradient(
+          135deg,
+          #1a1a2e 0%,
+          #2d1b69 30%,
+          #ff6b35 70%,
+          #f7931e 100%
+        );
+      }
+      .november::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: /* Large warm bonfire glow from bottom */
+          radial-gradient(
+            ellipse at 50% 120%,
+            rgba(255, 140, 0, 0.6) 100px,
+            rgba(255, 69, 0, 0.4) 200px,
+            rgba(255, 215, 0, 0.2) 300px,
+            transparent 400px
+          ),
+           /* Firework center */radial-gradient(
+          circle at 75% 25%,
+          rgba(255, 255, 255, 0.9) 3px,
+          rgba(255, 215, 0, 0.7) 5px,
+          transparent 6px
+        ),
+           /* Firework sparks radiating outward */radial-gradient(
+          circle at 78% 20%,
+          rgba(255, 215, 0, 0.8) 1px,
+          transparent 2px
+        ),
+          radial-gradient(
+          circle at 82% 22%,
+          rgba(255, 140, 0, 0.7) 1px,
+          transparent 2px
+        ),
+          radial-gradient(
+          circle at 73% 18%,
+          rgba(255, 215, 0, 0.9) 1px,
+          transparent 2px
+        ),
+          radial-gradient(
+          circle at 80% 28%,
+          rgba(255, 69, 0, 0.6) 1px,
+          transparent 2px
+        ),
+          radial-gradient(
+          circle at 70% 28%,
+          rgba(255, 215, 0, 0.8) 1px,
+          transparent 2px
+        ),
+          radial-gradient(
+          circle at 77% 32%,
+          rgba(255, 140, 0, 0.7) 1px,
+          transparent 2px
+        ),
+          radial-gradient(
+          circle at 68% 23%,
+          rgba(255, 215, 0, 0.6) 1px,
+          transparent 2px
+        ),
+          radial-gradient(
+          circle at 84% 26%,
+          rgba(255, 69, 0, 0.8) 1px,
+          transparent 2px
+        ),
+          radial-gradient(
+          circle at 71% 16%,
+          rgba(255, 215, 0, 0.7) 1px,
+          transparent 2px
+        ),
+          radial-gradient(
+          circle at 79% 35%,
+          rgba(255, 140, 0, 0.6) 1px,
+          transparent 2px
+        ),
+          radial-gradient(
+          circle at 86% 30%,
+          rgba(255, 215, 0, 0.8) 1px,
+          transparent 2px
+        ),
+          radial-gradient(
+          circle at 65% 30%,
+          rgba(255, 69, 0, 0.7) 1px,
+          transparent 2px
+        ),
+           /* Few simple autumn leaves */radial-gradient(
+          circle at 25% 40%,
+          rgba(210, 105, 30, 0.7) 3px,
+          transparent 4px
+        ),
+          radial-gradient(
+          circle at 20% 70%,
+          rgba(255, 140, 0, 0.5) 3px,
+          transparent 4px
+        ),
+          radial-gradient(
+          circle at 15% 60%,
+          rgba(178, 34, 34, 0.6) 2px,
+          transparent 3px
+        );
+        background-size:
+          800px 600px,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%;
+        opacity: 0.8;
+      }
+
+      .december {
+        background: linear-gradient(
+          135deg,
+          #0f1c3f 0%,
+          #1a5724 30%,
+          #c41e3a 60%,
+          #2c5234 80%,
+          #ffffff 100%
+        );
+      }
+      .december::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background:
+          /* Christmas Star at top */
+          radial-gradient(
+            circle at 50% 20%,
+            rgba(255, 215, 0, 0.95) 4px,
+            rgba(255, 215, 0, 0.7) 8px,
+            rgba(255, 255, 255, 0.3) 12px,
+            transparent 16px
+          ),
+          /* Warm Christmas lights - top string */
+          radial-gradient(
+            circle at 15% 25%,
+            rgba(255, 0, 0, 0.8) 2px,
+            transparent 4px
+          ),
+          radial-gradient(
+            circle at 25% 30%,
+            rgba(0, 255, 0, 0.8) 2px,
+            transparent 4px
+          ),
+          radial-gradient(
+            circle at 35% 27%,
+            rgba(255, 215, 0, 0.8) 2px,
+            transparent 4px
+          ),
+          radial-gradient(
+            circle at 45% 32%,
+            rgba(0, 0, 255, 0.8) 2px,
+            transparent 4px
+          ),
+          radial-gradient(
+            circle at 55% 28%,
+            rgba(255, 0, 0, 0.8) 2px,
+            transparent 4px
+          ),
+          radial-gradient(
+            circle at 65% 33%,
+            rgba(0, 255, 0, 0.8) 2px,
+            transparent 4px
+          ),
+          radial-gradient(
+            circle at 75% 29%,
+            rgba(255, 215, 0, 0.8) 2px,
+            transparent 4px
+          ),
+          radial-gradient(
+            circle at 85% 34%,
+            rgba(0, 0, 255, 0.8) 2px,
+            transparent 4px
+          ),
+          /* Christmas ornaments */
+          radial-gradient(
+            circle at 20% 45%,
+            rgba(220, 20, 60, 0.7) 6px,
+            rgba(220, 20, 60, 0.4) 10px,
+            transparent 14px
+          ),
+          radial-gradient(
+            circle at 80% 55%,
+            rgba(255, 215, 0, 0.7) 5px,
+            rgba(255, 215, 0, 0.4) 9px,
+            transparent 13px
+          ),
+          radial-gradient(
+            circle at 75% 75%,
+            rgba(0, 128, 0, 0.7) 4px,
+            rgba(0, 128, 0, 0.4) 8px,
+            transparent 12px
+          ),
+          /* Snowflakes - scattered */
+          radial-gradient(
+            circle at 12% 40%,
+            rgba(255, 255, 255, 0.9) 2px,
+            rgba(255, 255, 255, 0.6) 4px,
+            transparent 6px
+          ),
+          radial-gradient(
+            circle at 88% 25%,
+            rgba(255, 255, 255, 0.8) 3px,
+            rgba(255, 255, 255, 0.5) 5px,
+            transparent 7px
+          ),
+          radial-gradient(
+            circle at 25% 70%,
+            rgba(255, 255, 255, 0.7) 2px,
+            rgba(255, 255, 255, 0.4) 4px,
+            transparent 6px
+          ),
+          radial-gradient(
+            circle at 70% 15%,
+            rgba(255, 255, 255, 0.6) 1px,
+            transparent 3px
+          ),
+          radial-gradient(
+            circle at 90% 60%,
+            rgba(255, 255, 255, 0.8) 2px,
+            rgba(255, 255, 255, 0.3) 4px,
+            transparent 6px
+          ),
+          radial-gradient(
+            circle at 35% 85%,
+            rgba(255, 255, 255, 0.5) 2px,
+            transparent 4px
+          ),
+          radial-gradient(
+            circle at 60% 90%,
+            rgba(255, 255, 255, 0.7) 1px,
+            transparent 3px
+          ),
+          /* Christmas tree silhouettes */
+          conic-gradient(
+            from 0deg at 15% 80%,
+            rgba(34, 139, 34, 0.6) 120deg,
+            transparent 121deg,
+            transparent 239deg,
+            rgba(34, 139, 34, 0.6) 240deg
+          ),
+          conic-gradient(
+            from 0deg at 85% 75%,
+            rgba(34, 139, 34, 0.5) 120deg,
+            transparent 121deg,
+            transparent 239deg,
+            rgba(34, 139, 34, 0.5) 240deg
+          ),
+          /* Gentle sparkle effect */
+          repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 8px,
+            rgba(255, 255, 255, 0.1) 9px,
+            rgba(255, 255, 255, 0.1) 10px
+          );
+        background-size: 
+          300px 300px,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          200px 200px,
+          180px 180px,
+          160px 160px,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          100% 100%,
+          80px 80px,
+          90px 90px,
+          25px 25px;
+        opacity: 0.85;
+        animation: christmasSparkle 4s ease-in-out infinite alternate;
+      }
+
+      @keyframes christmasSparkle {
+        0% {
+          opacity: 0.8;
+        }
+        100% {
+          opacity: 0.9;
+        }
+      }
+
+      /* Particle Effects */
+      .particles {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        overflow: hidden;
+      }
+
+      .particle {
+        position: absolute;
+        border-radius: 50%;
+        pointer-events: none;
+      }
+
+      /* Snow particles for January - Realistic */
+      .january .particles .particle {
+        background: rgba(255, 255, 255, 0.9);
+        width: 4px;
+        height: 4px;
+        animation: snowfall 4s linear infinite;
+        border-radius: 50%;
+        position: absolute;
+        box-shadow: 0 0 6px rgba(255, 255, 255, 0.5);
+        top: -20px;
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+
+      .january .particles .particle:nth-child(1) { left: 15%; animation-delay: 0s; }
+      .january .particles .particle:nth-child(2) { left: 35%; animation-delay: 1s; }
+      .january .particles .particle:nth-child(3) { left: 55%; animation-delay: 2s; }
+      .january .particles .particle:nth-child(4) { left: 75%; animation-delay: 3s; }
+      .january .particles .particle:nth-child(5) { left: 25%; animation-delay: 4s; }
+
+      @keyframes snowfall {
+        0% {
+          transform: translateY(-20px);
+          opacity: 0;
+        }
+        10% {
+          opacity: 1;
+        }
+        90% {
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(470px);
+          opacity: 0;
+        }
+      }
+
+      /* Heart particles for February - Subtle */
+      .february .particles .particle {
+        width: 6px;
+        height: 6px;
+        background: #ff69b4;
+        border-radius: 50%;
+        animation: heartFloat 6s ease-in-out infinite;
+        position: absolute;
+        opacity: 0;
+        box-shadow: 0 0 8px rgba(255, 105, 180, 0.4);
+        top: 50%;
+      }
+
+      .february .particles .particle:nth-child(1) { left: 20%; animation-delay: 0s; }
+      .february .particles .particle:nth-child(2) { left: 50%; animation-delay: 2s; }
+      .february .particles .particle:nth-child(3) { left: 80%; animation-delay: 4s; }
+
+      @keyframes heartFloat {
+        0%, 100% {
+          transform: translateY(0px);
+          opacity: 0.6;
+        }
+        50% {
+          transform: translateY(-15px);
+          opacity: 1;
+        }
+      }
+
+      /* Autumn leaves for November - Realistic */
+      .november .particles .particle {
+        width: 8px;
+        height: 8px;
+        background: #d2691e;
+        border-radius: 0 100% 0 100%;
+        animation: leafFall 8s ease-in infinite;
+        position: absolute;
+        opacity: 0;
+        top: -15px;
+        transform: translateY(-15px);
+      }
+      
+      .november .particles .particle:nth-child(1) { background: #cd853f; }
+      .november .particles .particle:nth-child(2) { background: #ff4500; }
+      .november .particles .particle:nth-child(3) { background: #ff6347; }
+      .november .particles .particle:nth-child(4) { background: #b8860b; }
+
+      .november .particles .particle:nth-child(1) { left: 10%; animation-delay: 0s; background: #d2691e; }
+      .november .particles .particle:nth-child(2) { left: 40%; animation-delay: 2s; background: #cd853f; }
+      .november .particles .particle:nth-child(3) { left: 70%; animation-delay: 4s; background: #ff4500; }
+      .november .particles .particle:nth-child(4) { left: 25%; animation-delay: 6s; background: #ff6347; }
+
+      @keyframes leafFall {
+        0% {
+          transform: translateY(-15px) rotate(0deg);
+          opacity: 0;
+        }
+        10% {
+          opacity: 1;
+        }
+        90% {
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(470px) translateX(30px) rotate(180deg);
+          opacity: 0;
+        }
+      }
+
+      /* Sparkle particles for December - Festive Glow */
+      .december .particles .particle {
+        width: 8px;
+        height: 8px;
+        background: radial-gradient(circle, #fff 0%, #ffd700 30%, #ff6b35 70%, transparent 100%);
+        animation: festiveSparkle 2s ease-in-out infinite;
+        border-radius: 50%;
+        position: absolute;
+        box-shadow: 
+          0 0 20px rgba(255, 215, 0, 0.8),
+          0 0 40px rgba(255, 215, 0, 0.6),
+          0 0 60px rgba(255, 215, 0, 0.4);
+        opacity: 0;
+      }
+
+      .december .particles .particle:nth-child(1) { left: 20%; top: 25%; animation-delay: 0s; }
+      .december .particles .particle:nth-child(2) { left: 70%; top: 40%; animation-delay: 0.5s; }
+      .december .particles .particle:nth-child(3) { left: 45%; top: 65%; animation-delay: 1s; }
+      .december .particles .particle:nth-child(4) { left: 25%; top: 80%; animation-delay: 1.5s; }
+
+      @keyframes festiveSparkle {
+        0% {
+          opacity: 0;
+          transform: scale(0) rotate(0deg);
+        }
+        25% {
+          opacity: 1;
+          transform: scale(1.2) rotate(90deg);
+        }
+        50% {
+          opacity: 0.7;
+          transform: scale(0.8) rotate(180deg);
+        }
+        75% {
+          opacity: 1;
+          transform: scale(1.5) rotate(270deg);
+        }
+        100% {
+          opacity: 0;
+          transform: scale(0) rotate(360deg);
+        }
+      }
+
+      .month-icon {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        width: 60px;
+        height: 60px;
+        font-size: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0.8;
+      }
+
+      /* Test animation for debugging */
+      .test-pulse {
+        animation: testPulse 2s ease-in-out infinite;
+      }
+      
+      @keyframes testPulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+      }
+      
+      /* Month-specific icon animations */
+      .january .month-icon {
+        animation: rotate 4s linear infinite;
+        transform-origin: center center;
+      }
+      
+      .february .month-icon {
+        animation: heartBeat 2s ease-in-out infinite;
+        transform-origin: center center;
+      }
+      
+      .march .month-icon {
+        animation: bounce 3s ease-in-out infinite;
+      }
+      
+      .april .month-icon {
+        animation: sway 4s ease-in-out infinite;
+      }
+      
+      .may .month-icon {
+        animation: gentleGlow 4s ease-in-out infinite;
+        transform-origin: center center;
+      }
+      
+      .june .month-icon {
+        animation: pulse 2s ease-in-out infinite;
+        transform-origin: center center;
+      }
+      
+      .july .month-icon {
+        animation: wave 2.5s ease-in-out infinite;
+      }
+      
+      .august .month-icon {
+        animation: blaze 1.5s ease-in-out infinite;
+        transform-origin: center center;
+      }
+      
+      .september .month-icon {
+        animation: wiggle 4s ease-in-out infinite;
+      }
+      
+      .october .month-icon {
+        animation: spooky 3s ease-in-out infinite;
+        transform-origin: center center;
+      }
+      
+      .november .month-icon {
+        animation: fall 4s ease-in-out infinite;
+      }
+      
+      .december .month-icon {
+        animation: twinkle 2s ease-in-out infinite;
+        transform-origin: center center;
+      }
+      
+      /* Animation keyframes */
+      @keyframes rotate {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      
+      @keyframes heartBeat {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.2); }
+      }
+      
+      @keyframes bounce {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-8px); }
+      }
+      
+      @keyframes sway {
+        0%, 100% { transform: rotate(-5deg); }
+        50% { transform: rotate(5deg); }
+      }
+      
+      @keyframes gentleGlow {
+        0%, 100% { transform: scale(1); filter: brightness(1); }
+        50% { transform: scale(1.08); filter: brightness(1.2); }
+      }
+      
+      @keyframes pulse {
+        0%, 100% { transform: scale(1); filter: brightness(1); }
+        50% { transform: scale(1.15); filter: brightness(1.3); }
+      }
+      
+      @keyframes wave {
+        0%, 100% { transform: translateX(0px); }
+        25% { transform: translateX(3px); }
+        75% { transform: translateX(-3px); }
+      }
+      
+      @keyframes blaze {
+        0%, 100% { transform: scale(1); filter: brightness(1); }
+        50% { transform: scale(1.1); filter: brightness(1.5); }
+      }
+      
+      @keyframes wiggle {
+        0%, 100% { transform: rotate(0deg); }
+        25% { transform: rotate(2deg); }
+        75% { transform: rotate(-2deg); }
+      }
+      
+      @keyframes spooky {
+        0%, 100% { transform: scale(1) rotate(0deg); }
+        25% { transform: scale(1.1) rotate(-5deg); }
+        75% { transform: scale(0.9) rotate(5deg); }
+      }
+      
+      @keyframes fall {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(5px) rotate(10deg); }
+      }
+      
+      @keyframes twinkle {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.7; transform: scale(1.2); }
+      }
+      
+      .page-title {
+        text-align: center;
+        color: white;
+        font-size: 36px;
+        margin-bottom: 30px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        font-family: 'Orbitron', sans-serif;
+        font-weight: 700;
+        letter-spacing: 3px;
+      }
+
+      /* Month-specific typography - VERY OBVIOUS differences */
+      .january .title { font-family: 'Orbitron', 'Arial Black', sans-serif; color: #e6f3ff; font-size: 28px; }
+      .february .title { font-family: 'Pacifico', 'Brush Script MT', cursive; color: #ffb3d9; font-size: 36px; }
+      .march .title { font-family: 'Times New Roman', serif; font-style: italic; font-size: 30px; }
+      .april .title { font-family: 'Arial', sans-serif; font-weight: 900; text-transform: uppercase; font-size: 26px; }
+      .may .title { font-family: 'Pacifico', 'Brush Script MT', cursive; font-size: 34px; }
+      .june .title { font-family: 'Orbitron', 'Arial Black', sans-serif; font-weight: 700; font-size: 28px; }
+      .july .title { font-family: 'Impact', 'Arial Black', sans-serif; font-size: 32px; }
+      .august .title { font-family: 'Orbitron', 'Arial Black', sans-serif; font-weight: 900; font-size: 30px; }
+      .september .title { font-family: 'Georgia', 'Times New Roman', serif; font-size: 28px; }
+      .october .title { font-family: 'Creepster', 'Chiller', fantasy; color: #ff6b35; font-size: 24px; }
+      .november .title { font-family: 'Georgia', 'Times New Roman', serif; font-style: italic; font-size: 30px; }
+      .december .title { font-family: 'Orbitron', 'Arial Black', sans-serif; color: #fff; font-weight: 700; font-size: 28px; }
+
+      /* Dynamic Background Animations */
+      @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+
+      @keyframes pulseGlow {
+        0%, 100% { filter: brightness(1) saturate(1); }
+        50% { filter: brightness(1.15) saturate(1.2); }
+      }
+
+      @keyframes floatingElements {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        33% { transform: translateY(-10px) rotate(3deg); }
+        66% { transform: translateY(5px) rotate(-2deg); }
+      }
+
+      /* Subtle background animations for specific months */
+      .may .cover-bg {
+        animation: pulseGlow 8s ease-in-out infinite;
+      }
+
+      .july .cover-bg {
+        animation: pulseGlow 6s ease-in-out infinite;
+      }
+
+      .october .cover-bg {
+        animation: pulseGlow 5s ease-in-out infinite;
+      }
+
+    </style>
+  </head>
+  <body>
+    <h1 class="page-title test-pulse">Sudoku Race - Monthly Collection</h1>
+
+    <div class="covers-grid">
+      <!-- January - Winter Theme -->
+      <div class="cover january">
+        <div class="cover-bg january"></div>
+        <div class="particles">
+          <div class="particle"></div>
+          <div class="particle"></div>
+          <div class="particle"></div>
+          <div class="particle"></div>
+          <div class="particle"></div>
+        </div>
+        <div class="month-icon">❄️</div>
+        <div class="cover-content">
+          <h1 class="title">SUDOKU RACE</h1>
+          <div class="subtitle">January Edition</div>
+
+          <div class="sudoku-grid">
+            <div class="cell">7</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">3</div>
+            <div class="cell"></div>
+            <div class="cell">5</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">9</div>
+            <div class="cell"></div>
+            <div class="cell">1</div>
+            <div class="cell"></div>
+            <div class="cell">8</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">7</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">1</div>
+            <div class="cell"></div>
+            <div class="cell">3</div>
+            <div class="cell"></div>
+            <div class="cell thick-bottom">4</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom thick-right">6</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom">9</div>
+            <div class="cell thick-bottom thick-right"></div>
+            <div class="cell thick-bottom">8</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom">5</div>
+            <div class="cell"></div>
+            <div class="cell">2</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">6</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">8</div>
+            <div class="cell"></div>
+            <div class="cell">9</div>
+            <div class="cell"></div>
+            <div class="cell">1</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">9</div>
+            <div class="cell"></div>
+            <div class="cell">7</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">3</div>
+            <div class="cell"></div>
+            <div class="cell">6</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom">6</div>
+            <div class="cell thick-bottom thick-right"></div>
+            <div class="cell thick-bottom">3</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom thick-right">4</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom">1</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell">3</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">1</div>
+            <div class="cell"></div>
+            <div class="cell">8</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">2</div>
+            <div class="cell"></div>
+            <div class="cell">9</div>
+            <div class="cell"></div>
+            <div class="cell">9</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">4</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">6</div>
+            <div class="cell"></div>
+            <div class="cell">8</div>
+            <div class="cell"></div>
+            <div class="cell">6</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">8</div>
+            <div class="cell"></div>
+            <div class="cell">1</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">4</div>
+            <div class="cell"></div>
+            <div class="cell">7</div>
+          </div>
+
+          <div class="stats">
+            <div class="stat-line">
+              <strong>50 Puzzles</strong> • Multiple Difficulties
+            </div>
+            <div class="stat-line">Basic to Beyond Brutal Techniques</div>
+            <div class="stat-line">❄️ Winter Challenge Edition ❄️</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- February - Valentine's Theme -->
+      <div class="cover february">
+        <div class="cover-bg february"></div>
+        <div class="particles">
+          <div class="particle"></div>
+          <div class="particle"></div>
+          <div class="particle"></div>
+        </div>
+        <div class="month-icon">💕</div>
+        <div class="cover-content">
+          <h1 class="title">SUDOKU RACE</h1>
+          <div class="subtitle">February Edition</div>
+
+          <div class="sudoku-grid">
+            <div class="cell">2</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">1</div>
+            <div class="cell">4</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">8</div>
+            <div class="cell">5</div>
+            <div class="cell"></div>
+            <div class="cell">3</div>
+            <div class="cell"></div>
+            <div class="cell">4</div>
+            <div class="cell thick-right"></div>
+            <div class="cell"></div>
+            <div class="cell">3</div>
+            <div class="cell thick-right"></div>
+            <div class="cell"></div>
+            <div class="cell">1</div>
+            <div class="cell"></div>
+            <div class="cell thick-bottom">8</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom thick-right">3</div>
+            <div class="cell thick-bottom">1</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom thick-right">5</div>
+            <div class="cell thick-bottom">4</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom">9</div>
+            <div class="cell">4</div>
+            <div class="cell">8</div>
+            <div class="cell thick-right"></div>
+            <div class="cell"></div>
+            <div class="cell">1</div>
+            <div class="cell thick-right"></div>
+            <div class="cell"></div>
+            <div class="cell">3</div>
+            <div class="cell">2</div>
+            <div class="cell"></div>
+            <div class="cell">1</div>
+            <div class="cell thick-right">2</div>
+            <div class="cell">8</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">4</div>
+            <div class="cell">9</div>
+            <div class="cell">6</div>
+            <div class="cell"></div>
+            <div class="cell thick-bottom">3</div>
+            <div class="cell thick-bottom">6</div>
+            <div class="cell thick-bottom thick-right"></div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom">2</div>
+            <div class="cell thick-bottom thick-right"></div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom">4</div>
+            <div class="cell thick-bottom">1</div>
+            <div class="cell">1</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">4</div>
+            <div class="cell">3</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">6</div>
+            <div class="cell">2</div>
+            <div class="cell"></div>
+            <div class="cell">8</div>
+            <div class="cell"></div>
+            <div class="cell">2</div>
+            <div class="cell thick-right"></div>
+            <div class="cell"></div>
+            <div class="cell">8</div>
+            <div class="cell thick-right"></div>
+            <div class="cell"></div>
+            <div class="cell">5</div>
+            <div class="cell"></div>
+            <div class="cell">5</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">8</div>
+            <div class="cell">2</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">1</div>
+            <div class="cell">3</div>
+            <div class="cell"></div>
+            <div class="cell">4</div>
+          </div>
+
+          <div class="stats">
+            <div class="stat-line">
+              <strong>50 Puzzles</strong> • Multiple Difficulties
+            </div>
+            <div class="stat-line">From Hidden Singles to AIC Chains</div>
+            <div class="stat-line">💕 Love the Challenge 💕</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- March - Spring Theme -->
+      <div class="cover march">
+        <div class="cover-bg march"></div>
+        <div class="month-icon">🌸</div>
+        <div class="cover-content">
+          <h1 class="title">SUDOKU RACE</h1>
+          <div class="subtitle">March Edition</div>
+
+          <div class="sudoku-grid">
+            <div class="cell">9</div>
+            <div class="cell">3</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">8</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">2</div>
+            <div class="cell"></div>
+            <div class="cell">1</div>
+            <div class="cell">7</div>
+            <div class="cell"></div>
+            <div class="cell">8</div>
+            <div class="cell thick-right">1</div>
+            <div class="cell"></div>
+            <div class="cell">7</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">3</div>
+            <div class="cell">4</div>
+            <div class="cell"></div>
+            <div class="cell thick-bottom">7</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom thick-right">4</div>
+            <div class="cell thick-bottom">3</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom thick-right">1</div>
+            <div class="cell thick-bottom">8</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom">5</div>
+            <div class="cell">3</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">7</div>
+            <div class="cell">4</div>
+            <div class="cell">8</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">1</div>
+            <div class="cell"></div>
+            <div class="cell">9</div>
+            <div class="cell">4</div>
+            <div class="cell">1</div>
+            <div class="cell thick-right"></div>
+            <div class="cell"></div>
+            <div class="cell">3</div>
+            <div class="cell thick-right"></div>
+            <div class="cell"></div>
+            <div class="cell">7</div>
+            <div class="cell">8</div>
+            <div class="cell thick-bottom">8</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom thick-right">5</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom">1</div>
+            <div class="cell thick-bottom thick-right">7</div>
+            <div class="cell thick-bottom">4</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom">2</div>
+            <div class="cell">1</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">8</div>
+            <div class="cell">7</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">4</div>
+            <div class="cell">9</div>
+            <div class="cell"></div>
+            <div class="cell">3</div>
+            <div class="cell"></div>
+            <div class="cell">4</div>
+            <div class="cell thick-right">3</div>
+            <div class="cell"></div>
+            <div class="cell">2</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">7</div>
+            <div class="cell">8</div>
+            <div class="cell"></div>
+            <div class="cell">2</div>
+            <div class="cell">7</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">1</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">8</div>
+            <div class="cell"></div>
+            <div class="cell">5</div>
+            <div class="cell">4</div>
+          </div>
+
+          <div class="stats">
+            <div class="stat-line">
+              <strong>50 Puzzles</strong> • Multiple Difficulties
+            </div>
+            <div class="stat-line">Spring into Advanced Techniques</div>
+            <div class="stat-line">🌸 Fresh Challenges Bloom 🌸</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- April - Easter/Rain Theme -->
+      <div class="cover april">
+        <div class="cover-bg april"></div>
+        <div class="month-icon">🌈</div>
+        <div class="cover-content">
+          <h1 class="title">SUDOKU RACE</h1>
+          <div class="subtitle">April Edition</div>
+
+          <div class="sudoku-grid">
+            <div class="cell">6</div>
+            <div class="cell">1</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">5</div>
+            <div class="cell">9</div>
+            <div class="cell thick-right"></div>
+            <div class="cell"></div>
+            <div class="cell">2</div>
+            <div class="cell">8</div>
+            <div class="cell"></div>
+            <div class="cell">5</div>
+            <div class="cell thick-right">9</div>
+            <div class="cell"></div>
+            <div class="cell">2</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">1</div>
+            <div class="cell">6</div>
+            <div class="cell"></div>
+            <div class="cell thick-bottom">2</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom thick-right">8</div>
+            <div class="cell thick-bottom">6</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom thick-right">1</div>
+            <div class="cell thick-bottom">9</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom">5</div>
+            <div class="cell">5</div>
+            <div class="cell">6</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">9</div>
+            <div class="cell">8</div>
+            <div class="cell thick-right"></div>
+            <div class="cell"></div>
+            <div class="cell">1</div>
+            <div class="cell">2</div>
+            <div class="cell">9</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">1</div>
+            <div class="cell"></div>
+            <div class="cell">5</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">8</div>
+            <div class="cell"></div>
+            <div class="cell">6</div>
+            <div class="cell thick-bottom">8</div>
+            <div class="cell thick-bottom">2</div>
+            <div class="cell thick-bottom thick-right"></div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom">1</div>
+            <div class="cell thick-bottom thick-right">6</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom">9</div>
+            <div class="cell thick-bottom">4</div>
+            <div class="cell">1</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">5</div>
+            <div class="cell">8</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">2</div>
+            <div class="cell">6</div>
+            <div class="cell"></div>
+            <div class="cell">9</div>
+            <div class="cell"></div>
+            <div class="cell">8</div>
+            <div class="cell thick-right">2</div>
+            <div class="cell"></div>
+            <div class="cell">6</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">5</div>
+            <div class="cell">4</div>
+            <div class="cell"></div>
+            <div class="cell">4</div>
+            <div class="cell">9</div>
+            <div class="cell thick-right"></div>
+            <div class="cell"></div>
+            <div class="cell">3</div>
+            <div class="cell thick-right">5</div>
+            <div class="cell"></div>
+            <div class="cell">8</div>
+            <div class="cell">1</div>
+          </div>
+
+          <div class="stats">
+            <div class="stat-line">
+              <strong>50 Puzzles</strong> • Multiple Difficulties
+            </div>
+            <div class="stat-line">Weather Any Solving Storm</div>
+            <div class="stat-line">🌈 After Rain Comes Victory 🌈</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- May - Flowers Theme -->
+      <div class="cover may">
+        <div class="cover-bg may"></div>
+        <div class="month-icon">🌻</div>
+        <div class="cover-content">
+          <h1 class="title">SUDOKU RACE</h1>
+          <div class="subtitle">May Edition</div>
+
+          <div class="sudoku-grid">
+            <div class="cell"></div>
+            <div class="cell">7</div>
+            <div class="cell thick-right">5</div>
+            <div class="cell">1</div>
+            <div class="cell">4</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">8</div>
+            <div class="cell">2</div>
+            <div class="cell"></div>
+            <div class="cell">1</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">4</div>
+            <div class="cell">8</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">2</div>
+            <div class="cell">5</div>
+            <div class="cell"></div>
+            <div class="cell">7</div>
+            <div class="cell thick-bottom">8</div>
+            <div class="cell thick-bottom">2</div>
+            <div class="cell thick-bottom thick-right"></div>
+            <div class="cell thick-bottom">5</div>
+            <div class="cell thick-bottom">7</div>
+            <div class="cell thick-bottom thick-right"></div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom">1</div>
+            <div class="cell thick-bottom">4</div>
+            <div class="cell">7</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">1</div>
+            <div class="cell">2</div>
+            <div class="cell">5</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">9</div>
+            <div class="cell"></div>
+            <div class="cell">8</div>
+            <div class="cell"></div>
+            <div class="cell">8</div>
+            <div class="cell thick-right">2</div>
+            <div class="cell">7</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">1</div>
+            <div class="cell">4</div>
+            <div class="cell">5</div>
+            <div class="cell"></div>
+            <div class="cell thick-bottom">5</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom thick-right">9</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom">8</div>
+            <div class="cell thick-bottom thick-right">4</div>
+            <div class="cell thick-bottom">1</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom">2</div>
+            <div class="cell">2</div>
+            <div class="cell">5</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">4</div>
+            <div class="cell">1</div>
+            <div class="cell thick-right"></div>
+            <div class="cell"></div>
+            <div class="cell">8</div>
+            <div class="cell">9</div>
+            <div class="cell">4</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">8</div>
+            <div class="cell">9</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">5</div>
+            <div class="cell">2</div>
+            <div class="cell"></div>
+            <div class="cell">1</div>
+            <div class="cell"></div>
+            <div class="cell">1</div>
+            <div class="cell thick-right">7</div>
+            <div class="cell"></div>
+            <div class="cell">2</div>
+            <div class="cell thick-right">8</div>
+            <div class="cell">6</div>
+            <div class="cell">4</div>
+            <div class="cell"></div>
+          </div>
+
+          <div class="stats">
+            <div class="stat-line">
+              <strong>50 Puzzles</strong> • Multiple Difficulties
+            </div>
+            <div class="stat-line">Bloom with Brain Power</div>
+            <div class="stat-line">🌻 May Your Skills Flourish 🌻</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- June - Summer Theme -->
+      <div class="cover june">
+        <div class="cover-bg june"></div>
+        <div class="month-icon">☀️</div>
+        <div class="cover-content">
+          <h1 class="title">SUDOKU RACE</h1>
+          <div class="subtitle">June Edition</div>
+
+          <div class="sudoku-grid">
+            <div class="cell">3</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">8</div>
+            <div class="cell">7</div>
+            <div class="cell">2</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">1</div>
+            <div class="cell"></div>
+            <div class="cell">4</div>
+            <div class="cell">7</div>
+            <div class="cell">2</div>
+            <div class="cell thick-right"></div>
+            <div class="cell"></div>
+            <div class="cell">1</div>
+            <div class="cell thick-right"></div>
+            <div class="cell"></div>
+            <div class="cell">8</div>
+            <div class="cell">3</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom">1</div>
+            <div class="cell thick-bottom thick-right">4</div>
+            <div class="cell thick-bottom">8</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom thick-right">3</div>
+            <div class="cell thick-bottom">7</div>
+            <div class="cell thick-bottom">2</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell">8</div>
+            <div class="cell">3</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">2</div>
+            <div class="cell">7</div>
+            <div class="cell thick-right"></div>
+            <div class="cell"></div>
+            <div class="cell">4</div>
+            <div class="cell">1</div>
+            <div class="cell">2</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">1</div>
+            <div class="cell">4</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">8</div>
+            <div class="cell">3</div>
+            <div class="cell"></div>
+            <div class="cell">7</div>
+            <div class="cell thick-bottom">4</div>
+            <div class="cell thick-bottom">7</div>
+            <div class="cell thick-bottom thick-right"></div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom">3</div>
+            <div class="cell thick-bottom thick-right">1</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom">6</div>
+            <div class="cell thick-bottom">8</div>
+            <div class="cell"></div>
+            <div class="cell">8</div>
+            <div class="cell thick-right">2</div>
+            <div class="cell">1</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">7</div>
+            <div class="cell">4</div>
+            <div class="cell">3</div>
+            <div class="cell"></div>
+            <div class="cell">1</div>
+            <div class="cell">4</div>
+            <div class="cell thick-right"></div>
+            <div class="cell"></div>
+            <div class="cell">8</div>
+            <div class="cell thick-right"></div>
+            <div class="cell"></div>
+            <div class="cell">7</div>
+            <div class="cell">2</div>
+            <div class="cell">6</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">7</div>
+            <div class="cell"></div>
+            <div class="cell">4</div>
+            <div class="cell thick-right">2</div>
+            <div class="cell">8</div>
+            <div class="cell"></div>
+            <div class="cell">5</div>
+          </div>
+
+          <div class="stats">
+            <div class="stat-line">
+              <strong>50 Puzzles</strong> • Multiple Difficulties
+            </div>
+            <div class="stat-line">Summer Brain Training</div>
+            <div class="stat-line">☀️ Sunny Side of Solving ☀️</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- July - Beach Theme -->
+      <div class="cover july">
+        <div class="cover-bg july"></div>
+        <div class="month-icon">🏖️</div>
+        <div class="cover-content">
+          <h1 class="title">SUDOKU RACE</h1>
+          <div class="subtitle">July Edition</div>
+
+          <div class="sudoku-grid">
+            <div class="cell">5</div>
+            <div class="cell">8</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">3</div>
+            <div class="cell">6</div>
+            <div class="cell thick-right"></div>
+            <div class="cell"></div>
+            <div class="cell">1</div>
+            <div class="cell">2</div>
+            <div class="cell"></div>
+            <div class="cell">3</div>
+            <div class="cell thick-right">2</div>
+            <div class="cell">1</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">8</div>
+            <div class="cell">5</div>
+            <div class="cell">4</div>
+            <div class="cell"></div>
+            <div class="cell thick-bottom">1</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom thick-right">4</div>
+            <div class="cell thick-bottom">2</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom thick-right">5</div>
+            <div class="cell thick-bottom">6</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom">3</div>
+            <div class="cell">2</div>
+            <div class="cell">1</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">6</div>
+            <div class="cell">3</div>
+            <div class="cell thick-right"></div>
+            <div class="cell"></div>
+            <div class="cell">8</div>
+            <div class="cell">4</div>
+            <div class="cell">3</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">8</div>
+            <div class="cell">5</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">2</div>
+            <div class="cell">1</div>
+            <div class="cell"></div>
+            <div class="cell">6</div>
+            <div class="cell thick-bottom">4</div>
+            <div class="cell thick-bottom">6</div>
+            <div class="cell thick-bottom thick-right"></div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom">8</div>
+            <div class="cell thick-bottom thick-right">1</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom">2</div>
+            <div class="cell thick-bottom">9</div>
+            <div class="cell"></div>
+            <div class="cell">4</div>
+            <div class="cell thick-right">3</div>
+            <div class="cell">8</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">6</div>
+            <div class="cell">2</div>
+            <div class="cell">5</div>
+            <div class="cell"></div>
+            <div class="cell">8</div>
+            <div class="cell">2</div>
+            <div class="cell thick-right"></div>
+            <div class="cell"></div>
+            <div class="cell">1</div>
+            <div class="cell thick-right"></div>
+            <div class="cell"></div>
+            <div class="cell">6</div>
+            <div class="cell">7</div>
+            <div class="cell">6</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">1</div>
+            <div class="cell"></div>
+            <div class="cell">2</div>
+            <div class="cell thick-right">3</div>
+            <div class="cell">4</div>
+            <div class="cell"></div>
+            <div class="cell">8</div>
+          </div>
+
+          <div class="stats">
+            <div class="stat-line">
+              <strong>50 Puzzles</strong> • Multiple Difficulties
+            </div>
+            <div class="stat-line">Beach Reading, Brain Training</div>
+            <div class="stat-line">🏖️ Vacation Mind Games 🏖️</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- August - Hot Summer Theme -->
+      <div class="cover august">
+        <div class="cover-bg august"></div>
+        <div class="month-icon">🔥</div>
+        <div class="cover-content">
+          <h1 class="title">SUDOKU RACE</h1>
+          <div class="subtitle">August Edition</div>
+
+          <div class="sudoku-grid">
+            <div class="cell"></div>
+            <div class="cell">6</div>
+            <div class="cell thick-right">3</div>
+            <div class="cell">4</div>
+            <div class="cell">1</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">9</div>
+            <div class="cell">7</div>
+            <div class="cell"></div>
+            <div class="cell">4</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">1</div>
+            <div class="cell">9</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">7</div>
+            <div class="cell">3</div>
+            <div class="cell"></div>
+            <div class="cell">6</div>
+            <div class="cell thick-bottom">9</div>
+            <div class="cell thick-bottom">7</div>
+            <div class="cell thick-bottom thick-right"></div>
+            <div class="cell thick-bottom">3</div>
+            <div class="cell thick-bottom">6</div>
+            <div class="cell thick-bottom thick-right"></div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom">1</div>
+            <div class="cell thick-bottom">4</div>
+            <div class="cell">1</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">7</div>
+            <div class="cell">6</div>
+            <div class="cell">9</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">4</div>
+            <div class="cell"></div>
+            <div class="cell">2</div>
+            <div class="cell">6</div>
+            <div class="cell">4</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">1</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">2</div>
+            <div class="cell"></div>
+            <div class="cell">8</div>
+            <div class="cell">7</div>
+            <div class="cell thick-bottom">2</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom thick-right">8</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom">7</div>
+            <div class="cell thick-bottom thick-right">4</div>
+            <div class="cell thick-bottom">1</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom">9</div>
+            <div class="cell">7</div>
+            <div class="cell">2</div>
+            <div class="cell thick-right"></div>
+            <div class="cell"></div>
+            <div class="cell">4</div>
+            <div class="cell thick-right">1</div>
+            <div class="cell"></div>
+            <div class="cell">9</div>
+            <div class="cell">3</div>
+            <div class="cell">3</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">4</div>
+            <div class="cell">2</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">9</div>
+            <div class="cell">6</div>
+            <div class="cell"></div>
+            <div class="cell">1</div>
+            <div class="cell"></div>
+            <div class="cell">1</div>
+            <div class="cell thick-right">9</div>
+            <div class="cell"></div>
+            <div class="cell">3</div>
+            <div class="cell thick-right">6</div>
+            <div class="cell">2</div>
+            <div class="cell">4</div>
+            <div class="cell"></div>
+          </div>
+
+          <div class="stats">
+            <div class="stat-line">
+              <strong>50 Puzzles</strong> • Multiple Difficulties
+            </div>
+            <div class="stat-line">Heat Up Your Brain Power</div>
+            <div class="stat-line">🔥 Scorching Hot Challenges 🔥</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- September - Back to School Theme -->
+      <div class="cover september">
+        <div class="cover-bg september"></div>
+        <div class="month-icon">📚</div>
+        <div class="cover-content">
+          <h1 class="title">SUDOKU RACE</h1>
+          <div class="subtitle">September Edition</div>
+
+          <div class="sudoku-grid">
+            <div class="cell">8</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">2</div>
+            <div class="cell">7</div>
+            <div class="cell">5</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">4</div>
+            <div class="cell"></div>
+            <div class="cell">1</div>
+            <div class="cell"></div>
+            <div class="cell">5</div>
+            <div class="cell thick-right">7</div>
+            <div class="cell"></div>
+            <div class="cell">1</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">8</div>
+            <div class="cell">2</div>
+            <div class="cell"></div>
+            <div class="cell thick-bottom">1</div>
+            <div class="cell thick-bottom">4</div>
+            <div class="cell thick-bottom thick-right"></div>
+            <div class="cell thick-bottom">2</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom thick-right">8</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom">5</div>
+            <div class="cell thick-bottom">7</div>
+            <div class="cell">7</div>
+            <div class="cell">8</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">4</div>
+            <div class="cell">2</div>
+            <div class="cell thick-right"></div>
+            <div class="cell"></div>
+            <div class="cell">1</div>
+            <div class="cell">9</div>
+            <div class="cell">2</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">4</div>
+            <div class="cell">8</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">1</div>
+            <div class="cell">7</div>
+            <div class="cell"></div>
+            <div class="cell">3</div>
+            <div class="cell thick-bottom">9</div>
+            <div class="cell thick-bottom">1</div>
+            <div class="cell thick-bottom thick-right"></div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom">7</div>
+            <div class="cell thick-bottom thick-right">3</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom">8</div>
+            <div class="cell thick-bottom">2</div>
+            <div class="cell">4</div>
+            <div class="cell">2</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">1</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">7</div>
+            <div class="cell"></div>
+            <div class="cell">9</div>
+            <div class="cell">8</div>
+            <div class="cell"></div>
+            <div class="cell">9</div>
+            <div class="cell thick-right">8</div>
+            <div class="cell"></div>
+            <div class="cell">4</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">1</div>
+            <div class="cell">7</div>
+            <div class="cell"></div>
+            <div class="cell">5</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">1</div>
+            <div class="cell"></div>
+            <div class="cell">8</div>
+            <div class="cell thick-right">2</div>
+            <div class="cell">9</div>
+            <div class="cell"></div>
+            <div class="cell">4</div>
+          </div>
+
+          <div class="stats">
+            <div class="stat-line">
+              <strong>50 Puzzles</strong> • Multiple Difficulties
+            </div>
+            <div class="stat-line">School Your Brain</div>
+            <div class="stat-line">📚 Knowledge Through Numbers 📚</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- October - Halloween Theme -->
+      <div class="cover october">
+        <div class="cover-bg october"></div>
+        <div class="month-icon">🎃</div>
+        <div class="cover-content">
+          <h1 class="title">SUDOKU RACE</h1>
+          <div class="subtitle">October Edition</div>
+
+          <div class="sudoku-grid">
+            <div class="cell">3</div>
+            <div class="cell">9</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">6</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">1</div>
+            <div class="cell"></div>
+            <div class="cell">2</div>
+            <div class="cell">4</div>
+            <div class="cell"></div>
+            <div class="cell">1</div>
+            <div class="cell thick-right">6</div>
+            <div class="cell">4</div>
+            <div class="cell">2</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">3</div>
+            <div class="cell">9</div>
+            <div class="cell"></div>
+            <div class="cell thick-bottom">4</div>
+            <div class="cell thick-bottom">2</div>
+            <div class="cell thick-bottom thick-right"></div>
+            <div class="cell thick-bottom">9</div>
+            <div class="cell thick-bottom">3</div>
+            <div class="cell thick-bottom thick-right"></div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom">1</div>
+            <div class="cell thick-bottom">6</div>
+            <div class="cell">9</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">4</div>
+            <div class="cell">1</div>
+            <div class="cell">6</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">2</div>
+            <div class="cell"></div>
+            <div class="cell">3</div>
+            <div class="cell">1</div>
+            <div class="cell">6</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">3</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">2</div>
+            <div class="cell"></div>
+            <div class="cell">4</div>
+            <div class="cell">9</div>
+            <div class="cell thick-bottom">2</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom thick-right">3</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom">4</div>
+            <div class="cell thick-bottom thick-right">9</div>
+            <div class="cell thick-bottom">1</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom">8</div>
+            <div class="cell">6</div>
+            <div class="cell">4</div>
+            <div class="cell thick-right"></div>
+            <div class="cell"></div>
+            <div class="cell">9</div>
+            <div class="cell thick-right">3</div>
+            <div class="cell"></div>
+            <div class="cell">8</div>
+            <div class="cell">1</div>
+            <div class="cell"></div>
+            <div class="cell">3</div>
+            <div class="cell thick-right">9</div>
+            <div class="cell"></div>
+            <div class="cell">1</div>
+            <div class="cell thick-right">4</div>
+            <div class="cell">6</div>
+            <div class="cell">7</div>
+            <div class="cell"></div>
+            <div class="cell">8</div>
+            <div class="cell">7</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">2</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">6</div>
+            <div class="cell"></div>
+            <div class="cell">3</div>
+            <div class="cell">5</div>
+          </div>
+
+          <div class="stats">
+            <div class="stat-line">
+              <strong>50 Puzzles</strong> • Multiple Difficulties
+            </div>
+            <div class="stat-line">Spooky Smart Challenges</div>
+            <div class="stat-line">🎃 Frighteningly Fun 🎃</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- November - Autumn Theme -->
+      <div class="cover november">
+        <div class="cover-bg november"></div>
+        <div class="particles">
+          <div class="particle"></div>
+          <div class="particle"></div>
+          <div class="particle"></div>
+          <div class="particle"></div>
+        </div>
+        <div class="month-icon">🍂</div>
+        <div class="cover-content">
+          <h1 class="title">SUDOKU RACE</h1>
+          <div class="subtitle">November Edition</div>
+
+          <div class="sudoku-grid">
+            <div class="cell"></div>
+            <div class="cell">4</div>
+            <div class="cell thick-right">1</div>
+            <div class="cell">5</div>
+            <div class="cell">8</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">2</div>
+            <div class="cell">3</div>
+            <div class="cell"></div>
+            <div class="cell">5</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">3</div>
+            <div class="cell">2</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">4</div>
+            <div class="cell">1</div>
+            <div class="cell"></div>
+            <div class="cell">8</div>
+            <div class="cell thick-bottom">2</div>
+            <div class="cell thick-bottom">8</div>
+            <div class="cell thick-bottom thick-right"></div>
+            <div class="cell thick-bottom">1</div>
+            <div class="cell thick-bottom">3</div>
+            <div class="cell thick-bottom thick-right"></div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom">4</div>
+            <div class="cell thick-bottom">5</div>
+            <div class="cell">8</div>
+            <div class="cell">2</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">4</div>
+            <div class="cell">5</div>
+            <div class="cell thick-right"></div>
+            <div class="cell"></div>
+            <div class="cell">1</div>
+            <div class="cell">3</div>
+            <div class="cell">4</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">5</div>
+            <div class="cell">3</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">1</div>
+            <div class="cell">8</div>
+            <div class="cell"></div>
+            <div class="cell">2</div>
+            <div class="cell thick-bottom">3</div>
+            <div class="cell thick-bottom">1</div>
+            <div class="cell thick-bottom thick-right"></div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom">2</div>
+            <div class="cell thick-bottom thick-right">8</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom">5</div>
+            <div class="cell thick-bottom">4</div>
+            <div class="cell">1</div>
+            <div class="cell">5</div>
+            <div class="cell thick-right"></div>
+            <div class="cell"></div>
+            <div class="cell">4</div>
+            <div class="cell thick-right">2</div>
+            <div class="cell"></div>
+            <div class="cell">8</div>
+            <div class="cell">9</div>
+            <div class="cell">9</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">8</div>
+            <div class="cell">6</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">3</div>
+            <div class="cell">5</div>
+            <div class="cell"></div>
+            <div class="cell">1</div>
+            <div class="cell"></div>
+            <div class="cell">3</div>
+            <div class="cell thick-right">2</div>
+            <div class="cell"></div>
+            <div class="cell">1</div>
+            <div class="cell thick-right">9</div>
+            <div class="cell">4</div>
+            <div class="cell">6</div>
+            <div class="cell"></div>
+          </div>
+
+          <div class="stats">
+            <div class="stat-line">
+              <strong>50 Puzzles</strong> • Multiple Difficulties
+            </div>
+            <div class="stat-line">Bonfire Night Brain Burners</div>
+            <div class="stat-line">🍂 Remember, Remember! 🍂</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- December - Winter/Christmas Theme -->
+      <div class="cover december">
+        <div class="cover-bg december"></div>
+        <div class="particles">
+          <div class="particle"></div>
+          <div class="particle"></div>
+          <div class="particle"></div>
+          <div class="particle"></div>
+        </div>
+        <div class="month-icon">🎅</div>
+        <div class="cover-content">
+          <h1 class="title">SUDOKU RACE</h1>
+          <div class="subtitle">December Edition</div>
+
+          <div class="sudoku-grid">
+            <div class="cell">7</div>
+            <div class="cell">3</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">8</div>
+            <div class="cell">1</div>
+            <div class="cell thick-right"></div>
+            <div class="cell"></div>
+            <div class="cell">6</div>
+            <div class="cell">2</div>
+            <div class="cell"></div>
+            <div class="cell">8</div>
+            <div class="cell thick-right">2</div>
+            <div class="cell">6</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">7</div>
+            <div class="cell">1</div>
+            <div class="cell">3</div>
+            <div class="cell"></div>
+            <div class="cell thick-bottom">6</div>
+            <div class="cell thick-bottom">1</div>
+            <div class="cell thick-bottom thick-right"></div>
+            <div class="cell thick-bottom">2</div>
+            <div class="cell thick-bottom">3</div>
+            <div class="cell thick-bottom thick-right"></div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom">8</div>
+            <div class="cell thick-bottom">7</div>
+            <div class="cell">2</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">8</div>
+            <div class="cell">1</div>
+            <div class="cell">6</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">3</div>
+            <div class="cell"></div>
+            <div class="cell">9</div>
+            <div class="cell">3</div>
+            <div class="cell">6</div>
+            <div class="cell thick-right"></div>
+            <div class="cell">9</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">2</div>
+            <div class="cell"></div>
+            <div class="cell">1</div>
+            <div class="cell">8</div>
+            <div class="cell thick-bottom">9</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom thick-right">1</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom">8</div>
+            <div class="cell thick-bottom thick-right">3</div>
+            <div class="cell thick-bottom">6</div>
+            <div class="cell thick-bottom"></div>
+            <div class="cell thick-bottom">4</div>
+            <div class="cell">8</div>
+            <div class="cell">2</div>
+            <div class="cell thick-right"></div>
+            <div class="cell"></div>
+            <div class="cell">9</div>
+            <div class="cell thick-right">1</div>
+            <div class="cell"></div>
+            <div class="cell">4</div>
+            <div class="cell">3</div>
+            <div class="cell"></div>
+            <div class="cell">9</div>
+            <div class="cell thick-right">3</div>
+            <div class="cell">7</div>
+            <div class="cell"></div>
+            <div class="cell thick-right">8</div>
+            <div class="cell">2</div>
+            <div class="cell">5</div>
+            <div class="cell"></div>
+            <div class="cell">1</div>
+            <div class="cell">5</div>
+            <div class="cell thick-right"></div>
+            <div class="cell"></div>
+            <div class="cell">2</div>
+            <div class="cell thick-right">6</div>
+            <div class="cell"></div>
+            <div class="cell">9</div>
+            <div class="cell">8</div>
+          </div>
+
+          <div class="stats">
+            <div class="stat-line">
+              <strong>50 Puzzles</strong> • Multiple Difficulties
+            </div>
+            <div class="stat-line">Holiday Brain Gifts</div>
+            <div class="stat-line">🎄 Season's Greetings Solver! 🎄</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
