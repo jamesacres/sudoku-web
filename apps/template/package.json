@@ -1,5 +1,5 @@
 {
-  "name": "@sudoku-web/template",
+  "name": "@sudoku-web/app-template",
   "version": "0.1.0",
   "private": true,
   "main": "./src/index.ts",
@@ -31,7 +31,10 @@
     "react-dom": "^18",
     "react-feather": "^2.0.10",
     "@sudoku-web/types": "*",
-    "@sudoku-web/shared": "*"
+    "@sudoku-web/shared": "*",
+    "@sudoku-web/auth": "*",
+    "@sudoku-web/ui": "*",
+    "@sudoku-web/template": "*"
   },
   "devDependencies": {
     "@types/node": "^20",

@@ -1,0 +1,31 @@
+'use client';
+
+import React from 'react';
+import { UserContext } from '../providers/AuthProvider';
+import { UserButton } from './UserButton';
+
+// Props for external dependencies
+export interface HeaderUserDependencies {
+  isOnline?: boolean;
+}
+
+const HeaderUser: React.FC<HeaderUserDependencies> = ({ isOnline = true }) => {
+  const { isLoggingIn, loginRedirect, logout, user } =
+    React.useContext(UserContext) || {};
+
+  return user && logout ? (
+    <UserButton user={user} logout={logout} />
+  ) : (
+    isOnline && (
+      <button
+        disabled={isLoggingIn}
+        onClick={() => loginRedirect && loginRedirect({ userInitiated: true })}
+        className={`${isLoggingIn ? 'cursor-wait' : ''} bg-theme-primary disabled:bg-theme-primary-lighter mx-1 inline-block rounded-full px-4 py-1.5 text-sm font-medium text-white transition-opacity active:opacity-70`}
+      >
+        Sign in
+      </button>
+    )
+  );
+};
+
+export default HeaderUser;
