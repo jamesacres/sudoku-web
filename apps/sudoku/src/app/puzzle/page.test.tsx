@@ -2,7 +2,7 @@ import React, { Suspense } from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import PuzzlePage from './page';
 import * as nextNavigation from 'next/navigation';
-import { useWakeLock } from '@/hooks/useWakeLock';
+import { useWakeLock } from '@sudoku-web/template';
 
 // Mock dependencies
 jest.mock('next/navigation', () => ({

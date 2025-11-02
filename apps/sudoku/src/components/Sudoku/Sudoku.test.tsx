@@ -3,9 +3,7 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import Sudoku from './Sudoku';
 import { useGameState } from '@/hooks/gameState';
-import { UserContext } from '@sudoku-web/template';
-import { RevenueCatContext } from '@sudoku-web/template';
-import { useSessions } from '@/providers/SessionsProvider/SessionsProvider';
+import { UserContext, RevenueCatContext, useSessions } from '@sudoku-web/template';
 import { useRouter } from 'next/navigation';
 
 // Mock dependencies

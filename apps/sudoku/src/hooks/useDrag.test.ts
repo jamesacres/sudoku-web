@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { renderHook, act, waitFor } from '@testing-library/react';
-import { useDrag } from './useDrag';
+import { useDrag } from '@sudoku-web/template';
 
 describe('useDrag', () => {
   let gridRef: React.RefObject<HTMLDivElement>;

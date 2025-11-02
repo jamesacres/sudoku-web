@@ -1,6 +1,5 @@
 import { renderHook, act } from '@testing-library/react';
-import { useFetch } from './fetch';
-import FetchProvider from '@sudoku-web/template';
+import { useFetch, FetchProvider } from '@sudoku-web/template';
 import React, { ReactNode } from 'react';
 
 // Mock global fetch

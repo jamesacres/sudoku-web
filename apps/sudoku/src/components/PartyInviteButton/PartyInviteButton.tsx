@@ -1,6 +1,5 @@
-import { useServerStorage } from '@sudoku-web/template';
+import { useServerStorage, CopyButton } from '@sudoku-web/template';
 import { useState } from 'react';
-import { CopyButton } from '../CopyButton/CopyButton';
 
 const PartyInviteButton = ({
   puzzleId,

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { renderHook, act, waitFor } from '@testing-library/react';
-import { useOnline } from './online';
+import { useOnline } from '@sudoku-web/template';
 
 // Don't mock the GlobalStateContext - we need the real context for proper state updates
 

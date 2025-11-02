@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react';
-import { useDocumentVisibility } from './documentVisibility';
+import { useDocumentVisibility } from '@sudoku-web/template';
 
 describe('useDocumentVisibility', () => {
   beforeEach(() => {

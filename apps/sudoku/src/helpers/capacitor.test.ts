@@ -6,7 +6,7 @@ import {
   saveCapacitorState,
   getCapacitorState,
   CapacitorSecureStorage,
-} from './capacitor';
+} from '@sudoku-web/template';
 
 // Mock Capacitor
 jest.mock('@capacitor/core', () => ({

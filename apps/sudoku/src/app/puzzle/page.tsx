@@ -3,7 +3,7 @@ import Sudoku from '@/components/Sudoku';
 import { buildPuzzleUrl } from '@/helpers/buildPuzzleUrl';
 import { puzzleTextToPuzzle } from '@/helpers/puzzleTextToPuzzle';
 import { sha256 } from '@/helpers/sha256';
-import { useWakeLock } from '@/hooks/useWakeLock';
+import { useWakeLock } from '@sudoku-web/template';
 import { Puzzle } from '@/types/puzzle';
 import { GameStateMetadata } from '@/types/state';
 import { useSearchParams } from 'next/navigation';

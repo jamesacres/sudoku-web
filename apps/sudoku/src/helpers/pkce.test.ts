@@ -1,5 +1,5 @@
 import { describe, it, expect } from '@jest/globals';
-import { pkce } from './pkce';
+import { pkce } from '@sudoku-web/template';
 
 // Mock crypto API if needed
 if (!global.crypto) {

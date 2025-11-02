@@ -4,7 +4,7 @@ rm -rf apps/sudoku/out
 rm -rf app
 npm install
 cd apps/sudoku
-IS_ELECTRON=true npx next build
+IS_ELECTRON=true npm run build
 cd ../..
 cd electron
 npm install

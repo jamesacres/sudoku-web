@@ -1,6 +1,6 @@
 // Hook exports
 export { useOnline } from './online';
-export { useLocalStorage } from './localStorage';
+export { useLocalStorage, type StateResult } from './localStorage';
 export { useWakeLock } from './useWakeLock';
 export { useDrag } from './useDrag';
 export { useFetch } from './fetch';

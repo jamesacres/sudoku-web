@@ -2,9 +2,8 @@
 import React, { useState } from 'react';
 import { ServerStateResult, Party } from '@/types/serverTypes';
 import { ServerState } from '@/types/state';
-import { UserProfile } from '@sudoku-web/template';
+import { UserProfile, useSessions } from '@sudoku-web/template';
 import { Loader, ChevronDown, ChevronRight, RotateCcw } from 'react-feather';
-import { useSessions } from '@/providers/SessionsProvider/SessionsProvider';
 import IntegratedSessionRow from '../IntegratedSessionRow';
 import Leaderboard from '../leaderboard/Leaderboard';
 

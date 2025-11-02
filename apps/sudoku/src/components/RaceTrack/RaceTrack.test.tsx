@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import RaceTrack from './RaceTrack';
 import * as usePartiesModule from '@/hooks/useParties';
-import * as playerColorsModule from '@/utils/playerColors';
+import * as playerColorsModule from '@sudoku-web/template';
 import * as completionModule from '@/helpers/calculateCompletionPercentage';
 import * as cheatDetectionModule from '@/helpers/cheatDetection';
 import { Parties, Session } from '@/types/serverTypes';

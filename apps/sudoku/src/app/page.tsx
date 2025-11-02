@@ -1,13 +1,9 @@
 'use client';
-import { Footer } from '@sudoku-web/template';
+import { Footer, useOnline, useServerStorage, UserContext, useSessions, Difficulty, Tab } from '@sudoku-web/template';
 import MyPuzzlesTab from '@/components/tabs/MyPuzzlesTab';
 import FriendsTab from '@/components/tabs/FriendsTab';
 import ActivityWidget from '@/components/ActivityWidget';
-import { useOnline, useServerStorage } from '@sudoku-web/template';
-import { UserContext } from '@sudoku-web/template';
-import { useSessions } from '@/providers/SessionsProvider/SessionsProvider';
 import { useParties } from '@/hooks/useParties';
-import { Difficulty, Tab } from '@sudoku-web/template';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
   Suspense,

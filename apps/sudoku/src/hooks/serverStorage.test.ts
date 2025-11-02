@@ -1,13 +1,15 @@
 import { renderHook, act } from '@testing-library/react';
-import { useServerStorage } from './serverStorage';
-import { useFetch } from './fetch';
-import { useOnline } from './online';
-import { StateType } from '@sudoku-web/template';
-import { UserContext } from '@sudoku-web/template';
+import { useServerStorage, useFetch, useOnline, StateType, UserContext } from '@sudoku-web/template';
 import React from 'react';
 
-jest.mock('./fetch');
-jest.mock('./online');
+jest.mock('@sudoku-web/template', () => {
+  const actual = jest.requireActual('@sudoku-web/template');
+  return {
+    ...actual,
+    useFetch: jest.fn(),
+    useOnline: jest.fn(),
+  };
+});
 
 const mockUseFetch = useFetch as jest.Mock;
 const mockUseOnline = useOnline as jest.Mock;

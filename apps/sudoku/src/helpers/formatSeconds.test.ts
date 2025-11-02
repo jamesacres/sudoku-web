@@ -1,4 +1,4 @@
-import { formatSeconds } from './formatSeconds';
+import { formatSeconds } from '@sudoku-web/template';
 
 describe('formatSeconds', () => {
   describe('basic functionality', () => {

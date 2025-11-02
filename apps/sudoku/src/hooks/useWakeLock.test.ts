@@ -1,7 +1,7 @@
 'use client';
 
 import { renderHook, act } from '@testing-library/react';
-import { useWakeLock } from './useWakeLock';
+import { useWakeLock } from '@sudoku-web/template';
 
 describe('useWakeLock', () => {
   let mockWakeLock: any;

@@ -4,7 +4,7 @@ import {
   calculateCellId,
   splitCellId,
   calculateNextCellId,
-} from './calculateId';
+} from '@sudoku-web/template';
 
 describe('calculateId helpers', () => {
   describe('calculateBoxId', () => {

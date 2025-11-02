@@ -9,12 +9,13 @@ import {
 import SudokuControls from './SudokuControls';
 
 // Mock the canUseUndo and canUseCheckGrid functions
-jest.mock('@/utils/dailyActionCounter', () => ({
+jest.mock('@sudoku-web/template', () => ({
+  ...jest.requireActual('@sudoku-web/template'),
   canUseUndo: jest.fn(() => true),
   canUseCheckGrid: jest.fn(() => true),
 }));
 
-import { canUseUndo, canUseCheckGrid } from '@/utils/dailyActionCounter';
+import { canUseUndo, canUseCheckGrid } from '@sudoku-web/template';
 
 describe('SudokuControls', () => {
   const mockValidateGrid = jest.fn();

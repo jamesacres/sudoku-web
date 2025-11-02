@@ -15,10 +15,10 @@ import {
   Unlock,
 } from 'react-feather';
 import NumberPad from '../NumberPad';
-import Toggle from '../Toggle';
+import { NotesToggle } from '@sudoku-web/template';
 import React, { memo, useState, useRef, useCallback, useEffect } from 'react';
 import { HintBox } from '../HintBox/HintBox';
-import { canUseUndo, canUseCheckGrid } from '@/utils/dailyActionCounter';
+import { canUseUndo, canUseCheckGrid } from '@sudoku-web/template';
 
 interface Arguments {
   isInputDisabled: boolean;
@@ -221,7 +221,7 @@ const SudokuControls = ({
               {isNotesMode ? <Edit size={14} /> : <Edit2 size={14} />}
               Notes
             </div>
-            <Toggle isEnabled={isNotesMode} setEnabled={setIsNotesMode} />
+            <NotesToggle isEnabled={isNotesMode} setEnabled={setIsNotesMode} />
           </div>
           <div className="flex flex-1 justify-end">
             <button

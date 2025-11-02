@@ -3,7 +3,7 @@ import {
   getAllUserIds,
   PLAYER_COLORS,
   CURRENT_USER_COLOR,
-} from './playerColors';
+} from '@sudoku-web/template';
 
 describe('playerColors', () => {
   describe('color constants', () => {

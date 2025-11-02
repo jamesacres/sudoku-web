@@ -16,26 +16,18 @@ import {
   useRef,
   useState,
 } from 'react';
-import { CelebrationAnimation } from '../CelebrationAnimation';
+import { CelebrationAnimation, useDrag, UserContext, RevenueCatContext, SubscriptionContext, DAILY_LIMITS, isCapacitor, useSessions, AppDownloadModal } from '@sudoku-web/template';
 import { RaceTrack } from '../RaceTrack';
-import { UserContext } from '@sudoku-web/template';
-import { RevenueCatContext } from '@sudoku-web/template';
-import { useDrag } from '@/hooks/useDrag';
 import MemoisedSidebarButton from '../SidebarButton/SidebarButton';
 import {
   addDailyPuzzleId,
   getDailyPuzzleCount,
 } from '@/utils/dailyPuzzleCounter';
 import { useRouter } from 'next/navigation';
-import { SubscriptionContext } from '@sudoku-web/template';
-import { DAILY_LIMITS } from '@sudoku-web/template';
 import { GameStateMetadata } from '@/types/state';
 import { puzzleToPuzzleText } from '@/helpers/puzzleTextToPuzzle';
 import { isPuzzleCheated } from '@/helpers/cheatDetection';
 import RacingPromptModal from '../RacingPromptModal/RacingPromptModal';
-import AppDownloadModal from '../AppDownloadModal/AppDownloadModal';
-import { isCapacitor } from '@sudoku-web/template';
-import { useSessions } from '@/providers/SessionsProvider/SessionsProvider';
 
 const Sudoku = ({
   puzzle: { initial, final, puzzleId, redirectUri, metadata },

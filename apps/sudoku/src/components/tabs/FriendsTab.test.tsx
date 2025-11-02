@@ -1,8 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { FriendsTab } from './FriendsTab';
-import { useSessions } from '@/providers/SessionsProvider/SessionsProvider';
-import { UserProfile } from '@sudoku-web/template';
+import { useSessions, UserProfile } from '@sudoku-web/template';
 import { Party } from '@/types/serverTypes';
 
 jest.mock('react-feather', () => ({

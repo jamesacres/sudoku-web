@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, waitFor, act } from '@testing-library/react';
-import { ThemeColorProvider, useThemeColor } from './ThemeColorProvider';
+import { ThemeColorProvider, useThemeColor } from '@sudoku-web/template';
 
 // Mock next-themes
 jest.mock('next-themes', () => ({

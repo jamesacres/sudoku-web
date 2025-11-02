@@ -3,9 +3,8 @@ import { useRouter } from 'next/navigation';
 import { ArrowUp } from 'react-feather';
 import { BookCover } from '@/components/BookCovers';
 import { useContext, useEffect, useState, useCallback } from 'react';
-import { UserContext, useOnline } from '@sudoku-web/template';
+import { UserContext, useOnline, useSessions } from '@sudoku-web/template';
 import { useBook } from '@/providers/BookProvider/BookProvider';
-import { useSessions } from '@/providers/SessionsProvider/SessionsProvider';
 import { useParties } from '@/hooks/useParties';
 import {
   puzzleTextToPuzzle,

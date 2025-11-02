@@ -5,8 +5,7 @@ import { render, screen } from '@testing-library/react';
 import { IntegratedSessionRow } from './IntegratedSessionRow';
 import { ServerStateResult } from '@/types/serverTypes';
 import { ServerState } from '@/types/state';
-import { UserContext } from '@sudoku-web/template';
-import { useSessions } from '@/providers/SessionsProvider/SessionsProvider';
+import { UserContext, useSessions } from '@sudoku-web/template';
 import { useParties } from '@/hooks/useParties';
 
 // Mock dependencies
