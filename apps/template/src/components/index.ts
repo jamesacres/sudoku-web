@@ -12,6 +12,6 @@ export { default as ThemeSwitch } from './ThemeSwitch/ThemeSwitch';
 export { default as ThemeColorSwitch } from './ThemeColorSwitch/ThemeColorSwitch';
 export { PremiumFeatures } from './PremiumFeatures/PremiumFeatures';
 export { default as Footer } from './Footer/Footer';
+export { default as AppDownloadModal } from './AppDownloadModal';
 
-// Note: ErrorBoundary, AppDownloadModal, and GlobalErrorHandler are now imported
-// directly from @sudoku-web/template package instead of duplicated here
+// Note: ErrorBoundary and GlobalErrorHandler have been moved to @sudoku-web/ui

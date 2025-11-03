@@ -12,12 +12,12 @@
 
 // ===== Components =====
 /**
- * UI components for error handling and app promotion
- * - ErrorBoundary: React error boundary component
+ * UI components for app promotion
  * - AppDownloadModal: Modal promoting mobile app downloads
- * - GlobalErrorHandler: Global error handler for uncaught errors
+ *
+ * Note: ErrorBoundary and GlobalErrorHandler have been moved to @sudoku-web/ui
  */
-export * from './components';
+export { default as AppDownloadModal } from './components/AppDownloadModal';
 
 // ===== Hooks =====
 /**

@@ -2,8 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import React from 'react';
 import { Providers } from './providers';
-import { Header } from '@sudoku-web/ui';
-import { ErrorBoundary, GlobalErrorHandler } from '@sudoku-web/template';
+import { Header, ErrorBoundary, GlobalErrorHandler } from '@sudoku-web/ui';
 import SudokuPlusModal from '@/components/SudokuPlusModal';
 
 export const metadata: Metadata = {

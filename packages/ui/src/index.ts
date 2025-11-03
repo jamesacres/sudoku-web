@@ -37,6 +37,12 @@ export { CopyButton } from './components/CopyButton';
 /** Celebration animation with fireworks and number explosion effects */
 export { CelebrationAnimation } from './components/CelebrationAnimation';
 
+/** Error boundary component for catching React component errors */
+export { default as ErrorBoundary } from './components/ErrorBoundary';
+
+/** Global error handler for uncaught errors and promise rejections */
+export { default as GlobalErrorHandler } from './components/GlobalErrorHandler';
+
 // Note: HeaderUser and HeaderOnline have app-specific dependencies (UserProvider, useOnline)
 // They are copied to packages/ui but not exported - apps should copy/implement their own versions
 

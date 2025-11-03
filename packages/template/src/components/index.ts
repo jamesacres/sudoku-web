@@ -1,4 +1,4 @@
 // Component exports
-export { default as ErrorBoundary } from './ErrorBoundary';
 export { default as AppDownloadModal } from './AppDownloadModal';
-export { default as GlobalErrorHandler } from './GlobalErrorHandler/GlobalErrorHandler';
+
+// Note: ErrorBoundary and GlobalErrorHandler have been moved to @sudoku-web/ui
