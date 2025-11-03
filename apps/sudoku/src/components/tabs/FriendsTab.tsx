@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
-import { ServerStateResult, Party } from '@/types/serverTypes';
-import { ServerState } from '@/types/state';
+import { ServerStateResult, Party } from '@sudoku-web/sudoku';
+import { ServerState } from '@sudoku-web/sudoku';
 import { UserProfile, useSessions } from '@sudoku-web/template';
 import { Loader, ChevronDown, ChevronRight, RotateCcw } from 'react-feather';
 import IntegratedSessionRow from '../IntegratedSessionRow';

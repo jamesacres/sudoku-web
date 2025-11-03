@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import SudokuInput from './SudokuInput';
-import { Notes } from '@/types/notes';
+import { Notes } from '@sudoku-web/sudoku';
 
 describe('SudokuInput', () => {
   const mockSetSelectedCell = jest.fn();

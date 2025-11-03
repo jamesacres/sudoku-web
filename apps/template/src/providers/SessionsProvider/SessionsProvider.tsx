@@ -14,9 +14,8 @@ import {
   Parties,
   Session,
 } from '../../types/serverTypes';
-import { ServerState, GameState } from '../../types/state';
+import { ServerState, GameState, Timer } from '@sudoku-web/sudoku';
 import { StateType } from '../../types/StateType';
-import { Timer } from '../../types/timer';
 import { UserSession, UserSessions } from '../../types/userSessions';
 import { useServerStorage } from '../../hooks/serverStorage';
 import { useLocalStorage } from '../../hooks/localStorage';

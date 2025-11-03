@@ -1,7 +1,7 @@
 'use client';
-import { Parties, Session } from '@/types/serverTypes';
-import { GameState, ServerState } from '@/types/state';
-import { calculateCompletionPercentage } from '@/helpers/calculateCompletionPercentage';
+import { Parties, Session } from '@sudoku-web/sudoku';
+import { GameState, ServerState } from '@sudoku-web/sudoku';
+import { calculateCompletionPercentage } from '@sudoku-web/sudoku';
 import { useParties } from '@/hooks/useParties';
 import { memo, useMemo } from 'react';
 import {
@@ -13,7 +13,7 @@ import {
 import { TrafficLight } from '@/components/TrafficLight';
 import Link from 'next/link';
 import { RefreshCw } from 'react-feather';
-import { Puzzle } from '@/types/puzzle';
+import { Puzzle } from '@sudoku-web/sudoku';
 import { isPuzzleCheated } from '@/helpers/cheatDetection';
 
 interface Arguments {

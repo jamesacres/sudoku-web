@@ -1,8 +1,8 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import ActivityWidget from './ActivityWidget';
-import { ServerStateResult } from '@/types/serverTypes';
-import { ServerState } from '@/types/state';
+import { ServerStateResult } from '@sudoku-web/sudoku';
+import { ServerState } from '@sudoku-web/sudoku';
 
 // Mock react-feather
 jest.mock('react-feather', () => ({

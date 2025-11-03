@@ -3,7 +3,7 @@ import { render, screen, waitFor, act } from '@testing-library/react';
 import { SessionsProvider, useSessions } from './SessionsProvider';
 import { UserContext } from '../UserProvider';
 import { ServerStateResult, Party } from '../../types/serverTypes';
-import { ServerState } from '../../types/state';
+import { ServerState } from '@sudoku-web/sudoku';
 
 // Mock dependencies
 jest.mock('../../hooks/serverStorage', () => ({

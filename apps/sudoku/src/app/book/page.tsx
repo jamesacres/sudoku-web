@@ -6,13 +6,10 @@ import { useContext, useEffect, useState, useCallback } from 'react';
 import { UserContext, useOnline, useSessions } from '@sudoku-web/template';
 import { useBook } from '@/providers/BookProvider/BookProvider';
 import { useParties } from '@/hooks/useParties';
-import {
-  puzzleTextToPuzzle,
-  puzzleToPuzzleText,
-} from '@/helpers/puzzleTextToPuzzle';
-import { SudokuBookPuzzle, ServerStateResult } from '@/types/serverTypes';
+import { puzzleTextToPuzzle, puzzleToPuzzleText } from '@sudoku-web/sudoku';
+import { SudokuBookPuzzle, ServerStateResult } from '@sudoku-web/sudoku';
 import IntegratedSessionRow from '@/components/IntegratedSessionRow';
-import { ServerState } from '@/types/state';
+import { ServerState } from '@sudoku-web/sudoku';
 import { sha256 } from '@/helpers/sha256';
 
 export default function BookPage() {

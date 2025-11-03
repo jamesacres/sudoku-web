@@ -1,8 +1,8 @@
 'use client';
-import { Puzzle, PuzzleRowOrColumn } from '@/types/puzzle';
+import { Puzzle, PuzzleRowOrColumn } from '@sudoku-web/sudoku';
 import SudokuBox from '../SudokuBox';
-import { calculateBoxId } from '@sudoku-web/template';
-import { isInitialCell } from '@/helpers/checkAnswer';
+import { calculateBoxId } from '@sudoku-web/sudoku';
+import { isInitialCell } from '@sudoku-web/sudoku';
 import SudokuControls from '../SudokuControls';
 import { useGameState } from '@/hooks/gameState';
 import { TimerDisplay } from '../TimerDisplay/TimerDisplay';
@@ -34,8 +34,8 @@ import {
   getDailyPuzzleCount,
 } from '@/utils/dailyPuzzleCounter';
 import { useRouter } from 'next/navigation';
-import { GameStateMetadata } from '@/types/state';
-import { puzzleToPuzzleText } from '@/helpers/puzzleTextToPuzzle';
+import { GameStateMetadata } from '@sudoku-web/sudoku';
+import { puzzleToPuzzleText } from '@sudoku-web/sudoku';
 import { isPuzzleCheated } from '@/helpers/cheatDetection';
 import RacingPromptModal from '../RacingPromptModal/RacingPromptModal';
 

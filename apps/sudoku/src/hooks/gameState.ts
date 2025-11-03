@@ -1,27 +1,27 @@
 'use client';
 
-import { Puzzle } from '@/types/puzzle';
-import { Notes, ToggleNote } from '@/types/notes';
+import { Puzzle } from '@sudoku-web/sudoku';
+import { Notes, ToggleNote } from '@sudoku-web/sudoku';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import {
   calculateBoxId,
   calculateCellId,
   calculateNextCellId,
   splitCellId,
-} from '@sudoku-web/template';
+} from '@sudoku-web/sudoku';
 import {
   GameState,
   GameStateMetadata,
   SelectNumber,
   ServerState,
   SetAnswer,
-} from '@/types/state';
+} from '@sudoku-web/sudoku';
 import { useLocalStorage, useServerStorage } from '@sudoku-web/template';
-import { checkCell, checkGrid } from '@/helpers/checkAnswer';
+import { checkCell, checkGrid } from '@sudoku-web/sudoku';
 import { StateType } from '@sudoku-web/template';
 import { useTimer } from './timer';
 import { calculateSeconds } from '@sudoku-web/template';
-import { Parties, ServerStateResult, Session } from '@/types/serverTypes';
+import { Parties, ServerStateResult, Session } from '@sudoku-web/sudoku';
 import { UserContext, RevenueCatContext } from '@sudoku-web/template';
 import {
   canUseUndo,

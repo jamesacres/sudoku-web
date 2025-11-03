@@ -3,10 +3,10 @@ import { render, screen } from '@testing-library/react';
 import RaceTrack from './RaceTrack';
 import * as usePartiesModule from '@/hooks/useParties';
 import * as playerColorsModule from '@sudoku-web/template';
-import * as completionModule from '@/helpers/calculateCompletionPercentage';
+import * as completionModule from '@sudoku-web/sudoku';
 import * as cheatDetectionModule from '@/helpers/cheatDetection';
-import { Parties, Session } from '@/types/serverTypes';
-import { ServerState } from '@/types/state';
+import { Parties, Session } from '@sudoku-web/sudoku';
+import { ServerState } from '@sudoku-web/sudoku';
 
 jest.mock('@/hooks/useParties');
 jest.mock('@sudoku-web/template', () => ({

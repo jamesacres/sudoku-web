@@ -1,11 +1,11 @@
 'use client';
 import Sudoku from '@/components/Sudoku';
 import { buildPuzzleUrl } from '@/helpers/buildPuzzleUrl';
-import { puzzleTextToPuzzle } from '@/helpers/puzzleTextToPuzzle';
+import { puzzleTextToPuzzle } from '@sudoku-web/sudoku';
 import { sha256 } from '@/helpers/sha256';
 import { useWakeLock } from '@sudoku-web/template';
-import { Puzzle } from '@/types/puzzle';
-import { GameStateMetadata } from '@/types/state';
+import { Puzzle } from '@sudoku-web/sudoku';
+import { GameStateMetadata } from '@sudoku-web/sudoku';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
 

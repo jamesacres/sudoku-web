@@ -40,6 +40,9 @@ export { calculateCompletionPercentage } from './helpers/calculateCompletionPerc
 /** Convert puzzle text string to 2D array */
 export { puzzleTextToPuzzle } from './helpers/puzzleTextToPuzzle';
 
+/** Convert 2D puzzle array to text string */
+export { puzzleToPuzzleText } from './helpers/puzzleTextToPuzzle';
+
 /** Calculate box ID (0-8) from row and column */
 export { calculateBoxId } from './helpers/calculateId';
 

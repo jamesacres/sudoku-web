@@ -2,11 +2,11 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import Leaderboard from './Leaderboard';
 import * as scoringUtils from './scoringUtils';
-import { Party, ServerStateResult } from '@/types/serverTypes';
+import { Party, ServerStateResult } from '@sudoku-web/sudoku';
 import { UserProfile } from '@sudoku-web/template';
-import { UserSessions } from '@/types/userSessions';
-import { Puzzle } from '@/types/puzzle';
-import { ServerState } from '@/types/state';
+import { UserSessions } from '@sudoku-web/template';
+import { Puzzle } from '@sudoku-web/sudoku';
+import { ServerState } from '@sudoku-web/sudoku';
 import { FriendsLeaderboardScore } from './types';
 
 // Mock child components

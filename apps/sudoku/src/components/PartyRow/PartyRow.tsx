@@ -1,5 +1,5 @@
-import { Party, SessionParty, Session } from '@/types/serverTypes';
-import { ServerState } from '@/types/state';
+import { Party, SessionParty, Session } from '@sudoku-web/sudoku';
+import { ServerState } from '@sudoku-web/sudoku';
 import { PartyInviteButton } from '../PartyInviteButton/PartyInviteButton';
 import {
   CopyButton,
@@ -12,7 +12,7 @@ import {
 } from '@sudoku-web/template';
 import SimpleSudoku from '../SimpleSudoku';
 import { TimerDisplay } from '../TimerDisplay/TimerDisplay';
-import { calculateCompletionPercentage } from '@/helpers/calculateCompletionPercentage';
+import { calculateCompletionPercentage } from '@sudoku-web/sudoku';
 import { useParties } from '@/hooks/useParties';
 import { useContext, useState } from 'react';
 import { PartyConfirmationDialog } from '../PartyConfirmationDialog/PartyConfirmationDialog';

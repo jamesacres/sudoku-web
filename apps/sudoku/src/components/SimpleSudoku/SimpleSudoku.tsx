@@ -1,6 +1,6 @@
-import { calculateBoxId, calculateCellId } from '@sudoku-web/template';
-import { Notes } from '@/types/notes';
-import { Puzzle, PuzzleRowOrColumn } from '@/types/puzzle';
+import { calculateBoxId, calculateCellId } from '@sudoku-web/sudoku';
+import { Notes } from '@sudoku-web/sudoku';
+import { Puzzle, PuzzleRowOrColumn } from '@sudoku-web/sudoku';
 
 const SimpleSudoku = ({
   initial,

@@ -1,5 +1,5 @@
-import { Puzzle } from '@/types/puzzle';
-import { ServerState } from '@/types/state';
+import { Puzzle } from '@sudoku-web/sudoku';
+import { ServerState } from '@sudoku-web/sudoku';
 
 // Cheat detection: Check if more than one cell changed between two puzzle states
 export const isPuzzleCheated = (

@@ -7,7 +7,7 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { splitCellId } from '../helpers/calculateId';
+import { splitCellId } from '@sudoku-web/sudoku';
 
 interface UseDragOptions {
   isZoomMode: boolean;

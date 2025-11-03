@@ -2,7 +2,7 @@
 import React from 'react';
 import { Award } from 'react-feather';
 import { Difficulty } from '@sudoku-web/template';
-import { BookPuzzleDifficulty } from '@/types/serverTypes';
+import { BookPuzzleDifficulty } from '@sudoku-web/sudoku';
 import { SCORING_CONFIG } from './scoringConfig';
 
 interface ScoringLegendProps {

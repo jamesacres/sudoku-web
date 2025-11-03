@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import SimpleSudoku from './SimpleSudoku';
-import { Puzzle } from '@/types/puzzle';
+import { Puzzle } from '@sudoku-web/sudoku';
 
 const createPuzzle = (value: number = 0): Puzzle<number> => {
   const createBox = () => ({

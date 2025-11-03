@@ -3,8 +3,8 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { IntegratedSessionRow } from './IntegratedSessionRow';
-import { ServerStateResult } from '@/types/serverTypes';
-import { ServerState } from '@/types/state';
+import { ServerStateResult } from '@sudoku-web/sudoku';
+import { ServerState } from '@sudoku-web/sudoku';
 import { UserContext, useSessions } from '@sudoku-web/template';
 import { useParties } from '@/hooks/useParties';
 

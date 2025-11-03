@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { splitCellId } from '@sudoku-web/template';
+import { splitCellId } from '@sudoku-web/sudoku';
 
 // Component that throws an error when triggered
 function ErrorThrower({ shouldThrow }: { shouldThrow: boolean }) {

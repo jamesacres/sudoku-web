@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { PartyRow } from './PartyRow';
-import { Party } from '@/types/serverTypes';
+import { Party } from '@sudoku-web/sudoku';
 import { UserContext, UserContextInterface } from '@sudoku-web/template';
 import {
   RevenueCatContextInterface,

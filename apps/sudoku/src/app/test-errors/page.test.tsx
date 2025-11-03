@@ -2,10 +2,10 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import TestErrorsPage from './page';
-import * as calculateIdHelper from '@sudoku-web/template';
+import * as calculateIdHelper from '@sudoku-web/sudoku';
 
 // Mock dependencies
-jest.mock('@sudoku-web/template', () => ({
+jest.mock('@sudoku-web/sudoku', () => ({
   splitCellId: jest.fn(),
 }));
 

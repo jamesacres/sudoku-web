@@ -3,7 +3,7 @@ import { render, screen, waitFor, act } from '@testing-library/react';
 import { BookProvider, useBook } from './BookProvider';
 import { useServerStorage } from '@sudoku-web/template';
 import { useOnline } from '@sudoku-web/template';
-import { SudokuBookOfTheMonth } from '@/types/serverTypes';
+import { SudokuBookOfTheMonth } from '@sudoku-web/sudoku';
 
 jest.mock('@sudoku-web/template');
 jest.mock('@sudoku-web/template');

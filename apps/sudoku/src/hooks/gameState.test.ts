@@ -1,8 +1,8 @@
 import React from 'react';
 import { renderHook, act } from '@testing-library/react';
 import { useGameState } from './gameState';
-import { Puzzle } from '@/types/puzzle';
-import { GameStateMetadata } from '@/types/state';
+import { Puzzle } from '@sudoku-web/sudoku';
+import { GameStateMetadata } from '@sudoku-web/sudoku';
 
 jest.mock('@sudoku-web/template', () => ({
   useDocumentVisibility: () => true,
@@ -18,6 +18,8 @@ jest.mock('@sudoku-web/template', () => ({
     patchFriendSessions: jest.fn(),
   }),
   StateType: { TIMER: 'timer', SERVER: 'server' },
+}));
+jest.mock('@sudoku-web/sudoku', () => ({
   splitCellId: jest.fn((_cellId: string) => ({
     box: { x: 0, y: 0 },
     cell: { x: 0, y: 0 },

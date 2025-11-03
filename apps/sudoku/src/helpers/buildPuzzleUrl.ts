@@ -1,4 +1,4 @@
-import { GameStateMetadata } from '@/types/state';
+import { GameStateMetadata } from '@sudoku-web/sudoku';
 
 export const buildPuzzleUrl = (
   initial: string,

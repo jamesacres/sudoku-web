@@ -7,9 +7,9 @@ import {
   getUsernameFromParties,
 } from './scoringUtils';
 import { SCORING_CONFIG } from './scoringConfig';
-import { ServerStateResult, Party } from '@/types/serverTypes';
-import { ServerState } from '@/types/state';
-import { Puzzle } from '@/types/puzzle';
+import { ServerStateResult, Party } from '@sudoku-web/sudoku';
+import { ServerState } from '@sudoku-web/sudoku';
+import { Puzzle } from '@sudoku-web/sudoku';
 
 // Helper to create empty puzzle
 const createEmptyPuzzle = (): Puzzle<number> => {

@@ -1,5 +1,5 @@
-import { Notes } from '@/types/notes';
-import { SelectNumber } from '@/types/state';
+import { Notes } from '@sudoku-web/sudoku';
+import { SelectNumber } from '@sudoku-web/sudoku';
 import { memo } from 'react';
 
 interface Arguments {

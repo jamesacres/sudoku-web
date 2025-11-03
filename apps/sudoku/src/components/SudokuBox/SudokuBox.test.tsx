@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import SudokuBox from './SudokuBox';
-import { PuzzleBox } from '@/types/puzzle';
+import { PuzzleBox } from '@sudoku-web/sudoku';
 
 // Mock SudokuInput to avoid complex dependencies
 jest.mock('../SudokuInput', () => {

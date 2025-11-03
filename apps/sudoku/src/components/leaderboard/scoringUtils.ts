@@ -1,5 +1,5 @@
-import { ServerStateResult, Party } from '@/types/serverTypes';
-import { ServerState } from '@/types/state';
+import { ServerStateResult, Party } from '@sudoku-web/sudoku';
+import { ServerState } from '@sudoku-web/sudoku';
 import { isPuzzleCheated } from '@/helpers/cheatDetection';
 import { SCORING_CONFIG } from './scoringConfig';
 import { PuzzleType, ScoringResult, AllFriendsSessionsMap } from './types';

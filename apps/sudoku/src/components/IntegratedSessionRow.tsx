@@ -1,24 +1,21 @@
 'use client';
 import { useContext } from 'react';
-import { Party, ServerStateResult } from '@/types/serverTypes';
-import { ServerState } from '@/types/state';
+import { Party, ServerStateResult } from '@sudoku-web/sudoku';
+import { ServerState } from '@sudoku-web/sudoku';
 import {
   UserContext,
   calculateSeconds,
   useSessions,
 } from '@sudoku-web/template';
 import { useParties } from '@/hooks/useParties';
-import { calculateCompletionPercentage } from '@/helpers/calculateCompletionPercentage';
-import {
-  puzzleTextToPuzzle,
-  puzzleToPuzzleText,
-} from '@/helpers/puzzleTextToPuzzle';
+import { calculateCompletionPercentage } from '@sudoku-web/sudoku';
+import { puzzleTextToPuzzle, puzzleToPuzzleText } from '@sudoku-web/sudoku';
 import { Award, Loader } from 'react-feather';
 import SimpleSudoku from './SimpleSudoku';
 import Link from 'next/link';
-import { UserSession, UserSessions } from '@/types/userSessions';
+import { UserSession, UserSessions } from '@sudoku-web/template';
 import { buildPuzzleUrl } from '@/helpers/buildPuzzleUrl';
-import { SudokuBookPuzzle } from '@/types/serverTypes';
+import { SudokuBookPuzzle } from '@sudoku-web/sudoku';
 import { isPuzzleCheated } from '@/helpers/cheatDetection';
 
 // Function to get game status text

@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import ScoringLegend from './ScoringLegend';
 import { SCORING_CONFIG } from './scoringConfig';
 import { Difficulty } from '@sudoku-web/template';
-import { BookPuzzleDifficulty } from '@/types/serverTypes';
+import { BookPuzzleDifficulty } from '@sudoku-web/sudoku';
 
 describe('ScoringLegend', () => {
   const mockOnClose = jest.fn();

@@ -1,7 +1,7 @@
-import { calculateCellId } from '@sudoku-web/template';
+import { calculateCellId } from '@sudoku-web/sudoku';
 import SudokuInput from '../SudokuInput';
-import { PuzzleBox, PuzzleRowOrColumn } from '@/types/puzzle';
-import { SelectNumber, SetSelectedCell } from '@/types/state';
+import { PuzzleBox, PuzzleRowOrColumn } from '@sudoku-web/sudoku';
+import { SelectNumber, SetSelectedCell } from '@sudoku-web/sudoku';
 import { memo, PointerEvent } from 'react';
 
 interface Arguments {

@@ -1,14 +1,14 @@
 'use client';
 import React, { useState, useMemo } from 'react';
 import { Award } from 'react-feather';
-import { ServerStateResult, Party } from '@/types/serverTypes';
-import { ServerState } from '@/types/state';
+import { ServerStateResult, Party } from '@sudoku-web/sudoku';
+import { ServerState } from '@sudoku-web/sudoku';
 import { UserProfile } from '@sudoku-web/template';
 import { FriendsLeaderboardScore, AllFriendsSessionsMap } from './types';
 import { calculateUserScore, getUsernameFromParties } from './scoringUtils';
 import FriendLeaderboardEntry from './FriendLeaderboardEntry';
 import ScoringLegend from './ScoringLegend';
-import { UserSessions } from '@/types/userSessions';
+import { UserSessions } from '@sudoku-web/template';
 
 interface LeaderboardProps {
   sessions: ServerStateResult<ServerState>[] | null;

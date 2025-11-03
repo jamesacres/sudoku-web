@@ -16,12 +16,14 @@ import {
   Invite,
   InviteResponse,
   PublicInvite,
+} from '../types/serverTypes';
+import {
   SudokuOfTheDay,
   SudokuOfTheDayResponse,
   Difficulty,
   SudokuBookOfTheMonth,
   SudokuBookOfTheMonthResponse,
-} from '../types/serverTypes';
+} from '@sudoku-web/sudoku';
 import { UserProfile } from '../types/userProfile';
 
 const app = 'sudoku';
