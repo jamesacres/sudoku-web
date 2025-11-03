@@ -5,3 +5,4 @@ export { useWakeLock } from './useWakeLock';
 export { useFetch } from './fetch';
 export { useDocumentVisibility } from './documentVisibility';
 export { useServerStorage } from './serverStorage';
+export { useDrag } from './useDrag';

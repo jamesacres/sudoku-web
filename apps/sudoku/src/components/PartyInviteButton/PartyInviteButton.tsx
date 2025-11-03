@@ -1,4 +1,5 @@
-import { useServerStorage, CopyButton } from '@sudoku-web/template';
+import { useServerStorage } from '@sudoku-web/template';
+import { CopyButton } from '@sudoku-web/ui';
 import { useState } from 'react';
 
 const PartyInviteButton = ({

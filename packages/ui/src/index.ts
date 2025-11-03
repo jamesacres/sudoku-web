@@ -31,6 +31,12 @@ export { default as ThemeColorSwitch } from './components/ThemeColorSwitch';
 /** Generic toggle switch component */
 export { Toggle } from './components/Toggle/NotesToggle';
 
+/** Copy to clipboard button with platform-specific sharing support */
+export { CopyButton } from './components/CopyButton';
+
+/** Celebration animation with fireworks and number explosion effects */
+export { CelebrationAnimation } from './components/CelebrationAnimation';
+
 // Note: HeaderUser and HeaderOnline have app-specific dependencies (UserProvider, useOnline)
 // They are copied to packages/ui but not exported - apps should copy/implement their own versions
 
