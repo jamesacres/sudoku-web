@@ -3,7 +3,7 @@
 import React from 'react';
 import { UserContext } from '../../providers/UserProvider';
 import { UserButton } from './UserButton';
-import { useOnline } from '../../hooks/online';
+import { useOnline } from '@sudoku-web/template';
 
 const HeaderUser = () => {
   const { isLoggingIn, loginRedirect, logout, user } =

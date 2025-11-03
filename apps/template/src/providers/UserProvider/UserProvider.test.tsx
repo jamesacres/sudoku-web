@@ -33,14 +33,18 @@ jest.mock('../../helpers/pkce', () => ({
   ),
 }));
 
-jest.mock('../../hooks/fetch', () => ({
-  useFetch: jest.fn(() => ({
-    fetch: jest.fn(),
-    getUser: jest.fn(() => undefined),
-    logout: jest.fn(),
-    restoreState: jest.fn(() => Promise.resolve(undefined)),
-  })),
-}));
+jest.mock('@sudoku-web/template', () => {
+  const actual = jest.requireActual('@sudoku-web/template');
+  return {
+    ...actual,
+    useFetch: jest.fn(() => ({
+      fetch: jest.fn(),
+      getUser: jest.fn(() => undefined),
+      logout: jest.fn(),
+      restoreState: jest.fn(() => Promise.resolve(undefined)),
+    })),
+  };
+});
 
 jest.mock('@capacitor/browser', () => ({
   Browser: {

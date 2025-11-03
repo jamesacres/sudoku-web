@@ -92,14 +92,13 @@ jest.mock('../RacingPromptModal/RacingPromptModal', () => {
 });
 
 // Mocks for AppDownloadModal and isCapacitor are now in @sudoku-web/template mock above
-// Local helper mocks for sudoku app
-jest.mock('@/helpers/cheatDetection', () => ({
-  isPuzzleCheated: jest.fn(() => false),
-}));
+// Note: isPuzzleCheated is mocked via @sudoku-web/sudoku mock above
 
-jest.mock('@/helpers/puzzleTextToPuzzle', () => ({
+jest.mock('@sudoku-web/sudoku', () => ({
+  ...jest.requireActual('@sudoku-web/sudoku'),
   puzzleTextToPuzzle: jest.fn((_text) => Array(81).fill(0)),
   puzzleToPuzzleText: jest.fn(() => '0'.repeat(81)),
+  isPuzzleCheated: jest.fn(() => false),
 }));
 
 jest.mock('@/helpers/checkAnswer', () => ({

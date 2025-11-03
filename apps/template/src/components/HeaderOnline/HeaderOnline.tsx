@@ -1,6 +1,6 @@
 'use client';
 
-import { useOnline } from '../../hooks/online';
+import { useOnline } from '@sudoku-web/template';
 import React from 'react';
 import { Wifi, WifiOff } from 'react-feather';
 

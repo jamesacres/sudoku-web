@@ -4,7 +4,7 @@ import { isElectron, openBrowser } from '../../helpers/electron';
 import { pkce } from '../../helpers/pkce';
 import { UserProfile } from '../../types/userProfile';
 import { useRouter } from 'next/navigation';
-import { useFetch } from '../../hooks/fetch';
+import { useFetch } from '@sudoku-web/template';
 import React, { useEffect } from 'react';
 import { Browser } from '@capacitor/browser';
 

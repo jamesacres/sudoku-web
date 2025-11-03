@@ -32,11 +32,11 @@ import MemoisedSidebarButton from '../SidebarButton/SidebarButton';
 import {
   addDailyPuzzleId,
   getDailyPuzzleCount,
-} from '@/utils/dailyPuzzleCounter';
+} from '@sudoku-web/sudoku';
 import { useRouter } from 'next/navigation';
 import { GameStateMetadata } from '@sudoku-web/sudoku';
 import { puzzleToPuzzleText } from '@sudoku-web/sudoku';
-import { isPuzzleCheated } from '@/helpers/cheatDetection';
+import { isPuzzleCheated } from '@sudoku-web/sudoku';
 import RacingPromptModal from '../RacingPromptModal/RacingPromptModal';
 
 const Sudoku = ({

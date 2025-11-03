@@ -6,10 +6,12 @@ import {
   UserContextInterface,
 } from '../../providers/UserProvider';
 import { UserProfile } from '../../types/userProfile';
-import { useOnline } from '../../hooks/online';
+import { useOnline } from '@sudoku-web/template';
 
 // Mock the useOnline hook
-jest.mock('../../hooks/online');
+jest.mock('@sudoku-web/template', () => ({
+  useOnline: jest.fn(),
+}));
 
 // Mock UserButton
 jest.mock('./UserButton', () => ({

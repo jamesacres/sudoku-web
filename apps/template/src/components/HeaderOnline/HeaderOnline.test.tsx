@@ -1,11 +1,16 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import HeaderOnline from './HeaderOnline';
+import { GlobalStateProvider } from '@sudoku-web/template';
 
-// Mock the useOnline hook
-jest.mock('../../hooks/online', () => ({
-  useOnline: jest.fn(),
-}));
+// Mock the @sudoku-web/template module to get useOnline
+jest.mock('@sudoku-web/template', () => {
+  const actual = jest.requireActual('@sudoku-web/template');
+  return {
+    ...actual,
+    useOnline: jest.fn(() => ({ isOnline: true })),
+  };
+});
 
 // Mock react-feather icons
 jest.mock('react-feather', () => ({
@@ -29,39 +34,43 @@ describe('HeaderOnline', () => {
     jest.restoreAllMocks();
   });
 
+  const renderWithProvider = (component: React.ReactElement) => {
+    return render(<GlobalStateProvider>{component}</GlobalStateProvider>);
+  };
+
   describe('rendering when online', () => {
     it('should render button when online', () => {
-      const { useOnline } = require('../../hooks/online');
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({ isOnline: true });
 
-      render(<HeaderOnline />);
+      renderWithProvider(<HeaderOnline />);
 
       expect(screen.getByRole('button')).toBeInTheDocument();
     });
 
     it('should render WiFi icon when online', () => {
-      const { useOnline } = require('../../hooks/online');
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({ isOnline: true });
 
-      render(<HeaderOnline />);
+      renderWithProvider(<HeaderOnline />);
 
       expect(screen.getByTestId('wifi-icon')).toBeInTheDocument();
     });
 
     it('should not render WiFi off icon when online', () => {
-      const { useOnline } = require('../../hooks/online');
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({ isOnline: true });
 
-      render(<HeaderOnline />);
+      renderWithProvider(<HeaderOnline />);
 
       expect(screen.queryByTestId('wifi-off-icon')).not.toBeInTheDocument();
     });
 
     it('should have correct styling when online', () => {
-      const { useOnline } = require('../../hooks/online');
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({ isOnline: true });
 
-      render(<HeaderOnline />);
+      renderWithProvider(<HeaderOnline />);
 
       const button = screen.getByRole('button');
       expect(button).toHaveClass('text-theme-primary');
@@ -74,37 +83,37 @@ describe('HeaderOnline', () => {
 
   describe('rendering when offline', () => {
     it('should render button when offline', () => {
-      const { useOnline } = require('../../hooks/online');
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({ isOnline: false });
 
-      render(<HeaderOnline />);
+      renderWithProvider(<HeaderOnline />);
 
       expect(screen.getByRole('button')).toBeInTheDocument();
     });
 
     it('should render WiFi off icon when offline', () => {
-      const { useOnline } = require('../../hooks/online');
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({ isOnline: false });
 
-      render(<HeaderOnline />);
+      renderWithProvider(<HeaderOnline />);
 
       expect(screen.getByTestId('wifi-off-icon')).toBeInTheDocument();
     });
 
     it('should not render WiFi icon when offline', () => {
-      const { useOnline } = require('../../hooks/online');
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({ isOnline: false });
 
-      render(<HeaderOnline />);
+      renderWithProvider(<HeaderOnline />);
 
       expect(screen.queryByTestId('wifi-icon')).not.toBeInTheDocument();
     });
 
     it('should have same styling when offline as when online', () => {
-      const { useOnline } = require('../../hooks/online');
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({ isOnline: false });
 
-      render(<HeaderOnline />);
+      renderWithProvider(<HeaderOnline />);
 
       const button = screen.getByRole('button');
       expect(button).toHaveClass('text-theme-primary');
@@ -117,10 +126,10 @@ describe('HeaderOnline', () => {
 
   describe('button click behavior', () => {
     it('should show alert when button is clicked and online', async () => {
-      const { useOnline } = require('../../hooks/online');
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({ isOnline: true });
 
-      render(<HeaderOnline />);
+      renderWithProvider(<HeaderOnline />);
 
       const button = screen.getByRole('button');
       fireEvent.click(button);
@@ -131,10 +140,10 @@ describe('HeaderOnline', () => {
     });
 
     it('should show alert when button is clicked and offline', async () => {
-      const { useOnline } = require('../../hooks/online');
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({ isOnline: false });
 
-      render(<HeaderOnline />);
+      renderWithProvider(<HeaderOnline />);
 
       const button = screen.getByRole('button');
       fireEvent.click(button);
@@ -145,10 +154,10 @@ describe('HeaderOnline', () => {
     });
 
     it('should call window.alert exactly once per click', async () => {
-      const { useOnline } = require('../../hooks/online');
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({ isOnline: true });
 
-      render(<HeaderOnline />);
+      renderWithProvider(<HeaderOnline />);
 
       const button = screen.getByRole('button');
       fireEvent.click(button);
@@ -159,10 +168,10 @@ describe('HeaderOnline', () => {
     });
 
     it('should call alert with correct message on multiple clicks', async () => {
-      const { useOnline } = require('../../hooks/online');
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({ isOnline: true });
 
-      render(<HeaderOnline />);
+      renderWithProvider(<HeaderOnline />);
 
       const button = screen.getByRole('button');
 
@@ -178,7 +187,7 @@ describe('HeaderOnline', () => {
 
   describe('state changes', () => {
     it('should update icon when online status changes', () => {
-      const { useOnline } = require('../../hooks/online');
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({ isOnline: true });
 
       const { rerender } = render(<HeaderOnline />);
@@ -195,7 +204,7 @@ describe('HeaderOnline', () => {
     });
 
     it('should update alert message when online status changes', async () => {
-      const { useOnline } = require('../../hooks/online');
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({ isOnline: true });
 
       const { rerender } = render(<HeaderOnline />);
@@ -224,30 +233,30 @@ describe('HeaderOnline', () => {
 
   describe('button styling', () => {
     it('should have cursor-pointer class', () => {
-      const { useOnline } = require('../../hooks/online');
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({ isOnline: true });
 
-      render(<HeaderOnline />);
+      renderWithProvider(<HeaderOnline />);
 
       const button = screen.getByRole('button');
       expect(button).toHaveClass('cursor-pointer');
     });
 
     it('should have margin left class', () => {
-      const { useOnline } = require('../../hooks/online');
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({ isOnline: true });
 
-      render(<HeaderOnline />);
+      renderWithProvider(<HeaderOnline />);
 
       const button = screen.getByRole('button');
       expect(button).toHaveClass('ml-1');
     });
 
     it('should have correct size dimensions', () => {
-      const { useOnline } = require('../../hooks/online');
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({ isOnline: true });
 
-      render(<HeaderOnline />);
+      renderWithProvider(<HeaderOnline />);
 
       const button = screen.getByRole('button');
       expect(button).toHaveClass('h-8');
@@ -255,30 +264,30 @@ describe('HeaderOnline', () => {
     });
 
     it('should have padding on button', () => {
-      const { useOnline } = require('../../hooks/online');
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({ isOnline: true });
 
-      render(<HeaderOnline />);
+      renderWithProvider(<HeaderOnline />);
 
       const button = screen.getByRole('button');
       expect(button).toHaveClass('p-1.5');
     });
 
     it('should have transition effect', () => {
-      const { useOnline } = require('../../hooks/online');
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({ isOnline: true });
 
-      render(<HeaderOnline />);
+      renderWithProvider(<HeaderOnline />);
 
       const button = screen.getByRole('button');
       expect(button).toHaveClass('transition-colors');
     });
 
     it('should have active state opacity', () => {
-      const { useOnline } = require('../../hooks/online');
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({ isOnline: true });
 
-      render(<HeaderOnline />);
+      renderWithProvider(<HeaderOnline />);
 
       const button = screen.getByRole('button');
       expect(button).toHaveClass('active:opacity-70');
@@ -287,10 +296,10 @@ describe('HeaderOnline', () => {
 
   describe('icon styling', () => {
     it('should have correct styling for WiFi icon', () => {
-      const { useOnline } = require('../../hooks/online');
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({ isOnline: true });
 
-      render(<HeaderOnline />);
+      renderWithProvider(<HeaderOnline />);
 
       const icon = screen.getByTestId('wifi-icon');
       expect(icon).toHaveClass('m-auto');
@@ -299,10 +308,10 @@ describe('HeaderOnline', () => {
     });
 
     it('should have correct styling for WiFi off icon', () => {
-      const { useOnline } = require('../../hooks/online');
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({ isOnline: false });
 
-      render(<HeaderOnline />);
+      renderWithProvider(<HeaderOnline />);
 
       const icon = screen.getByTestId('wifi-off-icon');
       expect(icon).toHaveClass('m-auto');
@@ -313,19 +322,19 @@ describe('HeaderOnline', () => {
 
   describe('useOnline hook integration', () => {
     it('should call useOnline hook', () => {
-      const { useOnline } = require('../../hooks/online');
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({ isOnline: true });
 
-      render(<HeaderOnline />);
+      renderWithProvider(<HeaderOnline />);
 
       expect(useOnline).toHaveBeenCalled();
     });
 
     it('should use isOnline value from hook', () => {
-      const { useOnline } = require('../../hooks/online');
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({ isOnline: true });
 
-      render(<HeaderOnline />);
+      renderWithProvider(<HeaderOnline />);
 
       expect(screen.getByTestId('wifi-icon')).toBeInTheDocument();
     });
@@ -333,19 +342,19 @@ describe('HeaderOnline', () => {
 
   describe('accessibility', () => {
     it('should have button role', () => {
-      const { useOnline } = require('../../hooks/online');
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({ isOnline: true });
 
-      render(<HeaderOnline />);
+      renderWithProvider(<HeaderOnline />);
 
       expect(screen.getByRole('button')).toBeInTheDocument();
     });
 
     it('should be keyboard accessible', () => {
-      const { useOnline } = require('../../hooks/online');
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({ isOnline: true });
 
-      render(<HeaderOnline />);
+      renderWithProvider(<HeaderOnline />);
 
       const button = screen.getByRole('button');
       fireEvent.keyDown(button, { key: 'Enter', code: 'Enter' });
@@ -354,10 +363,10 @@ describe('HeaderOnline', () => {
     });
 
     it('should be clickable via keyboard', async () => {
-      const { useOnline } = require('../../hooks/online');
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({ isOnline: true });
 
-      render(<HeaderOnline />);
+      renderWithProvider(<HeaderOnline />);
 
       const button = screen.getByRole('button');
 
@@ -373,18 +382,18 @@ describe('HeaderOnline', () => {
 
   describe('rendering client component', () => {
     it('should render without crashing', () => {
-      const { useOnline } = require('../../hooks/online');
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({ isOnline: true });
 
-      const { container } = render(<HeaderOnline />);
+      const { container } = renderWithProvider(<HeaderOnline />);
       expect(container).toBeInTheDocument();
     });
 
     it('should render button as first element', () => {
-      const { useOnline } = require('../../hooks/online');
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({ isOnline: true });
 
-      const { container } = render(<HeaderOnline />);
+      const { container } = renderWithProvider(<HeaderOnline />);
       const button = container.querySelector('button');
       expect(button).toBeInTheDocument();
     });
@@ -392,10 +401,10 @@ describe('HeaderOnline', () => {
 
   describe('edge cases', () => {
     it('should handle rapid clicking', async () => {
-      const { useOnline } = require('../../hooks/online');
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({ isOnline: true });
 
-      render(<HeaderOnline />);
+      renderWithProvider(<HeaderOnline />);
 
       const button = screen.getByRole('button');
 
@@ -409,10 +418,10 @@ describe('HeaderOnline', () => {
     });
 
     it('should handle alert being called multiple times', async () => {
-      const { useOnline } = require('../../hooks/online');
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({ isOnline: true });
 
-      render(<HeaderOnline />);
+      renderWithProvider(<HeaderOnline />);
 
       const button = screen.getByRole('button');
 
@@ -426,10 +435,10 @@ describe('HeaderOnline', () => {
     });
 
     it('should correctly identify online status in alert message', async () => {
-      const { useOnline } = require('../../hooks/online');
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({ isOnline: false });
 
-      render(<HeaderOnline />);
+      renderWithProvider(<HeaderOnline />);
 
       const button = screen.getByRole('button');
       fireEvent.click(button);
@@ -444,10 +453,10 @@ describe('HeaderOnline', () => {
 
   describe('conditional rendering', () => {
     it('should only render one icon at a time', () => {
-      const { useOnline } = require('../../hooks/online');
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({ isOnline: true });
 
-      render(<HeaderOnline />);
+      renderWithProvider(<HeaderOnline />);
 
       const wifiIcons = screen.queryAllByTestId('wifi-icon');
       const wifiOffIcons = screen.queryAllByTestId('wifi-off-icon');
@@ -456,10 +465,10 @@ describe('HeaderOnline', () => {
     });
 
     it('should not render both WiFi and WiFi off icons', () => {
-      const { useOnline } = require('../../hooks/online');
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({ isOnline: true });
 
-      render(<HeaderOnline />);
+      renderWithProvider(<HeaderOnline />);
 
       if (screen.queryByTestId('wifi-icon')) {
         expect(screen.queryByTestId('wifi-off-icon')).not.toBeInTheDocument();
@@ -471,20 +480,20 @@ describe('HeaderOnline', () => {
 
   describe('dark mode support', () => {
     it('should have dark mode text color class', () => {
-      const { useOnline } = require('../../hooks/online');
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({ isOnline: true });
 
-      render(<HeaderOnline />);
+      renderWithProvider(<HeaderOnline />);
 
       const button = screen.getByRole('button');
       expect(button).toHaveClass('dark:text-theme-primary-light');
     });
 
     it('should have dark mode background color class', () => {
-      const { useOnline } = require('../../hooks/online');
+      const { useOnline } = require('@sudoku-web/template');
       useOnline.mockReturnValue({ isOnline: true });
 
-      render(<HeaderOnline />);
+      renderWithProvider(<HeaderOnline />);
 
       const button = screen.getByRole('button');
       expect(button).toHaveClass('dark:bg-gray-800');

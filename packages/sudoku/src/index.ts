@@ -28,6 +28,15 @@ export { TrafficLight } from './components/TrafficLight';
 /** Check if a single cell value is correct */
 export { checkCell } from './helpers/checkAnswer';
 
+/** Detect if a puzzle was cheated (more than one cell changed) */
+export { isPuzzleCheated } from './helpers/cheatDetection';
+
+/** Scoring configuration for different puzzle types and difficulty levels */
+export { SCORING_CONFIG } from './helpers/scoringConfig';
+
+/** Scoring calculation utilities for leaderboards and rankings */
+export { getPuzzleType, getPuzzleIdentifier, calculateSpeedBonus, calculateRacingBonus, calculateUserScore, formatTime, getUsernameFromParties } from './helpers/scoringUtils';
+
 /** Check if entire grid is valid and complete */
 export { checkGrid } from './helpers/checkAnswer';
 
@@ -104,6 +113,18 @@ export { emptyPuzzle } from './types/puzzle';
 
 /** Timer state information */
 export type { Timer } from './types/timer';
+
+/** Friends leaderboard score with breakdown and statistics */
+export type { FriendsLeaderboardScore } from './types/scoringTypes';
+
+/** Type of puzzle (daily, book, scanned, or unknown) */
+export type { PuzzleType } from './types/scoringTypes';
+
+/** Scoring calculation result with all bonus components */
+export type { ScoringResult } from './types/scoringTypes';
+
+/** Map of all friend sessions for scoring calculations */
+export type { AllFriendsSessionsMap } from './types/scoringTypes';
 
 /** Select a number from number pad */
 export type { SelectNumber } from './types/state';
