@@ -4,6 +4,15 @@
 // Import testing-library matchers
 require('@testing-library/jest-dom');
 
+// Mock @headlessui/react Switch component
+jest.mock('@headlessui/react', () => {
+  const React = require('react');
+  return {
+    Switch: ({ checked, onChange, children }) =>
+      React.createElement('button', { onClick: () => onChange(!checked) }, children)
+  };
+});
+
 // Mock RevenueCat/Capacitor modules that use ESM
 jest.mock(
   '@revenuecat/purchases-capacitor',

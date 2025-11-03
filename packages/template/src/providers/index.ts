@@ -18,3 +18,7 @@ export {
   type GlobalState,
 } from './GlobalStateProvider/GlobalStateProvider';
 export { PartyProvider, PartyContext } from './PartyProvider';
+export {
+  SessionsProvider,
+  useSessions,
+} from './SessionsProvider/SessionsProvider';

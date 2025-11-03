@@ -4,7 +4,7 @@ import { PremiumFeatures } from './PremiumFeatures';
 import {
   RevenueCatContextInterface,
   RevenueCatContext,
-} from '../../providers/RevenueCatProvider';
+} from '@sudoku-web/template';
 
 jest.mock('react-feather', () => ({
   Star: () => <div data-testid="star-icon" />,

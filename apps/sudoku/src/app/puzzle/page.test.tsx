@@ -15,42 +15,37 @@ jest.mock('@sudoku-web/template', () => ({
   })),
 }));
 
-jest.mock('@/components/Sudoku', () => {
-  return {
-    __esModule: true,
-    default: function MockSudoku({
-      alreadyCompleted,
-      showRacingPrompt,
-    }: {
-      puzzle?: any;
-      alreadyCompleted: boolean;
-      showRacingPrompt: boolean;
-    }) {
-      return (
-        <div data-testid="sudoku-component">
-          <div data-testid="puzzle-status">
-            {alreadyCompleted && <span>Already Completed</span>}
-            {showRacingPrompt && <span>Show Racing Prompt</span>}
-          </div>
+jest.mock('@sudoku-web/sudoku', () => ({
+  ...jest.requireActual('@sudoku-web/sudoku'),
+  Sudoku: function MockSudoku({
+    alreadyCompleted,
+    showRacingPrompt,
+  }: {
+    puzzle?: any;
+    alreadyCompleted: boolean;
+    showRacingPrompt: boolean;
+  }) {
+    return (
+      <div data-testid="sudoku-component">
+        <div data-testid="puzzle-status">
+          {alreadyCompleted && <span>Already Completed</span>}
+          {showRacingPrompt && <span>Show Racing Prompt</span>}
         </div>
-      );
-    },
-  };
-});
+      </div>
+    );
+  },
+  puzzleTextToPuzzle: jest.fn((_text) => {
+    return Array(9)
+      .fill(null)
+      .map(() => Array(9).fill(0));
+  }),
+}));
 
 // useWakeLock is mocked as part of @sudoku-web/template mock
 
 jest.mock('@/helpers/buildPuzzleUrl', () => ({
   buildPuzzleUrl: jest.fn((initial, final, _metadata) => {
     return `/puzzle?initial=${initial}&final=${final}`;
-  }),
-}));
-
-jest.mock('@/helpers/puzzleTextToPuzzle', () => ({
-  puzzleTextToPuzzle: jest.fn((_text) => {
-    return Array(9)
-      .fill(null)
-      .map(() => Array(9).fill(0));
   }),
 }));
 

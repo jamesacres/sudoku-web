@@ -29,8 +29,9 @@ jest.mock('next/script', () => {
   };
 });
 
-jest.mock('@/components/SimpleSudoku', () => {
-  return function MockSimpleSudoku({
+jest.mock('@sudoku-web/sudoku', () => ({
+  ...jest.requireActual('@sudoku-web/sudoku'),
+  SimpleSudoku: function MockSimpleSudoku({
     transparent,
   }: {
     final?: any;
@@ -43,8 +44,11 @@ jest.mock('@/components/SimpleSudoku', () => {
         SimpleSudoku
       </div>
     );
-  };
-});
+  },
+  emptyPuzzle: Array(9)
+    .fill(null)
+    .map(() => Array(9).fill(0)),
+}));
 
 jest.mock('@/helpers/buildPuzzleUrl', () => ({
   buildPuzzleUrl: jest.fn((initial, final, _metadata) => {

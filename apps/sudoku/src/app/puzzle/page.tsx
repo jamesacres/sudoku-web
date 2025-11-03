@@ -1,5 +1,5 @@
 'use client';
-import Sudoku from '@/components/Sudoku';
+import { Sudoku } from '@sudoku-web/sudoku';
 import { buildPuzzleUrl } from '@/helpers/buildPuzzleUrl';
 import { puzzleTextToPuzzle } from '@sudoku-web/sudoku';
 import { sha256 } from '@/helpers/sha256';

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { UserContext } from '../../providers/UserProvider';
+import { UserContext } from '@sudoku-web/template';
 import { UserButton } from './UserButton';
 import { useOnline } from '@sudoku-web/template';
 

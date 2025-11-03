@@ -14,8 +14,8 @@ import {
   Square,
   Unlock,
 } from 'react-feather';
-import NumberPad from '../NumberPad';
-import { NotesToggle } from '@sudoku-web/template';
+import { NumberPad } from '@sudoku-web/sudoku';
+import { Toggle as NotesToggle } from '@sudoku-web/ui';
 import React, { memo, useState, useRef, useCallback, useEffect } from 'react';
 import { HintBox } from '../HintBox/HintBox';
 import { canUseUndo, canUseCheckGrid } from '@sudoku-web/template';

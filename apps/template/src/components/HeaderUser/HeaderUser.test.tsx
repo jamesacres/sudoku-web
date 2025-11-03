@@ -4,7 +4,7 @@ import HeaderUser from './HeaderUser';
 import {
   UserContext,
   UserContextInterface,
-} from '../../providers/UserProvider';
+} from '@sudoku-web/template';
 import { UserProfile } from '@sudoku-web/types';
 import { useOnline } from '@sudoku-web/template';
 

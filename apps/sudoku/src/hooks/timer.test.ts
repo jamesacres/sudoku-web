@@ -1,7 +1,7 @@
 'use client';
 
 import { renderHook, act } from '@testing-library/react';
-import { useTimer } from './timer';
+import { useTimer } from '@sudoku-web/sudoku';
 
 // Mock template hooks (must be before imports to avoid hoisting issues)
 jest.mock('@sudoku-web/template', () => ({

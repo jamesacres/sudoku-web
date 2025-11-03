@@ -5,7 +5,7 @@ import { UserProfile } from '@sudoku-web/types';
 import {
   RevenueCatContextInterface,
   RevenueCatContext,
-} from '../../providers/RevenueCatProvider';
+} from '@sudoku-web/template';
 
 // Mock dependencies
 jest.mock('./UserAvatar', () => ({

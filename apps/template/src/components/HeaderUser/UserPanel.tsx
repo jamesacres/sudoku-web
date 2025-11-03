@@ -3,7 +3,7 @@ import { useState, useContext } from 'react';
 import { UserAvatar } from './UserAvatar';
 // TODO: import { useServerStorage } from '../../hooks/serverStorage'; // Hook not yet migrated from sudoku app
 import { DeleteAccountDialog } from './DeleteAccountDialog';
-import { RevenueCatContext } from '../../providers/RevenueCatProvider';
+import { RevenueCatContext } from '@sudoku-web/template';
 
 // TODO: Define useServerStorage or import from correct location - creating stub for now
 const useServerStorage = () => ({
