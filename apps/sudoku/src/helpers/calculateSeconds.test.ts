@@ -1,5 +1,6 @@
 import { describe, it, expect } from '@jest/globals';
-import { calculateSeconds, Timer } from '@sudoku-web/template';
+import { calculateSeconds } from '@sudoku-web/template';
+import type { Timer } from '@sudoku-web/sudoku';
 
 describe('calculateSeconds', () => {
   describe('basic functionality', () => {
