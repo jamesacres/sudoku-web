@@ -1,4 +1,4 @@
-import { UserProfile } from '../../types/userProfile';
+import { UserProfile } from '@sudoku-web/types';
 import { Popover, Transition, Dialog } from '@headlessui/react';
 import { Fragment, useState } from 'react';
 import { UserPanel } from './UserPanel';

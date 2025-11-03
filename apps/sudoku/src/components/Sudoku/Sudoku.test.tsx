@@ -92,13 +92,15 @@ jest.mock('../RacingPromptModal/RacingPromptModal', () => {
 });
 
 // Mocks for AppDownloadModal and isCapacitor are now in @sudoku-web/template mock above
-// Note: isPuzzleCheated is mocked via @sudoku-web/sudoku mock above
+// Note: isPuzzleCheated and dailyPuzzleCounter functions are mocked via @sudoku-web/sudoku mock below
 
 jest.mock('@sudoku-web/sudoku', () => ({
   ...jest.requireActual('@sudoku-web/sudoku'),
   puzzleTextToPuzzle: jest.fn((_text) => Array(81).fill(0)),
   puzzleToPuzzleText: jest.fn(() => '0'.repeat(81)),
   isPuzzleCheated: jest.fn(() => false),
+  addDailyPuzzleId: jest.fn(),
+  getDailyPuzzleCount: jest.fn(() => 1),
 }));
 
 jest.mock('@/helpers/checkAnswer', () => ({
@@ -107,11 +109,6 @@ jest.mock('@/helpers/checkAnswer', () => ({
 
 jest.mock('@/helpers/buildPuzzleUrl', () => ({
   buildPuzzleUrl: jest.fn(() => '/puzzle?id=test'),
-}));
-
-jest.mock('@/utils/dailyPuzzleCounter', () => ({
-  addDailyPuzzleId: jest.fn(),
-  getDailyPuzzleCount: jest.fn(() => 1),
 }));
 
 // These are provided by the @sudoku-web/template mock above:

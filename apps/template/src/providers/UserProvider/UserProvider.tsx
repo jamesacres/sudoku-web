@@ -2,7 +2,7 @@
 import { getCapacitorState, isCapacitor } from '../../helpers/capacitor';
 import { isElectron, openBrowser } from '../../helpers/electron';
 import { pkce } from '../../helpers/pkce';
-import { UserProfile } from '../../types/userProfile';
+import { UserProfile } from '@sudoku-web/types';
 import { useRouter } from 'next/navigation';
 import { useFetch } from '@sudoku-web/template';
 import React, { useEffect } from 'react';

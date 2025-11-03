@@ -1,0 +1,271 @@
+================================================================================
+                         COMPLETE FILE LISTING
+================================================================================
+
+ANALYSIS OF: apps/sudoku/src/utils/ AND apps/sudoku/src/helpers/
+
+================================================================================
+                    apps/sudoku/src/utils/ DIRECTORY
+================================================================================
+
+FILE 1: dailyPuzzleCounter.ts
+├── Size: 1.5 KB
+├── Lines: 61 (excluding comments)
+├── Type: IMPLEMENTATION (Utility)
+├── Status: DUPLICATE - MUST REMOVE
+├── Exports:
+│   ├── getTodayDateString() -> string
+│   ├── getDailyPuzzleIds() -> Set<string>
+│   ├── addDailyPuzzleId(puzzleId: string) -> number
+│   └── getDailyPuzzleCount() -> number
+├── Dependencies:
+│   └── localStorage (browser API)
+├── Used By:
+│   └── apps/sudoku/src/components/Sudoku/Sudoku.tsx (lines 33-35)
+├── Why Duplicate:
+│   └── Exact copy exists at packages/sudoku/src/utils/dailyPuzzleCounter.ts
+│       which is exported from @sudoku-web/sudoku package
+└── Action: DELETE THIS FILE
+
+FILE 2: dailyPuzzleCounter.test.ts
+├── Size: 7.2 KB
+├── Lines: 238 (test file)
+├── Type: TEST FILE
+├── Status: OK - Test for duplicate file above
+├── Tests Covered:
+│   ├── getTodayDateString()
+│   ├── getDailyPuzzleIds()
+│   ├── addDailyPuzzleId()
+│   ├── getDailyPuzzleCount()
+│   └── Daily reset behavior
+└── Action: DELETE (when removing dailyPuzzleCounter.ts)
+
+FILE 3: dailyActionCounter.test.ts
+├── Size: 13.8 KB
+├── Lines: 516 (test file)
+├── Type: TEST FILE ONLY (no local implementation)
+├── Status: OK - Tests reference @sudoku-web/template implementation
+├── Tests Functions From: packages/template/src/utils/dailyActionCounter.ts
+├── Functions Tested:
+│   ├── getTodayDateString()
+│   ├── getDailyActionData()
+│   ├── incrementUndoCount()
+│   ├── incrementCheckGridCount()
+│   ├── getUndoCount()
+│   ├── getCheckGridCount()
+│   ├── canUseUndo()
+│   ├── canUseCheckGrid()
+│   ├── getRemainingUndos()
+│   ├── getRemainingCheckGrids()
+│   └── DAILY_LIMITS constants
+├── Import: from '@sudoku-web/template'
+└── Action: NO CHANGE NEEDED
+
+FILE 4: playerColors.test.ts
+├── Size: 10.2 KB
+├── Lines: 315 (test file)
+├── Type: TEST FILE ONLY (no local implementation)
+├── Status: OK - Tests reference @sudoku-web/template implementation
+├── Tests Functions From: packages/template/src/utils/playerColors.ts
+├── Functions Tested:
+│   ├── getPlayerColor(userId, allUserIds, isCurrentUser)
+│   ├── getAllUserIds(parties)
+│   ├── PLAYER_COLORS constant
+│   └── CURRENT_USER_COLOR constant
+├── Import: from '@sudoku-web/template'
+└── Action: NO CHANGE NEEDED
+
+================================================================================
+                   apps/sudoku/src/helpers/ DIRECTORY
+================================================================================
+
+FILE 1: buildPuzzleUrl.ts
+├── Size: 626 bytes
+├── Lines: 22 (excluding comments)
+├── Type: IMPLEMENTATION (Helper)
+├── Status: CORRECTLY SCOPED - KEEP IN apps/sudoku
+├── Exports:
+│   └── buildPuzzleUrl(initial, final, metadata?, alreadyCompleted?) -> string
+├── Dependencies:
+│   ├── GameStateMetadata (type from @sudoku-web/sudoku)
+│   └── URLSearchParams (standard API)
+├── Used By:
+│   ├── apps/sudoku/src/app/page.tsx
+│   ├── apps/sudoku/src/app/import/page.tsx
+│   ├── apps/sudoku/src/app/puzzle/page.tsx
+│   └── apps/sudoku/src/components/IntegratedSessionRow.tsx
+├── Purpose: Creates puzzle redirect URLs with state in query parameters
+├── Example Output: `/puzzle?initial=...&final=...&key=value`
+└── Action: NO CHANGE - correctly scoped to app
+
+FILE 2: buildPuzzleUrl.test.ts
+├── Size: 11.8 KB
+├── Lines: 330 (test file)
+├── Type: TEST FILE
+├── Tests: buildPuzzleUrl() function
+├── Import: import { GameStateMetadata } from '@sudoku-web/sudoku'
+└── Action: NO CHANGE (test for buildPuzzleUrl.ts)
+
+FILE 3: cheatDetection.ts
+├── Size: 2.0 KB
+├── Lines: 67 (excluding comments)
+├── Type: IMPLEMENTATION (Helper)
+├── Status: CANDIDATE FOR MOVEMENT (Priority 2)
+├── Exports:
+│   └── isPuzzleCheated(gameStateOrAnswerStack) -> boolean
+├── Dependencies:
+│   ├── Puzzle (type from @sudoku-web/sudoku)
+│   └── ServerState (type from @sudoku-web/sudoku)
+├── Used By:
+│   ├── apps/sudoku/src/components/RaceTrack/RaceTrack.tsx
+│   ├── apps/sudoku/src/components/Sudoku/Sudoku.tsx
+│   ├── apps/sudoku/src/components/leaderboard/scoringUtils.ts
+│   └── apps/sudoku/src/components/IntegratedSessionRow.tsx
+├── Purpose: Detects if >1 cell changed between puzzle states (cheat detection)
+├── Algorithm:
+│   ├── Compares last two states in answerStack
+│   ├── Uses nested 4 loops (boxes × cells)
+│   ├── JSON.stringify for deep cell comparison
+│   └── Returns true if >1 cell changed
+└── Recommendation: MOVE to packages/sudoku as core game logic
+
+FILE 4: cheatDetection.test.ts
+├── Size: 8.2 KB
+├── Lines: 249 (test file)
+├── Type: TEST FILE
+├── Tests: isPuzzleCheated() function
+├── Imports:
+│   ├── import { Puzzle } from '@sudoku-web/sudoku'
+│   └── import { ServerState } from '@sudoku-web/sudoku'
+└── Action: NO CHANGE (test for cheatDetection.ts)
+
+FILE 5: sha256.ts
+├── Size: 459 bytes
+├── Lines: 17 (excluding comments)
+├── Type: IMPLEMENTATION (Helper)
+├── Status: CANDIDATE FOR MOVEMENT (Priority 3)
+├── Exports:
+│   └── async sha256(message: string) -> Promise<string>
+├── Dependencies:
+│   ├── crypto.subtle (Web Crypto API)
+│   └── TextEncoder (standard API)
+├── Used By:
+│   ├── apps/sudoku/src/app/book/page.tsx
+│   └── apps/sudoku/src/app/puzzle/page.tsx
+├── Purpose: Generates SHA-256 hash of puzzle initial state for IDs
+├── Algorithm:
+│   ├── Encodes message as UTF-8
+│   ├── Uses crypto.subtle.digest('SHA-256', ...)
+│   └── Converts to hex string
+├── Example Usage: `puzzleId: await sha256(initial)` -> 'abc123...'
+└── Recommendation: MOVE to packages/shared or packages/template
+
+FILE 6: sha256.test.ts
+├── Size: 5.6 KB
+├── Lines: 144 (test file)
+├── Type: TEST FILE
+├── Tests: sha256() function
+└── Action: NO CHANGE (test for sha256.ts)
+
+FILE 7: calculateSeconds.test.ts
+├── Size: 10.4 KB
+├── Lines: 374 (test file)
+├── Type: TEST FILE ONLY (no local implementation)
+├── Status: OK - Tests reference @sudoku-web/template implementation
+├── Tests Functions From: packages/template/src/helpers/calculateSeconds.ts
+├── Purpose: Test time calculation from Timer object
+├── Import: from '@sudoku-web/template'
+└── Action: NO CHANGE NEEDED
+
+FILE 8: formatSeconds.test.ts
+├── Size: 4.3 KB
+├── Lines: 128 (test file)
+├── Type: TEST FILE ONLY (no local implementation)
+├── Status: OK - Tests reference @sudoku-web/template implementation
+├── Tests Functions From: packages/template/src/helpers/formatSeconds.ts
+├── Purpose: Test time formatting (HH:MM:SS)
+├── Import: from '@sudoku-web/template'
+└── Action: NO CHANGE NEEDED
+
+FILE 9: capacitor.test.ts
+├── Size: 5.7 KB
+├── Lines: 202 (test file)
+├── Type: TEST FILE ONLY (no local implementation)
+├── Status: OK - Tests reference @sudoku-web/template implementation
+├── Tests Functions From: packages/template/src/helpers/capacitor.ts
+├── Purpose: Test Capacitor platform detection
+├── Import: from '@sudoku-web/template'
+└── Action: NO CHANGE NEEDED
+
+FILE 10: electron.test.ts
+├── Size: 9.1 KB
+├── Lines: 301 (test file)
+├── Type: TEST FILE ONLY (no local implementation)
+├── Status: OK - Tests reference @sudoku-web/template implementation
+├── Tests Functions From: packages/template/src/helpers/electron.ts
+├── Purpose: Test Electron platform detection
+├── Import: from '@sudoku-web/template'
+└── Action: NO CHANGE NEEDED
+
+FILE 11: pkce.test.ts
+├── Size: 7.5 KB
+├── Lines: 217 (test file)
+├── Type: TEST FILE ONLY (no local implementation)
+├── Status: OK - Tests reference @sudoku-web/template implementation
+├── Tests Functions From: packages/template/src/helpers/pkce.ts
+├── Purpose: Test OAuth PKCE (Proof Key for Code Exchange)
+├── Import: from '@sudoku-web/template'
+└── Action: NO CHANGE NEEDED
+
+================================================================================
+                          SUMMARY BY CATEGORY
+================================================================================
+
+IMPLEMENTATION FILES (Action Required)
+┌──────────────────────────────────────────────────────────────────────────┐
+│ 1. dailyPuzzleCounter.ts (UTILS)                                         │
+│    Action: DELETE (duplicate in packages/sudoku)                         │
+│                                                                          │
+│ 2. buildPuzzleUrl.ts (HELPERS)                                          │
+│    Action: NO CHANGE (correctly scoped)                                 │
+│                                                                          │
+│ 3. cheatDetection.ts (HELPERS)                                          │
+│    Action: CONSIDER MOVING (to packages/sudoku)                         │
+│                                                                          │
+│ 4. sha256.ts (HELPERS)                                                  │
+│    Action: CONSIDER MOVING (to packages/shared)                         │
+└──────────────────────────────────────────────────────────────────────────┘
+
+TEST FILES (No Action Needed)
+┌──────────────────────────────────────────────────────────────────────────┐
+│ 1. dailyPuzzleCounter.test.ts (UTILS)     - DELETE with dailyPuzzleCounter
+│ 2. dailyActionCounter.test.ts (UTILS)     - OK (tests @sudoku-web/template)
+│ 3. playerColors.test.ts (UTILS)           - OK (tests @sudoku-web/template)
+│ 4. buildPuzzleUrl.test.ts (HELPERS)       - OK (tests local buildPuzzleUrl)
+│ 5. cheatDetection.test.ts (HELPERS)       - OK (tests local cheatDetection)
+│ 6. sha256.test.ts (HELPERS)               - OK (tests local sha256)
+│ 7. calculateSeconds.test.ts (HELPERS)     - OK (tests @sudoku-web/template)
+│ 8. formatSeconds.test.ts (HELPERS)        - OK (tests @sudoku-web/template)
+│ 9. capacitor.test.ts (HELPERS)            - OK (tests @sudoku-web/template)
+│ 10. electron.test.ts (HELPERS)            - OK (tests @sudoku-web/template)
+│ 11. pkce.test.ts (HELPERS)                - OK (tests @sudoku-web/template)
+└──────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                     TOTAL FILE STATISTICS
+================================================================================
+
+Total Files: 11
+  - Implementation Files: 4
+  - Test Files: 7
+
+Total Bytes: ~100 KB
+  - Implementation: ~3.6 KB
+  - Tests: ~96 KB
+
+Actions Required:
+  - Delete: 2 files (dailyPuzzleCounter.ts + .test.ts)
+  - Consider Moving: 2 files (cheatDetection, sha256)
+  - Keep Unchanged: 7 files
+
+================================================================================

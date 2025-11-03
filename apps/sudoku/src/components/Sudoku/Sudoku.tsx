@@ -29,10 +29,7 @@ import {
 } from '@sudoku-web/template';
 import { RaceTrack } from '../RaceTrack';
 import MemoisedSidebarButton from '../SidebarButton/SidebarButton';
-import {
-  addDailyPuzzleId,
-  getDailyPuzzleCount,
-} from '@sudoku-web/sudoku';
+import { addDailyPuzzleId, getDailyPuzzleCount } from '@sudoku-web/sudoku';
 import { useRouter } from 'next/navigation';
 import { GameStateMetadata } from '@sudoku-web/sudoku';
 import { puzzleToPuzzleText } from '@sudoku-web/sudoku';

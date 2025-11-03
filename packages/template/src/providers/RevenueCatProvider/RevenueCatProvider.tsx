@@ -15,7 +15,7 @@ import {
   CustomerInfo as WebCustomerInfo,
 } from '@revenuecat/purchases-js';
 import { UserContext } from '../UserProvider';
-import { SubscriptionContext } from '../../types/subscriptionContext';
+import { SubscriptionContext } from '@sudoku-web/types';
 
 export interface RevenueCatContextInterface {
   isLoading: boolean;

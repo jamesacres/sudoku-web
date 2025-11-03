@@ -1,7 +1,7 @@
 import { isCapacitor, saveCapacitorState } from '../helpers/capacitor';
 import { isElectron, saveElectronState } from '../helpers/electron';
 import { FetchContext, State } from '../providers/FetchProvider';
-import { UserProfile } from '../types/userProfile';
+import { UserProfile } from '@sudoku-web/types';
 import { useCallback, useContext } from 'react';
 
 const jwtDecode = (token: string) =>

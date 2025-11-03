@@ -53,7 +53,8 @@ jest.mock('@/helpers/calculateCompletionPercentage', () => ({
   calculateCompletionPercentage: jest.fn(() => 50),
 }));
 
-jest.mock('@/helpers/cheatDetection', () => ({
+jest.mock('@sudoku-web/sudoku', () => ({
+  ...jest.requireActual('@sudoku-web/sudoku'),
   isPuzzleCheated: jest.fn(() => false),
 }));
 

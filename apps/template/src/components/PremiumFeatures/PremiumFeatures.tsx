@@ -1,7 +1,7 @@
 'use client';
 import { useContext } from 'react';
 import { RevenueCatContext } from '../../providers/RevenueCatProvider';
-import { SubscriptionContext } from '../../types/subscriptionContext';
+import { SubscriptionContext } from '@sudoku-web/types';
 import { Star, CheckCircle, Lock } from 'react-feather';
 import { PREMIUM_FEATURES } from '../../config/premiumFeatures';
 

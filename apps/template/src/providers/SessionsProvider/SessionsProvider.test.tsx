@@ -909,7 +909,7 @@ describe('SessionsProvider', () => {
 
       (
         jest.mocked(
-          require('../../hooks/serverStorage').useServerStorage
+          require('@sudoku-web/template').useServerStorage
         ) as any
       ).mockReturnValue({
         listValues: mockListValues,
@@ -945,7 +945,7 @@ describe('SessionsProvider', () => {
 
       (
         jest.mocked(
-          require('../../hooks/serverStorage').useServerStorage
+          require('@sudoku-web/template').useServerStorage
         ) as any
       ).mockReturnValue({
         listValues: mockListValues,

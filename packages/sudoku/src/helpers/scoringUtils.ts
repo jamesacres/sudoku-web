@@ -1,5 +1,5 @@
 import { ServerStateResult, Party } from '../types/serverTypes';
-import { ServerState } from '../types/serverTypes';
+import { ServerState } from '../types/state';
 import { isPuzzleCheated } from './cheatDetection';
 import { SCORING_CONFIG } from './scoringConfig';
 import { PuzzleType, ScoringResult, AllFriendsSessionsMap } from '../types/scoringTypes';

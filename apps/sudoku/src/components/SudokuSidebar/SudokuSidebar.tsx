@@ -6,7 +6,7 @@ import { UserContext } from '@sudoku-web/template';
 import { RevenueCatContext } from '@sudoku-web/template';
 import { useParties } from '@/hooks/useParties';
 import { Parties, Session } from '@sudoku-web/sudoku';
-import { SubscriptionContext } from '@sudoku-web/template';
+import { SubscriptionContext } from '@sudoku-web/types';
 
 interface Arguments {
   showSidebar: boolean;

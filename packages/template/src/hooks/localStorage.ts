@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback } from 'react';
-import { StateType } from '../types/StateType';
+import { StateType } from '@sudoku-web/types';
 
 export interface StateResult<T> {
   lastUpdated: number;

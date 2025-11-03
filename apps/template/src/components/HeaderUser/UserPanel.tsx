@@ -1,4 +1,4 @@
-import { UserProfile } from '../../types/userProfile';
+import { UserProfile } from '@sudoku-web/types';
 import { useState, useContext } from 'react';
 import { UserAvatar } from './UserAvatar';
 // TODO: import { useServerStorage } from '../../hooks/serverStorage'; // Hook not yet migrated from sudoku app

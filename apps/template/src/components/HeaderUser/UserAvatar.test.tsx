@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { UserAvatar } from './UserAvatar';
-import { UserProfile } from '../../types/userProfile';
+import { UserProfile } from '@sudoku-web/types';
 
 // Mock next/image
 jest.mock('next/image', () => ({

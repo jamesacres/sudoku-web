@@ -3,7 +3,7 @@
 import { useCallback, useContext, useRef } from 'react';
 import { useFetch } from './fetch';
 import { UserContext } from '../providers/UserProvider';
-import { StateType } from '../types/StateType';
+import { StateType } from '@sudoku-web/types';
 import { useOnline } from './online';
 import {
   MemberResponse,
@@ -17,7 +17,7 @@ import {
   InviteResponse,
   PublicInvite,
 } from '../types/serverTypes';
-import { UserProfile } from '../types/userProfile';
+import { UserProfile } from '@sudoku-web/types';
 
 const app = 'sudoku';
 const apiUrl = 'https://api.bubblyclouds.com';

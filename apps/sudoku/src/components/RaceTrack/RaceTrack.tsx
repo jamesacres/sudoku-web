@@ -14,7 +14,7 @@ import { TrafficLight } from '@/components/TrafficLight';
 import Link from 'next/link';
 import { RefreshCw } from 'react-feather';
 import { Puzzle } from '@sudoku-web/sudoku';
-import { isPuzzleCheated } from '@/helpers/cheatDetection';
+import { isPuzzleCheated } from '@sudoku-web/sudoku';
 
 interface Arguments {
   sessionParties: Parties<Session<ServerState>>;

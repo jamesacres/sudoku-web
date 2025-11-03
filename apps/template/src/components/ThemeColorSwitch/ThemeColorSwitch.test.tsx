@@ -3,7 +3,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import ThemeColorSwitch from './ThemeColorSwitch';
 import { useThemeColor } from '../../providers/ThemeColorProvider';
 import { RevenueCatContext } from '../../providers/RevenueCatProvider';
-import { SubscriptionContext } from '../../types/subscriptionContext';
+import { SubscriptionContext } from '@sudoku-web/types';
 
 jest.mock('../../providers/ThemeColorProvider');
 

@@ -1,3 +1,7 @@
+// Re-export from @sudoku-web/types package
+export { SubscriptionContext, StateType } from '@sudoku-web/types';
+export type { Party } from '@sudoku-web/types';
+
 // Re-export sudoku types from package for convenience
 export type {
   Puzzle,
@@ -10,7 +14,6 @@ export type {
   ServerStateResult,
   Session,
   SessionParty,
-  Party,
   Member,
   Invite,
   SessionResponse,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { SubscriptionContext } from '@sudoku-web/template';
+import { SubscriptionContext } from '@sudoku-web/types';
 import { DAILY_LIMITS } from '@sudoku-web/template';
 
 /**

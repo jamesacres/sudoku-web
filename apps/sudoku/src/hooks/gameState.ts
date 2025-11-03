@@ -18,7 +18,7 @@ import {
 } from '@sudoku-web/sudoku';
 import { useLocalStorage, useServerStorage } from '@sudoku-web/template';
 import { checkCell, checkGrid } from '@sudoku-web/sudoku';
-import { StateType } from '@sudoku-web/template';
+import { StateType } from '@sudoku-web/types';
 import { useTimer } from './timer';
 import { calculateSeconds } from '@sudoku-web/template';
 import { Parties, ServerStateResult, Session } from '@sudoku-web/sudoku';

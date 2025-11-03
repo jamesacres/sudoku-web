@@ -1,5 +1,5 @@
 'use client';
-import { UserProfile } from '../../types/userProfile';
+import { UserProfile } from '@sudoku-web/types';
 import Image from 'next/image';
 import { User } from 'react-feather';
 

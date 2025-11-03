@@ -31,7 +31,7 @@ import {
 } from '@sudoku-web/template';
 import { useDocumentVisibility, useSessions } from '@sudoku-web/template';
 import { useParties } from '../hooks/useParties';
-import type { SubscriptionContext as SubscriptionContextType } from '@sudoku-web/template';
+import type { SubscriptionContext as SubscriptionContextType } from '@sudoku-web/types';
 
 const INACTIVITY_MS = 5 * 60 * 1000; // 5 minutes in milliseconds
 

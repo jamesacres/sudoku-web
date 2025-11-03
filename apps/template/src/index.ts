@@ -1,6 +1,6 @@
 // Main template exports
 export * from './components';
-export * from './hooks';
+// Note: Hooks are now imported from @sudoku-web/template package, not exported from app
 export * from './providers';
 export * from './types';
 export * from './utils';

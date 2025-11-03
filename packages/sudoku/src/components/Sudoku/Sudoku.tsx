@@ -32,7 +32,7 @@ import MemoisedSidebarButton from '../SidebarButton/SidebarButton';
 import {
   addDailyPuzzleId,
   getDailyPuzzleCount,
-} from '@/utils/dailyPuzzleCounter';
+} from '../../utils/dailyPuzzleCounter';
 import { useRouter } from 'next/navigation';
 import { GameStateMetadata } from '../../types/state';
 import { puzzleToPuzzleText } from '@/helpers/puzzleTextToPuzzle';

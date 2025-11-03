@@ -4,7 +4,7 @@ import RaceTrack from './RaceTrack';
 import * as usePartiesModule from '@/hooks/useParties';
 import * as playerColorsModule from '@sudoku-web/template';
 import * as completionModule from '@sudoku-web/sudoku';
-import * as cheatDetectionModule from '@/helpers/cheatDetection';
+import * as cheatDetectionModule from '@sudoku-web/sudoku';
 import { Parties, Session } from '@sudoku-web/sudoku';
 import { ServerState } from '@sudoku-web/sudoku';
 
@@ -28,8 +28,12 @@ jest.mock('@sudoku-web/template', () => ({
     SETTINGS: 'settings',
   },
 }));
+jest.mock('@sudoku-web/sudoku', () => ({
+  ...jest.requireActual('@sudoku-web/sudoku'),
+  calculateCompletionPercentage: jest.fn(() => 50),
+  isPuzzleCheated: jest.fn(() => false),
+}));
 jest.mock('@/helpers/calculateCompletionPercentage');
-jest.mock('@/helpers/cheatDetection');
 jest.mock('@/components/TrafficLight', () => ({
   TrafficLight: () => <div data-testid="traffic-light" />,
 }));

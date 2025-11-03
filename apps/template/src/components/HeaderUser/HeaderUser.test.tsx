@@ -5,7 +5,7 @@ import {
   UserContext,
   UserContextInterface,
 } from '../../providers/UserProvider';
-import { UserProfile } from '../../types/userProfile';
+import { UserProfile } from '@sudoku-web/types';
 import { useOnline } from '@sudoku-web/template';
 
 // Mock the useOnline hook

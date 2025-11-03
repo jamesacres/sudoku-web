@@ -1,5 +1,5 @@
 import { Puzzle } from '../types/puzzle';
-import { ServerState } from '../types/serverTypes';
+import { ServerState } from '../types/state';
 
 // Cheat detection: Check if more than one cell changed between two puzzle states
 export const isPuzzleCheated = (

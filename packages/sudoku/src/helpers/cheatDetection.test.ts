@@ -1,6 +1,6 @@
 import { isPuzzleCheated } from './cheatDetection';
-import { Puzzle } from '@sudoku-web/sudoku';
-import { ServerState } from '@sudoku-web/sudoku';
+import { Puzzle } from '../types/puzzle';
+import { ServerState } from '../types/state';
 
 // Helper to create empty puzzle
 const createEmptyPuzzle = (): Puzzle<number> => {

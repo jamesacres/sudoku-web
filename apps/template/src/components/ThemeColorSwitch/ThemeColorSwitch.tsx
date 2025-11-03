@@ -3,7 +3,7 @@
 import { useThemeColor } from '../../providers/ThemeColorProvider';
 import { RevenueCatContext } from '../../providers/RevenueCatProvider';
 import { useState, useContext, useEffect, useRef } from 'react';
-import { SubscriptionContext } from '../../types/subscriptionContext';
+import { SubscriptionContext } from '@sudoku-web/types';
 
 const colors = [
   {

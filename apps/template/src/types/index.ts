@@ -1,7 +1,12 @@
-// Type exports
-export { SubscriptionContext } from './subscriptionContext';
+// Re-export from @sudoku-web/types package
+export { SubscriptionContext, StateType } from '@sudoku-web/types';
+export type { Party, UserProfile } from '@sudoku-web/types';
+
+// App-specific types
 export { Tab } from './tabs';
-export type { UserProfile } from './userProfile';
+export type { UserSession, UserSessions } from './userSessions';
+
+// Re-export sudoku types for convenience
 export type {
   Timer,
   ServerState,
@@ -13,10 +18,8 @@ export type {
   SudokuBookOfTheMonth,
   SudokuBookOfTheMonthResponse,
 } from '@sudoku-web/sudoku';
-export { StateType } from './StateType';
 export type {
   ServerStateResult,
-  Party,
   Member,
   Invite,
   SessionResponse,
@@ -34,4 +37,3 @@ export {
   BookPuzzleDifficulty,
   EntitlementDuration,
 } from '@sudoku-web/sudoku';
-export type { UserSession, UserSessions } from './userSessions';

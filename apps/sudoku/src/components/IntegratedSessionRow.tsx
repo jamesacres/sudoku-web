@@ -16,7 +16,7 @@ import Link from 'next/link';
 import { UserSession, UserSessions } from '@sudoku-web/template';
 import { buildPuzzleUrl } from '@/helpers/buildPuzzleUrl';
 import { SudokuBookPuzzle } from '@sudoku-web/sudoku';
-import { isPuzzleCheated } from '@/helpers/cheatDetection';
+import { isPuzzleCheated } from '@sudoku-web/sudoku';
 
 // Function to get game status text
 const getGameStatusText = (

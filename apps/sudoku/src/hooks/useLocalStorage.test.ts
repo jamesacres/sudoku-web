@@ -1,7 +1,8 @@
 'use client';
 
 import { renderHook, act } from '@testing-library/react';
-import { useLocalStorage, StateType } from '@sudoku-web/template';
+import { useLocalStorage } from '@sudoku-web/template';
+import { StateType } from '@sudoku-web/types';
 
 describe('useLocalStorage', () => {
   beforeEach(() => {

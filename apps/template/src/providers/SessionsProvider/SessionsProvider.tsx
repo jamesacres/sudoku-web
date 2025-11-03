@@ -10,12 +10,12 @@ import {
 } from 'react';
 import {
   ServerStateResult,
-  Party,
   Parties,
   Session,
+  Party,
 } from '../../types/serverTypes';
 import { ServerState, GameState, Timer } from '@sudoku-web/sudoku';
-import { StateType } from '../../types/StateType';
+import { StateType } from '@sudoku-web/types';
 import { UserSession, UserSessions } from '../../types/userSessions';
 import { useServerStorage, useLocalStorage } from '@sudoku-web/template';
 import { UserContext } from '../../providers/UserProvider';

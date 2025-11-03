@@ -1,5 +1,5 @@
 import { ServerStateResult } from './serverTypes';
-import { ServerState } from './serverTypes';
+import { ServerState } from './state';
 
 export interface FriendsLeaderboardScore {
   userId: string;

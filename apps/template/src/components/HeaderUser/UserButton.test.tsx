@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { UserButton } from './UserButton';
-import { UserProfile } from '../../types/userProfile';
+import { UserProfile } from '@sudoku-web/types';
 
 // Mock the UserPanel and UserAvatar components
 jest.mock('./UserPanel', () => ({
