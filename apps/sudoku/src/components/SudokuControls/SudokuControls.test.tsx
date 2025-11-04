@@ -2,11 +2,21 @@
 jest.mock('@sudoku-web/ui', () => {
   const React = require('react');
   return {
-    Toggle: ({ isEnabled, setEnabled }: { isEnabled: boolean; setEnabled: (value: boolean) => void }) =>
-      React.createElement('button', {
-        'data-testid': 'notes-toggle',
-        onClick: () => setEnabled(!isEnabled)
-      }, isEnabled ? 'Notes On' : 'Notes Off')
+    Toggle: ({
+      isEnabled,
+      setEnabled,
+    }: {
+      isEnabled: boolean;
+      setEnabled: (value: boolean) => void;
+    }) =>
+      React.createElement(
+        'button',
+        {
+          'data-testid': 'notes-toggle',
+          onClick: () => setEnabled(!isEnabled),
+        },
+        isEnabled ? 'Notes On' : 'Notes Off'
+      ),
   };
 });
 
@@ -17,18 +27,24 @@ jest.mock('@sudoku-web/sudoku', () => {
   return {
     ...actual,
     NumberPad: ({ selectNumber, isInputDisabled }: any) =>
-      React.createElement('div', {
-        'data-testid': 'number-pad',
-        className: 'grid grid-cols-9 lg:grid-cols-3'
-      },
-        [1, 2, 3, 4, 5, 6, 7, 8, 9].map(num =>
-          React.createElement('button', {
-            key: num,
-            onClick: () => selectNumber(num),
-            disabled: isInputDisabled
-          }, num.toString())
+      React.createElement(
+        'div',
+        {
+          'data-testid': 'number-pad',
+          className: 'grid grid-cols-9 lg:grid-cols-3',
+        },
+        [1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) =>
+          React.createElement(
+            'button',
+            {
+              key: num,
+              onClick: () => selectNumber(num),
+              disabled: isInputDisabled,
+            },
+            num.toString()
+          )
         )
-      )
+      ),
   };
 });
 

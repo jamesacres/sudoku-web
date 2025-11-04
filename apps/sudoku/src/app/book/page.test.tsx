@@ -63,7 +63,6 @@ jest.mock('@sudoku-web/template', () => ({
   }),
 }));
 
-
 jest.mock('@/helpers/sha256', () => ({
   sha256: jest.fn((text) => Promise.resolve('hash-' + text)),
 }));

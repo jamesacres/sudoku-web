@@ -1,31 +1,34 @@
 // Template package type exports
 
-// Re-export entity types from @sudoku-web/types
+// Re-export core types from @sudoku-web/types
 export type {
-  Party,
-  PartySettings,
-  Parties,
-  PartyMember,
-  PartyInvitation,
-  Session,
-  CollaborativeSession,
   UserProfile,
 } from '@sudoku-web/types';
 export { StateType, SubscriptionContext } from '@sudoku-web/types';
 
 // Template-specific API response types from serverTypes
-// Note: These have naming conflicts with entity types above, so consumers
-// should import these directly from './serverTypes' when needed
+// Note: Party here is the API Party (with members array), not the entity Party
 export type {
   SessionResponse,
+  Session,
   SessionParty,
+  Parties,
   StateResponse,
   ServerStateResult,
+  Party,
   PartyResponse,
   MemberResponse,
   Member,
   InviteResponse,
   Invite,
   PublicInvite,
+  SudokuOfTheDayResponse,
+  SudokuOfTheDay,
+  SudokuBookPuzzle,
+  SudokuBookOfTheMonthResponse,
+  SudokuBookOfTheMonth,
 } from './serverTypes';
-export { EntitlementDuration } from './serverTypes';
+export { EntitlementDuration, Difficulty, BookPuzzleDifficulty } from './serverTypes';
+
+// Re-export userSessions types
+export type { UserSession, UserSessions } from './userSessions';

@@ -1,5 +1,5 @@
 'use client';
-import { Parties, Session } from '../../types/serverTypes';
+import { Parties, Session } from '@sudoku-web/template';
 import { GameState, ServerState } from '../../types/state';
 import { calculateCompletionPercentage } from '../../helpers/calculateCompletionPercentage';
 import { useParties } from '../../hooks/useParties';

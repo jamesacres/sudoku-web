@@ -21,7 +21,7 @@ import { checkCell, checkGrid } from '../helpers/checkAnswer';
 import { StateType } from '@sudoku-web/types';
 import { useTimer } from './timer';
 import { calculateSeconds } from '@sudoku-web/template';
-import { Parties, ServerStateResult, Session } from '../types/serverTypes';
+import { Parties, ServerStateResult, Session } from '@sudoku-web/template';
 import { UserContext, RevenueCatContext } from '@sudoku-web/template';
 import {
   canUseUndo,

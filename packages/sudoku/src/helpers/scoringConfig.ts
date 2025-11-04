@@ -1,5 +1,4 @@
-import { Difficulty } from '../types/serverTypes';
-import { BookPuzzleDifficulty } from '../types/serverTypes';
+import { Difficulty, BookPuzzleDifficulty } from '@sudoku-web/template';
 
 export const SCORING_CONFIG = {
   DAILY_PUZZLE_BASE: 100,

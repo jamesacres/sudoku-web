@@ -43,6 +43,7 @@ export * from './hooks';
  * - PartyProvider: Party/group management and collaboration
  */
 export * from './providers';
+export { UserContext } from './providers';
 
 // ===== Types =====
 /**

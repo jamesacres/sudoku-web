@@ -1,4 +1,4 @@
-import { ServerStateResult } from './serverTypes';
+import { ServerStateResult } from '@sudoku-web/template';
 import { ServerState } from './state';
 
 export interface FriendsLeaderboardScore {
