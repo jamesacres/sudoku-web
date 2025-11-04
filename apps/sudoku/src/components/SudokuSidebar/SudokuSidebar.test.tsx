@@ -6,7 +6,7 @@ import {
   RevenueCatContextInterface,
   RevenueCatContext,
 } from '@sudoku-web/template';
-import { useParties } from '@/hooks/useParties';
+import { useParties } from '@sudoku-web/sudoku';
 
 jest.mock('@/hooks/useParties');
 jest.mock('../PartyRow/PartyRow', () => ({

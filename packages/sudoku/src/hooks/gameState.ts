@@ -8,7 +8,7 @@ import {
   calculateCellId,
   calculateNextCellId,
   splitCellId,
-} from '@sudoku-web/template';
+} from '../helpers/calculateId';
 import {
   GameState,
   GameStateMetadata,
@@ -18,7 +18,7 @@ import {
 } from '../types/state';
 import { useLocalStorage, useServerStorage } from '@sudoku-web/template';
 import { checkCell, checkGrid } from '../helpers/checkAnswer';
-import { StateType } from '@sudoku-web/template';
+import { StateType } from '@sudoku-web/types';
 import { useTimer } from './timer';
 import { calculateSeconds } from '@sudoku-web/template';
 import { Parties, ServerStateResult, Session } from '../types/serverTypes';
@@ -30,7 +30,7 @@ import {
   incrementCheckGridCount,
 } from '@sudoku-web/template';
 import { useDocumentVisibility, useSessions } from '@sudoku-web/template';
-import { useParties } from '../hooks/useParties';
+import { useParties } from './useParties';
 import type { SubscriptionContext as SubscriptionContextType } from '@sudoku-web/types';
 
 const INACTIVITY_MS = 5 * 60 * 1000; // 5 minutes in milliseconds

@@ -1,7 +1,6 @@
 'use client';
 import React, { useContext, useEffect, useState } from 'react';
-import { isAndroid, isCapacitor, isIOS } from '../../helpers/capacitor';
-import { isElectron } from '../../helpers/electron';
+import { isAndroid, isCapacitor, isIOS, isElectron } from '@sudoku-web/auth';
 import {
   LOG_LEVEL as CAPACITOR_LOG_LEVEL,
   Purchases as CapacitorPurchases,

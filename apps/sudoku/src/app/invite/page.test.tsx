@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { Suspense } from 'react';
 import Invite from './page';
 import * as serverStorageHook from '@sudoku-web/template';
-import * as usePartiesHook from '@/hooks/useParties';
+import * as usePartiesHook from '@sudoku-web/sudoku';
 import { UserContext, UserContextInterface } from '@sudoku-web/template';
 import {
   RevenueCatContextInterface,

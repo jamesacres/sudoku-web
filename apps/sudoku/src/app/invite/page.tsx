@@ -7,7 +7,7 @@ import {
   PremiumFeatures,
 } from '@sudoku-web/template';
 import { PublicInvite, EntitlementDuration } from '@sudoku-web/sudoku';
-import { useParties } from '@/hooks/useParties';
+import { useParties } from '@sudoku-web/sudoku';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useCallback, useContext, useEffect, useState } from 'react';
 import { Loader, Users, Star } from 'react-feather';

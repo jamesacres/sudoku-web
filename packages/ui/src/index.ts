@@ -57,13 +57,13 @@ export { useThemeColor } from './providers/ThemeColorProvider';
 // ===== Helpers =====
 
 /** Check if running on Capacitor (mobile - iOS or Android) */
-export { isCapacitor } from './helpers/capacitor';
+export { isCapacitor } from '@sudoku-web/template';
 
 /** Check if running on iOS */
-export { isIOS } from './helpers/capacitor';
+export { isIOS } from '@sudoku-web/template';
 
 /** Check if running on Android */
-export { isAndroid } from './helpers/capacitor';
+export { isAndroid } from '@sudoku-web/template';
 
 // ===== Types =====
 

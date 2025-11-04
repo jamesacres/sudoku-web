@@ -83,8 +83,8 @@ export { useTimer } from './hooks/timer';
 /** Hook to access Parties context with automatic lazy loading */
 export { useParties } from './hooks/useParties';
 
-// Note: useGameState has app-specific dependencies (useSessions)
-// It's in the package but not exported - apps should implement their own version
+/** Game state management hook with undo/redo, validation, and multiplayer support */
+export { useGameState } from './hooks/gameState';
 
 // ===== Utilities =====
 

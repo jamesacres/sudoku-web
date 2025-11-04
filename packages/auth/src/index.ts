@@ -66,20 +66,8 @@ export type { UserPanelDependencies } from './components';
 /** PKCE (Proof Key for Code Exchange) utilities for OAuth 2.0 */
 export { pkce } from './services';
 
-/** Check if running on Capacitor (iOS/Android) */
-export { isCapacitor } from './services';
+/** Capacitor platform utilities for iOS/Android */
+export { isCapacitor, isIOS, isAndroid, getCapacitorState, saveCapacitorState, CapacitorSecureStorage } from './services';
 
-/** Check if running on Electron (desktop) */
-export { isElectron } from './services';
-
-/** Get Capacitor authentication state from storage */
-export { getCapacitorState } from './services';
-
-/** Save Capacitor authentication state to storage */
-export { saveCapacitorState } from './services';
-
-/** Open browser for OAuth authentication (Capacitor) */
-export { openBrowser } from './services';
-
-/** Save Electron authentication state to storage */
-export { saveElectronState } from './services';
+/** Electron platform utilities for desktop */
+export { isElectron, openBrowser, saveElectronState } from './services';

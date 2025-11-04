@@ -1,6 +1,17 @@
 // Helper exports
 export * from './calculateSeconds';
-export * from './capacitor';
-export * from './electron';
 export * from './formatSeconds';
-export * from './pkce';
+
+// Re-export platform utilities from auth package (canonical location)
+export {
+  pkce,
+  isCapacitor,
+  isIOS,
+  isAndroid,
+  saveCapacitorState,
+  getCapacitorState,
+  CapacitorSecureStorage,
+  isElectron,
+  openBrowser,
+  saveElectronState,
+} from '@sudoku-web/auth';

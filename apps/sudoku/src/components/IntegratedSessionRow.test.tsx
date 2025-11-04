@@ -6,7 +6,7 @@ import { IntegratedSessionRow } from './IntegratedSessionRow';
 import { ServerStateResult } from '@sudoku-web/sudoku';
 import { ServerState } from '@sudoku-web/sudoku';
 import { UserContext, useSessions } from '@sudoku-web/template';
-import { useParties } from '@/hooks/useParties';
+import { useParties } from '@sudoku-web/sudoku';
 
 // Mock dependencies
 jest.mock('react-feather', () => ({

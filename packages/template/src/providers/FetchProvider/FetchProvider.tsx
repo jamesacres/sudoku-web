@@ -1,5 +1,5 @@
 'use client';
-import { UserProfile } from '../../types/userProfile';
+import { UserProfile } from '@sudoku-web/types';
 import React, { MutableRefObject, useRef } from 'react';
 
 export interface State {

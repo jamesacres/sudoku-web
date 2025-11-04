@@ -13,7 +13,7 @@ import {
 } from '@sudoku-web/sudoku';
 import SudokuBox from '@/components/SudokuBox';
 import SudokuControls from '@/components/SudokuControls';
-import { useGameState } from '@/hooks/gameState';
+import { useGameState } from '@sudoku-web/sudoku';
 import { calculateSeconds } from '@sudoku-web/template';
 import SudokuSidebar from '@/components/SudokuSidebar/SudokuSidebar';
 import {

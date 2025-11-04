@@ -66,12 +66,20 @@ export * from './utils';
 
 // ===== Helpers =====
 /**
- * Helper functions (re-exported from other packages)
+ * Helper functions
  * - calculateSeconds: Time calculations
  * - formatSeconds: Format seconds as MM:SS
- * - isCapacitor: Platform detection
- * - isElectron: Platform detection
- * - pkce: OAuth PKCE utilities
+ * - isCapacitor: Platform detection (canonical location)
+ * - isIOS: Platform detection (canonical location)
+ * - isAndroid: Platform detection (canonical location)
+ * - isElectron: Platform detection (canonical location)
+ * - saveCapacitorState: Capacitor state persistence (canonical location)
+ * - getCapacitorState: Capacitor state retrieval (canonical location)
+ * - openBrowser: Open browser for OAuth (canonical location)
+ * - saveElectronState: Electron state persistence (canonical location)
+ * - CapacitorSecureStorage: Capacitor storage enum (canonical location)
+ *
+ * Note: pkce OAuth utilities are in @sudoku-web/auth
  */
 export * from './helpers';
 

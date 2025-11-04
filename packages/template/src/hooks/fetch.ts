@@ -1,5 +1,4 @@
-import { isCapacitor, saveCapacitorState } from '../helpers/capacitor';
-import { isElectron, saveElectronState } from '../helpers/electron';
+import { isCapacitor, saveCapacitorState, isElectron, saveElectronState } from '@sudoku-web/auth';
 import { FetchContext, State } from '../providers/FetchProvider';
 import { UserProfile } from '@sudoku-web/types';
 import { useCallback, useContext } from 'react';

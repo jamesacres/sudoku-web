@@ -18,7 +18,7 @@ import {
   UserSession,
   UserSessions,
 } from '@sudoku-web/template';
-import { useParties } from '@/hooks/useParties';
+import { useParties } from '@sudoku-web/sudoku';
 import { Award, Loader } from 'react-feather';
 import Link from 'next/link';
 import { buildPuzzleUrl } from '@/helpers/buildPuzzleUrl';

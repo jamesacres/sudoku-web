@@ -11,8 +11,8 @@ import {
   SudokuBookPuzzle,
   ServerStateResult,
   ServerState,
+  useParties,
 } from '@sudoku-web/sudoku';
-import { useParties } from '@/hooks/useParties';
 import IntegratedSessionRow from '@/components/IntegratedSessionRow';
 import { sha256 } from '@/helpers/sha256';
 

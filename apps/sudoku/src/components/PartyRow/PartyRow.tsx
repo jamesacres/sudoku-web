@@ -17,7 +17,7 @@ import {
   getAllUserIds,
 } from '@sudoku-web/template';
 import { TimerDisplay } from '../TimerDisplay/TimerDisplay';
-import { useParties } from '@/hooks/useParties';
+import { useParties } from '@sudoku-web/sudoku';
 import { useContext, useState } from 'react';
 import { PartyConfirmationDialog } from '../PartyConfirmationDialog/PartyConfirmationDialog';
 import { LogOut, Trash, UserMinus, Edit3, Users } from 'react-feather';

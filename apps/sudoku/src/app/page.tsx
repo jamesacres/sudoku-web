@@ -13,7 +13,7 @@ import { Difficulty } from '@sudoku-web/sudoku';
 import MyPuzzlesTab from '@/components/tabs/MyPuzzlesTab';
 import FriendsTab from '@/components/tabs/FriendsTab';
 import ActivityWidget from '@/components/ActivityWidget';
-import { useParties } from '@/hooks/useParties';
+import { useParties } from '@sudoku-web/sudoku';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
   Suspense,

@@ -1,8 +1,6 @@
 'use client';
-import { getCapacitorState, isCapacitor } from '../../helpers/capacitor';
-import { isElectron, openBrowser } from '../../helpers/electron';
-import { pkce } from '../../helpers/pkce';
-import { UserProfile } from '../../types/userProfile';
+import { getCapacitorState, isCapacitor, isElectron, openBrowser, pkce } from '@sudoku-web/auth';
+import { UserProfile } from '@sudoku-web/types';
 import { useRouter } from 'next/navigation';
 import { useFetch } from '../../hooks/fetch';
 import React, { useEffect } from 'react';

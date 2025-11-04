@@ -7,7 +7,7 @@ import {
   RevenueCatContext,
   SubscriptionContext,
 } from '@sudoku-web/template';
-import { useParties } from '@/hooks/useParties';
+import { useParties } from '@sudoku-web/sudoku';
 
 interface Arguments {
   showSidebar: boolean;

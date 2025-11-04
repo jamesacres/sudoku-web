@@ -9,7 +9,7 @@ import {
   Puzzle,
   isPuzzleCheated,
 } from '@sudoku-web/sudoku';
-import { useParties } from '@/hooks/useParties';
+import { useParties } from '@sudoku-web/sudoku';
 import { memo, useMemo } from 'react';
 import {
   getPlayerColor,

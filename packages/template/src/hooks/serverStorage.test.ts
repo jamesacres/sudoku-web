@@ -2,7 +2,7 @@ import { renderHook, act } from '@testing-library/react';
 import { useServerStorage } from './serverStorage';
 import { useFetch } from './fetch';
 import { useOnline } from './online';
-import { StateType } from '../types/StateType';
+import { StateType } from '@sudoku-web/types';
 import { UserContext } from '../providers/UserProvider';
 import React from 'react';
 
