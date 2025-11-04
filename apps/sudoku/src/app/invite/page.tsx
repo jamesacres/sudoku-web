@@ -3,11 +3,10 @@ import {
   useServerStorage,
   UserContext,
   RevenueCatContext,
-  PublicInvite,
-  EntitlementDuration,
   SubscriptionContext,
   PremiumFeatures,
 } from '@sudoku-web/template';
+import { PublicInvite, EntitlementDuration } from '@sudoku-web/sudoku';
 import { useParties } from '@/hooks/useParties';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useCallback, useContext, useEffect, useState } from 'react';

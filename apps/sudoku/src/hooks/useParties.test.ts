@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react';
 import { useParties } from './useParties';
-import { PartiesContext } from '@/providers/PartiesProvider';
+import { PartiesContext } from '@sudoku-web/sudoku';
 import React from 'react';
 
 describe('useParties', () => {

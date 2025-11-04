@@ -1,6 +1,14 @@
+'use client';
 import { useContext, useEffect } from 'react';
-import { PartiesContext } from '@sudoku-web/sudoku';
+import { PartiesContext } from '../providers/PartiesProvider';
 
+/**
+ * Hook to access Parties context with automatic lazy loading
+ *
+ * @param refreshSessionParties - Optional callback to refresh session parties after loading
+ * @returns Parties context value with party data, form state, and actions
+ * @throws Error if used outside PartiesProvider
+ */
 export function useParties({
   refreshSessionParties,
 }: {

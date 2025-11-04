@@ -28,16 +28,12 @@ jest.mock('@sudoku-web/template', () => ({
   ),
 }));
 
-// Mock local providers
-jest.mock('@/providers/PartiesProvider', () => ({
+// Mock sudoku providers
+jest.mock('@sudoku-web/sudoku', () => ({
   __esModule: true,
-  default: ({ children }: { children: React.ReactNode }) => (
+  PartiesProvider: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="parties-provider">{children}</div>
   ),
-}));
-
-jest.mock('@/providers/BookProvider/BookProvider', () => ({
-  __esModule: true,
   BookProvider: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="book-provider">{children}</div>
   ),

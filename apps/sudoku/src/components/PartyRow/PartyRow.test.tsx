@@ -10,7 +10,8 @@ import {
 import * as usePartiesModule from '@/hooks/useParties';
 
 jest.mock('@/hooks/useParties');
-jest.mock('@/helpers/calculateCompletionPercentage', () => ({
+jest.mock('@sudoku-web/sudoku', () => ({
+  ...jest.requireActual('@sudoku-web/sudoku'),
   calculateCompletionPercentage: jest.fn(() => 50),
 }));
 jest.mock('../PartyConfirmationDialog/PartyConfirmationDialog', () => ({

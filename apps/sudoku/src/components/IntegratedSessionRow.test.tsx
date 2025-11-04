@@ -44,18 +44,12 @@ jest.mock('@/helpers/buildPuzzleUrl', () => ({
   buildPuzzleUrl: jest.fn(() => '/puzzle?id=test'),
 }));
 
-jest.mock('@/helpers/puzzleTextToPuzzle', () => ({
-  puzzleTextToPuzzle: jest.fn((_text) => ({ cells: [] })),
-  puzzleToPuzzleText: jest.fn(() => '123456789' + '0'.repeat(73)),
-}));
-
-jest.mock('@/helpers/calculateCompletionPercentage', () => ({
-  calculateCompletionPercentage: jest.fn(() => 50),
-}));
-
 jest.mock('@sudoku-web/sudoku', () => ({
   ...jest.requireActual('@sudoku-web/sudoku'),
   isPuzzleCheated: jest.fn(() => false),
+  puzzleTextToPuzzle: jest.fn((_text) => ({ cells: [] })),
+  puzzleToPuzzleText: jest.fn(() => '123456789' + '0'.repeat(73)),
+  calculateCompletionPercentage: jest.fn(() => 50),
 }));
 
 // Mock context

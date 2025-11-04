@@ -7,6 +7,14 @@
  * @packageDocumentation
  */
 
+// ===== Providers =====
+
+/** Parties context provider for multiplayer game state */
+export { default as PartiesProvider, PartiesContext } from './providers/PartiesProvider';
+
+/** Book puzzle context provider for book selection */
+export { BookProvider, useBook } from './providers/BookProvider/BookProvider';
+
 // ===== Components =====
 
 /** Number input pad for sudoku cell entry (1-9) */
@@ -18,9 +26,12 @@ export { TimerDisplay } from './components/TimerDisplay';
 /** Visual indicator for puzzle correctness (red/yellow/green traffic light) */
 export { TrafficLight } from './components/TrafficLight';
 
+/** Simple sudoku grid display component (read-only visualization) */
+export { default as SimpleSudoku } from './components/SimpleSudoku';
+
 // Note: The following components have app-specific dependencies and are NOT exported:
 // - SudokuBox (depends on SudokuInput which is app-specific)
-// - Sudoku, SimpleSudoku, RaceTrack (depend on app-specific hooks/context)
+// - Sudoku, RaceTrack (depend on app-specific hooks/context)
 // Apps should implement their own versions or copy these as templates
 
 // ===== Helpers =====
@@ -69,7 +80,10 @@ export { calculateNextCellId } from './helpers/calculateId';
 /** Game timer hook with start/stop/reset functionality */
 export { useTimer } from './hooks/timer';
 
-// Note: useGameState has app-specific dependencies (useParties, useSessions)
+/** Hook to access Parties context with automatic lazy loading */
+export { useParties } from './hooks/useParties';
+
+// Note: useGameState has app-specific dependencies (useSessions)
 // It's in the package but not exported - apps should implement their own version
 
 // ===== Utilities =====

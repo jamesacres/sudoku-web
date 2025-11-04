@@ -1,12 +1,13 @@
 import { memo, useContext } from 'react';
 import { Loader, RefreshCw, Users, X } from 'react-feather';
 import { PartyRow } from '../PartyRow/PartyRow';
-import { ServerState } from '@sudoku-web/sudoku';
-import { UserContext } from '@sudoku-web/template';
-import { RevenueCatContext } from '@sudoku-web/template';
+import { ServerState, Parties, Session } from '@sudoku-web/sudoku';
+import {
+  UserContext,
+  RevenueCatContext,
+  SubscriptionContext,
+} from '@sudoku-web/template';
 import { useParties } from '@/hooks/useParties';
-import { Parties, Session } from '@sudoku-web/sudoku';
-import { SubscriptionContext } from '@sudoku-web/types';
 
 interface Arguments {
   showSidebar: boolean;

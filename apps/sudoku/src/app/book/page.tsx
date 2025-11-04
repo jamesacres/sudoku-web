@@ -4,12 +4,16 @@ import { ArrowUp } from 'react-feather';
 import { BookCover } from '@/components/BookCovers';
 import { useContext, useEffect, useState, useCallback } from 'react';
 import { UserContext, useOnline, useSessions } from '@sudoku-web/template';
-import { useBook } from '@/providers/BookProvider/BookProvider';
+import {
+  useBook,
+  puzzleTextToPuzzle,
+  puzzleToPuzzleText,
+  SudokuBookPuzzle,
+  ServerStateResult,
+  ServerState,
+} from '@sudoku-web/sudoku';
 import { useParties } from '@/hooks/useParties';
-import { puzzleTextToPuzzle, puzzleToPuzzleText } from '@sudoku-web/sudoku';
-import { SudokuBookPuzzle, ServerStateResult } from '@sudoku-web/sudoku';
 import IntegratedSessionRow from '@/components/IntegratedSessionRow';
-import { ServerState } from '@sudoku-web/sudoku';
 import { sha256 } from '@/helpers/sha256';
 
 export default function BookPage() {

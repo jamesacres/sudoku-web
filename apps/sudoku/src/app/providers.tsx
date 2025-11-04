@@ -9,8 +9,7 @@ import {
   RevenueCatProvider,
   SessionsProvider,
 } from '@sudoku-web/template';
-import PartiesProvider from '@/providers/PartiesProvider';
-import { BookProvider } from '@/providers/BookProvider/BookProvider';
+import { PartiesProvider, BookProvider } from '@sudoku-web/sudoku';
 import { ThemeProvider } from 'next-themes';
 import { PropsWithChildren } from 'react';
 

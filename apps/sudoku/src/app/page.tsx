@@ -5,9 +5,11 @@ import {
   useServerStorage,
   UserContext,
   useSessions,
-  Difficulty,
   Tab,
+  SocialProof,
+  PremiumFeatures,
 } from '@sudoku-web/template';
+import { Difficulty } from '@sudoku-web/sudoku';
 import MyPuzzlesTab from '@/components/tabs/MyPuzzlesTab';
 import FriendsTab from '@/components/tabs/FriendsTab';
 import ActivityWidget from '@/components/ActivityWidget';
@@ -26,7 +28,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { BookCover } from '@/components/BookCovers';
 import { buildPuzzleUrl } from '@/helpers/buildPuzzleUrl';
-import { SocialProof, PremiumFeatures } from '@sudoku-web/template';
 
 function HomeComponent() {
   const searchParams = useSearchParams();
