@@ -1,9 +1,8 @@
 'use client';
 
 import React from 'react';
-import { UserContext } from '@sudoku-web/template';
-import { UserButton } from './UserButton';
-import { useOnline } from '@sudoku-web/template';
+import { UserContext, useOnline } from '@sudoku-web/template';
+import { UserButton } from '@sudoku-web/auth';
 
 const HeaderUser = () => {
   const { isLoggingIn, loginRedirect, logout, user } =
