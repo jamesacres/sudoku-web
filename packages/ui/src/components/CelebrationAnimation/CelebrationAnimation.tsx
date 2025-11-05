@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { InAppReview } from '@capacitor-community/in-app-review';
-import { isCapacitor } from '@sudoku-web/template';
+import { isCapacitor } from '@sudoku-web/auth';
 
 interface CelebrationAnimationProps {
   isVisible: boolean;

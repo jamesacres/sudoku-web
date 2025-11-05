@@ -1,4 +1,4 @@
-import { isCapacitor } from '@sudoku-web/template';
+import { isCapacitor } from '@sudoku-web/auth';
 import { Children, ReactNode } from 'react';
 
 const Footer = ({ children }: { children: ReactNode }) => {

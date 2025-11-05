@@ -6,3 +6,4 @@ export { useFetch } from './fetch';
 export { useDocumentVisibility } from './documentVisibility';
 export { useServerStorage } from './serverStorage';
 export { useDrag } from './useDrag';
+export { useSessions } from '../providers/SessionsProvider/SessionsProvider';

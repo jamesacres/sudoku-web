@@ -12,12 +12,16 @@
 
 // ===== Components =====
 /**
- * UI components for app promotion
+ * UI components for app promotion and features
  * - AppDownloadModal: Modal promoting mobile app downloads
+ * - SocialProof: Social proof / testimonials display component
+ * - PremiumFeatures: Premium features showcase component
  *
  * Note: ErrorBoundary and GlobalErrorHandler have been moved to @sudoku-web/ui
  */
 export { default as AppDownloadModal } from './components/AppDownloadModal';
+export { default as SocialProof } from './components/SocialProof';
+export { PremiumFeatures } from './components/PremiumFeatures/PremiumFeatures';
 
 // ===== Hooks =====
 /**

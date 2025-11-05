@@ -11,7 +11,7 @@ export {
   type UserContextInterface,
 } from './UserProvider';
 export { default as FetchProvider, FetchContext } from './FetchProvider';
-export { ThemeColorProvider, useThemeColor } from './ThemeColorProvider';
+export { ThemeColorProvider, useThemeColor } from '@sudoku-web/ui';
 export {
   default as GlobalStateProvider,
   GlobalStateContext,

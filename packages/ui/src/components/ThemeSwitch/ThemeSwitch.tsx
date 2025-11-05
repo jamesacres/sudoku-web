@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
-import { isCapacitor } from '@sudoku-web/template';
+import { isCapacitor } from '@sudoku-web/auth';
 import { StatusBar, Style } from '@capacitor/status-bar';
 
 const ThemeSwitch = () => {

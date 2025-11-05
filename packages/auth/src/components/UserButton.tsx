@@ -1,3 +1,5 @@
+'use client';
+
 import { UserProfile } from '../types/UserProfile';
 import { Popover, Transition, Dialog } from '@headlessui/react';
 import { Fragment, useState } from 'react';

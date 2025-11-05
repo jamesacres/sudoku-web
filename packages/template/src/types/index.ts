@@ -32,3 +32,6 @@ export { EntitlementDuration, Difficulty, BookPuzzleDifficulty } from './serverT
 
 // Re-export userSessions types
 export type { UserSession, UserSessions } from './userSessions';
+
+// Navigation tabs enum
+export { Tab } from './tabs';

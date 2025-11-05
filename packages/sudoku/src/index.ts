@@ -35,6 +35,12 @@ export { default as SudokuBox } from './components/SudokuBox';
 /** Race track progress display for multiplayer puzzle competition */
 export { default as RaceTrack } from './components/RaceTrack';
 
+/** Input component for sudoku cell value entry */
+export { default as SudokuInput } from './components/SudokuInput';
+
+/** Input component for sudoku cell notes (candidates) entry */
+export { default as SudokuInputNotes } from './components/SudokuInputNotes';
+
 // Note: Sudoku component has app-specific dependencies and is NOT exported
 // Apps should create their own Sudoku page component that imports from this package
 

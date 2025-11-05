@@ -1,6 +1,6 @@
 'use client';
 
-import { isIOS } from '@sudoku-web/template';
+import { isIOS } from '@sudoku-web/auth';
 import { Share } from '@capacitor/share';
 import { useEffect, useState } from 'react';
 import {

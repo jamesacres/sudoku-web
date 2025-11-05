@@ -1,3 +1,1 @@
-import RaceTrack from './RaceTrack';
-
-export { RaceTrack };
+export { default } from './RaceTrack';

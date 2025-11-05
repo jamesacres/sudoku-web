@@ -1,3 +1,5 @@
+'use client';
+
 import { UserProfile } from '../types/UserProfile';
 import { useState } from 'react';
 import { UserAvatar } from './UserAvatar';

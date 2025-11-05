@@ -1,3 +1,2 @@
-// Config exports
-export * from './dailyLimits';
-export * from './premiumFeatures';
+// Config exports - all moved to packages/template
+// Import from @sudoku-web/template directly in consuming code

@@ -1,6 +1,5 @@
 'use client';
 import {
-  Footer,
   useOnline,
   useServerStorage,
   UserContext,
@@ -9,6 +8,7 @@ import {
   SocialProof,
   PremiumFeatures,
 } from '@sudoku-web/template';
+import { Footer } from '@sudoku-web/ui';
 import { Difficulty } from '@sudoku-web/sudoku';
 import MyPuzzlesTab from '@/components/tabs/MyPuzzlesTab';
 import FriendsTab from '@/components/tabs/FriendsTab';
