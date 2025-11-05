@@ -1,9 +1,7 @@
 import React from 'react';
 import { render, screen, waitFor, act } from '@testing-library/react';
 import { BookProvider, useBook } from './BookProvider';
-import { useServerStorage } from '@sudoku-web/template';
-import { useOnline } from '@sudoku-web/template';
-import { SudokuBookOfTheMonth } from '@sudoku-web/sudoku';
+import { useServerStorage, useOnline, SudokuBookOfTheMonth } from '@sudoku-web/template';
 
 jest.mock('@sudoku-web/template');
 jest.mock('@sudoku-web/template');

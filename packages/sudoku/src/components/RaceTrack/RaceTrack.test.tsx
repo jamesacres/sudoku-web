@@ -5,8 +5,7 @@ import * as usePartiesModule from '../../hooks/useParties';
 import * as playerColorsModule from '../../utils/playerColors';
 import * as completionModule from '../../helpers/calculateCompletionPercentage';
 import * as cheatDetectionModule from '../../helpers/cheatDetection';
-import { Parties, Session } from '@sudoku-web/sudoku';
-import { ServerState } from '@sudoku-web/sudoku';
+import { Parties, Session, ServerState } from '@sudoku-web/template';
 
 jest.mock('../../hooks/useParties');
 jest.mock('../../utils/playerColors');

@@ -168,69 +168,7 @@ export type { GameState } from './types/state';
 /** Server state data */
 export type { ServerState } from './types/state';
 
-// ===== Server Types (from @sudoku-web/template) =====
-
-/** Session response from server */
-export type { SessionResponse } from '@sudoku-web/template';
-
-/** Session with parsed data */
-export type { Session } from '@sudoku-web/template';
-
-/** Party-specific session data */
-export type { SessionParty } from '@sudoku-web/template';
-
-/** Map of party IDs to session data */
-export type { Parties } from '@sudoku-web/template';
-
-/** State response with party data */
-export type { StateResponse } from '@sudoku-web/template';
-
-/** Server state result */
-export type { ServerStateResult } from '@sudoku-web/template';
-
-/** Party response from server */
-export type { PartyResponse } from '@sudoku-web/template';
-
-/** Member response from server */
-export type { MemberResponse } from '@sudoku-web/template';
-
-/** Party member data */
-export type { Member } from '@sudoku-web/template';
-
-/** Party data */
-export type { Party } from '@sudoku-web/template';
-
-/** Invitation response from server */
-export type { InviteResponse } from '@sudoku-web/template';
-
-/** Invitation data */
-export type { Invite } from '@sudoku-web/template';
-
-/** Public invitation data */
-export type { PublicInvite } from '@sudoku-web/template';
-
-/** Sudoku of the day response from server */
-export type { SudokuOfTheDayResponse } from '@sudoku-web/template';
-
-/** Sudoku of the day with parsed data */
-export type { SudokuOfTheDay } from '@sudoku-web/template';
-
-/** Sudoku book puzzle data */
-export type { SudokuBookPuzzle } from '@sudoku-web/template';
-
-/** Sudoku book of the month response from server */
-export type { SudokuBookOfTheMonthResponse } from '@sudoku-web/template';
-
-/** Sudoku book of the month with parsed data */
-export type { SudokuBookOfTheMonth } from '@sudoku-web/template';
-
-// ===== Enums =====
-
-/** Entitlement duration options */
-export { EntitlementDuration } from '@sudoku-web/template';
-
-/** Puzzle difficulty levels */
-export { Difficulty } from '@sudoku-web/template';
-
-/** Book puzzle difficulty levels */
-export { BookPuzzleDifficulty } from '@sudoku-web/template';
+// Note: Server types, enums, and other template-specific exports are NOT re-exported here
+// to avoid circular dependencies. Import these directly from @sudoku-web/template:
+//
+// import { Party, Session, Difficulty, ... } from '@sudoku-web/template';

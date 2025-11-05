@@ -1,6 +1,5 @@
-import { Notes } from '@sudoku-web/sudoku';
-import { SelectNumber } from '@sudoku-web/sudoku';
 import { memo } from 'react';
+import type { Notes, SelectNumber } from '../../types/input';
 
 interface Arguments {
   notes: Notes;

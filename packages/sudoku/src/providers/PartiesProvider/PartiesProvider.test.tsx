@@ -1,9 +1,7 @@
 import React, { useContext } from 'react';
 import { render, screen, waitFor, act } from '@testing-library/react';
 import PartiesProvider, { PartiesContext } from './PartiesProvider';
-import { useServerStorage } from '@sudoku-web/template';
-import { UserContext, UserContextInterface } from '@sudoku-web/template';
-import { Party } from '@sudoku-web/sudoku';
+import { useServerStorage, UserContext, UserContextInterface, Party } from '@sudoku-web/template';
 
 jest.mock('@sudoku-web/template');
 

@@ -7,9 +7,7 @@ import {
   useEffect,
   ReactNode,
 } from 'react';
-import { SudokuBookOfTheMonth } from '@sudoku-web/sudoku';
-import { useServerStorage } from '@sudoku-web/template';
-import { useOnline } from '@sudoku-web/template';
+import { SudokuBookOfTheMonth, useServerStorage, useOnline } from '@sudoku-web/template';
 
 interface BookContextType {
   bookData: SudokuBookOfTheMonth | null;

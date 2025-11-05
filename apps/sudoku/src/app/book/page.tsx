@@ -3,13 +3,17 @@ import { useRouter } from 'next/navigation';
 import { ArrowUp } from 'react-feather';
 import { BookCover } from '@/components/BookCovers';
 import { useContext, useEffect, useState, useCallback } from 'react';
-import { UserContext, useOnline, useSessions } from '@sudoku-web/template';
+import {
+  UserContext,
+  useOnline,
+  useSessions,
+  SudokuBookPuzzle,
+  ServerStateResult,
+} from '@sudoku-web/template';
 import {
   useBook,
   puzzleTextToPuzzle,
   puzzleToPuzzleText,
-  SudokuBookPuzzle,
-  ServerStateResult,
   ServerState,
   useParties,
 } from '@sudoku-web/sudoku';
