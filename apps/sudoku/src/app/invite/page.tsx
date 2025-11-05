@@ -5,8 +5,9 @@ import {
   RevenueCatContext,
   SubscriptionContext,
   PremiumFeatures,
+  PublicInvite,
+  EntitlementDuration,
 } from '@sudoku-web/template';
-import { PublicInvite, EntitlementDuration } from '@sudoku-web/sudoku';
 import { useParties } from '@sudoku-web/sudoku';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useCallback, useContext, useEffect, useState } from 'react';

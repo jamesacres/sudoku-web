@@ -3,13 +3,16 @@ import { useContext } from 'react';
 import {
   Party,
   ServerStateResult,
+  SudokuBookPuzzle,
+} from '@sudoku-web/template';
+import {
   ServerState,
   calculateCompletionPercentage,
   puzzleTextToPuzzle,
   puzzleToPuzzleText,
-  SudokuBookPuzzle,
   isPuzzleCheated,
   SimpleSudoku,
+  useParties,
 } from '@sudoku-web/sudoku';
 import {
   UserContext,
@@ -18,7 +21,6 @@ import {
   UserSession,
   UserSessions,
 } from '@sudoku-web/template';
-import { useParties } from '@sudoku-web/sudoku';
 import { Award, Loader } from 'react-feather';
 import Link from 'next/link';
 import { buildPuzzleUrl } from '@/helpers/buildPuzzleUrl';

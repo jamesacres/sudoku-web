@@ -1,4 +1,5 @@
-import { ServerStateResult, ServerState } from '@sudoku-web/sudoku';
+import { ServerStateResult } from './serverTypes';
+import { ServerState } from '@sudoku-web/sudoku';
 
 export interface UserSession {
   isLoading: boolean;

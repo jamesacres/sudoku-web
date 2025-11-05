@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import SudokuInputNotes from '../SudokuInputNotes';
-import type { Notes, SelectNumber, SetSelectedCell } from '../../types/input';
+import type { Notes } from '../../types/notes';
+import type { SelectNumber, SetSelectedCell } from '../../types/state';
 
 interface Arguments {
   cellId: string;

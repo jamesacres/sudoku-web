@@ -2,16 +2,8 @@
 export { SubscriptionContext, StateType } from '@sudoku-web/types';
 
 // Re-export from @sudoku-web/template package
-export type { Party } from '@sudoku-web/template';
-
-// Re-export sudoku types from package for convenience
 export type {
-  Puzzle,
-  Notes,
-  SudokuState,
-  GameState,
-  ServerState,
-  Timer,
+  Party,
   Parties,
   ServerStateResult,
   Session,
@@ -29,10 +21,20 @@ export type {
   SudokuBookPuzzle,
   SudokuBookOfTheMonth,
   SudokuBookOfTheMonthResponse,
-} from '@sudoku-web/sudoku';
+} from '@sudoku-web/template';
 
 export {
   Difficulty,
   BookPuzzleDifficulty,
   EntitlementDuration,
+} from '@sudoku-web/template';
+
+// Re-export sudoku types from package for convenience
+export type {
+  Puzzle,
+  Notes,
+  SudokuState,
+  GameState,
+  ServerState,
+  Timer,
 } from '@sudoku-web/sudoku';

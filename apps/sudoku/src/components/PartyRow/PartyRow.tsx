@@ -1,15 +1,14 @@
 import {
-  Party,
-  SessionParty,
-  Session,
-  ServerState,
   calculateCompletionPercentage,
   SimpleSudoku,
   TimerDisplay,
   useParties,
+  ServerState,
 } from '@sudoku-web/sudoku';
-import { PartyInviteButton } from '../PartyInviteButton/PartyInviteButton';
 import {
+  Party,
+  SessionParty,
+  Session,
   calculateSeconds,
   UserContext,
   RevenueCatContext,
@@ -17,6 +16,7 @@ import {
   getPlayerColor,
   getAllUserIds,
 } from '@sudoku-web/template';
+import { PartyInviteButton } from '../PartyInviteButton/PartyInviteButton';
 import { CopyButton } from '@sudoku-web/ui';
 import { useContext, useState } from 'react';
 import { PartyConfirmationDialog } from '../PartyConfirmationDialog/PartyConfirmationDialog';
