@@ -5,6 +5,8 @@ import {
   ServerState,
   calculateCompletionPercentage,
   SimpleSudoku,
+  TimerDisplay,
+  useParties,
 } from '@sudoku-web/sudoku';
 import { PartyInviteButton } from '../PartyInviteButton/PartyInviteButton';
 import {
@@ -16,8 +18,6 @@ import {
   getPlayerColor,
   getAllUserIds,
 } from '@sudoku-web/template';
-import { TimerDisplay } from '../TimerDisplay/TimerDisplay';
-import { useParties } from '@sudoku-web/sudoku';
 import { useContext, useState } from 'react';
 import { PartyConfirmationDialog } from '../PartyConfirmationDialog/PartyConfirmationDialog';
 import { LogOut, Trash, UserMinus, Edit3, Users } from 'react-feather';

@@ -29,10 +29,14 @@ export { TrafficLight } from './components/TrafficLight';
 /** Simple sudoku grid display component (read-only visualization) */
 export { default as SimpleSudoku } from './components/SimpleSudoku';
 
-// Note: The following components have app-specific dependencies and are NOT exported:
-// - SudokuBox (depends on SudokuInput which is app-specific)
-// - Sudoku, RaceTrack (depend on app-specific hooks/context)
-// Apps should implement their own versions or copy these as templates
+/** Individual sudoku box (3x3 grid) within the main puzzle grid */
+export { default as SudokuBox } from './components/SudokuBox';
+
+/** Race track progress display for multiplayer puzzle competition */
+export { default as RaceTrack } from './components/RaceTrack';
+
+// Note: Sudoku component has app-specific dependencies and is NOT exported
+// Apps should create their own Sudoku page component that imports from this package
 
 // ===== Helpers =====
 

@@ -10,8 +10,9 @@ import {
   GameStateMetadata,
   isPuzzleCheated,
   puzzleToPuzzleText,
+  SudokuBox,
+  RaceTrack,
 } from '@sudoku-web/sudoku';
-import SudokuBox from '@/components/SudokuBox';
 import SudokuControls from '@/components/SudokuControls';
 import { useGameState } from '@sudoku-web/sudoku';
 import { calculateSeconds } from '@sudoku-web/template';
@@ -35,7 +36,6 @@ import {
   useSessions,
   AppDownloadModal,
 } from '@sudoku-web/template';
-import { RaceTrack } from '@/components/RaceTrack';
 import MemoisedSidebarButton from '@/components/SidebarButton/SidebarButton';
 import { useRouter } from 'next/navigation';
 import RacingPromptModal from '@/components/RacingPromptModal/RacingPromptModal';
