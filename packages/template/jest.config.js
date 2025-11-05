@@ -13,6 +13,9 @@ const config = {
   ],
   setupFilesAfterEnv: ['<rootDir>/../../jest.setup.js'],
   testTimeout: 10000,
+  moduleNameMapper: {
+    '^react-feather$': '<rootDir>/../../jest.setup.featherIcons.js',
+  },
   transform: {
     '^.+\\.tsx?$': [
       'ts-jest',

@@ -9,6 +9,10 @@ jest.mock('react-feather', () => ({
   ChevronDown: () => <div data-testid="chevron-down" />,
   ChevronRight: () => <div data-testid="chevron-right" />,
   RotateCcw: () => <div data-testid="rotate-ccw" />,
+  Calendar: () => <div data-testid="calendar" />,
+  Watch: () => <div data-testid="watch" />,
+  Users: () => <div data-testid="users" />,
+  Droplet: () => <div data-testid="droplet" />,
 }));
 jest.mock('../IntegratedSessionRow', () => ({
   __esModule: true,
