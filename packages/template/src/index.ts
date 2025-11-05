@@ -21,7 +21,7 @@
  */
 export { default as AppDownloadModal } from './components/AppDownloadModal';
 export { default as SocialProof } from './components/SocialProof';
-export { PremiumFeatures } from './components/PremiumFeatures/PremiumFeatures';
+export { PremiumFeatures } from './components/PremiumFeatures';
 
 // ===== Hooks =====
 /**
@@ -47,7 +47,7 @@ export * from './hooks';
  * - PartyProvider: Party/group management and collaboration
  */
 export * from './providers';
-export { UserContext } from './providers';
+export { UserContext, UserProvider, RevenueCatContext, RevenueCatProvider, GlobalStateContext, GlobalStateProvider, PartyContext, PartyProvider, FetchContext, FetchProvider } from './providers';
 
 // ===== Types =====
 /**

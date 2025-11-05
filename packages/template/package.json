@@ -5,6 +5,7 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "scripts": {
+    "build": "echo 'Template package is pure TypeScript - no compilation needed'",
     "type-check": "tsc --noEmit",
     "lint": "eslint .",
     "test": "jest"

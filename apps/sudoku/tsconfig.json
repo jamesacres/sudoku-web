@@ -3,13 +3,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
-      "@sudoku-web/template": ["../../apps/template/src"],
-      "@sudoku-web/template/*": ["../../apps/template/src/*"],
-      "@sudoku-web/types": ["../../packages/types/src"],
-      "@sudoku-web/types/*": ["../../packages/types/src/*"],
-      "@sudoku-web/shared": ["../../packages/shared/src"],
-      "@sudoku-web/shared/*": ["../../packages/shared/src/*"]
+      "@/*": ["./src/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

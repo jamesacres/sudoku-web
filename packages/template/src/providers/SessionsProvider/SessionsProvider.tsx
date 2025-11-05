@@ -17,7 +17,8 @@ import {
 import { ServerState, GameState, Timer } from '@sudoku-web/sudoku';
 import { StateType } from '@sudoku-web/types';
 import { UserSession, UserSessions } from '../../types/userSessions';
-import { useServerStorage, useLocalStorage } from '@sudoku-web/template';
+import { useServerStorage } from '../../hooks/serverStorage';
+import { useLocalStorage } from '../../hooks/localStorage';
 import { UserContext } from '../UserProvider';
 
 interface SessionsContextType {
