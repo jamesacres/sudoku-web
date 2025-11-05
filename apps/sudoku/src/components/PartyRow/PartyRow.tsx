@@ -10,7 +10,6 @@ import {
 } from '@sudoku-web/sudoku';
 import { PartyInviteButton } from '../PartyInviteButton/PartyInviteButton';
 import {
-  CopyButton,
   calculateSeconds,
   UserContext,
   RevenueCatContext,
@@ -18,6 +17,7 @@ import {
   getPlayerColor,
   getAllUserIds,
 } from '@sudoku-web/template';
+import { CopyButton } from '@sudoku-web/ui';
 import { useContext, useState } from 'react';
 import { PartyConfirmationDialog } from '../PartyConfirmationDialog/PartyConfirmationDialog';
 import { LogOut, Trash, UserMinus, Edit3, Users } from 'react-feather';

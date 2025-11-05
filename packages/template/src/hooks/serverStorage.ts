@@ -3,7 +3,7 @@
 import { useCallback, useContext, useRef } from 'react';
 import { useFetch } from './fetch';
 import { UserContext } from '../providers/UserProvider';
-import { StateType } from '@sudoku-web/types';
+import { StateType, UserProfile } from '@sudoku-web/types';
 import { useOnline } from './online';
 import {
   MemberResponse,
@@ -16,8 +16,9 @@ import {
   Invite,
   InviteResponse,
   PublicInvite,
+  SudokuOfTheDayResponse,
+  Difficulty,
 } from '../types/serverTypes';
-import { UserProfile } from '@sudoku-web/types';
 
 const app = 'sudoku';
 const apiUrl = 'https://api.bubblyclouds.com';
@@ -506,6 +507,32 @@ function useServerStorage({
     [fetch, isLoggedIn, isOnline]
   );
 
+  const getSudokuOfTheDay = useCallback(
+    async (difficulty?: Difficulty): Promise<{ initial: string; final: string; sudokuId: string } | undefined> => {
+      if (isOnline) {
+        try {
+          console.info('fetching sudoku of the day');
+          const params = difficulty ? `?difficulty=${difficulty}` : '';
+          const response = await fetch(
+            new Request(`${apiUrl}/sudoku-of-the-day${params}`)
+          );
+          if (response.ok) {
+            const data: SudokuOfTheDayResponse = await response.json();
+            return {
+              initial: data.initial,
+              final: data.final,
+              sudokuId: data.sudokuId,
+            };
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      return undefined;
+    },
+    [fetch, isOnline]
+  );
+
   const deleteAccount = useCallback(async (): Promise<boolean> => {
     if (isOnline && (await isLoggedIn()) && user) {
       try {
@@ -540,6 +567,7 @@ function useServerStorage({
     leaveParty,
     removeMember,
     deleteParty,
+    getSudokuOfTheDay,
     deleteAccount,
   };
 }

@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { isCapacitor } from '@sudoku-web/template';
+import { isCapacitor } from '@sudoku-web/ui';
 
 function TestersContent() {
   const router = useRouter();

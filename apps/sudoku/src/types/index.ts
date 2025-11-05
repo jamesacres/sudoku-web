@@ -1,6 +1,8 @@
 // Re-export from @sudoku-web/types package
 export { SubscriptionContext, StateType } from '@sudoku-web/types';
-export type { Party } from '@sudoku-web/types';
+
+// Re-export from @sudoku-web/template package
+export type { Party } from '@sudoku-web/template';
 
 // Re-export sudoku types from package for convenience
 export type {

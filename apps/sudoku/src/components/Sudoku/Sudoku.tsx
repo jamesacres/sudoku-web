@@ -26,16 +26,15 @@ import {
   useState,
 } from 'react';
 import {
-  CelebrationAnimation,
   useDrag,
   UserContext,
   RevenueCatContext,
   SubscriptionContext,
   DAILY_LIMITS,
-  isCapacitor,
   useSessions,
   AppDownloadModal,
 } from '@sudoku-web/template';
+import { CelebrationAnimation, isCapacitor } from '@sudoku-web/ui';
 import MemoisedSidebarButton from '@/components/SidebarButton/SidebarButton';
 import { useRouter } from 'next/navigation';
 import RacingPromptModal from '@/components/RacingPromptModal/RacingPromptModal';

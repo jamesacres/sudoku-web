@@ -13,7 +13,8 @@
     "react": "^18",
     "react-dom": "^18",
     "mathjs": "^13.0.2",
-    "@sudoku-web/types": "*"
+    "@sudoku-web/types": "*",
+    "@sudoku-web/template": "*"
   },
   "devDependencies": {
     "typescript": "^5",
