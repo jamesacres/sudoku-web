@@ -7,9 +7,9 @@ import {
   Tab,
   SocialProof,
   PremiumFeatures,
+  Difficulty,
 } from '@sudoku-web/template';
 import { Footer } from '@sudoku-web/ui';
-import { Difficulty } from '@sudoku-web/sudoku';
 import MyPuzzlesTab from '@/components/tabs/MyPuzzlesTab';
 import FriendsTab from '@/components/tabs/FriendsTab';
 import ActivityWidget from '@/components/ActivityWidget';
