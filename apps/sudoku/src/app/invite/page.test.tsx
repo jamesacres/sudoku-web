@@ -15,7 +15,7 @@ import { EntitlementDuration, PublicInvite, Party } from '@sudoku-web/template';
 
 // Mock dependencies
 jest.mock('next/navigation');
-jest.mock('@/hooks/useParties');
+jest.mock('@sudoku-web/sudoku');
 jest.mock('next/image', () => ({
   __esModule: true,
   default: (props: any) => {

@@ -23,7 +23,8 @@ jest.mock('../../helpers/electron', () => ({
   openBrowser: jest.fn(),
 }));
 
-jest.mock('../../helpers/pkce', () => ({
+jest.mock('@sudoku-web/auth', () => ({
+  ...jest.requireActual('@sudoku-web/auth'),
   pkce: jest.fn(() =>
     Promise.resolve({
       codeChallenge: 'test-challenge',

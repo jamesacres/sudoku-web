@@ -4,13 +4,157 @@
 // Import testing-library matchers
 require('@testing-library/jest-dom');
 
-// Mock @headlessui/react Switch component
+// Mock @headlessui/react components
 jest.mock('@headlessui/react', () => {
   const React = require('react');
-  return {
-    Switch: ({ checked, onChange, children }) =>
-      React.createElement('button', { onClick: () => onChange(!checked) }, children)
+  const Fragment = React.Fragment;
+
+  // Helper to handle children as function or JSX
+  const renderChildren = (children) => {
+    if (typeof children === 'function') {
+      return children({});
+    }
+    return children;
   };
+
+  // Filter out HeadlessUI-specific animation and control props that React doesn't recognize
+  const filterHeadlessUIProps = (props) => {
+    const { children, as, ...rest } = props;
+    const filtered = {};
+    const headlessUIProps = new Set([
+      'enter', 'enterFrom', 'enterTo', 'entered',
+      'leave', 'leaveFrom', 'leaveTo',
+      'appear', 'show', 'static', 'unmount',
+      'as', // Remove the 'as' prop from HTML attributes
+    ]);
+
+    for (const [key, value] of Object.entries(rest)) {
+      if (!headlessUIProps.has(key)) {
+        filtered[key] = value;
+      }
+    }
+    return filtered;
+  };
+
+  // Helper to get the element type based on 'as' prop
+  const getElementType = (as) => {
+    if (!as) return 'div';
+    if (as === Fragment) return Fragment;
+    if (typeof as === 'string') return as;
+    if (typeof as === 'function') return as;
+    return 'div';
+  };
+
+  // Transition components
+  const Transition = ({ children, as, show, ...props }) => {
+    // Don't render if show is explicitly false
+    if (show === false) {
+      return null;
+    }
+    const element = getElementType(as);
+    if (element === Fragment) {
+      return React.createElement(Fragment, null, renderChildren(children));
+    }
+    return React.createElement(element, filterHeadlessUIProps({ ...props }), renderChildren(children));
+  };
+  Transition.Child = ({ children, as, ...props }) => {
+    const element = getElementType(as);
+    if (element === Fragment) {
+      return React.createElement(Fragment, null, renderChildren(children));
+    }
+    return React.createElement(element, filterHeadlessUIProps({ ...props }), renderChildren(children));
+  };
+  Transition.Root = ({ children, as, ...props }) => {
+    const element = getElementType(as);
+    if (element === Fragment) {
+      return React.createElement(Fragment, null, renderChildren(children));
+    }
+    return React.createElement(element, filterHeadlessUIProps({ ...props }), renderChildren(children));
+  };
+
+  // Create Dialog sub-components
+  const DialogPanelComponent = ({ children, as, ...props }) => {
+    const element = getElementType(as);
+    if (element === Fragment) {
+      return React.createElement(Fragment, null, renderChildren(children));
+    }
+    return React.createElement(element, filterHeadlessUIProps({ ...props }), renderChildren(children));
+  };
+  const DialogTitleComponent = ({ children, as, ...props }) => {
+    const element = getElementType(as);
+    if (element === Fragment) {
+      return React.createElement(Fragment, null, children);
+    }
+    return React.createElement(element || 'h2', filterHeadlessUIProps({ ...props }), children);
+  };
+  const DialogDescriptionComponent = ({ children, as, ...props }) => {
+    const element = getElementType(as);
+    if (element === Fragment) {
+      return React.createElement(Fragment, null, children);
+    }
+    return React.createElement(element || 'p', filterHeadlessUIProps({ ...props }), children);
+  };
+
+  // Create Dialog component with sub-components
+  const DialogComponent = function Dialog({ children, as, ...props }) {
+    const element = getElementType(as);
+    if (element === Fragment) {
+      return React.createElement(Fragment, null, renderChildren(children));
+    }
+    return React.createElement(element, filterHeadlessUIProps({ ...props }), renderChildren(children));
+  };
+  DialogComponent.Panel = DialogPanelComponent;
+  DialogComponent.Title = DialogTitleComponent;
+  DialogComponent.Description = DialogDescriptionComponent;
+
+  const mocks = {
+    Switch: ({ checked, onChange, children, ...props }) =>
+      React.createElement('button', { ...filterHeadlessUIProps({ checked, onChange, children, ...props }), onClick: () => onChange && onChange(!checked) }, children),
+    Dialog: DialogComponent,
+    DialogPanel: DialogPanelComponent,
+    DialogTitle: DialogTitleComponent,
+    DialogDescription: DialogDescriptionComponent,
+    Transition,
+    'Transition.Child': Transition.Child,
+    'Transition.Root': Transition.Root,
+    Disclosure: ({ children, ...props }) =>
+      React.createElement('div', filterHeadlessUIProps({ children, ...props }), renderChildren(children)),
+    DisclosureButton: ({ children, ...props }) =>
+      React.createElement('button', filterHeadlessUIProps({ children, ...props }), renderChildren(children)),
+    DisclosurePanel: ({ children, ...props }) =>
+      React.createElement('div', filterHeadlessUIProps({ children, ...props }), renderChildren(children)),
+    Popover: ({ children, ...props }) =>
+      React.createElement('div', filterHeadlessUIProps({ children, ...props }), renderChildren(children)),
+    PopoverButton: ({ children, ...props }) =>
+      React.createElement('button', filterHeadlessUIProps({ children, ...props }), renderChildren(children)),
+    PopoverPanel: ({ children, ...props }) =>
+      React.createElement('div', filterHeadlessUIProps({ children, ...props }), renderChildren(children)),
+    Menu: ({ children, ...props }) =>
+      React.createElement('div', filterHeadlessUIProps({ children, ...props }), renderChildren(children)),
+    MenuButton: ({ children, ...props }) =>
+      React.createElement('button', filterHeadlessUIProps({ children, ...props }), renderChildren(children)),
+    MenuItem: ({ children, ...props }) =>
+      React.createElement('button', filterHeadlessUIProps({ children, ...props }), renderChildren(children)),
+    MenuItems: ({ children, ...props }) =>
+      React.createElement('div', filterHeadlessUIProps({ children, ...props }), renderChildren(children)),
+    Listbox: ({ children, ...props }) =>
+      React.createElement('div', filterHeadlessUIProps({ children, ...props }), renderChildren(children)),
+    ListboxButton: ({ children, ...props }) =>
+      React.createElement('button', filterHeadlessUIProps({ children, ...props }), renderChildren(children)),
+    ListboxOption: ({ children, ...props }) =>
+      React.createElement('div', filterHeadlessUIProps({ children, ...props }), renderChildren(children)),
+    ListboxOptions: ({ children, ...props }) =>
+      React.createElement('div', filterHeadlessUIProps({ children, ...props }), renderChildren(children)),
+    Tab: {
+      Group: ({ children, ...props }) => React.createElement('div', filterHeadlessUIProps({ children, ...props }), renderChildren(children)),
+      List: ({ children, ...props }) => React.createElement('div', filterHeadlessUIProps({ children, ...props }), renderChildren(children)),
+      Panels: ({ children, ...props }) => React.createElement('div', filterHeadlessUIProps({ children, ...props }), renderChildren(children)),
+      Panel: ({ children, ...props }) => React.createElement('div', filterHeadlessUIProps({ children, ...props }), renderChildren(children)),
+      Button: ({ children, ...props }) => React.createElement('button', filterHeadlessUIProps({ children, ...props }), renderChildren(children))
+    },
+  };
+
+  return mocks;
 });
 
 // Mock RevenueCat/Capacitor modules that use ESM
@@ -32,16 +176,52 @@ jest.mock(
   { virtual: true }
 );
 
+// Base WebPlugin class for Capacitor plugins
+class WebPlugin {
+  constructor(options) {
+    this.listeners = {};
+  }
+  addListener(eventName, listenerFunc) {
+    if (!this.listeners[eventName]) {
+      this.listeners[eventName] = [];
+    }
+    this.listeners[eventName].push(listenerFunc);
+    return {
+      remove: () => {
+        if (this.listeners[eventName]) {
+          this.listeners[eventName] = this.listeners[eventName].filter(
+            (l) => l !== listenerFunc
+          );
+        }
+      },
+    };
+  }
+}
+
 jest.mock(
   '@capacitor/core',
   () => ({
-    registerPlugin: jest.fn((name) => ({})),
+    registerPlugin: jest.fn((name) => {
+      if (name === 'Share') {
+        return { share: jest.fn().mockResolvedValue({}) };
+      } else if (name === 'StatusBar') {
+        return {
+          show: jest.fn().mockResolvedValue(undefined),
+          hide: jest.fn().mockResolvedValue(undefined),
+          setStyle: jest.fn().mockResolvedValue(undefined),
+          setBackgroundColor: jest.fn().mockResolvedValue(undefined),
+          setOverlaysWebView: jest.fn().mockResolvedValue(undefined),
+        };
+      }
+      return new WebPlugin({ name });
+    }),
     CapacitorHttp: {},
     Capacitor: {
       isWebPlatform: jest.fn(() => false),
       getPlatform: jest.fn(() => 'web'),
       isPluginAvailable: jest.fn(() => false),
     },
+    WebPlugin,
   }),
   { virtual: true }
 );
@@ -60,6 +240,16 @@ jest.mock(
       remove() {
         return Promise.resolve();
       }
+    },
+  }),
+  { virtual: true }
+);
+
+jest.mock(
+  '@capacitor/share',
+  () => ({
+    Share: {
+      share: jest.fn().mockResolvedValue({}),
     },
   }),
   { virtual: true }

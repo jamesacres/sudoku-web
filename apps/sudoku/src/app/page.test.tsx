@@ -33,7 +33,7 @@ jest.mock('@/components/BookCovers', () => ({
   },
 }));
 
-jest.mock('@/hooks/useParties', () => ({
+jest.mock('@sudoku-web/sudoku', () => ({
   useParties: jest.fn(() => ({
     parties: [],
     refreshParties: jest.fn(),

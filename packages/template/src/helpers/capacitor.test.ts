@@ -1,4 +1,20 @@
 import { describe, it, expect, beforeEach } from '@jest/globals';
+
+// Mock InAppReview before importing anything
+jest.mock('@capacitor-community/in-app-review', () => ({
+  InAppReview: {
+    requestReview: jest.fn(() => Promise.resolve()),
+  },
+}));
+
+// Mock Capacitor
+jest.mock('@capacitor/core', () => ({
+  Capacitor: {
+    getPlatform: jest.fn(),
+  },
+  registerPlugin: jest.fn(),
+}));
+
 import {
   isCapacitor,
   isIOS,
@@ -7,13 +23,6 @@ import {
   getCapacitorState,
   CapacitorSecureStorage,
 } from '@sudoku-web/template';
-
-// Mock Capacitor
-jest.mock('@capacitor/core', () => ({
-  Capacitor: {
-    getPlatform: jest.fn(),
-  },
-}));
 
 // Mock SecureStoragePlugin
 jest.mock('capacitor-secure-storage-plugin', () => ({

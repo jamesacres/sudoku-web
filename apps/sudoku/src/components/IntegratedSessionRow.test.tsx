@@ -36,7 +36,7 @@ jest.mock('@sudoku-web/template', () => ({
   UserContext: React.createContext({}),
 }));
 
-jest.mock('@/hooks/useParties', () => ({
+jest.mock('@sudoku-web/sudoku', () => ({
   useParties: jest.fn(),
 }));
 

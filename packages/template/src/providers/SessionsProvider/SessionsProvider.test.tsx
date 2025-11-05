@@ -6,17 +6,13 @@ import { ServerStateResult, Party } from '../../types/serverTypes';
 import { ServerState } from '@sudoku-web/sudoku';
 
 // Mock dependencies
-jest.mock('@sudoku-web/template', () => {
-  const actual = jest.requireActual('@sudoku-web/template');
-  return {
-    ...actual,
-    useServerStorage: jest.fn(() => ({
-      listValues: jest.fn(() => Promise.resolve([])),
-      getValue: jest.fn(() => Promise.resolve(undefined)),
-      saveValue: jest.fn(() => Promise.resolve(undefined)),
-    })),
-  };
-});
+jest.mock('../../hooks/serverStorage', () => ({
+  useServerStorage: jest.fn(() => ({
+    listValues: jest.fn(() => Promise.resolve([])),
+    getValue: jest.fn(() => Promise.resolve(undefined)),
+    saveValue: jest.fn(() => Promise.resolve(undefined)),
+  })),
+}));
 
 jest.mock('../../hooks/localStorage', () => ({
   useLocalStorage: jest.fn(() => ({

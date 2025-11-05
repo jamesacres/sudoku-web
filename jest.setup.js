@@ -19,14 +19,50 @@ jest.mock('@revenuecat/purchases-capacitor', () => ({
   LOG_LEVEL: { VERBOSE: 0 },
 }), { virtual: true });
 
+// Base WebPlugin class for Capacitor plugins
+class WebPlugin {
+  constructor(options) {
+    this.listeners = {};
+  }
+  addListener(eventName, listenerFunc) {
+    if (!this.listeners[eventName]) {
+      this.listeners[eventName] = [];
+    }
+    this.listeners[eventName].push(listenerFunc);
+    return {
+      remove: () => {
+        if (this.listeners[eventName]) {
+          this.listeners[eventName] = this.listeners[eventName].filter(
+            (l) => l !== listenerFunc
+          );
+        }
+      },
+    };
+  }
+}
+
 jest.mock('@capacitor/core', () => ({
-  registerPlugin: jest.fn((name) => ({})),
+  registerPlugin: jest.fn((name) => {
+    if (name === 'Share') {
+      return { share: jest.fn().mockResolvedValue({}) };
+    } else if (name === 'StatusBar') {
+      return {
+        show: jest.fn().mockResolvedValue(undefined),
+        hide: jest.fn().mockResolvedValue(undefined),
+        setStyle: jest.fn().mockResolvedValue(undefined),
+        setBackgroundColor: jest.fn().mockResolvedValue(undefined),
+        setOverlaysWebView: jest.fn().mockResolvedValue(undefined),
+      };
+    }
+    return new WebPlugin({ name });
+  }),
   CapacitorHttp: {},
   Capacitor: {
     isWebPlatform: jest.fn(() => false),
     getPlatform: jest.fn(() => 'web'),
     isPluginAvailable: jest.fn(() => false),
   },
+  WebPlugin,
 }), { virtual: true });
 
 jest.mock('capacitor-secure-storage-plugin', () => ({
@@ -45,12 +81,29 @@ jest.mock('@capacitor/browser', () => ({
   },
 }), { virtual: true });
 
+jest.mock('@capacitor/share', () => ({
+  Share: {
+    share: jest.fn().mockResolvedValue({}),
+  },
+}), { virtual: true });
+
 jest.mock('@capacitor/app', () => ({
   App: {
     addListener: jest.fn(() => ({ remove: jest.fn() })),
     removeAllListeners: jest.fn().mockResolvedValue(undefined),
     minimizeApp: jest.fn().mockResolvedValue(undefined),
   },
+}), { virtual: true });
+
+jest.mock('@capacitor/status-bar', () => ({
+  StatusBar: {
+    show: jest.fn().mockResolvedValue(undefined),
+    hide: jest.fn().mockResolvedValue(undefined),
+    setStyle: jest.fn().mockResolvedValue(undefined),
+    setBackgroundColor: jest.fn().mockResolvedValue(undefined),
+    setOverlaysWebView: jest.fn().mockResolvedValue(undefined),
+  },
+  Style: { DEFAULT: 'DEFAULT', LIGHT: 'LIGHT', DARK: 'DARK' },
 }), { virtual: true });
 
 // Create global window object for Node environment

@@ -9,7 +9,7 @@ import {
 } from '@sudoku-web/template';
 import * as usePartiesModule from '@sudoku-web/sudoku';
 
-jest.mock('@/hooks/useParties');
+jest.mock('@sudoku-web/sudoku');
 jest.mock('@sudoku-web/sudoku', () => ({
   ...jest.requireActual('@sudoku-web/sudoku'),
   calculateCompletionPercentage: jest.fn(() => 50),

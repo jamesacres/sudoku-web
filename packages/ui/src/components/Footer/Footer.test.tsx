@@ -3,7 +3,8 @@ import { render, screen } from '@testing-library/react';
 import Footer from './Footer';
 
 // Mock the capacitor helper
-jest.mock('../../helpers/capacitor', () => ({
+jest.mock('@sudoku-web/auth', () => ({
+  ...jest.requireActual('@sudoku-web/auth'),
   isCapacitor: jest.fn(() => false),
 }));
 
@@ -176,7 +177,7 @@ describe('Footer', () => {
 
   describe('conditional styling with Capacitor', () => {
     it('should add pb-safe and pt-2 classes when isCapacitor is true', () => {
-      const { isCapacitor } = require('../../helpers/capacitor');
+      const { isCapacitor } = require('@sudoku-web/auth');
       isCapacitor.mockReturnValueOnce(true);
 
       const { rerender } = render(

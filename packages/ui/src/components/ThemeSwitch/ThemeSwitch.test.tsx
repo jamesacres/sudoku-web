@@ -9,7 +9,8 @@ jest.mock('next-themes', () => ({
 }));
 
 // Mock capacitor
-jest.mock('../../helpers/capacitor', () => ({
+jest.mock('@sudoku-web/auth', () => ({
+  ...jest.requireActual('@sudoku-web/auth'),
   isCapacitor: jest.fn(() => false),
 }));
 
@@ -279,7 +280,7 @@ describe('ThemeSwitch', () => {
 
   describe('Capacitor integration', () => {
     it('should call StatusBar.setStyle when on Capacitor in dark mode', async () => {
-      const { isCapacitor } = require('../../helpers/capacitor');
+      const { isCapacitor } = require('@sudoku-web/auth');
       const { StatusBar } = require('@capacitor/status-bar');
       isCapacitor.mockReturnValue(true);
 
@@ -297,7 +298,7 @@ describe('ThemeSwitch', () => {
     });
 
     it('should not call StatusBar when not on Capacitor', async () => {
-      const { isCapacitor } = require('../../helpers/capacitor');
+      const { isCapacitor } = require('@sudoku-web/auth');
       const { StatusBar } = require('@capacitor/status-bar');
       isCapacitor.mockReturnValue(false);
 
@@ -313,7 +314,7 @@ describe('ThemeSwitch', () => {
     });
 
     it('should update StatusBar style when theme changes', async () => {
-      const { isCapacitor } = require('../../helpers/capacitor');
+      const { isCapacitor } = require('@sudoku-web/auth');
       const { StatusBar } = require('@capacitor/status-bar');
       isCapacitor.mockReturnValue(true);
 

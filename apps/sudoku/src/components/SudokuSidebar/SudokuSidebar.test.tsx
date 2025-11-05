@@ -8,7 +8,7 @@ import {
 } from '@sudoku-web/template';
 import { useParties } from '@sudoku-web/sudoku';
 
-jest.mock('@/hooks/useParties');
+jest.mock('@sudoku-web/sudoku');
 jest.mock('../PartyRow/PartyRow', () => ({
   __esModule: true,
   PartyRow: () => <div data-testid="party-row">Party Row</div>,

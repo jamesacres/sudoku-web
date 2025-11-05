@@ -2,8 +2,9 @@ import React from 'react';
 import { render, waitFor } from '@testing-library/react';
 import { CelebrationAnimation } from './CelebrationAnimation';
 
-// Mock template package isCapacitor function
-jest.mock('@sudoku-web/template', () => ({
+// Mock auth package isCapacitor function
+jest.mock('@sudoku-web/auth', () => ({
+  ...jest.requireActual('@sudoku-web/auth'),
   isCapacitor: jest.fn(() => false),
 }));
 
@@ -206,7 +207,7 @@ describe('CelebrationAnimation', () => {
 
   describe('in-app review integration', () => {
     it('should request in-app review on third game completion', async () => {
-      const { isCapacitor } = require('@sudoku-web/template');
+      const { isCapacitor } = require('@sudoku-web/auth');
       const { InAppReview } = require('@capacitor-community/in-app-review');
 
       isCapacitor.mockReturnValue(true);
@@ -233,7 +234,7 @@ describe('CelebrationAnimation', () => {
     });
 
     it('should not request in-app review if not on Capacitor', () => {
-      const { isCapacitor } = require('@sudoku-web/template');
+      const { isCapacitor } = require('@sudoku-web/auth');
       const { InAppReview } = require('@capacitor-community/in-app-review');
 
       isCapacitor.mockReturnValue(false);
@@ -257,7 +258,7 @@ describe('CelebrationAnimation', () => {
     });
 
     it('should not request in-app review if completedGamesCount is not 2', () => {
-      const { isCapacitor } = require('@sudoku-web/template');
+      const { isCapacitor } = require('@sudoku-web/auth');
       const { InAppReview } = require('@capacitor-community/in-app-review');
 
       isCapacitor.mockReturnValue(true);

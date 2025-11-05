@@ -276,7 +276,16 @@ describe('ThemeColorSwitch', () => {
     it('should show subscription modal when selecting premium color as non-subscriber', async () => {
       render(
         <RevenueCatContext.Provider value={mockRevenueCatContext as any}>
-          <ThemeColorSwitch />
+          <ThemeColorSwitch
+            isSubscribed={mockRevenueCatContext.isSubscribed}
+            onPremiumColorClick={(colorName, onSuccess) =>
+              mockRevenueCatContext.subscribeModal.showModalIfRequired(
+                onSuccess,
+                () => {},
+                SubscriptionContext.THEME_COLOR
+              )
+            }
+          />
         </RevenueCatContext.Provider>
       );
 
@@ -308,7 +317,16 @@ describe('ThemeColorSwitch', () => {
     it('should show modal on premium color selection', async () => {
       render(
         <RevenueCatContext.Provider value={mockRevenueCatContext as any}>
-          <ThemeColorSwitch />
+          <ThemeColorSwitch
+            isSubscribed={mockRevenueCatContext.isSubscribed}
+            onPremiumColorClick={(colorName, onSuccess) =>
+              mockRevenueCatContext.subscribeModal.showModalIfRequired(
+                onSuccess,
+                () => {},
+                SubscriptionContext.THEME_COLOR
+              )
+            }
+          />
         </RevenueCatContext.Provider>
       );
 
@@ -648,7 +666,7 @@ describe('ThemeColorSwitch', () => {
     it('should render premium badge emoji elements for non-subscribers', () => {
       render(
         <RevenueCatContext.Provider value={mockRevenueCatContext as any}>
-          <ThemeColorSwitch />
+          <ThemeColorSwitch isSubscribed={mockRevenueCatContext.isSubscribed} />
         </RevenueCatContext.Provider>
       );
 
@@ -664,7 +682,7 @@ describe('ThemeColorSwitch', () => {
     it('should have premium badge element with gradient styling', async () => {
       const { container } = render(
         <RevenueCatContext.Provider value={mockRevenueCatContext as any}>
-          <ThemeColorSwitch />
+          <ThemeColorSwitch isSubscribed={mockRevenueCatContext.isSubscribed} />
         </RevenueCatContext.Provider>
       );
 
