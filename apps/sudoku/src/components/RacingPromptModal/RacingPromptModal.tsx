@@ -11,7 +11,7 @@ interface RacingPromptModalProps {
   onSoloMode: () => void;
 }
 
-export const RacingPromptModal = ({
+const RacingPromptModal = ({
   isOpen,
   onClose,
   onRaceMode,
@@ -125,4 +125,6 @@ export const RacingPromptModal = ({
   );
 };
 
+// Export both named and default for compatibility
+export { RacingPromptModal };
 export default RacingPromptModal;

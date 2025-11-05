@@ -24,11 +24,17 @@ jest.mock('next/link', () => {
   return MockLink;
 });
 
-jest.mock('./SimpleSudoku', () => {
-  return function DummySimpleSudoku() {
+jest.mock('@sudoku-web/sudoku', () => ({
+  ...jest.requireActual('@sudoku-web/sudoku'),
+  SimpleSudoku: function DummySimpleSudoku() {
     return <div data-testid="simple-sudoku">Simple Sudoku</div>;
-  };
-});
+  },
+  useParties: jest.fn(),
+  isPuzzleCheated: jest.fn(() => false),
+  puzzleTextToPuzzle: jest.fn((_text) => ({ cells: [] })),
+  puzzleToPuzzleText: jest.fn(() => '123456789' + '0'.repeat(73)),
+  calculateCompletionPercentage: jest.fn(() => 50),
+}));
 
 jest.mock('@sudoku-web/template', () => ({
   useSessions: jest.fn(),
@@ -36,20 +42,8 @@ jest.mock('@sudoku-web/template', () => ({
   UserContext: React.createContext({}),
 }));
 
-jest.mock('@sudoku-web/sudoku', () => ({
-  useParties: jest.fn(),
-}));
-
 jest.mock('@/helpers/buildPuzzleUrl', () => ({
   buildPuzzleUrl: jest.fn(() => '/puzzle?id=test'),
-}));
-
-jest.mock('@sudoku-web/sudoku', () => ({
-  ...jest.requireActual('@sudoku-web/sudoku'),
-  isPuzzleCheated: jest.fn(() => false),
-  puzzleTextToPuzzle: jest.fn((_text) => ({ cells: [] })),
-  puzzleToPuzzleText: jest.fn(() => '123456789' + '0'.repeat(73)),
-  calculateCompletionPercentage: jest.fn(() => 50),
 }));
 
 // Mock context

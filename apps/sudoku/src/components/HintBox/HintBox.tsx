@@ -24,3 +24,4 @@ const HintBox = ({ children }: { children: ReactNode }) => {
 };
 
 export { HintBox };
+export default HintBox;

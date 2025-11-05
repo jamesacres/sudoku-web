@@ -9,10 +9,12 @@ import {
 } from '@sudoku-web/template';
 import * as usePartiesModule from '@sudoku-web/sudoku';
 
-jest.mock('@sudoku-web/sudoku');
 jest.mock('@sudoku-web/sudoku', () => ({
   ...jest.requireActual('@sudoku-web/sudoku'),
   calculateCompletionPercentage: jest.fn(() => 50),
+  SimpleSudoku: () => <div data-testid="simple-sudoku">Sudoku</div>,
+  TimerDisplay: () => <div data-testid="timer">Timer</div>,
+  useParties: jest.fn(),
 }));
 jest.mock('../PartyConfirmationDialog/PartyConfirmationDialog', () => ({
   PartyConfirmationDialog: ({
@@ -34,13 +36,6 @@ jest.mock('@sudoku-web/template', () => ({
   UserContext: React.createContext({}),
   RevenueCatContext: React.createContext({}),
   SubscriptionContext: React.createContext({}),
-}));
-jest.mock('../SimpleSudoku', () => ({
-  __esModule: true,
-  default: () => <div data-testid="simple-sudoku">Sudoku</div>,
-}));
-jest.mock('../TimerDisplay/TimerDisplay', () => ({
-  TimerDisplay: () => <div data-testid="timer">Timer</div>,
 }));
 
 const mockUseParties = usePartiesModule.useParties as jest.Mock;

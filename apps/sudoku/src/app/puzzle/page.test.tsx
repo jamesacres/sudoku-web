@@ -7,6 +7,7 @@ import { useWakeLock } from '@sudoku-web/template';
 // Mock dependencies
 jest.mock('next/navigation', () => ({
   useSearchParams: jest.fn(),
+  useRouter: jest.fn(),
 }));
 
 jest.mock('@sudoku-web/template', () => ({
@@ -15,8 +16,7 @@ jest.mock('@sudoku-web/template', () => ({
   })),
 }));
 
-jest.mock('@sudoku-web/sudoku', () => ({
-  ...jest.requireActual('@sudoku-web/sudoku'),
+jest.mock('@/components/Sudoku', () => ({
   Sudoku: function MockSudoku({
     alreadyCompleted,
     showRacingPrompt,
@@ -34,6 +34,10 @@ jest.mock('@sudoku-web/sudoku', () => ({
       </div>
     );
   },
+}));
+
+jest.mock('@sudoku-web/sudoku', () => ({
+  ...jest.requireActual('@sudoku-web/sudoku'),
   puzzleTextToPuzzle: jest.fn((_text) => {
     return Array(9)
       .fill(null)
@@ -55,10 +59,19 @@ jest.mock('@/helpers/sha256', () => ({
 
 describe('Puzzle Page', () => {
   const mockUseSearchParams = nextNavigation.useSearchParams as jest.Mock;
+  const mockUseRouter = nextNavigation.useRouter as jest.Mock;
 
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseSearchParams.mockReturnValue(new URLSearchParams());
+    mockUseRouter.mockReturnValue({
+      push: jest.fn(),
+      replace: jest.fn(),
+      refresh: jest.fn(),
+      back: jest.fn(),
+      forward: jest.fn(),
+      prefetch: jest.fn(),
+    });
   });
 
   const renderComponent = () =>

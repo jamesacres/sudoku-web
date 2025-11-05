@@ -17,4 +17,6 @@ const MemoisedSidebarButton = memo(function MemoisedSidebarButton({
   );
 });
 
+// Export both names for compatibility
+export { MemoisedSidebarButton as SidebarButton };
 export default MemoisedSidebarButton;

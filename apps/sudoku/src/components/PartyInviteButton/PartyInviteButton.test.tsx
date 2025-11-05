@@ -6,6 +6,10 @@ import * as serverStorageModule from '@sudoku-web/template';
 jest.mock('@sudoku-web/template', () => ({
   __esModule: true,
   useServerStorage: jest.fn(),
+}));
+
+jest.mock('@sudoku-web/ui', () => ({
+  __esModule: true,
   CopyButton: ({
     getText,
     partyName,

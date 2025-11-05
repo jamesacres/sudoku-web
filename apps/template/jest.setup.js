@@ -84,11 +84,6 @@ if (typeof window === 'undefined') {
   global.window = {};
 }
 
-// Mock window.confirm to return true by default in tests
-if (typeof window !== 'undefined' && !window.confirm) {
-  window.confirm = jest.fn(() => true);
-}
-
 // Polyfill structuredClone for older Node versions
 if (typeof global.structuredClone === 'undefined') {
   global.structuredClone = (obj) => {
@@ -249,6 +244,53 @@ if (typeof global.localStorage === 'undefined') {
   global.localStorage = localStorageProxy;
 }
 
+// Mock window.scrollTo for jsdom (not implemented in jsdom)
+// Need to use Object.defineProperty to override jsdom's not-implemented behavior
+if (typeof window !== 'undefined') {
+  Object.defineProperty(window, 'scrollTo', {
+    writable: true,
+    configurable: true,
+    value: jest.fn(),
+  });
+}
+
+// Mock window.confirm for jsdom (not implemented in jsdom)
+// Need to use Object.defineProperty to override jsdom's not-implemented behavior
+if (typeof window !== 'undefined') {
+  Object.defineProperty(window, 'confirm', {
+    writable: true,
+    configurable: true,
+    value: jest.fn(() => true),
+  });
+}
+
+// Mock window.alert for jsdom
+if (typeof window !== 'undefined') {
+  Object.defineProperty(window, 'alert', {
+    writable: true,
+    configurable: true,
+    value: jest.fn(),
+  });
+}
+
+// Mock window.matchMedia for jsdom (not fully implemented in jsdom)
+if (typeof window !== 'undefined') {
+  Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    configurable: true,
+    value: jest.fn().mockImplementation(query => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: jest.fn(), // deprecated
+      removeListener: jest.fn(), // deprecated
+      addEventListener: jest.fn(),
+      removeEventListener: jest.fn(),
+      dispatchEvent: jest.fn(),
+    })),
+  });
+}
+
 // Create crypto API mock for Node environment (only if not already available)
 // Use Node's built-in crypto.webcrypto if available
 let cryptoMock;
@@ -342,7 +384,6 @@ beforeAll(() => {
     // Suppress expected test errors
     const suppressPatterns = [
       'Invalid cellId format',
-      'Not implemented: window.confirm',
       'An update to',
       'inside a test was not wrapped in act',
       'There are no focusable elements inside the <FocusTrap />',

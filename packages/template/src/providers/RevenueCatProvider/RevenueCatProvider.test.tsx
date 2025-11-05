@@ -4,13 +4,33 @@ import RevenueCatProvider, { RevenueCatContext } from './RevenueCatProvider';
 import { UserContext, UserContextInterface } from '../UserProvider';
 import { Purchases } from '@revenuecat/purchases-capacitor';
 
-jest.mock('../../helpers/capacitor', () => ({
+// Mock the auth helpers
+jest.mock('@sudoku-web/auth', () => ({
+  ...jest.requireActual('@sudoku-web/auth'),
   isCapacitor: () => true,
   isAndroid: () => false,
   isIOS: () => true,
+  isElectron: () => false,
 }));
-jest.mock('../../helpers/electron', () => ({ isElectron: () => false }));
+
+// Mock the Capacitor purchases SDK
 jest.mock('@revenuecat/purchases-capacitor');
+
+// Mock the Web purchases SDK to prevent real network calls
+jest.mock('@revenuecat/purchases-js', () => ({
+  Purchases: {
+    setLogLevel: jest.fn(),
+    configure: jest.fn(),
+    getSharedInstance: jest.fn(() => ({
+      getOfferings: jest.fn(),
+      getCustomerInfo: jest.fn(),
+      purchase: jest.fn(),
+    })),
+  },
+  LogLevel: {
+    Debug: 'Debug',
+  },
+}));
 
 const mockPurchases = Purchases as jest.Mocked<typeof Purchases>;
 
@@ -67,7 +87,11 @@ describe('RevenueCatProvider', () => {
   });
 
   it('provides a function to purchase a package', async () => {
-    mockPurchases.purchasePackage.mockResolvedValue({} as any);
+    const mockPackage = { identifier: 'test_package' } as any;
+    mockPurchases.purchasePackage.mockResolvedValue({
+      customerInfo: { entitlements: { active: {} } },
+    } as any);
+
     let context: any;
     const Consumer = () => {
       context = useContext(RevenueCatContext);
@@ -86,11 +110,11 @@ describe('RevenueCatProvider', () => {
     });
 
     await act(async () => {
-      await context.purchasePackage('test_package');
+      await context.purchasePackage(mockPackage);
     });
 
     expect(mockPurchases.purchasePackage).toHaveBeenCalledWith({
-      aPackage: 'test_package',
+      aPackage: mockPackage,
     });
   });
 });

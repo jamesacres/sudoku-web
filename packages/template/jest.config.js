@@ -16,6 +16,7 @@ const config = {
   moduleNameMapper: {
     '^react-feather$': '<rootDir>/../../jest.setup.featherIcons.js',
     '^next/image$': '<rootDir>/../../jest.setup.nextImage.js',
+    '^@headlessui/react$': '<rootDir>/../../jest.setup.headlessui.js',
   },
   transform: {
     '^.+\\.tsx?$': [

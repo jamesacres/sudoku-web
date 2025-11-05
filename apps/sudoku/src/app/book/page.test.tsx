@@ -39,16 +39,13 @@ jest.mock('@/components/IntegratedSessionRow', () => {
 jest.mock('@sudoku-web/sudoku', () => ({
   ...jest.requireActual('@sudoku-web/sudoku'),
   useBook: jest.fn(),
+  useParties: jest.fn(),
   puzzleTextToPuzzle: jest.fn((_text) => {
     return Array(9)
       .fill(null)
       .map(() => Array(9).fill(0));
   }),
   puzzleToPuzzleText: jest.fn((_puzzle) => 'puzzle-text'),
-}));
-
-jest.mock('@sudoku-web/sudoku', () => ({
-  useParties: jest.fn(),
 }));
 
 jest.mock('@sudoku-web/template', () => ({

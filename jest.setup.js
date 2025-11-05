@@ -106,30 +106,8 @@ jest.mock('@capacitor/status-bar', () => ({
   Style: { DEFAULT: 'DEFAULT', LIGHT: 'LIGHT', DARK: 'DARK' },
 }), { virtual: true });
 
-// Mock react-feather icons - create a generic icon component that accepts props
-const mockIconComponent = (displayName) => {
-  const Icon = (props) => {
-    const React = require('react');
-    return React.createElement('svg', { ...props, 'data-testid': displayName });
-  };
-  Icon.displayName = displayName;
-  return Icon;
-};
-
-// Create mocks for all commonly used icons
-const iconNames = [
-  'Loader', 'ChevronDown', 'ChevronRight', 'RotateCcw',
-  'Calendar', 'Watch', 'Users', 'Droplet',
-  'LogOut', 'Trash', 'UserMinus', 'Plus', 'X',
-  'Home', 'Zap', 'Settings', 'Bell', 'Menu',
-  'ChevronLeft', 'ArrowRight', 'Share2', 'Copy',
-  'Eye', 'EyeOff', 'Check', 'AlertCircle'
-];
-
-const featherMocks = {};
-iconNames.forEach(name => {
-  featherMocks[name] = mockIconComponent(name);
-});
+// Mock react-feather icons - load from external file
+const featherMocks = require('./jest.setup.featherIcons');
 
 jest.mock('react-feather', () => featherMocks);
 
