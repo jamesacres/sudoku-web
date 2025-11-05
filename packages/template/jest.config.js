@@ -15,6 +15,7 @@ const config = {
   testTimeout: 10000,
   moduleNameMapper: {
     '^react-feather$': '<rootDir>/../../jest.setup.featherIcons.js',
+    '^next/image$': '<rootDir>/../../jest.setup.nextImage.js',
   },
   transform: {
     '^.+\\.tsx?$': [

@@ -16,7 +16,8 @@ const iconNames = [
   'LogOut', 'Trash', 'UserMinus', 'Plus', 'X',
   'Home', 'Zap', 'Settings', 'Bell', 'Menu',
   'ChevronLeft', 'ArrowRight', 'Share2', 'Copy',
-  'Eye', 'EyeOff', 'Check', 'AlertCircle'
+  'Eye', 'EyeOff', 'Check', 'AlertCircle',
+  'Smartphone', 'Download'
 ];
 
 const exports = {};
