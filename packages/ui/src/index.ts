@@ -19,6 +19,9 @@ export { default as Footer } from './components/Footer';
 /** Back button component for navigation */
 export { default as HeaderBack } from './components/HeaderBack';
 
+/** Online status indicator component */
+export { HeaderOnline } from './components/HeaderOnline';
+
 /** Complete theme control panel with dark/light mode and color selection */
 export { default as ThemeControls } from './components/ThemeControls';
 

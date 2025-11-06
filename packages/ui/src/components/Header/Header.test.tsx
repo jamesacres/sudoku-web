@@ -28,6 +28,22 @@ jest.mock('../ThemeControls', () => {
   };
 });
 
+jest.mock('../HeaderOnline', () => {
+  return {
+    __esModule: true,
+    HeaderOnline: function DummyHeaderOnline() {
+      return <div data-testid="header-online">Header Online</div>;
+    },
+  };
+});
+
+jest.mock('@sudoku-web/auth', () => ({
+  ...jest.requireActual('@sudoku-web/auth'),
+  HeaderUser: function DummyHeaderUser() {
+    return <div data-testid="header-user">Header User</div>;
+  },
+}));
+
 describe('Header', () => {
   describe('rendering', () => {
     it('should render header navigation', () => {
@@ -40,10 +56,14 @@ describe('Header', () => {
       const { findByTestId } = render(<Header />);
 
       const headerBack = await findByTestId('header-back');
+      const headerUser = await findByTestId('header-user');
       const themeControls = await findByTestId('theme-controls');
+      const headerOnline = await findByTestId('header-online');
 
       expect(headerBack).toBeInTheDocument();
+      expect(headerUser).toBeInTheDocument();
       expect(themeControls).toBeInTheDocument();
+      expect(headerOnline).toBeInTheDocument();
     });
 
     it('should render spacing div below header', () => {
@@ -281,26 +301,16 @@ describe('Header', () => {
       const themeControls = await findByTestId('theme-controls');
       expect(themeControls).toBeInTheDocument();
     });
-
-    it('should allow custom leftContent', async () => {
-      const { getByText } = render(
-        <Header leftContent={<div>Custom Left</div>} />
-      );
-      expect(getByText('Custom Left')).toBeInTheDocument();
-    });
-
-    it('should allow custom rightContent', async () => {
-      const { getByText } = render(
-        <Header rightContent={<div>Custom Right</div>} />
-      );
-      expect(getByText('Custom Right')).toBeInTheDocument();
-    });
   });
 
   describe('layout order', () => {
-    it('should render left section before center section', () => {
-      const { container } = render(<Header />);
+    it('should render left section before center section', async () => {
+      const { container, findByTestId } = render(<Header />);
       const nav = container.querySelector('nav');
+
+      // Wait for dynamic components to load
+      await findByTestId('header-back');
+
       const leftSection = nav?.querySelector('.flex.shrink-0');
       const centerSection = nav?.querySelector('.block.flex.grow');
 

@@ -4,26 +4,16 @@ import { usePathname } from 'next/navigation';
 
 import { ChevronLeft } from 'react-feather';
 
-interface HeaderBackProps {
-  appName?: string;
-  homeTab?: string;
-  backText?: string;
-}
-
-const HeaderBack = ({
-  appName,
-  homeTab,
-  backText = 'Back',
-}: HeaderBackProps) => {
+const HeaderBack = () => {
   const router = useRouter();
   const pathname = usePathname();
-  return pathname === '/' && appName ? (
+  return pathname === '/' ? (
     <div className="flex items-center">
       <button
         className="inline-flex cursor-pointer items-center bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-sm font-semibold text-transparent transition-opacity active:opacity-70"
-        onClick={() => router.replace(homeTab ? `/?tab=${homeTab}` : '/')}
+        onClick={() => router.replace('/?tab=START_PUZZLE')}
       >
-        {appName}
+        Sudoku Race
       </button>
     </div>
   ) : (
@@ -33,7 +23,7 @@ const HeaderBack = ({
       onClick={() => router.replace('/')}
     >
       <ChevronLeft className="h-5 w-5" />
-      <span className="text-base font-normal">{backText}</span>
+      <span className="text-base font-normal">Back</span>
     </button>
   );
 };

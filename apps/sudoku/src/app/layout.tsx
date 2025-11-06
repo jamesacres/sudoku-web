@@ -1,9 +1,22 @@
 import type { Metadata, Viewport } from 'next';
+import { Inter, Orbitron, Pacifico } from 'next/font/google';
 import './globals.css';
 import React from 'react';
 import { Providers } from './providers';
 import { Header, ErrorBoundary, GlobalErrorHandler } from '@sudoku-web/ui';
 import SudokuPlusModal from '@/components/SudokuPlusModal';
+
+const inter = Inter({ subsets: ['latin'] });
+const orbitron = Orbitron({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+  variable: '--font-orbitron',
+});
+const pacifico = Pacifico({
+  subsets: ['latin'],
+  weight: '400',
+  variable: '--font-pacifico',
+});
 
 export const metadata: Metadata = {
   title: 'Sudoku Race',
@@ -64,8 +77,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head />
-      <body>
+      <head>
+        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
+        <link
+          href="https://fonts.googleapis.com/css2?family=Pacifico&family=Orbitron:wght@400;700&family=Creepster&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body
+        className={`${inter.className} ${orbitron.variable} ${pacifico.variable}`}
+      >
         <GlobalErrorHandler />
         <ErrorBoundary>
           <Providers>

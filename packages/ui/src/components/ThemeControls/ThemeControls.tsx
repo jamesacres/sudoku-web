@@ -5,7 +5,7 @@ import ThemeColorSwitch from '../ThemeColorSwitch';
 
 const ThemeControls = () => {
   return (
-    <div className="flex items-center">
+    <div className="relative flex items-center">
       <ThemeSwitch />
       <ThemeColorSwitch />
     </div>
