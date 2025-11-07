@@ -26,6 +26,9 @@ export type { SessionState } from './types';
 
 // ===== Providers =====
 
+/** React context provider for fetch state management. Wrap with AuthProvider. */
+export { FetchProvider } from './providers';
+
 /** React context provider for authentication state. Place at app root. */
 export { AuthProvider } from './providers';
 
@@ -37,6 +40,9 @@ export type { UserContextInterface } from './providers';
 
 /** Hook type for authenticated fetch requests */
 export type { AuthFetchHook } from './providers';
+
+/** Fetch state type */
+export type { FetchState } from './providers';
 
 // ===== Components =====
 
@@ -71,3 +77,8 @@ export { isCapacitor, isIOS, isAndroid, getCapacitorState, saveCapacitorState, C
 
 /** Electron platform utilities for desktop */
 export { isElectron, openBrowser, saveElectronState } from './services';
+
+// ===== Hooks =====
+
+/** Hook for making authenticated fetch requests with automatic token management */
+export { useFetch } from './hooks';

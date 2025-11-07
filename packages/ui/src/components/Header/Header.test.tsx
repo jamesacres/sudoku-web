@@ -5,13 +5,61 @@ import Header from './Header';
 // Mock next/dynamic to avoid SSR issues in tests
 jest.mock('next/dynamic', () => ({
   __esModule: true,
-  default: (fn: () => Promise<any>, _options: any) => {
-    const DynamicComponent = React.lazy(fn);
-    return (props: any) => (
-      <React.Suspense fallback={<div>Loading...</div>}>
-        <DynamicComponent {...props} />
-      </React.Suspense>
-    );
+  default: (importFn: any, _options: any) => {
+    const DynamicComponent = (props: any) => {
+      const [Component, setComponent] = React.useState<React.ComponentType<any> | null>(null);
+
+      React.useEffect(() => {
+        let isMounted = true;
+
+        const loadComponent = async () => {
+          try {
+            // Call the import function
+            let result = importFn();
+
+            // If it's a Promise, await it
+            if (result && typeof result.then === 'function') {
+              result = await result;
+            }
+
+            if (!isMounted) return;
+
+            // Extract the component
+            let component = result;
+            if (result && typeof result === 'object' && 'default' in result) {
+              component = result.default;
+            }
+
+            // Validate and set the component - use function form to store the component itself
+            if (typeof component === 'function') {
+              setComponent(() => component);
+            } else if (component && typeof component === 'object' && component.$$typeof) {
+              setComponent(() => component);
+            } else {
+              console.error('Dynamic import did not return a valid component:', component);
+            }
+          } catch (error) {
+            if (isMounted) {
+              console.error('Failed to load dynamic component:', error);
+            }
+          }
+        };
+
+        loadComponent();
+
+        return () => {
+          isMounted = false;
+        };
+      }, []);
+
+      if (!Component) {
+        return null;
+      }
+
+      return React.createElement(Component, props);
+    };
+
+    return DynamicComponent;
   },
 }));
 
@@ -29,19 +77,35 @@ jest.mock('../ThemeControls', () => {
 });
 
 jest.mock('../HeaderOnline', () => {
+  const DummyHeaderOnline = function DummyHeaderOnline() {
+    return <div data-testid="header-online">Header Online</div>;
+  };
   return {
     __esModule: true,
-    HeaderOnline: function DummyHeaderOnline() {
-      return <div data-testid="header-online">Header Online</div>;
+    default: DummyHeaderOnline,
+    HeaderOnline: DummyHeaderOnline,
+  };
+});
+
+jest.mock('@sudoku-web/auth', () => {
+  const actual = jest.requireActual('@sudoku-web/auth');
+  return {
+    ...actual,
+    HeaderUser: function DummyHeaderUser() {
+      return <div data-testid="header-user">Header User</div>;
     },
   };
 });
 
-jest.mock('@sudoku-web/auth', () => ({
-  ...jest.requireActual('@sudoku-web/auth'),
+jest.mock('@sudoku-web/auth/src/components', () => ({
+  __esModule: true,
   HeaderUser: function DummyHeaderUser() {
     return <div data-testid="header-user">Header User</div>;
   },
+  UserAvatar: () => <div data-testid="user-avatar">User Avatar</div>,
+  UserButton: () => <div data-testid="user-button">User Button</div>,
+  UserPanel: () => <div data-testid="user-panel">User Panel</div>,
+  DeleteAccountDialog: () => <div data-testid="delete-account">Delete Account</div>,
 }));
 
 describe('Header', () => {

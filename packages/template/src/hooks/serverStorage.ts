@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useContext, useRef } from 'react';
-import { useFetch } from './fetch';
+import { useFetch } from '@sudoku-web/auth';
 import { UserContext } from '../providers/UserProvider';
 import { StateType, UserProfile } from '@sudoku-web/types';
 import { useOnline } from './online';

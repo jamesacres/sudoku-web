@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react';
-import { useFetch } from './fetch';
-import FetchProvider from '../providers/FetchProvider';
+import { useFetch } from './useFetch';
+import { FetchProvider } from '../providers';
 import React, { ReactNode } from 'react';
 
 // Mock global fetch

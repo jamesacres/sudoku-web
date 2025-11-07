@@ -1,5 +1,6 @@
 'use client';
 import { getCapacitorState, isCapacitor, isElectron, openBrowser, pkce } from '../services';
+import { useFetch } from '../hooks/useFetch';
 import { UserProfile } from '../types/UserProfile';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
@@ -45,10 +46,9 @@ let isInitialising = false;
 
 interface AuthProviderProps {
   children: React.ReactNode;
-  useFetch: () => AuthFetchHook;
 }
 
-const AuthProvider: React.FC<AuthProviderProps> = ({ children, useFetch }) => {
+const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = React.useState<UserProfile | undefined>(undefined);
   const { fetch, getUser, logout, restoreState } = useFetch();
   const [isLoggingIn, setIsLoggingIn] = React.useState(false);

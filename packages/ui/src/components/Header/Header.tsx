@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic';
-const HeaderUser = dynamic(() => import('@sudoku-web/auth').then(mod => ({ default: mod.HeaderUser })), { ssr: false });
+const HeaderUser = dynamic(() => import('@sudoku-web/auth/src/components').then(mod => ({ default: mod.HeaderUser })), { ssr: false });
 const HeaderBack = dynamic(() => import('../HeaderBack'), { ssr: false });
 const HeaderOnline = dynamic(() => import('../HeaderOnline'), { ssr: false });
 

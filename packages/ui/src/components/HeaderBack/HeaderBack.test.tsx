@@ -26,22 +26,22 @@ describe('HeaderBack', () => {
   });
 
   describe('on home page', () => {
-    it('should render app name button on home page when provided', () => {
+    it('should render app name button on home page', () => {
       const { usePathname } = require('next/navigation');
       usePathname.mockReturnValue('/');
 
-      render(<HeaderBack appName="My App" homeTab="START" />);
+      render(<HeaderBack />);
 
-      expect(screen.getByText(/My App/)).toBeInTheDocument();
+      expect(screen.getByText(/Sudoku Race/)).toBeInTheDocument();
     });
 
     it('should have gradient text styling on app name button', () => {
       const { usePathname } = require('next/navigation');
       usePathname.mockReturnValue('/');
 
-      render(<HeaderBack appName="My App" />);
+      render(<HeaderBack />);
 
-      const button = screen.getByText(/My App/);
+      const button = screen.getByText(/Sudoku Race/);
       expect(button).toHaveClass('bg-gradient-to-r');
       expect(button).toHaveClass('from-blue-500');
       expect(button).toHaveClass('via-purple-500');
@@ -50,13 +50,13 @@ describe('HeaderBack', () => {
       expect(button).toHaveClass('text-transparent');
     });
 
-    it('should call router.replace with homeTab when button clicked', async () => {
+    it('should call router.replace with START_PUZZLE when button clicked', async () => {
       const { usePathname } = require('next/navigation');
       usePathname.mockReturnValue('/');
 
-      render(<HeaderBack appName="My App" homeTab="START_PUZZLE" />);
+      render(<HeaderBack />);
 
-      const button = screen.getByText(/My App/);
+      const button = screen.getByText(/Sudoku Race/);
       fireEvent.click(button);
 
       await waitFor(() => {
@@ -68,9 +68,9 @@ describe('HeaderBack', () => {
       const { usePathname } = require('next/navigation');
       usePathname.mockReturnValue('/');
 
-      render(<HeaderBack appName="My App" />);
+      render(<HeaderBack />);
 
-      const button = screen.getByText(/My App/);
+      const button = screen.getByText(/Sudoku Race/);
       expect(button).toHaveClass('cursor-pointer');
     });
 
@@ -78,9 +78,9 @@ describe('HeaderBack', () => {
       const { usePathname } = require('next/navigation');
       usePathname.mockReturnValue('/');
 
-      render(<HeaderBack appName="My App" />);
+      render(<HeaderBack />);
 
-      const button = screen.getByText(/My App/);
+      const button = screen.getByText(/Sudoku Race/);
       expect(button).toHaveClass('active:opacity-70');
     });
 
@@ -88,9 +88,9 @@ describe('HeaderBack', () => {
       const { usePathname } = require('next/navigation');
       usePathname.mockReturnValue('/');
 
-      render(<HeaderBack appName="My App" />);
+      render(<HeaderBack />);
 
-      const button = screen.getByText(/My App/);
+      const button = screen.getByText(/Sudoku Race/);
       expect(button).toHaveClass('font-semibold');
       expect(button).toHaveClass('text-sm');
     });
@@ -99,9 +99,9 @@ describe('HeaderBack', () => {
       const { usePathname } = require('next/navigation');
       usePathname.mockReturnValue('/');
 
-      render(<HeaderBack appName="My App" />);
+      render(<HeaderBack />);
 
-      const button = screen.getByText(/My App/);
+      const button = screen.getByText(/Sudoku Race/);
       expect(button).toHaveClass('transition-opacity');
     });
 
@@ -109,9 +109,9 @@ describe('HeaderBack', () => {
       const { usePathname } = require('next/navigation');
       usePathname.mockReturnValue('/');
 
-      render(<HeaderBack appName="My App" />);
+      render(<HeaderBack />);
 
-      const flexContainer = screen.getByText(/My App/).closest('div');
+      const flexContainer = screen.getByText(/Sudoku Race/).closest('div');
       expect(flexContainer).toHaveClass('flex');
       expect(flexContainer).toHaveClass('items-center');
     });
@@ -131,9 +131,9 @@ describe('HeaderBack', () => {
       const { usePathname } = require('next/navigation');
       usePathname.mockReturnValue('/puzzle');
 
-      render(<HeaderBack appName="My App" />);
+      render(<HeaderBack />);
 
-      expect(screen.queryByText(/My App/)).not.toBeInTheDocument();
+      expect(screen.queryByText(/Sudoku Race/)).not.toBeInTheDocument();
     });
 
     it('should render chevron left icon on non-home pages', () => {
@@ -369,9 +369,9 @@ describe('HeaderBack', () => {
       const { usePathname } = require('next/navigation');
       usePathname.mockReturnValue('/');
 
-      render(<HeaderBack appName="My App" />);
+      render(<HeaderBack />);
 
-      expect(screen.getByText(/My App/)).toBeInTheDocument();
+      expect(screen.getByText(/Sudoku Race/)).toBeInTheDocument();
       expect(screen.queryByText(/Back/)).not.toBeInTheDocument();
     });
 
@@ -391,7 +391,7 @@ describe('HeaderBack', () => {
       const { usePathname } = require('next/navigation');
       usePathname.mockReturnValue('/');
 
-      const { container } = render(<HeaderBack appName="My App" />);
+      const { container } = render(<HeaderBack />);
 
       const flexContainer = container.querySelector('.flex');
       expect(flexContainer).toBeInTheDocument();

@@ -5,6 +5,7 @@ import AuthProvider, {
   UserContext,
   UserContextInterface,
 } from './AuthProvider';
+import FetchProvider from './FetchProvider';
 
 // Mock dependencies
 jest.mock('next/navigation', () => ({
@@ -33,13 +34,6 @@ jest.mock('../services/pkce', () => ({
   ),
 }));
 
-const mockUseFetch = jest.fn(() => ({
-  fetch: jest.fn(),
-  getUser: jest.fn(() => undefined),
-  logout: jest.fn(),
-  restoreState: jest.fn(() => Promise.resolve(undefined)),
-}));
-
 jest.mock('@capacitor/browser', () => ({
   Browser: {
     open: jest.fn(),
@@ -47,6 +41,12 @@ jest.mock('@capacitor/browser', () => ({
     removeAllListeners: jest.fn(),
   },
 }));
+
+const Wrapper = ({ children }: { children: React.ReactNode }) => (
+  <FetchProvider>
+    <AuthProvider>{children}</AuthProvider>
+  </FetchProvider>
+);
 
 describe('AuthProvider', () => {
   beforeEach(() => {
@@ -57,9 +57,9 @@ describe('AuthProvider', () => {
   describe('provider setup', () => {
     it('should render children', () => {
       render(
-        <AuthProvider useFetch={mockUseFetch}>
+        <Wrapper>
           <div>Test Content</div>
-        </AuthProvider>
+        </Wrapper>
       );
 
       expect(screen.getByText('Test Content')).toBeInTheDocument();
@@ -74,9 +74,9 @@ describe('AuthProvider', () => {
       };
 
       render(
-        <AuthProvider useFetch={mockUseFetch}>
+        <Wrapper>
           <TestComponent />
-        </AuthProvider>
+        </Wrapper>
       );
 
       await waitFor(() => {
@@ -96,9 +96,9 @@ describe('AuthProvider', () => {
       };
 
       render(
-        <AuthProvider useFetch={mockUseFetch}>
+        <Wrapper>
           <TestComponent />
-        </AuthProvider>
+        </Wrapper>
       );
 
       await waitFor(() => {
@@ -116,9 +116,9 @@ describe('AuthProvider', () => {
       };
 
       render(
-        <AuthProvider useFetch={mockUseFetch}>
+        <Wrapper>
           <TestComponent />
-        </AuthProvider>
+        </Wrapper>
       );
 
       await waitFor(() => {
@@ -135,9 +135,9 @@ describe('AuthProvider', () => {
       };
 
       render(
-        <AuthProvider useFetch={mockUseFetch}>
+        <Wrapper>
           <TestComponent />
-        </AuthProvider>
+        </Wrapper>
       );
 
       await waitFor(() => {
@@ -162,9 +162,9 @@ describe('AuthProvider', () => {
       };
 
       render(
-        <AuthProvider useFetch={mockUseFetch}>
+        <Wrapper>
           <TestComponent />
-        </AuthProvider>
+        </Wrapper>
       );
 
       await waitFor(() => {
@@ -188,9 +188,9 @@ describe('AuthProvider', () => {
       };
 
       render(
-        <AuthProvider useFetch={mockUseFetch}>
+        <Wrapper>
           <TestComponent />
-        </AuthProvider>
+        </Wrapper>
       );
 
       await waitFor(() => {
@@ -216,9 +216,9 @@ describe('AuthProvider', () => {
       };
 
       render(
-        <AuthProvider useFetch={mockUseFetch}>
+        <Wrapper>
           <TestComponent />
-        </AuthProvider>
+        </Wrapper>
       );
 
       await waitFor(() => {
@@ -244,9 +244,9 @@ describe('AuthProvider', () => {
       };
 
       render(
-        <AuthProvider useFetch={mockUseFetch}>
+        <Wrapper>
           <TestComponent />
-        </AuthProvider>
+        </Wrapper>
       );
 
       await waitFor(() => {
@@ -276,9 +276,9 @@ describe('AuthProvider', () => {
       };
 
       render(
-        <AuthProvider useFetch={mockUseFetch}>
+        <Wrapper>
           <TestComponent />
-        </AuthProvider>
+        </Wrapper>
       );
 
       await waitFor(() => {
@@ -304,9 +304,9 @@ describe('AuthProvider', () => {
       };
 
       render(
-        <AuthProvider useFetch={mockUseFetch}>
+        <Wrapper>
           <TestComponent />
-        </AuthProvider>
+        </Wrapper>
       );
 
       await waitFor(() => {
@@ -332,9 +332,9 @@ describe('AuthProvider', () => {
       };
 
       render(
-        <AuthProvider useFetch={mockUseFetch}>
+        <Wrapper>
           <TestComponent />
-        </AuthProvider>
+        </Wrapper>
       );
 
       await waitFor(() => {
@@ -355,9 +355,9 @@ describe('AuthProvider', () => {
       };
 
       render(
-        <AuthProvider useFetch={mockUseFetch}>
+        <Wrapper>
           <TestComponent />
-        </AuthProvider>
+        </Wrapper>
       );
 
       await waitFor(() => {
@@ -383,9 +383,9 @@ describe('AuthProvider', () => {
       };
 
       render(
-        <AuthProvider useFetch={mockUseFetch}>
+        <Wrapper>
           <TestComponent />
-        </AuthProvider>
+        </Wrapper>
       );
 
       await waitFor(() => {
@@ -406,9 +406,9 @@ describe('AuthProvider', () => {
       };
 
       render(
-        <AuthProvider useFetch={mockUseFetch}>
+        <Wrapper>
           <TestComponent />
-        </AuthProvider>
+        </Wrapper>
       );
 
       await waitFor(() => {
@@ -426,9 +426,9 @@ describe('AuthProvider', () => {
       };
 
       render(
-        <AuthProvider useFetch={mockUseFetch}>
+        <Wrapper>
           <TestComponent />
-        </AuthProvider>
+        </Wrapper>
       );
 
       await waitFor(() => {
@@ -446,9 +446,9 @@ describe('AuthProvider', () => {
       };
 
       render(
-        <AuthProvider useFetch={mockUseFetch}>
+        <Wrapper>
           <TestComponent />
-        </AuthProvider>
+        </Wrapper>
       );
 
       await waitFor(() => {
@@ -466,9 +466,9 @@ describe('AuthProvider', () => {
       };
 
       render(
-        <AuthProvider useFetch={mockUseFetch}>
+        <Wrapper>
           <TestComponent />
-        </AuthProvider>
+        </Wrapper>
       );
 
       await waitFor(() => {
@@ -488,9 +488,9 @@ describe('AuthProvider', () => {
       };
 
       render(
-        <AuthProvider useFetch={mockUseFetch}>
+        <Wrapper>
           <TestComponent />
-        </AuthProvider>
+        </Wrapper>
       );
 
       // The provider should eventually set isInitialised
@@ -513,9 +513,9 @@ describe('AuthProvider', () => {
       };
 
       render(
-        <AuthProvider useFetch={mockUseFetch}>
+        <Wrapper>
           <TestComponent />
-        </AuthProvider>
+        </Wrapper>
       );
 
       await waitFor(() => {
@@ -533,9 +533,9 @@ describe('AuthProvider', () => {
       };
 
       render(
-        <AuthProvider useFetch={mockUseFetch}>
+        <Wrapper>
           <TestComponent />
-        </AuthProvider>
+        </Wrapper>
       );
 
       await waitFor(() => {
@@ -553,9 +553,9 @@ describe('AuthProvider', () => {
 
       expect(() => {
         render(
-          <AuthProvider useFetch={mockUseFetch}>
+          <Wrapper>
             <TestComponent />
-          </AuthProvider>
+          </Wrapper>
         );
       }).not.toThrow();
     });
@@ -572,9 +572,9 @@ describe('AuthProvider', () => {
       };
 
       render(
-        <AuthProvider useFetch={mockUseFetch}>
+        <Wrapper>
           <TestComponent />
-        </AuthProvider>
+        </Wrapper>
       );
 
       await waitFor(() => {
@@ -611,12 +611,12 @@ describe('AuthProvider', () => {
 
       const { container } = render(
         <>
-          <AuthProvider useFetch={mockUseFetch}>
+          <Wrapper>
             <TestComponent id={1} />
-          </AuthProvider>
-          <AuthProvider useFetch={mockUseFetch}>
+          </Wrapper>
+          <Wrapper>
             <TestComponent id={2} />
-          </AuthProvider>
+          </Wrapper>
         </>
       );
 
@@ -632,9 +632,9 @@ describe('AuthProvider', () => {
       };
 
       const { unmount } = render(
-        <AuthProvider useFetch={mockUseFetch}>
+        <Wrapper>
           <TestComponent />
-        </AuthProvider>
+        </Wrapper>
       );
 
       await waitFor(() => {
@@ -646,9 +646,9 @@ describe('AuthProvider', () => {
       context = undefined;
 
       render(
-        <AuthProvider useFetch={mockUseFetch}>
+        <Wrapper>
           <TestComponent />
-        </AuthProvider>
+        </Wrapper>
       );
 
       await waitFor(() => {

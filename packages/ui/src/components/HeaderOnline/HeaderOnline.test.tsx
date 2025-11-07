@@ -1,7 +1,13 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { HeaderOnline } from './index';
+import HeaderOnline from './HeaderOnline';
 import { useOnline } from '@sudoku-web/template';
+
+// Mock react-feather icons
+jest.mock('react-feather', () => ({
+  Wifi: ({ className }: any) => <div data-testid="wifi-icon" className={className} />,
+  WifiOff: ({ className }: any) => <div data-testid="wifi-off-icon" className={className} />,
+}));
 
 // Mock the useOnline hook
 jest.mock('@sudoku-web/template', () => ({

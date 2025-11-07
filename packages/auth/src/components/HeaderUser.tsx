@@ -20,7 +20,7 @@ const HeaderUser: React.FC<HeaderUserDependencies> = ({ isOnline = true }) => {
       <button
         disabled={isLoggingIn}
         onClick={() => loginRedirect && loginRedirect({ userInitiated: true })}
-        className={`${isLoggingIn ? 'cursor-wait' : ''} bg-theme-primary disabled:bg-theme-primary-lighter mx-1 inline-block rounded-full px-4 py-1.5 text-sm font-medium text-white transition-opacity active:opacity-70`}
+        className={`${isLoggingIn ? 'cursor-wait' : 'cursor-pointer'} bg-theme-primary disabled:bg-theme-primary-lighter mx-1 inline-block rounded-full px-4 py-1.5 text-sm font-medium text-white transition-opacity active:opacity-70`}
       >
         Sign in
       </button>

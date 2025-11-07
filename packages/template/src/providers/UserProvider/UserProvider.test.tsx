@@ -34,15 +34,6 @@ jest.mock('@sudoku-web/auth', () => ({
   ),
 }));
 
-jest.mock('../../hooks/fetch', () => ({
-  useFetch: jest.fn(() => ({
-    fetch: jest.fn(),
-    getUser: jest.fn(() => undefined),
-    logout: jest.fn(),
-    restoreState: jest.fn(() => Promise.resolve(undefined)),
-  })),
-}));
-
 jest.mock('@capacitor/browser', () => ({
   Browser: {
     open: jest.fn(),
