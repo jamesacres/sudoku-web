@@ -6,10 +6,28 @@ const nextConfig =
         images: {
           unoptimized: true,
         },
+        experimental: {
+          turbo: {
+            rules: {
+              '*.css': {
+                loaders: ['@tailwindcss/postcss'],
+              },
+            },
+          },
+        },
       }
     : {
         images: {
           unoptimized: true,
+        },
+        experimental: {
+          turbo: {
+            rules: {
+              '*.css': {
+                loaders: ['@tailwindcss/postcss'],
+              },
+            },
+          },
         },
       };
 
