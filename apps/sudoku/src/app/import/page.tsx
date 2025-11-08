@@ -8,8 +8,8 @@ import type {
 } from '../../augmentedReality/Processor';
 import type Processor from '../../augmentedReality/Processor';
 import { useRouter } from 'next/navigation';
-import { SimpleSudoku } from '@sudoku-web/sudoku';
-import { emptyPuzzle } from '@sudoku-web/sudoku';
+import SimpleSudoku from '@sudoku-web/sudoku/components/SimpleSudoku';
+import { emptyPuzzle } from '@sudoku-web/sudoku/types/puzzle';
 import { buildPuzzleUrl } from '@/helpers/buildPuzzleUrl';
 
 let processor: Processor | undefined;

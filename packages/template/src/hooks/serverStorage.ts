@@ -1,9 +1,13 @@
 'use client';
 
 import { useCallback, useContext, useRef } from 'react';
-import { useFetch } from '@sudoku-web/auth';
-import { UserContext } from '../providers/UserProvider';
-import { StateType, UserProfile } from '@sudoku-web/types';
+import { useFetch } from '@sudoku-web/auth/hooks/useFetch';
+import {
+  UserContext,
+  UserContextInterface,
+} from '@sudoku-web/auth/providers/AuthProvider';
+import { StateType } from '@sudoku-web/types/stateType';
+import { UserProfile } from '@sudoku-web/types/userProfile';
 import { useOnline } from './online';
 import {
   MemberResponse,
@@ -30,16 +34,22 @@ const responseToResult = <T>(
     parties: response.parties
       ? Object.entries(response.parties).reduce(
           (result, [partyId, partyResponse]) => {
+            if (!partyResponse || !partyResponse.memberSessions) {
+              return result;
+            }
             return {
               ...result,
               [partyId]: {
                 memberSessions: Object.entries(
-                  partyResponse!.memberSessions
+                  partyResponse.memberSessions
                 ).reduce((result, [userId, memberSessionResponse]) => {
+                  if (!memberSessionResponse) {
+                    return result;
+                  }
                   const memberSessionResult: Session<T> = {
                     sessionId: response.sessionId,
-                    state: memberSessionResponse!.state,
-                    updatedAt: new Date(memberSessionResponse!.updatedAt),
+                    state: memberSessionResponse.state,
+                    updatedAt: new Date(memberSessionResponse.updatedAt),
                   };
                   return {
                     ...result,
@@ -94,7 +104,8 @@ function useServerStorage({
     id: initialId,
     type: initialType,
   });
-  const { user, logout } = useContext(UserContext) || {};
+  const context = useContext(UserContext) as UserContextInterface | undefined;
+  const { user, logout } = context || {};
   const { fetch, getUser } = useFetch();
   const { isOnline } = useOnline();
 
@@ -243,7 +254,7 @@ function useServerStorage({
               memberResponse.ok &&
               <MemberResponse[]>await memberResponse.json();
             const members = membersResponse
-              ? membersResponse.map((member) =>
+              ? membersResponse.map((member: MemberResponse) =>
                   memberResponseToResult(member, user, party.createdBy)
                 )
               : [];
@@ -508,7 +519,11 @@ function useServerStorage({
   );
 
   const getSudokuOfTheDay = useCallback(
-    async (difficulty?: Difficulty): Promise<{ initial: string; final: string; sudokuId: string } | undefined> => {
+    async (
+      difficulty?: Difficulty
+    ): Promise<
+      { initial: string; final: string; sudokuId: string } | undefined
+    > => {
       if (isOnline) {
         try {
           console.info('fetching sudoku of the day');

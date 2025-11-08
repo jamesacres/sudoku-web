@@ -1,14 +1,17 @@
 'use client';
+import { useServerStorage } from '@sudoku-web/template/hooks/serverStorage';
 import {
-  useServerStorage,
   UserContext,
-  RevenueCatContext,
-  SubscriptionContext,
-  PremiumFeatures,
+  UserContextInterface,
+} from '@sudoku-web/auth/providers/AuthProvider';
+import { RevenueCatContext } from '@sudoku-web/template/providers/RevenueCatProvider';
+import { SubscriptionContext } from '@sudoku-web/types/subscriptionContext';
+import { PremiumFeatures } from '@sudoku-web/template/components/PremiumFeatures';
+import {
   PublicInvite,
   EntitlementDuration,
-} from '@sudoku-web/template';
-import { useParties } from '@sudoku-web/sudoku';
+} from '@sudoku-web/template/types/serverTypes';
+import { useParties } from '@sudoku-web/sudoku/hooks/useParties';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useCallback, useContext, useEffect, useState } from 'react';
 import { Loader, Users, Star } from 'react-feather';
@@ -19,7 +22,8 @@ function InviteComponent() {
   const inviteId = searchParams.get('inviteId');
 
   const router = useRouter();
-  const { isLoggingIn, user, loginRedirect } = useContext(UserContext) || {};
+  const context = useContext(UserContext) as UserContextInterface | undefined;
+  const { isLoggingIn, user, loginRedirect } = context || {};
   const { isSubscribed, subscribeModal, refreshEntitlements } =
     useContext(RevenueCatContext) || {};
   const { getPublicInvite, createMember } = useServerStorage({});
@@ -181,6 +185,7 @@ function InviteComponent() {
           const isNowMember = refreshedParties?.some(
             (party) =>
               party.partyId === partyId &&
+              party.members &&
               party.members.some((member) => member.isUser)
           );
 

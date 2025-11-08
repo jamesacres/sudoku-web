@@ -1,19 +1,20 @@
 'use client';
+import { useOnline } from '@sudoku-web/template/hooks/online';
+import { useServerStorage } from '@sudoku-web/template/hooks/serverStorage';
 import {
-  useOnline,
-  useServerStorage,
   UserContext,
-  useSessions,
-  Tab,
-  SocialProof,
-  PremiumFeatures,
-  Difficulty,
-} from '@sudoku-web/template';
-import { Footer } from '@sudoku-web/ui';
-import MyPuzzlesTab from '@/components/tabs/MyPuzzlesTab';
-import FriendsTab from '@/components/tabs/FriendsTab';
+  UserContextInterface,
+} from '@sudoku-web/auth/providers/AuthProvider';
+import { useSessions } from '@sudoku-web/template/providers/SessionsProvider';
+import { Tab } from '@sudoku-web/template/types/tabs';
+import SocialProof from '@sudoku-web/template/components/SocialProof';
+import { PremiumFeatures } from '@sudoku-web/template/components/PremiumFeatures';
+import { Difficulty } from '@sudoku-web/template/types/serverTypes';
+import Footer from '@sudoku-web/ui/components/Footer';
+import MyPuzzlesTab from '@/components/MyPuzzlesTab';
+import FriendsTab from '@/components/FriendsTab';
 import ActivityWidget from '@/components/ActivityWidget';
-import { useParties } from '@sudoku-web/sudoku';
+import { useParties } from '@sudoku-web/sudoku/hooks/useParties';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
   Suspense,
@@ -26,7 +27,7 @@ import {
 import { Users, Zap, Award, Camera } from 'react-feather';
 import Link from 'next/link';
 import Image from 'next/image';
-import { BookCover } from '@/components/BookCovers';
+import BookCover from '@/components/BookCover';
 import { buildPuzzleUrl } from '@/helpers/buildPuzzleUrl';
 
 function HomeComponent() {
@@ -39,7 +40,8 @@ function HomeComponent() {
     setTab(tabFromUrl);
   }, [searchParams]);
   const router = useRouter();
-  const { user, loginRedirect } = useContext(UserContext) || {};
+  const context = useContext(UserContext) as UserContextInterface | undefined;
+  const { user, loginRedirect } = context || {};
   useOnline();
   const [isLoading, setIsLoading] = useState(false);
   const { getSudokuOfTheDay } = useServerStorage();
@@ -70,11 +72,11 @@ function HomeComponent() {
     new Set(
       parties
         ?.map(({ members }) =>
-          members
+          (members || [])
             .filter(({ userId }) => userId !== user?.sub)
             .map(({ memberNickname }) => memberNickname)
         )
-        .flat()
+        .flat() || []
     )
   );
 

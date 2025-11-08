@@ -16,22 +16,34 @@ import {
   ServerState,
   SetAnswer,
 } from '../types/state';
-import { useLocalStorage, useServerStorage } from '@sudoku-web/template';
+import { useLocalStorage } from '@sudoku-web/template/hooks/localStorage';
+import { useServerStorage } from '@sudoku-web/template/hooks/serverStorage';
 import { checkCell, checkGrid } from '../helpers/checkAnswer';
-import { StateType } from '@sudoku-web/types';
+import { StateType } from '@sudoku-web/types/stateType';
 import { useTimer } from './timer';
-import { calculateSeconds } from '@sudoku-web/template';
-import { Parties, ServerStateResult, Session } from '@sudoku-web/template';
-import { UserContext, RevenueCatContext } from '@sudoku-web/template';
+import { calculateSeconds } from '@sudoku-web/template/helpers/calculateSeconds';
+import {
+  Parties,
+  ServerStateResult,
+  Session,
+} from '@sudoku-web/template/types/serverTypes';
+import {
+  UserContext,
+  UserContextInterface,
+} from '@sudoku-web/auth/providers/AuthProvider';
+import { RevenueCatContext } from '@sudoku-web/template/providers/RevenueCatProvider';
 import {
   canUseUndo,
   canUseCheckGrid,
+} from '@sudoku-web/template/utils/dailyActionCounter';
+import {
   incrementUndoCount,
   incrementCheckGridCount,
-} from '@sudoku-web/template';
-import { useDocumentVisibility, useSessions } from '@sudoku-web/template';
+} from '@sudoku-web/template/utils/dailyActionCounter';
+import { useDocumentVisibility } from '@sudoku-web/template/hooks/documentVisibility';
+import { useSessions } from '@sudoku-web/template/providers/SessionsProvider';
 import { useParties } from './useParties';
-import type { SubscriptionContext as SubscriptionContextType } from '@sudoku-web/types';
+import type { SubscriptionContext as SubscriptionContextType } from '@sudoku-web/types/subscriptionContext';
 
 const INACTIVITY_MS = 5 * 60 * 1000; // 5 minutes in milliseconds
 
@@ -46,7 +58,8 @@ function useGameState({
   puzzleId: string;
   metadata: Partial<GameStateMetadata>;
 }) {
-  const { user } = useContext(UserContext) || {};
+  const context = useContext(UserContext) as UserContextInterface | undefined;
+  const { user } = context || {};
   const { subscribeModal, isSubscribed } = useContext(RevenueCatContext) || {};
   const isDocumentVisible = useDocumentVisibility();
 

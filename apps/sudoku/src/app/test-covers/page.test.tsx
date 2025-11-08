@@ -3,9 +3,10 @@ import { render, screen } from '@testing-library/react';
 import TestCoversPage from './page';
 
 // Mock the BookCover component
-jest.mock('@/components/BookCovers', () => {
+jest.mock('@/components/BookCover', () => {
   return {
-    BookCover: ({ month, size }: { month: string; size: string }) => (
+    __esModule: true,
+    default: ({ month, size }: { month: string; size: string }) => (
       <div data-testid={`book-cover-${month}`} data-size={size}>
         {month} Cover
       </div>

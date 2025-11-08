@@ -29,9 +29,9 @@ jest.mock('next/script', () => {
   };
 });
 
-jest.mock('@sudoku-web/sudoku', () => ({
-  ...jest.requireActual('@sudoku-web/sudoku'),
-  SimpleSudoku: function MockSimpleSudoku({
+jest.mock('@sudoku-web/sudoku/components/SimpleSudoku', () => ({
+  __esModule: true,
+  default: function MockSimpleSudoku({
     transparent,
   }: {
     final?: any;
@@ -45,9 +45,20 @@ jest.mock('@sudoku-web/sudoku', () => ({
       </div>
     );
   },
-  emptyPuzzle: Array(9)
-    .fill(null)
-    .map(() => Array(9).fill(0)),
+}));
+
+jest.mock('@sudoku-web/sudoku/types/puzzle', () => ({
+  emptyPuzzle: {
+    0: { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0 },
+    1: { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0 },
+    2: { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0 },
+    3: { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0 },
+    4: { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0 },
+    5: { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0 },
+    6: { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0 },
+    7: { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0 },
+    8: { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0 },
+  },
 }));
 
 jest.mock('@/helpers/buildPuzzleUrl', () => ({

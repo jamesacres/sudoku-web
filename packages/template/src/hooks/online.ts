@@ -1,6 +1,6 @@
 'use client';
 import { useCallback, useContext, useEffect, useState } from 'react';
-import { GlobalStateContext } from '../providers/GlobalStateProvider/GlobalStateProvider';
+import { GlobalStateContext } from '../providers/GlobalStateProvider';
 
 function useOnline() {
   const [globalState, setGlobalState] = useContext(GlobalStateContext)!;

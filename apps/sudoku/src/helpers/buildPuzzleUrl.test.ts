@@ -1,6 +1,6 @@
 import { describe, it, expect } from '@jest/globals';
 import { buildPuzzleUrl } from './buildPuzzleUrl';
-import { GameStateMetadata } from '@sudoku-web/sudoku';
+import { GameStateMetadata } from '@sudoku-web/sudoku/types/state';
 
 describe('buildPuzzleUrl', () => {
   describe('basic functionality', () => {

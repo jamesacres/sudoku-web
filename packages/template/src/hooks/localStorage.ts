@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback } from 'react';
-import { StateType } from '@sudoku-web/types';
+import { StateType } from '@sudoku-web/types/stateType';
 
 export interface StateResult<T> {
   lastUpdated: number;
@@ -36,6 +36,10 @@ function useLocalStorage({
     sessionId: string;
   })[] => {
     const oneMonthAgo = new Date().getTime() - 32 * 24 * 60 * 60 * 1000;
+
+    if (typeof localStorage === 'undefined') {
+      return [];
+    }
 
     return Object.entries(localStorage)
       .filter(([key]) => {
@@ -108,30 +112,32 @@ function useLocalStorage({
             // Remove old puzzle data (older than 3 days)
             let removedOldPuzzles = false;
             const threeDaysAgo = new Date().getTime() - 3 * 24 * 60 * 60 * 1000;
-            Object.keys(localStorage).forEach((key) => {
-              if (key.startsWith(prefix)) {
-                try {
-                  const item = localStorage.getItem(key);
-                  if (item) {
-                    const parsed = JSON.parse(item);
-                    if (
-                      parsed.lastUpdated &&
-                      parsed.lastUpdated < threeDaysAgo
-                    ) {
-                      console.log('Removing old item:', key);
-                      localStorage.removeItem(key);
-                      removedOldPuzzles = true;
+            if (typeof localStorage !== 'undefined') {
+              Object.keys(localStorage).forEach((key) => {
+                if (key.startsWith(prefix)) {
+                  try {
+                    const item = localStorage.getItem(key);
+                    if (item) {
+                      const parsed = JSON.parse(item);
+                      if (
+                        parsed.lastUpdated &&
+                        parsed.lastUpdated < threeDaysAgo
+                      ) {
+                        console.log('Removing old item:', key);
+                        localStorage.removeItem(key);
+                        removedOldPuzzles = true;
+                      }
                     }
+                  } catch {
+                    // If we can't parse it, remove it
+                    console.log('Removing corrupted item:', key);
+                    localStorage.removeItem(key);
                   }
-                } catch {
-                  // If we can't parse it, remove it
-                  console.log('Removing corrupted item:', key);
-                  localStorage.removeItem(key);
                 }
-              }
-            });
+              });
+            }
 
-            if (!removedOldPuzzles) {
+            if (!removedOldPuzzles && typeof localStorage !== 'undefined') {
               // If still not enough space, remove oldest 50% of remaining items
               const items: Array<{ key: string; lastUpdated: number }> = [];
               Object.keys(localStorage).forEach((key) => {

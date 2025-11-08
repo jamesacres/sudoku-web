@@ -1,5 +1,7 @@
 'use client';
-import { getCapacitorState, isCapacitor, isElectron, openBrowser, pkce } from '../services';
+import { getCapacitorState, isCapacitor } from '../services/capacitor';
+import { isElectron, openBrowser } from '../services/electron';
+import { pkce } from '../services/pkce';
 import { useFetch } from '../hooks/useFetch';
 import { UserProfile } from '../types/UserProfile';
 import { useRouter } from 'next/navigation';

@@ -1,7 +1,10 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import AuthPage from './page';
-import { UserContext, UserContextInterface } from '@sudoku-web/template';
+import {
+  UserContext,
+  UserContextInterface,
+} from '@sudoku-web/auth/providers/AuthProvider';
 
 // Mock console methods
 const originalConsoleInfo = console.info;

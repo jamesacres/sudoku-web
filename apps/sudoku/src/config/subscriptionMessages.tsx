@@ -1,6 +1,6 @@
 import React from 'react';
-import { SubscriptionContext } from '@sudoku-web/types';
-import { DAILY_LIMITS } from '@sudoku-web/template';
+import { SubscriptionContext } from '@sudoku-web/types/subscriptionContext';
+import { DAILY_LIMITS } from '@sudoku-web/template/config/dailyLimits';
 
 /**
  * Interface for subscription context message configuration

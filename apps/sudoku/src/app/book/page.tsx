@@ -1,28 +1,32 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { ArrowUp } from 'react-feather';
-import { BookCover } from '@/components/BookCovers';
+import BookCover from '@/components/BookCover';
 import { useContext, useEffect, useState, useCallback } from 'react';
 import {
   UserContext,
-  useOnline,
-  useSessions,
+  UserContextInterface,
+} from '@sudoku-web/auth/providers/AuthProvider';
+import { useOnline } from '@sudoku-web/template/hooks/online';
+import { useSessions } from '@sudoku-web/template/providers/SessionsProvider';
+import {
   SudokuBookPuzzle,
   ServerStateResult,
-} from '@sudoku-web/template';
+} from '@sudoku-web/template/types/serverTypes';
 import {
-  useBook,
   puzzleTextToPuzzle,
   puzzleToPuzzleText,
-  ServerState,
-  useParties,
-} from '@sudoku-web/sudoku';
+} from '@sudoku-web/sudoku/helpers/puzzleTextToPuzzle';
+import { ServerState } from '@sudoku-web/sudoku/types/state';
+import { useParties } from '@sudoku-web/sudoku/hooks/useParties';
+import { useBook } from '@sudoku-web/sudoku/providers/BookProvider';
 import IntegratedSessionRow from '@/components/IntegratedSessionRow';
 import { sha256 } from '@/helpers/sha256';
 
 export default function BookPage() {
   const router = useRouter();
-  const { user, loginRedirect } = useContext(UserContext) || {};
+  const context = useContext(UserContext) as UserContextInterface | undefined;
+  const { user, loginRedirect } = context || {};
   const {
     bookData,
     isLoading: bookLoading,
@@ -234,31 +238,44 @@ export default function BookPage() {
                   {/* Progress Stats */}
                   <div className="rounded-full bg-white/20 px-3 py-1 text-sm backdrop-blur-sm">
                     📊{' '}
-                    {sessions
-                      ?.filter((s) =>
-                        bookData.puzzles.some(
-                          (p) =>
-                            puzzleToPuzzleText(s.state.initial) ===
-                            puzzleToPuzzleText(puzzleTextToPuzzle(p.initial))
-                        )
-                      )
-                      .filter((s) => s.state.completed).length || 0}{' '}
+                    {
+                      (
+                        sessions
+                          ?.filter((s) =>
+                            bookData.puzzles.some(
+                              (p) =>
+                                puzzleToPuzzleText(s.state.initial) ===
+                                puzzleToPuzzleText(
+                                  puzzleTextToPuzzle(p.initial)
+                                )
+                            )
+                          )
+                          .filter((s) => s.state.completed) || []
+                      ).length
+                    }{' '}
                     completed
                   </div>
                   <div className="rounded-full bg-white/20 px-3 py-1 text-sm backdrop-blur-sm">
                     🎯{' '}
-                    {sessions
-                      ?.filter((s) =>
-                        bookData.puzzles.some(
-                          (p) =>
-                            puzzleToPuzzleText(s.state.initial) ===
-                            puzzleToPuzzleText(puzzleTextToPuzzle(p.initial))
-                        )
-                      )
-                      .filter(
-                        (s) =>
-                          !s.state.completed && s.state.answerStack.length > 1
-                      ).length || 0}{' '}
+                    {
+                      (
+                        sessions
+                          ?.filter((s) =>
+                            bookData.puzzles.some(
+                              (p) =>
+                                puzzleToPuzzleText(s.state.initial) ===
+                                puzzleToPuzzleText(
+                                  puzzleTextToPuzzle(p.initial)
+                                )
+                            )
+                          )
+                          .filter(
+                            (s) =>
+                              !s.state.completed &&
+                              s.state.answerStack.length > 1
+                          ) || []
+                      ).length
+                    }{' '}
                     in progress
                   </div>
                 </div>

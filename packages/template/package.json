@@ -4,6 +4,18 @@
   "private": true,
   "main": "./src/index.ts",
   "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./components/*": "./src/components/*.tsx",
+    "./providers/*": "./src/providers/*.tsx",
+    "./hooks/*": "./src/hooks/*.ts",
+    "./helpers/*": "./src/helpers/*.ts",
+    "./config/*": "./src/config/*.ts",
+    "./config/premiumFeatures": "./src/config/premiumFeatures.tsx",
+    "./services/*": "./src/services/*.ts",
+    "./types/*": "./src/types/*.ts",
+    "./utils/*": "./src/utils/*.ts"
+  },
   "scripts": {
     "build": "echo 'Template package is pure TypeScript - no compilation needed'",
     "type-check": "tsc --noEmit",

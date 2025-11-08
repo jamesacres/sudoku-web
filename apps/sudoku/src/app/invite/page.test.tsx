@@ -3,19 +3,27 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Suspense } from 'react';
 import Invite from './page';
-import * as serverStorageHook from '@sudoku-web/template';
-import * as usePartiesHook from '@sudoku-web/sudoku';
-import { UserContext, UserContextInterface } from '@sudoku-web/template';
+import * as serverStorageHook from '@sudoku-web/template/hooks/serverStorage';
+import * as usePartiesHook from '@sudoku-web/sudoku/hooks/useParties';
+import {
+  UserContext,
+  UserContextInterface,
+} from '@sudoku-web/auth/providers/AuthProvider';
 import {
   RevenueCatContextInterface,
   RevenueCatContext,
-} from '@sudoku-web/template';
+} from '@sudoku-web/template/providers/RevenueCatProvider';
+import FetchProvider from '@sudoku-web/auth/providers/FetchProvider';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { EntitlementDuration, PublicInvite, Party } from '@sudoku-web/template';
+import {
+  EntitlementDuration,
+  PublicInvite,
+  Party,
+} from '@sudoku-web/template/types/serverTypes';
 
 // Mock dependencies
 jest.mock('next/navigation');
-jest.mock('@sudoku-web/sudoku');
+jest.mock('@sudoku-web/sudoku/hooks/useParties');
 jest.mock('next/image', () => ({
   __esModule: true,
   default: (props: any) => {
@@ -24,17 +32,11 @@ jest.mock('next/image', () => ({
     return <img {...rest} />;
   },
 }));
-jest.mock('@sudoku-web/template', () => ({
-  useServerStorage: jest.fn(),
-  UserContext: React.createContext({}),
-  RevenueCatContext: React.createContext({}),
-  SubscriptionContext: React.createContext({}),
+jest.mock('@sudoku-web/template/hooks/serverStorage');
+jest.mock('@sudoku-web/template/components/PremiumFeatures', () => ({
   PremiumFeatures: function MockPremiumFeatures() {
     return <div data-testid="premium-features">Premium Features Mock</div>;
   },
-  PublicInvite: {},
-  EntitlementDuration: { ONE_MONTH: '1m' },
-  Party: {},
 }));
 
 const mockUseRouter = useRouter as jest.Mock;
@@ -134,11 +136,13 @@ describe('Invite Page', () => {
 
   const renderWithProviders = (ui: React.ReactElement) => {
     return render(
-      <UserContext.Provider value={mockUserContext}>
-        <RevenueCatContext.Provider value={mockRevenueCatContext}>
-          <Suspense fallback={<div>Loading...</div>}>{ui}</Suspense>
-        </RevenueCatContext.Provider>
-      </UserContext.Provider>
+      <FetchProvider>
+        <UserContext.Provider value={mockUserContext}>
+          <RevenueCatContext.Provider value={mockRevenueCatContext}>
+            <Suspense fallback={<div>Loading...</div>}>{ui}</Suspense>
+          </RevenueCatContext.Provider>
+        </UserContext.Provider>
+      </FetchProvider>
     );
   };
 

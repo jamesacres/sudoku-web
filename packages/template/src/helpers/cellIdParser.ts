@@ -12,12 +12,7 @@ export const splitCellId = (
     cellId.matchAll(
       new RegExp('box:([0-3]),([0-3]),cell:([0-3]),([0-3])', 'g')
     ),
-    (m) => [
-      Number(m[1]),
-      Number(m[2]),
-      Number(m[3]),
-      Number(m[4]),
-    ]
+    (m) => [Number(m[1]), Number(m[2]), Number(m[3]), Number(m[4])]
   )[0];
 
   if (!matches) {

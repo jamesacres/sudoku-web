@@ -22,7 +22,7 @@ import {
   saveCapacitorState,
   getCapacitorState,
   CapacitorSecureStorage,
-} from '@sudoku-web/template';
+} from '@sudoku-web/auth/services/capacitor';
 
 // Mock SecureStoragePlugin
 jest.mock('capacitor-secure-storage-plugin', () => ({

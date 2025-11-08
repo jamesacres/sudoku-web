@@ -1,4 +1,9 @@
 
+get rid of fetch provider and user provider in template, use the ones direct from auth package, ensure we have tests alongside the kept files.
+move theme provider from ui to template
+move auth services capacitor and electron to template
+move sudoku parties provider to template
+
 
 tidy up sub package jsons with only the parts used for each
 
@@ -36,8 +41,6 @@ packages/ui/src/components/Header/Header.tsx
 move rest into packages?
 
 duplicates
-GlobalErrorHandler.tsx duplicated
-packages/ui/src/components/ErrorBoundary/ErrorBoundary.ts duplicated
 playerColors.ts
 packages/template/src/providers/PartyProvider.tsx
 packages/template/src/helpers/electron.ts

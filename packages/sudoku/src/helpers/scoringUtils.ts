@@ -1,8 +1,15 @@
-import { ServerStateResult, Party } from '@sudoku-web/template';
+import {
+  ServerStateResult,
+  Party,
+} from '@sudoku-web/template/types/serverTypes';
 import { ServerState } from '../types/state';
 import { isPuzzleCheated } from './cheatDetection';
 import { SCORING_CONFIG } from './scoringConfig';
-import { PuzzleType, ScoringResult, AllFriendsSessionsMap } from '../types/scoringTypes';
+import {
+  PuzzleType,
+  ScoringResult,
+  AllFriendsSessionsMap,
+} from '../types/scoringTypes';
 
 export const getPuzzleType = (
   session: ServerStateResult<ServerState>

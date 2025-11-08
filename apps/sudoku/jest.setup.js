@@ -22,9 +22,17 @@ jest.mock('@headlessui/react', () => {
     const { children, as, ...rest } = props;
     const filtered = {};
     const headlessUIProps = new Set([
-      'enter', 'enterFrom', 'enterTo', 'entered',
-      'leave', 'leaveFrom', 'leaveTo',
-      'appear', 'show', 'static', 'unmount',
+      'enter',
+      'enterFrom',
+      'enterTo',
+      'entered',
+      'leave',
+      'leaveFrom',
+      'leaveTo',
+      'appear',
+      'show',
+      'static',
+      'unmount',
       'as', // Remove the 'as' prop from HTML attributes
     ]);
 
@@ -55,21 +63,33 @@ jest.mock('@headlessui/react', () => {
     if (element === Fragment) {
       return React.createElement(Fragment, null, renderChildren(children));
     }
-    return React.createElement(element, filterHeadlessUIProps({ ...props }), renderChildren(children));
+    return React.createElement(
+      element,
+      filterHeadlessUIProps({ ...props }),
+      renderChildren(children)
+    );
   };
   Transition.Child = ({ children, as, ...props }) => {
     const element = getElementType(as);
     if (element === Fragment) {
       return React.createElement(Fragment, null, renderChildren(children));
     }
-    return React.createElement(element, filterHeadlessUIProps({ ...props }), renderChildren(children));
+    return React.createElement(
+      element,
+      filterHeadlessUIProps({ ...props }),
+      renderChildren(children)
+    );
   };
   Transition.Root = ({ children, as, ...props }) => {
     const element = getElementType(as);
     if (element === Fragment) {
       return React.createElement(Fragment, null, renderChildren(children));
     }
-    return React.createElement(element, filterHeadlessUIProps({ ...props }), renderChildren(children));
+    return React.createElement(
+      element,
+      filterHeadlessUIProps({ ...props }),
+      renderChildren(children)
+    );
   };
 
   // Create Dialog sub-components
@@ -78,21 +98,33 @@ jest.mock('@headlessui/react', () => {
     if (element === Fragment) {
       return React.createElement(Fragment, null, renderChildren(children));
     }
-    return React.createElement(element, filterHeadlessUIProps({ ...props }), renderChildren(children));
+    return React.createElement(
+      element,
+      filterHeadlessUIProps({ ...props }),
+      renderChildren(children)
+    );
   };
   const DialogTitleComponent = ({ children, as, ...props }) => {
     const element = getElementType(as);
     if (element === Fragment) {
       return React.createElement(Fragment, null, children);
     }
-    return React.createElement(element || 'h2', filterHeadlessUIProps({ ...props }), children);
+    return React.createElement(
+      element || 'h2',
+      filterHeadlessUIProps({ ...props }),
+      children
+    );
   };
   const DialogDescriptionComponent = ({ children, as, ...props }) => {
     const element = getElementType(as);
     if (element === Fragment) {
       return React.createElement(Fragment, null, children);
     }
-    return React.createElement(element || 'p', filterHeadlessUIProps({ ...props }), children);
+    return React.createElement(
+      element || 'p',
+      filterHeadlessUIProps({ ...props }),
+      children
+    );
   };
 
   // Create Dialog component with sub-components
@@ -101,7 +133,11 @@ jest.mock('@headlessui/react', () => {
     if (element === Fragment) {
       return React.createElement(Fragment, null, renderChildren(children));
     }
-    return React.createElement(element, filterHeadlessUIProps({ ...props }), renderChildren(children));
+    return React.createElement(
+      element,
+      filterHeadlessUIProps({ ...props }),
+      renderChildren(children)
+    );
   };
   DialogComponent.Panel = DialogPanelComponent;
   DialogComponent.Title = DialogTitleComponent;
@@ -109,7 +145,14 @@ jest.mock('@headlessui/react', () => {
 
   const mocks = {
     Switch: ({ checked, onChange, children, ...props }) =>
-      React.createElement('button', { ...filterHeadlessUIProps({ checked, onChange, children, ...props }), onClick: () => onChange && onChange(!checked) }, children),
+      React.createElement(
+        'button',
+        {
+          ...filterHeadlessUIProps({ checked, onChange, children, ...props }),
+          onClick: () => onChange && onChange(!checked),
+        },
+        children
+      ),
     Dialog: DialogComponent,
     DialogPanel: DialogPanelComponent,
     DialogTitle: DialogTitleComponent,
@@ -118,39 +161,120 @@ jest.mock('@headlessui/react', () => {
     'Transition.Child': Transition.Child,
     'Transition.Root': Transition.Root,
     Disclosure: ({ children, ...props }) =>
-      React.createElement('div', filterHeadlessUIProps({ children, ...props }), renderChildren(children)),
+      React.createElement(
+        'div',
+        filterHeadlessUIProps({ children, ...props }),
+        renderChildren(children)
+      ),
     DisclosureButton: ({ children, ...props }) =>
-      React.createElement('button', filterHeadlessUIProps({ children, ...props }), renderChildren(children)),
+      React.createElement(
+        'button',
+        filterHeadlessUIProps({ children, ...props }),
+        renderChildren(children)
+      ),
     DisclosurePanel: ({ children, ...props }) =>
-      React.createElement('div', filterHeadlessUIProps({ children, ...props }), renderChildren(children)),
+      React.createElement(
+        'div',
+        filterHeadlessUIProps({ children, ...props }),
+        renderChildren(children)
+      ),
     Popover: ({ children, ...props }) =>
-      React.createElement('div', filterHeadlessUIProps({ children, ...props }), renderChildren(children)),
+      React.createElement(
+        'div',
+        filterHeadlessUIProps({ children, ...props }),
+        renderChildren(children)
+      ),
     PopoverButton: ({ children, ...props }) =>
-      React.createElement('button', filterHeadlessUIProps({ children, ...props }), renderChildren(children)),
+      React.createElement(
+        'button',
+        filterHeadlessUIProps({ children, ...props }),
+        renderChildren(children)
+      ),
     PopoverPanel: ({ children, ...props }) =>
-      React.createElement('div', filterHeadlessUIProps({ children, ...props }), renderChildren(children)),
+      React.createElement(
+        'div',
+        filterHeadlessUIProps({ children, ...props }),
+        renderChildren(children)
+      ),
     Menu: ({ children, ...props }) =>
-      React.createElement('div', filterHeadlessUIProps({ children, ...props }), renderChildren(children)),
+      React.createElement(
+        'div',
+        filterHeadlessUIProps({ children, ...props }),
+        renderChildren(children)
+      ),
     MenuButton: ({ children, ...props }) =>
-      React.createElement('button', filterHeadlessUIProps({ children, ...props }), renderChildren(children)),
+      React.createElement(
+        'button',
+        filterHeadlessUIProps({ children, ...props }),
+        renderChildren(children)
+      ),
     MenuItem: ({ children, ...props }) =>
-      React.createElement('button', filterHeadlessUIProps({ children, ...props }), renderChildren(children)),
+      React.createElement(
+        'button',
+        filterHeadlessUIProps({ children, ...props }),
+        renderChildren(children)
+      ),
     MenuItems: ({ children, ...props }) =>
-      React.createElement('div', filterHeadlessUIProps({ children, ...props }), renderChildren(children)),
+      React.createElement(
+        'div',
+        filterHeadlessUIProps({ children, ...props }),
+        renderChildren(children)
+      ),
     Listbox: ({ children, ...props }) =>
-      React.createElement('div', filterHeadlessUIProps({ children, ...props }), renderChildren(children)),
+      React.createElement(
+        'div',
+        filterHeadlessUIProps({ children, ...props }),
+        renderChildren(children)
+      ),
     ListboxButton: ({ children, ...props }) =>
-      React.createElement('button', filterHeadlessUIProps({ children, ...props }), renderChildren(children)),
+      React.createElement(
+        'button',
+        filterHeadlessUIProps({ children, ...props }),
+        renderChildren(children)
+      ),
     ListboxOption: ({ children, ...props }) =>
-      React.createElement('div', filterHeadlessUIProps({ children, ...props }), renderChildren(children)),
+      React.createElement(
+        'div',
+        filterHeadlessUIProps({ children, ...props }),
+        renderChildren(children)
+      ),
     ListboxOptions: ({ children, ...props }) =>
-      React.createElement('div', filterHeadlessUIProps({ children, ...props }), renderChildren(children)),
+      React.createElement(
+        'div',
+        filterHeadlessUIProps({ children, ...props }),
+        renderChildren(children)
+      ),
     Tab: {
-      Group: ({ children, ...props }) => React.createElement('div', filterHeadlessUIProps({ children, ...props }), renderChildren(children)),
-      List: ({ children, ...props }) => React.createElement('div', filterHeadlessUIProps({ children, ...props }), renderChildren(children)),
-      Panels: ({ children, ...props }) => React.createElement('div', filterHeadlessUIProps({ children, ...props }), renderChildren(children)),
-      Panel: ({ children, ...props }) => React.createElement('div', filterHeadlessUIProps({ children, ...props }), renderChildren(children)),
-      Button: ({ children, ...props }) => React.createElement('button', filterHeadlessUIProps({ children, ...props }), renderChildren(children))
+      Group: ({ children, ...props }) =>
+        React.createElement(
+          'div',
+          filterHeadlessUIProps({ children, ...props }),
+          renderChildren(children)
+        ),
+      List: ({ children, ...props }) =>
+        React.createElement(
+          'div',
+          filterHeadlessUIProps({ children, ...props }),
+          renderChildren(children)
+        ),
+      Panels: ({ children, ...props }) =>
+        React.createElement(
+          'div',
+          filterHeadlessUIProps({ children, ...props }),
+          renderChildren(children)
+        ),
+      Panel: ({ children, ...props }) =>
+        React.createElement(
+          'div',
+          filterHeadlessUIProps({ children, ...props }),
+          renderChildren(children)
+        ),
+      Button: ({ children, ...props }) =>
+        React.createElement(
+          'button',
+          filterHeadlessUIProps({ children, ...props }),
+          renderChildren(children)
+        ),
     },
   };
 
@@ -262,6 +386,8 @@ jest.mock(
     Browser: {
       open: jest.fn().mockResolvedValue(undefined),
       close: jest.fn().mockResolvedValue(undefined),
+      addListener: jest.fn(() => ({ remove: jest.fn() })),
+      removeAllListeners: jest.fn().mockResolvedValue(undefined),
     },
   }),
   { virtual: true }
@@ -518,7 +644,7 @@ if (typeof window !== 'undefined') {
   Object.defineProperty(window, 'matchMedia', {
     writable: true,
     configurable: true,
-    value: jest.fn().mockImplementation(query => ({
+    value: jest.fn().mockImplementation((query) => ({
       matches: false,
       media: query,
       onchange: null,

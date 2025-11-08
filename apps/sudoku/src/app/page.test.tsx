@@ -9,13 +9,13 @@ jest.mock('next/navigation', () => ({
   useSearchParams: jest.fn(),
 }));
 
-jest.mock('@/components/tabs/MyPuzzlesTab', () => {
+jest.mock('@/components/MyPuzzlesTab', () => {
   return function MockMyPuzzlesTab() {
     return <div data-testid="my-puzzles-tab">My Puzzles Tab</div>;
   };
 });
 
-jest.mock('@/components/tabs/FriendsTab', () => {
+jest.mock('@/components/FriendsTab', () => {
   return function MockFriendsTab() {
     return <div data-testid="friends-tab">Friends Tab</div>;
   };
@@ -27,46 +27,97 @@ jest.mock('@/components/ActivityWidget', () => {
   };
 });
 
-jest.mock('@/components/BookCovers', () => ({
-  BookCover: function MockBookCover() {
+jest.mock('@/components/BookCover', () => {
+  return function MockBookCover() {
     return <div data-testid="book-cover">Book Cover</div>;
-  },
+  };
+});
+
+jest.mock('@sudoku-web/template/hooks/online', () => ({
+  useOnline: jest.fn(() => ({
+    forceOffline: jest.fn(),
+    isOnline: true,
+  })),
 }));
 
-jest.mock('@sudoku-web/sudoku', () => ({
+jest.mock('@sudoku-web/template/hooks/serverStorage', () => ({
+  useServerStorage: jest.fn(() => ({
+    getSudokuOfTheDay: jest.fn(),
+    listParties: jest.fn(() => Promise.resolve([])),
+  })),
+}));
+
+jest.mock('@sudoku-web/template/providers/SessionsProvider', () => {
+  const mockUseSessions = jest.fn(() => ({
+    sessions: [],
+    refetchSessions: jest.fn(),
+    lazyLoadFriendSessions: jest.fn(),
+    fetchFriendSessions: jest.fn(),
+  }));
+
+  return {
+    SessionsProvider: ({ children }: { children: React.ReactNode }) => (
+      <>{children}</>
+    ),
+    useSessions: mockUseSessions,
+  };
+});
+
+jest.mock('@sudoku-web/auth/providers/AuthProvider', () => ({
+  UserContext: React.createContext({
+    user: null,
+    loginRedirect: jest.fn(),
+    isInitialised: true,
+  }),
+}));
+
+jest.mock('@sudoku-web/sudoku/providers/PartiesProvider', () => {
+  return {
+    __esModule: true,
+    default: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  };
+});
+
+jest.mock('@sudoku-web/sudoku/hooks/useParties', () => ({
   useParties: jest.fn(() => ({
     parties: [],
     refreshParties: jest.fn(),
   })),
 }));
 
-jest.mock('@sudoku-web/template', () => ({
-  Footer: function MockFooter({ children }: { children: React.ReactNode }) {
-    return <footer data-testid="footer">{children}</footer>;
+jest.mock('@sudoku-web/template/types/serverTypes', () => ({
+  Difficulty: {
+    SIMPLE: 'simple',
+    EASY: 'easy',
+    INTERMEDIATE: 'intermediate',
+    EXPERT: 'expert',
   },
-  SocialProof: function MockSocialProof() {
+}));
+
+jest.mock('@sudoku-web/template/types/tabs', () => ({
+  Tab: {
+    START_PUZZLE: 'START_PUZZLE',
+    MY_PUZZLES: 'MY_PUZZLES',
+    FRIENDS: 'FRIENDS',
+  },
+}));
+
+jest.mock('@sudoku-web/template/components/SocialProof', () => {
+  return function MockSocialProof() {
     return <div data-testid="social-proof">Social Proof</div>;
-  },
+  };
+});
+
+jest.mock('@sudoku-web/template/components/PremiumFeatures', () => ({
   PremiumFeatures: function MockPremiumFeatures() {
     return <div data-testid="premium-features">Premium Features</div>;
   },
-  useOnline: jest.fn(),
-  useServerStorage: jest.fn(() => ({
-    getSudokuOfTheDay: jest.fn(),
-  })),
-  useSessions: jest.fn(() => ({
-    sessions: [],
-    refetchSessions: jest.fn(),
-    lazyLoadFriendSessions: jest.fn(),
-    fetchFriendSessions: jest.fn(),
-  })),
-  UserContext: React.createContext({
-    user: null,
-    loginRedirect: jest.fn(),
-    isInitialised: true,
-  }),
-  Difficulty: {},
-  Tab: { START_PUZZLE: 'start' },
+}));
+
+jest.mock('@sudoku-web/ui', () => ({
+  Footer: function MockFooter({ children }: { children: React.ReactNode }) {
+    return <footer data-testid="footer">{children}</footer>;
+  },
 }));
 
 jest.mock('next/image', () => ({
@@ -95,6 +146,10 @@ jest.mock('react-feather', () => ({
   Zap: () => <div data-testid="zap-icon">Zap Icon</div>,
   Award: () => <div data-testid="award-icon">Award Icon</div>,
   Camera: () => <div data-testid="camera-icon">Camera Icon</div>,
+  Calendar: () => <div data-testid="calendar-icon">Calendar Icon</div>,
+  Watch: () => <div data-testid="watch-icon">Watch Icon</div>,
+  Droplet: () => <div data-testid="droplet-icon">Droplet Icon</div>,
+  RotateCcw: () => <div data-testid="rotate-ccw-icon">Rotate Icon</div>,
 }));
 
 describe('Home Page', () => {
@@ -325,9 +380,10 @@ describe('Home Page', () => {
 
   describe('Daily Streak calculation', () => {
     it('should display daily streak', () => {
-      // Mock useSessions from @sudoku-web/template which is already mocked
-      const templateModule = require('@sudoku-web/template');
-      templateModule.useSessions.mockReturnValue({
+      const {
+        useSessions,
+      } = require('@sudoku-web/template/providers/SessionsProvider');
+      (useSessions as jest.Mock).mockReturnValueOnce({
         sessions: [
           { updatedAt: new Date().toISOString() },
           {

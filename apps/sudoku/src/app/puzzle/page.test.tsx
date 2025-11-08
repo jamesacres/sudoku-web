@@ -2,7 +2,7 @@ import React, { Suspense } from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import PuzzlePage from './page';
 import * as nextNavigation from 'next/navigation';
-import { useWakeLock } from '@sudoku-web/template';
+import { useWakeLock } from '@sudoku-web/template/hooks/useWakeLock';
 
 // Mock dependencies
 jest.mock('next/navigation', () => ({
@@ -10,14 +10,14 @@ jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
 }));
 
-jest.mock('@sudoku-web/template', () => ({
+jest.mock('@sudoku-web/template/hooks/useWakeLock', () => ({
   useWakeLock: jest.fn(() => ({
     requestWakeLock: jest.fn(),
   })),
 }));
 
-jest.mock('@/components/Sudoku', () => ({
-  Sudoku: function MockSudoku({
+jest.mock('@/components/Sudoku', () => {
+  return function MockSudoku({
     alreadyCompleted,
     showRacingPrompt,
   }: {
@@ -33,8 +33,8 @@ jest.mock('@/components/Sudoku', () => ({
         </div>
       </div>
     );
-  },
-}));
+  };
+});
 
 jest.mock('@sudoku-web/sudoku', () => ({
   ...jest.requireActual('@sudoku-web/sudoku'),

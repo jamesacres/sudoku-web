@@ -1,9 +1,14 @@
 'use client';
-import { UserContext } from '@sudoku-web/template';
+import {
+  UserContext,
+  UserContextInterface,
+} from '@sudoku-web/auth/providers/AuthProvider';
 import { useContext, useEffect } from 'react';
 
 export default function Home() {
-  const { isInitialised, handleAuthUrl } = useContext(UserContext) || {};
+  const context = useContext(UserContext) as UserContextInterface | undefined;
+  const isInitialised = context?.isInitialised;
+  const handleAuthUrl = context?.handleAuthUrl;
 
   useEffect(() => {
     console.info('auth page loading..');

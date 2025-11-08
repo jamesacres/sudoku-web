@@ -3,7 +3,7 @@ import {
   isElectron,
   openBrowser,
   saveElectronState,
-} from '@sudoku-web/template';
+} from '@sudoku-web/auth/services/electron';
 
 describe('electron helpers', () => {
   let mockElectronAPI: any;

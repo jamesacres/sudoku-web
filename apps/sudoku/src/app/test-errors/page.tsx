@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { splitCellId } from '@sudoku-web/sudoku';
+import { splitCellId } from '@sudoku-web/sudoku/helpers/calculateId';
 
 // Component that throws an error when triggered
 function ErrorThrower({ shouldThrow }: { shouldThrow: boolean }) {
@@ -69,9 +69,11 @@ export default function TestErrorsPage() {
         'QuotaExceededError triggered! Check console for cleanup logs.\n\nClearing test data...'
       );
       // Clean up test data
-      Object.keys(localStorage)
-        .filter((key) => key.startsWith('test_quota_'))
-        .forEach((key) => localStorage.removeItem(key));
+      if (typeof localStorage !== 'undefined') {
+        Object.keys(localStorage)
+          .filter((key) => key.startsWith('test_quota_'))
+          .forEach((key) => localStorage.removeItem(key));
+      }
       console.log('Test data cleaned up');
     }
   };

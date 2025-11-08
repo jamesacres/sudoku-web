@@ -1,4 +1,5 @@
-import { saveCapacitorState, isElectron, saveElectronState, isCapacitor } from '../services';
+import { saveCapacitorState, isCapacitor } from '../services/capacitor';
+import { isElectron, saveElectronState } from '../services/electron';
 import { FetchContext, State } from '../providers/FetchProvider';
 import { UserProfile } from '../types/UserProfile';
 import { useCallback, useContext } from 'react';

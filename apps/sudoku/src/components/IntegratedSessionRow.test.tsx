@@ -3,10 +3,9 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { IntegratedSessionRow } from './IntegratedSessionRow';
-import { ServerStateResult } from '@sudoku-web/sudoku';
-import { ServerState } from '@sudoku-web/sudoku';
-import { UserContext, useSessions } from '@sudoku-web/template';
-import { useParties } from '@sudoku-web/sudoku';
+import { ServerState } from '@sudoku-web/sudoku/types/state';
+import { UserContext } from '@sudoku-web/auth/providers/AuthProvider';
+import { ServerStateResult } from '@sudoku-web/template/types/serverTypes';
 
 // Mock dependencies
 jest.mock('react-feather', () => ({
@@ -24,23 +23,27 @@ jest.mock('next/link', () => {
   return MockLink;
 });
 
-jest.mock('@sudoku-web/sudoku', () => ({
-  ...jest.requireActual('@sudoku-web/sudoku'),
-  SimpleSudoku: function DummySimpleSudoku() {
+jest.mock('@sudoku-web/sudoku/components/SimpleSudoku', () => ({
+  __esModule: true,
+  default: function DummySimpleSudoku() {
     return <div data-testid="simple-sudoku">Simple Sudoku</div>;
   },
-  useParties: jest.fn(),
+}));
+
+jest.mock('@sudoku-web/sudoku/hooks/useParties');
+jest.mock('@sudoku-web/sudoku/helpers/cheatDetection', () => ({
   isPuzzleCheated: jest.fn(() => false),
+}));
+jest.mock('@sudoku-web/sudoku/helpers/puzzleTextToPuzzle', () => ({
   puzzleTextToPuzzle: jest.fn((_text) => ({ cells: [] })),
   puzzleToPuzzleText: jest.fn(() => '123456789' + '0'.repeat(73)),
+}));
+jest.mock('@sudoku-web/sudoku/helpers/calculateCompletionPercentage', () => ({
   calculateCompletionPercentage: jest.fn(() => 50),
 }));
 
-jest.mock('@sudoku-web/template', () => ({
-  useSessions: jest.fn(),
-  calculateSeconds: jest.fn(() => 120),
-  UserContext: React.createContext({}),
-}));
+jest.mock('@sudoku-web/template/providers/SessionsProvider');
+jest.mock('@sudoku-web/template/helpers/calculateSeconds');
 
 jest.mock('@/helpers/buildPuzzleUrl', () => ({
   buildPuzzleUrl: jest.fn(() => '/puzzle?id=test'),
@@ -74,13 +77,29 @@ describe('IntegratedSessionRow', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    (useSessions as jest.Mock).mockReturnValue({
+
+    // Setup useSessions mock
+    const {
+      useSessions: mockUseSessions,
+    } = require('@sudoku-web/template/providers/SessionsProvider');
+    (mockUseSessions as jest.Mock).mockReturnValue({
       friendSessions: {},
       isFriendSessionsLoading: false,
     });
-    (useParties as jest.Mock).mockReturnValue({
+
+    // Setup useParties mock
+    const {
+      useParties: mockUseParties,
+    } = require('@sudoku-web/sudoku/hooks/useParties');
+    (mockUseParties as jest.Mock).mockReturnValue({
       parties: [],
     });
+
+    // Setup calculateSeconds mock
+    const {
+      calculateSeconds: mockCalculateSeconds,
+    } = require('@sudoku-web/template/helpers/calculateSeconds');
+    (mockCalculateSeconds as jest.Mock).mockReturnValue(120);
   });
 
   describe('rendering', () => {
@@ -391,7 +410,10 @@ describe('IntegratedSessionRow', () => {
 
   describe('friend sessions display', () => {
     it('should handle empty friend sessions', () => {
-      (useSessions as jest.Mock).mockReturnValue({
+      const {
+        useSessions: mockUseSessions,
+      } = require('@sudoku-web/template/providers/SessionsProvider');
+      (mockUseSessions as jest.Mock).mockReturnValue({
         friendSessions: {},
         isFriendSessionsLoading: false,
       });
@@ -405,12 +427,18 @@ describe('IntegratedSessionRow', () => {
     });
 
     it('should display loading indicator when loading friends', () => {
-      (useSessions as jest.Mock).mockReturnValue({
+      const {
+        useSessions: mockUseSessions,
+      } = require('@sudoku-web/template/providers/SessionsProvider');
+      (mockUseSessions as jest.Mock).mockReturnValue({
         friendSessions: {},
         isFriendSessionsLoading: true,
       });
 
-      (useParties as jest.Mock).mockReturnValue({
+      const {
+        useParties: mockUseParties,
+      } = require('@sudoku-web/sudoku/hooks/useParties');
+      (mockUseParties as jest.Mock).mockReturnValue({
         parties: [
           {
             members: [{ userId: 'user-456', memberNickname: 'Friend' }],
@@ -429,7 +457,10 @@ describe('IntegratedSessionRow', () => {
     });
 
     it('should not display friends section if no parties', () => {
-      (useParties as jest.Mock).mockReturnValue({
+      const {
+        useParties: mockUseParties,
+      } = require('@sudoku-web/sudoku/hooks/useParties');
+      (mockUseParties as jest.Mock).mockReturnValue({
         parties: [],
       });
 

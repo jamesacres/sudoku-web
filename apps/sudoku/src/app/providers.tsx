@@ -1,15 +1,14 @@
 'use client';
 
-import {
-  FetchProvider,
-  CapacitorProvider,
-  UserProvider,
-  GlobalStateProvider,
-  ThemeColorProvider,
-  RevenueCatProvider,
-  SessionsProvider,
-} from '@sudoku-web/template';
-import { PartiesProvider, BookProvider } from '@sudoku-web/sudoku';
+import FetchProvider from '@sudoku-web/auth/providers/FetchProvider';
+import CapacitorProvider from '@sudoku-web/template/providers/CapacitorProvider';
+import UserProvider from '@sudoku-web/auth/providers/UserProvider';
+import GlobalStateProvider from '@sudoku-web/template/providers/GlobalStateProvider';
+import { ThemeColorProvider } from '@sudoku-web/ui/providers/ThemeColorProvider';
+import RevenueCatProvider from '@sudoku-web/template/providers/RevenueCatProvider';
+import { SessionsProvider } from '@sudoku-web/template/providers/SessionsProvider';
+import PartiesProvider from '@sudoku-web/sudoku/providers/PartiesProvider';
+import { BookProvider } from '@sudoku-web/sudoku/providers/BookProvider';
 import { ThemeProvider } from 'next-themes';
 import { PropsWithChildren } from 'react';
 

@@ -1,12 +1,12 @@
 import { renderHook, act } from '@testing-library/react';
 import { useServerStorage } from './serverStorage';
-import { useFetch } from '@sudoku-web/auth';
+import { useFetch } from '@sudoku-web/auth/hooks/useFetch';
 import { useOnline } from './online';
-import { StateType } from '@sudoku-web/types';
-import { UserContext } from '../providers/UserProvider';
+import { StateType } from '@sudoku-web/types/stateType';
+import { UserContext } from '@sudoku-web/auth/providers/AuthProvider';
 import React from 'react';
 
-jest.mock('@sudoku-web/auth');
+jest.mock('@sudoku-web/auth/hooks/useFetch');
 jest.mock('./online');
 
 const mockUseFetch = useFetch as jest.Mock;

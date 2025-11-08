@@ -4,23 +4,26 @@ import {
   Party,
   ServerStateResult,
   SudokuBookPuzzle,
-} from '@sudoku-web/template';
+} from '@sudoku-web/template/types/serverTypes';
+import { ServerState } from '@sudoku-web/sudoku/types/state';
+import { calculateCompletionPercentage } from '@sudoku-web/sudoku/helpers/calculateCompletionPercentage';
 import {
-  ServerState,
-  calculateCompletionPercentage,
   puzzleTextToPuzzle,
   puzzleToPuzzleText,
-  isPuzzleCheated,
-  SimpleSudoku,
-  useParties,
-} from '@sudoku-web/sudoku';
+} from '@sudoku-web/sudoku/helpers/puzzleTextToPuzzle';
+import SimpleSudoku from '@sudoku-web/sudoku/components/SimpleSudoku';
+import { useParties } from '@sudoku-web/sudoku/hooks/useParties';
+import { isPuzzleCheated } from '@sudoku-web/sudoku/helpers/cheatDetection';
 import {
   UserContext,
-  calculateSeconds,
-  useSessions,
+  UserContextInterface,
+} from '@sudoku-web/auth/providers/AuthProvider';
+import { calculateSeconds } from '@sudoku-web/template/helpers/calculateSeconds';
+import { useSessions } from '@sudoku-web/template/providers/SessionsProvider';
+import {
   UserSession,
   UserSessions,
-} from '@sudoku-web/template';
+} from '@sudoku-web/template/types/userSessions';
 import { Award, Loader } from 'react-feather';
 import Link from 'next/link';
 import { buildPuzzleUrl } from '@/helpers/buildPuzzleUrl';
@@ -297,8 +300,8 @@ const getTechniquesDisplay = (techniques?: SudokuBookPuzzle['techniques']) => {
     categoryOrder: number;
   }> = [];
 
-  Object.entries(techniques).forEach(([category, categoryTechniques]) => {
-    if (typeof categoryTechniques === 'object') {
+  Object.entries(techniques || {}).forEach(([category, categoryTechniques]) => {
+    if (typeof categoryTechniques === 'object' && categoryTechniques !== null) {
       const color = categoryColors[category] || 'bg-gray-500 text-white';
       const order = categoryOrder[category] ?? 999; // Default to end if unknown category
       Object.entries(categoryTechniques as any).forEach(
@@ -388,7 +391,7 @@ const getFriendSessions = (
     isCheated: boolean;
   }> = [];
 
-  Object.entries(friendSessions).forEach(
+  Object.entries(friendSessions || {}).forEach(
     ([userId, userSessionData]: [string, UserSession | undefined]) => {
       if (userId === currentUserId || !userSessionData?.sessions) return;
 
@@ -400,8 +403,8 @@ const getFriendSessions = (
       if (matchingSession) {
         const friendNickname =
           parties
-            ?.flatMap((party) => party.members)
-            .find((member) => member.userId === userId)?.memberNickname ||
+            ?.flatMap((party) => party.members || [])
+            .find((member) => member?.userId === userId)?.memberNickname ||
           'Unknown';
 
         const latest =
@@ -434,7 +437,8 @@ export const IntegratedSessionRow = ({
   userSessions,
   bookPuzzle,
 }: IntegratedSessionRowProps) => {
-  const { user } = useContext(UserContext) || {};
+  const context = useContext(UserContext) as UserContextInterface | undefined;
+  const { user } = context || {};
   const { friendSessions, isFriendSessionsLoading } = useSessions();
   const { parties } = useParties();
 

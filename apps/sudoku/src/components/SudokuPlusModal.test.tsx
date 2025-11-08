@@ -1,8 +1,8 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import SudokuPlusModal from './SudokuPlusModal';
-import { RevenueCatContext } from '@sudoku-web/template';
-import { PREMIUM_FEATURES } from '@sudoku-web/template';
+import { RevenueCatContext } from '@sudoku-web/template/providers/RevenueCatProvider';
+import { PREMIUM_FEATURES } from '@sudoku-web/template/config/premiumFeatures';
 
 // Mock dependencies
 jest.mock('@sudoku-web/template', () => ({

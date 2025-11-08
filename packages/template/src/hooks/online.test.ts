@@ -8,9 +8,7 @@ import { useOnline } from './online';
 
 // Create a wrapper component that provides the context
 const createContextWrapper = () => {
-  const {
-    GlobalStateContext,
-  } = require('../providers/GlobalStateProvider/GlobalStateProvider');
+  const { GlobalStateContext } = require('../providers/GlobalStateProvider');
 
   const Wrapper = ({ children }: { children: React.ReactNode }) => {
     // Use actual useState to make the context reactive

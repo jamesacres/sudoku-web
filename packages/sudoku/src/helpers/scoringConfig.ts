@@ -1,25 +1,29 @@
-import { Difficulty, BookPuzzleDifficulty } from '@sudoku-web/template';
+import {
+  Difficulty,
+  BookPuzzleDifficulty,
+} from '@sudoku-web/template/types/serverTypes';
 
 // Use a function to defer enum evaluation and avoid circular dependency issues in tests
-const getDifficultyMultipliers = () => ({
-  // Daily puzzle difficulties
-  [Difficulty.SIMPLE]: 1.0,
-  [Difficulty.EASY]: 1.2,
-  [Difficulty.INTERMEDIATE]: 1.5,
-  [Difficulty.EXPERT]: 2.0,
-  // Book puzzle difficulties
-  [BookPuzzleDifficulty.VERY_EASY]: 1.0,
-  [BookPuzzleDifficulty.EASY]: 1.2,
-  [BookPuzzleDifficulty.MODERATELY_EASY]: 1.3,
-  [BookPuzzleDifficulty.MODERATE]: 1.4,
-  [BookPuzzleDifficulty.MODERATELY_HARD]: 1.6,
-  [BookPuzzleDifficulty.HARD]: 1.8,
-  [BookPuzzleDifficulty.VICIOUS]: 2.5,
-  [BookPuzzleDifficulty.FIENDISH]: 2.8,
-  [BookPuzzleDifficulty.DEVILISH]: 3.2,
-  [BookPuzzleDifficulty.HELL]: 3.6,
-  [BookPuzzleDifficulty.BEYOND_HELL]: 4.0,
-} as Record<string, number>);
+const getDifficultyMultipliers = () =>
+  ({
+    // Daily puzzle difficulties
+    [Difficulty.SIMPLE]: 1.0,
+    [Difficulty.EASY]: 1.2,
+    [Difficulty.INTERMEDIATE]: 1.5,
+    [Difficulty.EXPERT]: 2.0,
+    // Book puzzle difficulties
+    [BookPuzzleDifficulty.VERY_EASY]: 1.0,
+    [BookPuzzleDifficulty.EASY]: 1.2,
+    [BookPuzzleDifficulty.MODERATELY_EASY]: 1.3,
+    [BookPuzzleDifficulty.MODERATE]: 1.4,
+    [BookPuzzleDifficulty.MODERATELY_HARD]: 1.6,
+    [BookPuzzleDifficulty.HARD]: 1.8,
+    [BookPuzzleDifficulty.VICIOUS]: 2.5,
+    [BookPuzzleDifficulty.FIENDISH]: 2.8,
+    [BookPuzzleDifficulty.DEVILISH]: 3.2,
+    [BookPuzzleDifficulty.HELL]: 3.6,
+    [BookPuzzleDifficulty.BEYOND_HELL]: 4.0,
+  }) as Record<string, number>;
 
 export const SCORING_CONFIG = {
   DAILY_PUZZLE_BASE: 100,

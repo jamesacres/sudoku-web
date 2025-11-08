@@ -2,38 +2,76 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { Providers } from './providers';
 
-// Mock template providers
-jest.mock('@sudoku-web/template', () => ({
+// Mock next/navigation
+jest.mock('next/navigation', () => ({
+  useRouter: jest.fn(() => ({
+    push: jest.fn(),
+    back: jest.fn(),
+  })),
+  usePathname: jest.fn(() => '/'),
+}));
+
+// Mock auth providers
+jest.mock('@sudoku-web/auth/providers/FetchProvider', () => ({
   __esModule: true,
-  FetchProvider: ({ children }: { children: React.ReactNode }) => (
+  default: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="fetch-provider">{children}</div>
   ),
-  CapacitorProvider: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="capacitor-provider">{children}</div>
-  ),
-  UserProvider: ({ children }: { children: React.ReactNode }) => (
+}));
+
+jest.mock('@sudoku-web/auth/providers/UserProvider', () => ({
+  __esModule: true,
+  default: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="user-provider">{children}</div>
   ),
-  GlobalStateProvider: ({ children }: { children: React.ReactNode }) => (
+}));
+
+// Mock template providers
+jest.mock('@sudoku-web/template/providers/CapacitorProvider', () => ({
+  __esModule: true,
+  default: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="capacitor-provider">{children}</div>
+  ),
+}));
+
+jest.mock('@sudoku-web/template/providers/GlobalStateProvider', () => ({
+  __esModule: true,
+  default: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="global-state-provider">{children}</div>
   ),
-  ThemeColorProvider: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="theme-color-provider">{children}</div>
-  ),
-  RevenueCatProvider: ({ children }: { children: React.ReactNode }) => (
+}));
+
+jest.mock('@sudoku-web/template/providers/RevenueCatProvider', () => ({
+  __esModule: true,
+  default: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="revenue-cat-provider">{children}</div>
   ),
+}));
+
+jest.mock('@sudoku-web/template/providers/SessionsProvider', () => ({
+  __esModule: true,
   SessionsProvider: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="sessions-provider">{children}</div>
   ),
 }));
 
+// Mock UI providers
+jest.mock('@sudoku-web/ui/providers/ThemeColorProvider', () => ({
+  ThemeColorProvider: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="theme-color-provider">{children}</div>
+  ),
+}));
+
 // Mock sudoku providers
-jest.mock('@sudoku-web/sudoku', () => ({
+jest.mock('@sudoku-web/sudoku/providers/PartiesProvider', () => ({
   __esModule: true,
-  PartiesProvider: ({ children }: { children: React.ReactNode }) => (
+  default: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="parties-provider">{children}</div>
   ),
+}));
+
+jest.mock('@sudoku-web/sudoku/providers/BookProvider', () => ({
+  __esModule: true,
   BookProvider: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="book-provider">{children}</div>
   ),
@@ -43,6 +81,11 @@ jest.mock('next-themes', () => ({
   ThemeProvider: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="theme-provider">{children}</div>
   ),
+  useTheme: jest.fn(() => ({
+    theme: 'light',
+    setTheme: jest.fn(),
+    systemTheme: 'light',
+  })),
 }));
 
 describe('Providers', () => {

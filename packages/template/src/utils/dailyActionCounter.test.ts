@@ -6,12 +6,11 @@ import {
   incrementCheckGridCount,
   getUndoCount,
   getCheckGridCount,
-  canUseUndo,
-  canUseCheckGrid,
   getRemainingUndos,
   getRemainingCheckGrids,
-  DAILY_LIMITS,
-} from '@sudoku-web/template';
+} from '@sudoku-web/template/utils/dailyActionCounter';
+import { canUseUndo, canUseCheckGrid } from './dailyActionCounter';
+import { DAILY_LIMITS } from '@sudoku-web/template/config/dailyLimits';
 
 describe('dailyActionCounter', () => {
   beforeEach(() => {

@@ -4,31 +4,50 @@ import { renderHook, act } from '@testing-library/react';
 import { useTimer } from './timer';
 
 // Mock template hooks (must be before imports to avoid hoisting issues)
-jest.mock('@sudoku-web/template', () => ({
-  useDocumentVisibility: jest.fn(() => false),
-  useLocalStorage: jest.fn(() => ({
-    getValue: jest.fn(() => undefined),
-    saveValue: jest.fn(),
-  })),
+jest.mock('@sudoku-web/template/hooks/documentVisibility');
+jest.mock('@sudoku-web/template/hooks/localStorage');
+jest.mock('@sudoku-web/template/helpers/calculateSeconds');
+jest.mock('@sudoku-web/types/stateType', () => ({
   StateType: { TIMER: 'timer' },
-  calculateSeconds: jest.fn((timer) => {
-    // Preserve the timer's seconds value if it exists (for session restoration)
-    if (timer && typeof timer === 'object' && 'seconds' in timer) {
-      return timer.seconds;
-    }
-    return 0;
-  }),
 }));
 
 describe('useTimer', () => {
   let mockUseDocumentVisibility: any;
+  let mockUseLocalStorage: any;
+  let mockCalculateSeconds: any;
 
   beforeEach(() => {
     jest.clearAllMocks();
     jest.useFakeTimers();
-    mockUseDocumentVisibility =
-      require('@sudoku-web/template').useDocumentVisibility;
+
+    // Import and setup mocks
+    const {
+      useDocumentVisibility,
+    } = require('@sudoku-web/template/hooks/documentVisibility');
+    const {
+      useLocalStorage,
+    } = require('@sudoku-web/template/hooks/localStorage');
+    const {
+      calculateSeconds,
+    } = require('@sudoku-web/template/helpers/calculateSeconds');
+
+    mockUseDocumentVisibility = useDocumentVisibility;
+    mockUseLocalStorage = useLocalStorage;
+    mockCalculateSeconds = calculateSeconds;
+
+    // Setup default mock implementations
     mockUseDocumentVisibility.mockReturnValue(false);
+    mockUseLocalStorage.mockReturnValue({
+      getValue: jest.fn(() => undefined),
+      saveValue: jest.fn(),
+    });
+    mockCalculateSeconds.mockImplementation((timer) => {
+      // Preserve the timer's seconds value if it exists (for session restoration)
+      if (timer && typeof timer === 'object' && 'seconds' in timer) {
+        return timer.seconds;
+      }
+      return 0;
+    });
   });
 
   afterEach(() => {
@@ -38,7 +57,6 @@ describe('useTimer', () => {
 
   describe('initialization', () => {
     it('should initialize timer state', () => {
-      mockUseDocumentVisibility.mockReturnValue(false);
       const { result } = renderHook(() =>
         useTimer({ puzzleId: 'test-puzzle' })
       );
