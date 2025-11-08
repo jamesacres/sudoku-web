@@ -1,5 +1,6 @@
 
-get rid of fetch provider and user provider in template, use the ones direct from auth package, ensure we have tests alongside the kept files.
+loading book not working?
+
 move theme provider from ui to template
 move auth services capacitor and electron to template
 move sudoku parties provider to template
