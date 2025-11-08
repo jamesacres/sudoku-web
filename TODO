@@ -1,5 +1,7 @@
 
 
+tidy up sub package jsons with only the parts used for each
+
 restore old tests
 
 move remaining sudoku components into package

@@ -12,16 +12,18 @@
 
 // ===== Components =====
 /**
- * UI components for app promotion and features
+ * UI components for app promotion, error handling, and features
  * - AppDownloadModal: Modal promoting mobile app downloads
  * - SocialProof: Social proof / testimonials display component
  * - PremiumFeatures: Premium features showcase component
- *
- * Note: ErrorBoundary and GlobalErrorHandler have been moved to @sudoku-web/ui
+ * - ErrorBoundary: Error boundary component for catching React component errors
+ * - GlobalErrorHandler: Global error handler for uncaught errors and promise rejections
  */
 export { default as AppDownloadModal } from './components/AppDownloadModal';
 export { default as SocialProof } from './components/SocialProof';
 export { PremiumFeatures } from './components/PremiumFeatures';
+export { default as ErrorBoundary } from './components/ErrorBoundary';
+export { default as GlobalErrorHandler } from './components/GlobalErrorHandler';
 
 // ===== Hooks =====
 /**

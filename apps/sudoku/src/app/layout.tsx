@@ -3,7 +3,8 @@ import { Inter, Orbitron, Pacifico } from 'next/font/google';
 import './globals.css';
 import React from 'react';
 import { Providers } from './providers';
-import { Header, ErrorBoundary, GlobalErrorHandler } from '@sudoku-web/ui';
+import { Header } from '@sudoku-web/ui';
+import { ErrorBoundary, GlobalErrorHandler } from '@sudoku-web/template';
 import SudokuPlusModal from '@/components/SudokuPlusModal';
 
 const inter = Inter({ subsets: ['latin'] });
