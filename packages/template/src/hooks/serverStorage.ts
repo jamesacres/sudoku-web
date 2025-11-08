@@ -21,7 +21,10 @@ import {
   InviteResponse,
   PublicInvite,
   SudokuOfTheDayResponse,
+  SudokuBookOfTheMonthResponse,
+  SudokuBookOfTheMonth,
   Difficulty,
+  SudokuOfTheDay,
 } from '../types/serverTypes';
 
 const app = 'sudoku';
@@ -519,24 +522,20 @@ function useServerStorage({
   );
 
   const getSudokuOfTheDay = useCallback(
-    async (
-      difficulty?: Difficulty
-    ): Promise<
-      { initial: string; final: string; sudokuId: string } | undefined
-    > => {
-      if (isOnline) {
+    async (difficulty: Difficulty): Promise<SudokuOfTheDay | undefined> => {
+      if (isOnline && (await isLoggedIn())) {
         try {
-          console.info('fetching sudoku of the day');
-          const params = difficulty ? `?difficulty=${difficulty}` : '';
+          console.info('fetching sudoku of the day', difficulty);
           const response = await fetch(
-            new Request(`${apiUrl}/sudoku-of-the-day${params}`)
+            new Request(`${apiUrl}/sudoku/ofTheDay?difficulty=${difficulty}`)
           );
           if (response.ok) {
-            const data: SudokuOfTheDayResponse = await response.json();
+            const sudokuOfTheDayResponse =
+              (await response.json()) as SudokuOfTheDayResponse;
             return {
-              initial: data.initial,
-              final: data.final,
-              sudokuId: data.sudokuId,
+              ...sudokuOfTheDayResponse,
+              createdAt: new Date(sudokuOfTheDayResponse.createdAt),
+              updatedAt: new Date(sudokuOfTheDayResponse.updatedAt),
             };
           }
         } catch (e) {
@@ -545,8 +544,33 @@ function useServerStorage({
       }
       return undefined;
     },
-    [fetch, isOnline]
+    [fetch, isLoggedIn, isOnline]
   );
+
+  const getSudokuBookOfTheMonth = useCallback(async (): Promise<
+    SudokuBookOfTheMonth | undefined
+  > => {
+    if (isOnline && (await isLoggedIn())) {
+      try {
+        console.info('fetching sudoku book of the month');
+        const response = await fetch(
+          new Request(`${apiUrl}/sudoku/bookOfTheMonth`)
+        );
+        if (response.ok) {
+          const sudokuBookOfTheMonthResponse =
+            (await response.json()) as SudokuBookOfTheMonthResponse;
+          return {
+            ...sudokuBookOfTheMonthResponse,
+            createdAt: new Date(sudokuBookOfTheMonthResponse.createdAt),
+            updatedAt: new Date(sudokuBookOfTheMonthResponse.updatedAt),
+          };
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    return undefined;
+  }, [fetch, isLoggedIn, isOnline]);
 
   const deleteAccount = useCallback(async (): Promise<boolean> => {
     if (isOnline && (await isLoggedIn()) && user) {
@@ -584,6 +608,7 @@ function useServerStorage({
     deleteParty,
     getSudokuOfTheDay,
     deleteAccount,
+    getSudokuBookOfTheMonth,
   };
 }
 export { useServerStorage };

@@ -105,14 +105,8 @@ export const BookProvider = ({ children }: BookProviderProps) => {
   const [bookData, setBookData] = useState<SudokuBookOfTheMonth | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { listValues } = useServerStorage();
+  const { getSudokuBookOfTheMonth } = useServerStorage();
   const { isOnline } = useOnline();
-
-  // TODO: Implement getSudokuBookOfTheMonth method in useServerStorage
-  const getSudokuBookOfTheMonth = async () => {
-    // Stub implementation - needs to be completed
-    return null;
-  };
 
   const fetchBookData = useCallback(async () => {
     // If data already exists or currently loading, don't fetch again

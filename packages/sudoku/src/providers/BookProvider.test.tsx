@@ -43,8 +43,6 @@ describe('BookProvider', () => {
   });
 
   it('fetches and displays book data', async () => {
-    // Note: getSudokuBookOfTheMonth is currently a stub that returns null
-    // This test expects an error until the real implementation is added
     mockGetSudokuBookOfTheMonth.mockResolvedValue(mockBook);
     render(
       <BookProvider>
@@ -56,11 +54,8 @@ describe('BookProvider', () => {
       screen.getByText('Fetch').click();
     });
 
-    // Since getSudokuBookOfTheMonth is stubbed to return null, we expect an error
     await waitFor(() => {
-      expect(
-        screen.getByText('Failed to load puzzle book')
-      ).toBeInTheDocument();
+      expect(screen.getByText('book-1')).toBeInTheDocument();
     });
   });
 
