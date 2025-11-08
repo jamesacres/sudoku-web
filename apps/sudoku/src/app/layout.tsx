@@ -3,10 +3,10 @@ import { Inter, Orbitron, Pacifico } from 'next/font/google';
 import './globals.css';
 import React from 'react';
 import { Providers } from './providers';
-import Header from '@sudoku-web/ui/components/Header';
 import ErrorBoundary from '@sudoku-web/template/components/ErrorBoundary';
 import GlobalErrorHandler from '@sudoku-web/template/components/GlobalErrorHandler';
 import SudokuPlusModal from '@/components/SudokuPlusModal';
+import HeaderWrapper from '@/components/HeaderWrapper';
 
 const inter = Inter({ subsets: ['latin'] });
 const orbitron = Orbitron({
@@ -92,7 +92,7 @@ export default function RootLayout({
         <GlobalErrorHandler />
         <ErrorBoundary>
           <Providers>
-            <Header />
+            <HeaderWrapper />
             <div className="mb-24">{children}</div>
             <SudokuPlusModal />
           </Providers>

@@ -7,14 +7,28 @@ import { UserButton } from './UserButton';
 // Props for external dependencies
 export interface HeaderUserDependencies {
   isOnline?: boolean;
+  isSubscribed?: boolean;
+  showSubscribeModal?: (onSuccess: () => void) => void;
+  deleteAccount?: () => Promise<boolean>;
 }
 
-const HeaderUser: React.FC<HeaderUserDependencies> = ({ isOnline = true }) => {
+const HeaderUser: React.FC<HeaderUserDependencies> = ({
+  isOnline = true,
+  isSubscribed = false,
+  showSubscribeModal,
+  deleteAccount,
+}) => {
   const { isLoggingIn, loginRedirect, logout, user } =
     (React.useContext(UserContext) as UserContextInterface | undefined) || {};
 
   return user && logout ? (
-    <UserButton user={user} logout={logout} />
+    <UserButton
+      user={user}
+      logout={logout}
+      isSubscribed={isSubscribed}
+      showSubscribeModal={showSubscribeModal}
+      deleteAccount={deleteAccount}
+    />
   ) : (
     isOnline && (
       <button

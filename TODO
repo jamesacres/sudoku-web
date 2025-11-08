@@ -4,9 +4,11 @@ subscription status not showing correctly
 
 loading book not working?
 
-move theme provider from ui to template
 move auth services capacitor and electron to template
+should header ui components be moved to template?
+move theme provider from ui to template
 move sudoku parties provider to template
+
 
 
 tidy up sub package jsons with only the parts used for each

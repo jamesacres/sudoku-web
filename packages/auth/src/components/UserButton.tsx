@@ -6,13 +6,21 @@ import { Fragment, useState } from 'react';
 import { UserPanel } from './UserPanel';
 import { UserAvatar } from './UserAvatar';
 
+interface UserButtonProps {
+  user: UserProfile;
+  logout: () => void;
+  isSubscribed?: boolean;
+  showSubscribeModal?: (onSuccess: () => void) => void;
+  deleteAccount?: () => Promise<boolean>;
+}
+
 export const UserButton = ({
   user,
   logout,
-}: {
-  user: UserProfile;
-  logout: () => void;
-}) => {
+  isSubscribed = false,
+  showSubscribeModal,
+  deleteAccount,
+}: UserButtonProps) => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   return (
@@ -53,6 +61,9 @@ export const UserButton = ({
                     logout={logout}
                     onClose={() => setIsMobileOpen(false)}
                     isMobile={true}
+                    isSubscribed={isSubscribed}
+                    showSubscribeModal={showSubscribeModal}
+                    deleteAccount={deleteAccount}
                   />
                 </Dialog.Panel>
               </Transition.Child>
@@ -95,6 +106,9 @@ export const UserButton = ({
                   logout={logout}
                   onClose={close}
                   isMobile={false}
+                  isSubscribed={isSubscribed}
+                  showSubscribeModal={showSubscribeModal}
+                  deleteAccount={deleteAccount}
                 />
               </Popover.Panel>
             </Transition>
