@@ -53,8 +53,6 @@
     "react-feather": "^2.0.10"
   },
   "devDependencies": {
-    "@capacitor/assets": "^3.0.5",
-    "@capacitor/cli": "^7.0.0",
     "@tailwindcss/postcss": "^4.0.0",
     "@testing-library/jest-dom": "^6.1.5",
     "@testing-library/react": "^14.1.2",
@@ -64,9 +62,6 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
-    "electron": "^30.0.8",
-    "electron-builder": "^24.13.3",
-    "electron-store": "^9.0.0",
     "eslint": "^8",
     "eslint-config-next": "^14.2.4",
     "eslint-config-prettier": "^9.1.0",
