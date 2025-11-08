@@ -1,10 +1,14 @@
 # Sudoku Web - Modular Turborepo Architecture
 
-A modular, reusable web application framework built with Next.js, TypeScript, and Turborepo. Designed for building collaborative applications with built-in authentication, user management, and multi-platform support (web, iOS, Android, Electron).
+A modular, reusable web application framework built with Next.js, TypeScript,
+and Turborepo. Designed for building collaborative applications with built-in
+authentication, user management, and multi-platform support (web, iOS, Android,
+Electron).
 
 ## Architecture Overview
 
-This monorepo follows a package-based architecture where core functionality is organized into reusable packages that multiple applications can build on:
+This monorepo follows a package-based architecture where core functionality is
+organized into reusable packages that multiple applications can build on:
 
 ```
 sudoku-web/
@@ -47,6 +51,7 @@ UI & Core Packages:
 ```
 
 **Key Principles**:
+
 - Apps import from packages (never the reverse)
 - Core packages (shared, types) have no dependencies on feature packages
 - Template package is game-agnostic (no sudoku references)
@@ -129,11 +134,13 @@ npm run type-check
 
 ## Package Documentation
 
-Each package has comprehensive documentation including API reference, integration guides, and examples:
+Each package has comprehensive documentation including API reference,
+integration guides, and examples:
 
 ### Core Packages
 
-- **[@sudoku-web/auth](./packages/auth/README.md)** - Authentication & user management
+- **[@sudoku-web/auth](./packages/auth/README.md)** - Authentication & user
+  management
   - OAuth 2.0 with PKCE flow
   - Multi-platform support (web, iOS, Android, Electron)
   - User profile management
@@ -145,14 +152,16 @@ Each package has comprehensive documentation including API reference, integratio
   - Responsive layout components
   - Platform-specific adaptations
 
-- **[@sudoku-web/template](./packages/template/README.md)** - Collaborative features (game-agnostic)
+- **[@sudoku-web/template](./packages/template/README.md)** - Collaborative
+  features (game-agnostic)
   - Party/group management
   - Session tracking
   - Member invitations
   - Application infrastructure
   - Premium features integration
 
-- **[@sudoku-web/sudoku](./packages/sudoku/README.md)** - Sudoku game logic & components
+- **[@sudoku-web/sudoku](./packages/sudoku/README.md)** - Sudoku game logic &
+  components
   - Puzzle validation and solving
   - Grid calculations
   - Game state management
@@ -176,6 +185,7 @@ Each package has comprehensive documentation including API reference, integratio
 ### Template App
 
 The template app is a standalone application with:
+
 - User authentication (OAuth + email)
 - User profile management
 - Party/group creation and management
@@ -184,11 +194,13 @@ The template app is a standalone application with:
 - Responsive design
 - Dark mode support
 
-**No game logic included** - perfect for building new collaborative applications.
+**No game logic included** - perfect for building new collaborative
+applications.
 
 ### Sudoku App
 
 The sudoku app extends the template with:
+
 - All template features (auth, parties, sessions)
 - Sudoku puzzle grid
 - Game solver and validation
@@ -198,12 +210,10 @@ The sudoku app extends the template with:
 
 ## Developer Resources
 
-### Architecture & Design
-- **[ARCHITECTURE.md](./ARCHITECTURE.md)** - Detailed package architecture, dependency graph, and design decisions
-- **[MIGRATION.md](./MIGRATION.md)** - Migration guide from v1.x to v2.0.0
-
 ### Package Documentation
+
 Each package includes:
+
 - Purpose and responsibility
 - Public API documentation
 - Integration guides with examples
@@ -211,43 +221,46 @@ Each package includes:
 - Development commands
 
 ### Specifications
+
 - **[specs/](./specs/)** - Feature specifications and documentation
-  - [003-modular-turborepo-architecture](./specs/003-modular-turborepo-architecture/) - Current architecture spec
+  - [003-modular-turborepo-architecture](./specs/003-modular-turborepo-architecture/) -
+    Current architecture spec
 
 ### Development Guides
+
 - Creating new packages
 - Understanding package dependencies
 - Importing from packages
 - Common development tasks
 - Troubleshooting
 
-## Migration Guide
-
-If you're upgrading from v1.x to v2.0.0, see [MIGRATION.md](/home/node/sudoku-web/MIGRATION.md)
-
 ## Multi-Platform Support
 
 This project supports multiple platforms:
 
 ### Web
+
 ```bash
 npm run dev           # Development
 npm run build         # Production build
 ```
 
 ### iOS
+
 ```bash
 npm run build:ios     # Build and open in Xcode
 npm run start:ios     # Run on iOS device/simulator
 ```
 
 ### Android
+
 ```bash
 npm run build:android # Build and open in Android Studio
 npm run start:android # Run on Android device/emulator
 ```
 
 ### Desktop (Electron)
+
 ```bash
 npm run build:electron # Build desktop app
 ```
@@ -321,6 +334,7 @@ sudoku-web/
 ## Support
 
 For issues and questions:
+
 - GitHub Issues: [repository-url]/issues
 - Documentation: See `/specs` directory
 - Quick Start: See [QUICKSTART.md](/home/node/sudoku-web/QUICKSTART.md)

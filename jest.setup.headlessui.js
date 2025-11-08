@@ -11,7 +11,13 @@ const Dialog = React.forwardRef((props, ref) => {
 
   return React.createElement(
     Component,
-    { ref, role: 'dialog', 'aria-modal': 'true', 'data-testid': 'headlessui-dialog', ...rest },
+    {
+      ref,
+      role: 'dialog',
+      'aria-modal': 'true',
+      'data-testid': 'headlessui-dialog',
+      ...rest,
+    },
     children
   );
 });
@@ -132,7 +138,12 @@ Popover.Button = React.forwardRef((props, ref) => {
   const { as: Component = 'button', children, ...rest } = props;
   return React.createElement(
     Component,
-    { ref, 'data-testid': 'headlessui-popover-button', type: 'button', ...rest },
+    {
+      ref,
+      'data-testid': 'headlessui-popover-button',
+      type: 'button',
+      ...rest,
+    },
     children
   );
 });
@@ -153,7 +164,13 @@ Popover.Panel.displayName = 'Popover.Panel';
 
 // Mock Switch component
 const Switch = React.forwardRef((props, ref) => {
-  const { checked, onChange, as: Component = 'button', children, ...rest } = props;
+  const {
+    checked,
+    onChange,
+    as: Component = 'button',
+    children,
+    ...rest
+  } = props;
 
   const handleClick = () => {
     if (onChange) {
@@ -170,7 +187,7 @@ const Switch = React.forwardRef((props, ref) => {
       'data-testid': 'headlessui-switch',
       type: Component === 'button' ? 'button' : undefined,
       onClick: handleClick,
-      ...rest
+      ...rest,
     },
     children
   );
