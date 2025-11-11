@@ -314,7 +314,6 @@ const Sudoku = ({
           isVisible={showAnimation}
           gridRef={gridRef}
           completedGamesCount={completedGamesCount}
-          isCapacitor={isCapacitor}
         />
       )}
 
