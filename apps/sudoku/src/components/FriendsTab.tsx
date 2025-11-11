@@ -1,9 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import {
-  ServerStateResult,
-  Party,
-} from '@sudoku-web/template/types/serverTypes';
+import { ServerStateResult, Party } from '@sudoku-web/types/serverTypes';
 import { UserProfile } from '@sudoku-web/types/userProfile';
 import { useSessions } from '@sudoku-web/template/providers/SessionsProvider';
 import { ServerState } from '@sudoku-web/sudoku/types/state';
@@ -195,17 +192,24 @@ export const FriendsTab = ({
                                   <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
                                     {friendSessions[userId]?.sessions
                                       ?.sort(
-                                        (a, b) =>
+                                        (
+                                          a: ServerStateResult<ServerState>,
+                                          b: ServerStateResult<ServerState>
+                                        ) =>
                                           new Date(b.updatedAt).getTime() -
                                           new Date(a.updatedAt).getTime()
                                       )
-                                      ?.map((userSession) => (
-                                        <IntegratedSessionRow
-                                          key={userSession.sessionId}
-                                          session={userSession}
-                                          userSessions={mySessions}
-                                        />
-                                      ))}
+                                      ?.map(
+                                        (
+                                          userSession: ServerStateResult<ServerState>
+                                        ) => (
+                                          <IntegratedSessionRow
+                                            key={userSession.sessionId}
+                                            session={userSession}
+                                            userSessions={mySessions}
+                                          />
+                                        )
+                                      )}
                                   </ul>
                                 ) : (
                                   <p className="px-3 pb-3 text-gray-600 dark:text-gray-400">

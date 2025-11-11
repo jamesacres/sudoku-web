@@ -1,23 +1,12 @@
-import { Notes } from './notes';
-
-type Value = number | boolean | Notes | undefined;
-
-export type PuzzleRowOrColumn = 0 | 1 | 2;
-export interface PuzzleBox<T extends Value = number | Notes> {
-  0: T[];
-  1: T[];
-  2: T[];
-}
-export interface PuzzleRow<T extends Value = number | Notes> {
-  0: PuzzleBox<T>;
-  1: PuzzleBox<T>;
-  2: PuzzleBox<T>;
-}
-export interface Puzzle<T extends Value = number | Notes> {
-  0: PuzzleRow<T>;
-  1: PuzzleRow<T>;
-  2: PuzzleRow<T>;
-}
+// Import Puzzle types from the shared types package
+export type {
+  Notes,
+  PuzzleRowOrColumn,
+  PuzzleBox,
+  PuzzleRow,
+  Puzzle,
+} from '@sudoku-web/types/gameState';
+import type { Puzzle } from '@sudoku-web/types/gameState';
 
 export const emptyPuzzle: Puzzle<number> = {
   '0': {

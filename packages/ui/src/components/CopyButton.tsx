@@ -1,6 +1,5 @@
 'use client';
 
-import { isIOS } from '@sudoku-web/auth/services/capacitor';
 import { Share } from '@capacitor/share';
 import { useEffect, useState } from 'react';
 import {
@@ -16,11 +15,13 @@ const CopyButton = ({
   extraSmall = false,
   className = '',
   partyName,
+  isIOS = () => false,
 }: {
   getText: () => Promise<string> | string;
   extraSmall?: boolean;
   className?: string;
   partyName?: string;
+  isIOS?: () => boolean;
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [showCopied, setShowCopied] = useState(false);

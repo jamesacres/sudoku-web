@@ -1,12 +1,13 @@
 'use client';
 
-import { useOnline } from '@sudoku-web/template/hooks/online';
 import React from 'react';
 import { Wifi, WifiOff } from 'react-feather';
 
-const HeaderOnline = () => {
-  const { isOnline } = useOnline();
+interface HeaderOnlineProps {
+  isOnline?: boolean;
+}
 
+const HeaderOnline = ({ isOnline = true }: HeaderOnlineProps) => {
   return (
     <button
       onClick={() => {

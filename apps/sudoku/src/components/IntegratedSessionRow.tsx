@@ -4,7 +4,7 @@ import {
   Party,
   ServerStateResult,
   SudokuBookPuzzle,
-} from '@sudoku-web/template/types/serverTypes';
+} from '@sudoku-web/types/serverTypes';
 import { ServerState } from '@sudoku-web/sudoku/types/state';
 import { calculateCompletionPercentage } from '@sudoku-web/sudoku/helpers/calculateCompletionPercentage';
 import {
@@ -20,10 +20,7 @@ import {
 } from '@sudoku-web/auth/providers/AuthProvider';
 import { calculateSeconds } from '@sudoku-web/template/helpers/calculateSeconds';
 import { useSessions } from '@sudoku-web/template/providers/SessionsProvider';
-import {
-  UserSession,
-  UserSessions,
-} from '@sudoku-web/template/types/userSessions';
+import { UserSession, UserSessions } from '@sudoku-web/types/userSessions';
 import { Award, Loader } from 'react-feather';
 import Link from 'next/link';
 import { buildPuzzleUrl } from '@/helpers/buildPuzzleUrl';

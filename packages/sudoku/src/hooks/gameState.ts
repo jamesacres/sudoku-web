@@ -26,7 +26,7 @@ import {
   Parties,
   ServerStateResult,
   Session,
-} from '@sudoku-web/template/types/serverTypes';
+} from '@sudoku-web/types/serverTypes';
 import {
   UserContext,
   UserContextInterface,

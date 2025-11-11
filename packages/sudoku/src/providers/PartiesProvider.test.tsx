@@ -6,7 +6,7 @@ import {
   UserContext,
   UserContextInterface,
 } from '@sudoku-web/auth/providers/AuthProvider';
-import { Party } from '@sudoku-web/template/types/serverTypes';
+import { Party } from '@sudoku-web/types/serverTypes';
 
 jest.mock('@sudoku-web/template/hooks/serverStorage');
 

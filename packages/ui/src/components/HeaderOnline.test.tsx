@@ -1,7 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import HeaderOnline from './HeaderOnline';
-import { useOnline } from '@sudoku-web/template/hooks/online';
 
 // Mock react-feather icons
 jest.mock('react-feather', () => ({
@@ -13,39 +12,29 @@ jest.mock('react-feather', () => ({
   ),
 }));
 
-// Mock the useOnline hook
-jest.mock('@sudoku-web/template/hooks/online', () => ({
-  useOnline: jest.fn(),
-}));
-
 describe('HeaderOnline', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it('renders with online icon when online', () => {
-    (useOnline as jest.Mock).mockReturnValue({ isOnline: true });
-
-    render(<HeaderOnline />);
+    render(<HeaderOnline isOnline={true} />);
 
     const button = screen.getByRole('button');
     expect(button).toBeInTheDocument();
   });
 
   it('renders with offline icon when offline', () => {
-    (useOnline as jest.Mock).mockReturnValue({ isOnline: false });
-
-    render(<HeaderOnline />);
+    render(<HeaderOnline isOnline={false} />);
 
     const button = screen.getByRole('button');
     expect(button).toBeInTheDocument();
   });
 
   it('shows alert with correct status on click', () => {
-    (useOnline as jest.Mock).mockReturnValue({ isOnline: true });
     const alertSpy = jest.spyOn(window, 'alert').mockImplementation();
 
-    render(<HeaderOnline />);
+    render(<HeaderOnline isOnline={true} />);
 
     const button = screen.getByRole('button');
     button.click();

@@ -5,7 +5,7 @@ import { render, screen } from '@testing-library/react';
 import { IntegratedSessionRow } from './IntegratedSessionRow';
 import { ServerState } from '@sudoku-web/sudoku/types/state';
 import { UserContext } from '@sudoku-web/auth/providers/AuthProvider';
-import { ServerStateResult } from '@sudoku-web/template/types/serverTypes';
+import { ServerStateResult } from '@sudoku-web/types/serverTypes';
 
 // Mock dependencies
 jest.mock('react-feather', () => ({

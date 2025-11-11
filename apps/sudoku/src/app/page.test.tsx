@@ -85,7 +85,7 @@ jest.mock('@sudoku-web/sudoku/hooks/useParties', () => ({
   })),
 }));
 
-jest.mock('@sudoku-web/template/types/serverTypes', () => ({
+jest.mock('@sudoku-web/types/serverTypes', () => ({
   Difficulty: {
     SIMPLE: 'simple',
     EASY: 'easy',
@@ -94,7 +94,7 @@ jest.mock('@sudoku-web/template/types/serverTypes', () => ({
   },
 }));
 
-jest.mock('@sudoku-web/template/types/tabs', () => ({
+jest.mock('@sudoku-web/types/tabs', () => ({
   Tab: {
     START_PUZZLE: 'START_PUZZLE',
     MY_PUZZLES: 'MY_PUZZLES',

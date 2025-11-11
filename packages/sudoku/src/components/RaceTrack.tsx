@@ -1,5 +1,5 @@
 'use client';
-import { Parties, Session } from '@sudoku-web/template/types/serverTypes';
+import { Parties, Session } from '@sudoku-web/types/serverTypes';
 import { GameState, ServerState } from '../types/state';
 import { calculateCompletionPercentage } from '../helpers/calculateCompletionPercentage';
 import { useParties } from '../hooks/useParties';
@@ -9,7 +9,7 @@ import {
   getAllUserIds,
 } from '@sudoku-web/template/utils/playerColors';
 import { formatSeconds } from '@sudoku-web/template/helpers/formatSeconds';
-import { Tab } from '@sudoku-web/template/types/tabs';
+import { Tab } from '@sudoku-web/types/tabs';
 import TrafficLight from './TrafficLight';
 import Link from 'next/link';
 import { RefreshCw } from 'react-feather';

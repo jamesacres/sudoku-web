@@ -3,14 +3,11 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import Leaderboard from './Leaderboard';
 import * as scoringUtils from '@sudoku-web/sudoku/helpers/scoringUtils';
 import { UserProfile } from '@sudoku-web/types/userProfile';
-import { UserSessions } from '@sudoku-web/template/types/userSessions';
+import { UserSessions } from '@sudoku-web/types/userSessions';
 import { Puzzle } from '@sudoku-web/sudoku/types/puzzle';
 import { ServerState } from '@sudoku-web/sudoku/types/state';
 import { FriendsLeaderboardScore } from '@sudoku-web/sudoku/types/scoringTypes';
-import {
-  ServerStateResult,
-  Party,
-} from '@sudoku-web/template/types/serverTypes';
+import { ServerStateResult, Party } from '@sudoku-web/types/serverTypes';
 
 // Mock child components
 jest.mock('./FriendLeaderboardEntry', () => {

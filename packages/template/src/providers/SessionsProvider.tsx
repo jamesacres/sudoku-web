@@ -13,9 +13,9 @@ import {
   Parties,
   Session,
   Party,
-} from '../types/serverTypes';
+} from '@sudoku-web/types/serverTypes';
 import { StateType } from '@sudoku-web/types/stateType';
-import { UserSession, UserSessions } from '../types/userSessions';
+import { UserSession, UserSessions } from '@sudoku-web/types/userSessions';
 import { useServerStorage } from '../hooks/serverStorage';
 import { useLocalStorage } from '../hooks/localStorage';
 import {

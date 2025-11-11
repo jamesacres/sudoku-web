@@ -8,11 +8,6 @@ import {
 } from '@testing-library/react';
 import { CopyButton } from './CopyButton';
 
-// Mock template package isIOS function
-jest.mock('@sudoku-web/template', () => ({
-  isIOS: jest.fn(() => false),
-}));
-
 // Mock Share with jest.fn() inside the factory
 jest.mock('@capacitor/share', () => ({
   Share: {
@@ -291,10 +286,7 @@ describe('CopyButton', () => {
     });
 
     it('should show copy icon on non-iOS when canShare is false', async () => {
-      const { isIOS } = require('@sudoku-web/template');
-      isIOS.mockReturnValue(false);
-
-      render(<CopyButton getText={() => 'test'} />);
+      render(<CopyButton getText={() => 'test'} isIOS={() => false} />);
 
       await waitFor(() => {
         expect(screen.getByText(/Copy Invite Link/i)).toBeInTheDocument();

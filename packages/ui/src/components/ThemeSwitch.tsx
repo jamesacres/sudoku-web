@@ -2,10 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
-import { isCapacitor } from '@sudoku-web/auth/services/capacitor';
 import { StatusBar, Style } from '@capacitor/status-bar';
 
-const ThemeSwitch = () => {
+interface ThemeSwitchProps {
+  isCapacitor?: () => boolean;
+}
+
+const ThemeSwitch = ({ isCapacitor = () => false }: ThemeSwitchProps) => {
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme, resolvedTheme } = useTheme();
 
@@ -21,7 +24,7 @@ const ThemeSwitch = () => {
             : Style.Light,
       });
     }
-  }, [theme, resolvedTheme]);
+  }, [theme, resolvedTheme, isCapacitor]);
 
   if (!mounted) {
     return null;

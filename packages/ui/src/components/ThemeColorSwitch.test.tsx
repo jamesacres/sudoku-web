@@ -2,7 +2,6 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import ThemeColorSwitch from './ThemeColorSwitch';
 import { useThemeColor } from '../providers/ThemeColorProvider';
-import { RevenueCatContext } from '@sudoku-web/template/providers/RevenueCatProvider';
 import { SubscriptionContext } from '@sudoku-web/types/subscriptionContext';
 
 jest.mock('../providers/ThemeColorProvider');
@@ -44,11 +43,7 @@ describe('ThemeColorSwitch', () => {
 
   describe('Rendering', () => {
     it('should render the theme color button', () => {
-      render(
-        <RevenueCatContext.Provider value={mockRevenueCatContext as any}>
-          <ThemeColorSwitch />
-        </RevenueCatContext.Provider>
-      );
+      render(<ThemeColorSwitch />);
 
       const button = screen.getByRole('button', {
         name: /Change Theme Color/i,
@@ -62,11 +57,7 @@ describe('ThemeColorSwitch', () => {
         setThemeColor: mockSetThemeColor,
       });
 
-      render(
-        <RevenueCatContext.Provider value={mockRevenueCatContext as any}>
-          <ThemeColorSwitch />
-        </RevenueCatContext.Provider>
-      );
+      render(<ThemeColorSwitch />);
 
       const button = screen.getByRole('button', {
         name: /Change Theme Color/i,
@@ -80,11 +71,7 @@ describe('ThemeColorSwitch', () => {
         setThemeColor: mockSetThemeColor,
       });
 
-      render(
-        <RevenueCatContext.Provider value={mockRevenueCatContext as any}>
-          <ThemeColorSwitch />
-        </RevenueCatContext.Provider>
-      );
+      render(<ThemeColorSwitch />);
 
       const button = screen.getByRole('button', {
         name: /Change Theme Color/i,
@@ -93,11 +80,7 @@ describe('ThemeColorSwitch', () => {
     });
 
     it('should render SVG icon inside button', () => {
-      const { container } = render(
-        <RevenueCatContext.Provider value={mockRevenueCatContext as any}>
-          <ThemeColorSwitch />
-        </RevenueCatContext.Provider>
-      );
+      const { container } = render(<ThemeColorSwitch />);
 
       const svg = container.querySelector('svg');
       expect(svg).toBeInTheDocument();
@@ -106,11 +89,7 @@ describe('ThemeColorSwitch', () => {
 
   describe('Color Menu Interaction', () => {
     it('should open color menu when button is clicked', async () => {
-      render(
-        <RevenueCatContext.Provider value={mockRevenueCatContext as any}>
-          <ThemeColorSwitch />
-        </RevenueCatContext.Provider>
-      );
+      render(<ThemeColorSwitch />);
 
       const button = screen.getByRole('button', {
         name: /Change Theme Color/i,
@@ -125,11 +104,7 @@ describe('ThemeColorSwitch', () => {
     });
 
     it('should close color menu when clicking outside', async () => {
-      render(
-        <RevenueCatContext.Provider value={mockRevenueCatContext as any}>
-          <ThemeColorSwitch />
-        </RevenueCatContext.Provider>
-      );
+      render(<ThemeColorSwitch />);
 
       const button = screen.getByRole('button', {
         name: /Change Theme Color/i,
@@ -152,11 +127,7 @@ describe('ThemeColorSwitch', () => {
     });
 
     it('should toggle menu open/closed on repeated button clicks', async () => {
-      render(
-        <RevenueCatContext.Provider value={mockRevenueCatContext as any}>
-          <ThemeColorSwitch />
-        </RevenueCatContext.Provider>
-      );
+      render(<ThemeColorSwitch />);
 
       const button = screen.getByRole('button', {
         name: /Change Theme Color/i,
@@ -190,11 +161,7 @@ describe('ThemeColorSwitch', () => {
 
   describe('Color Selection - Free Colors', () => {
     it('should select free color (blue) without showing modal', async () => {
-      render(
-        <RevenueCatContext.Provider value={mockRevenueCatContext as any}>
-          <ThemeColorSwitch />
-        </RevenueCatContext.Provider>
-      );
+      render(<ThemeColorSwitch />);
 
       const mainButton = screen.getByRole('button', {
         name: /Change Theme Color/i,
@@ -219,11 +186,7 @@ describe('ThemeColorSwitch', () => {
     });
 
     it('should select free color (red) without showing modal', async () => {
-      render(
-        <RevenueCatContext.Provider value={mockRevenueCatContext as any}>
-          <ThemeColorSwitch />
-        </RevenueCatContext.Provider>
-      );
+      render(<ThemeColorSwitch />);
 
       const mainButton = screen.getByRole('button', {
         name: /Change Theme Color/i,
@@ -248,11 +211,7 @@ describe('ThemeColorSwitch', () => {
     });
 
     it('should render green color option for free color selection', async () => {
-      render(
-        <RevenueCatContext.Provider value={mockRevenueCatContext as any}>
-          <ThemeColorSwitch />
-        </RevenueCatContext.Provider>
-      );
+      render(<ThemeColorSwitch />);
 
       const mainButton = screen.getByRole('button', {
         name: /Change Theme Color/i,
@@ -275,18 +234,16 @@ describe('ThemeColorSwitch', () => {
   describe('Color Selection - Premium Colors', () => {
     it('should show subscription modal when selecting premium color as non-subscriber', async () => {
       render(
-        <RevenueCatContext.Provider value={mockRevenueCatContext as any}>
-          <ThemeColorSwitch
-            isSubscribed={mockRevenueCatContext.isSubscribed}
-            onPremiumColorClick={(colorName, onSuccess) =>
-              mockRevenueCatContext.subscribeModal.showModalIfRequired(
-                onSuccess,
-                () => {},
-                SubscriptionContext.THEME_COLOR
-              )
-            }
-          />
-        </RevenueCatContext.Provider>
+        <ThemeColorSwitch
+          isSubscribed={mockRevenueCatContext.isSubscribed}
+          onPremiumColorClick={(colorName, onSuccess) =>
+            mockRevenueCatContext.subscribeModal.showModalIfRequired(
+              onSuccess,
+              () => {},
+              SubscriptionContext.THEME_COLOR
+            )
+          }
+        />
       );
 
       const mainButton = screen.getByRole('button', {
@@ -316,18 +273,16 @@ describe('ThemeColorSwitch', () => {
 
     it('should show modal on premium color selection', async () => {
       render(
-        <RevenueCatContext.Provider value={mockRevenueCatContext as any}>
-          <ThemeColorSwitch
-            isSubscribed={mockRevenueCatContext.isSubscribed}
-            onPremiumColorClick={(colorName, onSuccess) =>
-              mockRevenueCatContext.subscribeModal.showModalIfRequired(
-                onSuccess,
-                () => {},
-                SubscriptionContext.THEME_COLOR
-              )
-            }
-          />
-        </RevenueCatContext.Provider>
+        <ThemeColorSwitch
+          isSubscribed={mockRevenueCatContext.isSubscribed}
+          onPremiumColorClick={(colorName, onSuccess) =>
+            mockRevenueCatContext.subscribeModal.showModalIfRequired(
+              onSuccess,
+              () => {},
+              SubscriptionContext.THEME_COLOR
+            )
+          }
+        />
       );
 
       const mainButton = screen.getByRole('button', {
@@ -352,13 +307,7 @@ describe('ThemeColorSwitch', () => {
     });
 
     it('should allow selecting premium color when user is subscribed', async () => {
-      render(
-        <RevenueCatContext.Provider
-          value={mockRevenueCatContextSubscribed as any}
-        >
-          <ThemeColorSwitch />
-        </RevenueCatContext.Provider>
-      );
+      render(<ThemeColorSwitch />);
 
       const mainButton = screen.getByRole('button', {
         name: /Change Theme Color/i,
@@ -383,13 +332,7 @@ describe('ThemeColorSwitch', () => {
     });
 
     it('should close menu after selecting premium color', async () => {
-      render(
-        <RevenueCatContext.Provider
-          value={mockRevenueCatContextSubscribed as any}
-        >
-          <ThemeColorSwitch />
-        </RevenueCatContext.Provider>
-      );
+      render(<ThemeColorSwitch />);
 
       const mainButton = screen.getByRole('button', {
         name: /Change Theme Color/i,
@@ -417,11 +360,7 @@ describe('ThemeColorSwitch', () => {
 
   describe('Rainbow Animation', () => {
     it('should render button with correct initial classes', () => {
-      render(
-        <RevenueCatContext.Provider value={mockRevenueCatContext as any}>
-          <ThemeColorSwitch />
-        </RevenueCatContext.Provider>
-      );
+      render(<ThemeColorSwitch />);
 
       const button = screen.getByRole('button', {
         name: /Change Theme Color/i,
@@ -431,11 +370,7 @@ describe('ThemeColorSwitch', () => {
     });
 
     it('should apply background color class on render', () => {
-      render(
-        <RevenueCatContext.Provider value={mockRevenueCatContext as any}>
-          <ThemeColorSwitch />
-        </RevenueCatContext.Provider>
-      );
+      render(<ThemeColorSwitch />);
 
       const button = screen.getByRole('button', {
         name: /Change Theme Color/i,
@@ -444,22 +379,14 @@ describe('ThemeColorSwitch', () => {
     });
 
     it('should render SVG icon', () => {
-      const { container } = render(
-        <RevenueCatContext.Provider value={mockRevenueCatContext as any}>
-          <ThemeColorSwitch />
-        </RevenueCatContext.Provider>
-      );
+      const { container } = render(<ThemeColorSwitch />);
 
       const svg = container.querySelector('svg');
       expect(svg).toBeInTheDocument();
     });
 
     it('should clean up on unmount', () => {
-      const { unmount } = render(
-        <RevenueCatContext.Provider value={mockRevenueCatContext as any}>
-          <ThemeColorSwitch />
-        </RevenueCatContext.Provider>
-      );
+      const { unmount } = render(<ThemeColorSwitch />);
 
       expect(() => {
         unmount();
@@ -492,13 +419,7 @@ describe('ThemeColorSwitch', () => {
     ];
 
     it('should render all color options', async () => {
-      render(
-        <RevenueCatContext.Provider
-          value={mockRevenueCatContextSubscribed as any}
-        >
-          <ThemeColorSwitch />
-        </RevenueCatContext.Provider>
-      );
+      render(<ThemeColorSwitch />);
 
       const mainButton = screen.getByRole('button', {
         name: /Change Theme Color/i,
@@ -522,13 +443,7 @@ describe('ThemeColorSwitch', () => {
         setThemeColor: mockSetThemeColor,
       });
 
-      render(
-        <RevenueCatContext.Provider
-          value={mockRevenueCatContextSubscribed as any}
-        >
-          <ThemeColorSwitch />
-        </RevenueCatContext.Provider>
-      );
+      render(<ThemeColorSwitch />);
 
       const mainButton = screen.getByRole('button', {
         name: /Change Theme Color/i,
@@ -552,11 +467,7 @@ describe('ThemeColorSwitch', () => {
     });
 
     it('should handle rapid menu open/close', async () => {
-      render(
-        <RevenueCatContext.Provider value={mockRevenueCatContext as any}>
-          <ThemeColorSwitch />
-        </RevenueCatContext.Provider>
-      );
+      render(<ThemeColorSwitch />);
 
       const button = screen.getByRole('button', {
         name: /Change Theme Color/i,
@@ -576,22 +487,14 @@ describe('ThemeColorSwitch', () => {
     });
 
     it('should handle color change while menu is closed', () => {
-      const { rerender } = render(
-        <RevenueCatContext.Provider value={mockRevenueCatContext as any}>
-          <ThemeColorSwitch />
-        </RevenueCatContext.Provider>
-      );
+      const { rerender } = render(<ThemeColorSwitch />);
 
       mockUseThemeColor.mockReturnValue({
         themeColor: 'purple',
         setThemeColor: mockSetThemeColor,
       });
 
-      rerender(
-        <RevenueCatContext.Provider value={mockRevenueCatContext as any}>
-          <ThemeColorSwitch />
-        </RevenueCatContext.Provider>
-      );
+      rerender(<ThemeColorSwitch />);
 
       const button = screen.getByRole('button', {
         name: /Change Theme Color/i,
@@ -600,13 +503,7 @@ describe('ThemeColorSwitch', () => {
     });
 
     it('should prevent event propagation when clicking color', async () => {
-      render(
-        <RevenueCatContext.Provider
-          value={mockRevenueCatContextSubscribed as any}
-        >
-          <ThemeColorSwitch />
-        </RevenueCatContext.Provider>
-      );
+      render(<ThemeColorSwitch />);
 
       const mainButton = screen.getByRole('button', {
         name: /Change Theme Color/i,
@@ -630,11 +527,7 @@ describe('ThemeColorSwitch', () => {
 
   describe('Dark Mode Support', () => {
     it('should have dark mode class in menu container structure', () => {
-      const { container } = render(
-        <RevenueCatContext.Provider value={mockRevenueCatContext as any}>
-          <ThemeColorSwitch />
-        </RevenueCatContext.Provider>
-      );
+      const { container } = render(<ThemeColorSwitch />);
 
       const button = screen.getByRole('button', {
         name: /Change Theme Color/i,
@@ -647,13 +540,7 @@ describe('ThemeColorSwitch', () => {
     });
 
     it('should render with dark mode support', () => {
-      render(
-        <RevenueCatContext.Provider
-          value={mockRevenueCatContextSubscribed as any}
-        >
-          <ThemeColorSwitch />
-        </RevenueCatContext.Provider>
-      );
+      render(<ThemeColorSwitch />);
 
       const button = screen.getByRole('button', {
         name: /Change Theme Color/i,
@@ -665,9 +552,7 @@ describe('ThemeColorSwitch', () => {
   describe('Premium Badge', () => {
     it('should render premium badge emoji elements for non-subscribers', () => {
       render(
-        <RevenueCatContext.Provider value={mockRevenueCatContext as any}>
-          <ThemeColorSwitch isSubscribed={mockRevenueCatContext.isSubscribed} />
-        </RevenueCatContext.Provider>
+        <ThemeColorSwitch isSubscribed={mockRevenueCatContext.isSubscribed} />
       );
 
       const mainButton = screen.getByRole('button', {
@@ -681,9 +566,7 @@ describe('ThemeColorSwitch', () => {
 
     it('should have premium badge element with gradient styling', async () => {
       const { container } = render(
-        <RevenueCatContext.Provider value={mockRevenueCatContext as any}>
-          <ThemeColorSwitch isSubscribed={mockRevenueCatContext.isSubscribed} />
-        </RevenueCatContext.Provider>
+        <ThemeColorSwitch isSubscribed={mockRevenueCatContext.isSubscribed} />
       );
 
       const mainButton = screen.getByRole('button', {
@@ -698,13 +581,7 @@ describe('ThemeColorSwitch', () => {
     });
 
     it('should not show premium badge for subscribers', async () => {
-      const { container } = render(
-        <RevenueCatContext.Provider
-          value={mockRevenueCatContextSubscribed as any}
-        >
-          <ThemeColorSwitch />
-        </RevenueCatContext.Provider>
-      );
+      const { container } = render(<ThemeColorSwitch />);
 
       const mainButton = screen.getByRole('button', {
         name: /Change Theme Color/i,

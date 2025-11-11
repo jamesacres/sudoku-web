@@ -4,7 +4,7 @@ import { Award } from 'react-feather';
 import {
   Difficulty,
   BookPuzzleDifficulty,
-} from '@sudoku-web/template/types/serverTypes';
+} from '@sudoku-web/types/serverTypes';
 import { SCORING_CONFIG } from '@sudoku-web/sudoku/helpers/scoringConfig';
 
 interface ScoringLegendProps {

@@ -1,12 +1,9 @@
 'use client';
 import React, { useState, useMemo } from 'react';
 import { Award } from 'react-feather';
-import {
-  ServerStateResult,
-  Party,
-} from '@sudoku-web/template/types/serverTypes';
+import { ServerStateResult, Party } from '@sudoku-web/types/serverTypes';
 import { UserProfile } from '@sudoku-web/types/userProfile';
-import { UserSessions } from '@sudoku-web/template/types/userSessions';
+import { UserSessions } from '@sudoku-web/types/userSessions';
 import { ServerState } from '@sudoku-web/sudoku/types/state';
 import {
   FriendsLeaderboardScore,

@@ -4,11 +4,7 @@ import RaceTrack from './RaceTrack';
 import * as usePartiesModule from '../hooks/useParties';
 import * as completionModule from '../helpers/calculateCompletionPercentage';
 import * as cheatDetectionModule from '../helpers/cheatDetection';
-import {
-  Parties,
-  Session,
-  ServerState,
-} from '@sudoku-web/template/types/serverTypes';
+import { Parties, Session, ServerState } from '@sudoku-web/types/serverTypes';
 
 jest.mock('../hooks/useParties');
 jest.mock('@sudoku-web/template', () => ({

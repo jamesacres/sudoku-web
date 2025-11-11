@@ -19,7 +19,7 @@ import {
   EntitlementDuration,
   PublicInvite,
   Party,
-} from '@sudoku-web/template/types/serverTypes';
+} from '@sudoku-web/types/serverTypes';
 
 // Mock dependencies
 jest.mock('next/navigation');

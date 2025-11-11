@@ -12,7 +12,7 @@ import { useSessions } from '@sudoku-web/template/providers/SessionsProvider';
 import {
   SudokuBookPuzzle,
   ServerStateResult,
-} from '@sudoku-web/template/types/serverTypes';
+} from '@sudoku-web/types/serverTypes';
 import {
   puzzleTextToPuzzle,
   puzzleToPuzzleText,

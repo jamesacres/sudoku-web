@@ -1,7 +1,4 @@
-import {
-  ServerStateResult,
-  Party,
-} from '@sudoku-web/template/types/serverTypes';
+import { ServerStateResult, Party } from '@sudoku-web/types/serverTypes';
 import { ServerState } from '../types/state';
 import { isPuzzleCheated } from './cheatDetection';
 import { SCORING_CONFIG } from './scoringConfig';

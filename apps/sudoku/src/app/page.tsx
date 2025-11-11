@@ -6,10 +6,10 @@ import {
   UserContextInterface,
 } from '@sudoku-web/auth/providers/AuthProvider';
 import { useSessions } from '@sudoku-web/template/providers/SessionsProvider';
-import { Tab } from '@sudoku-web/template/types/tabs';
+import { Tab } from '@sudoku-web/types/tabs';
 import SocialProof from '@sudoku-web/template/components/SocialProof';
 import { PremiumFeatures } from '@sudoku-web/template/components/PremiumFeatures';
-import { Difficulty } from '@sudoku-web/template/types/serverTypes';
+import { Difficulty } from '@sudoku-web/types/serverTypes';
 import Footer from '@sudoku-web/ui/components/Footer';
 import MyPuzzlesTab from '@/components/MyPuzzlesTab';
 import FriendsTab from '@/components/FriendsTab';
@@ -29,6 +29,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import BookCover from '@/components/BookCover';
 import { buildPuzzleUrl } from '@/helpers/buildPuzzleUrl';
+import { isCapacitor } from '@sudoku-web/auth/services/capacitor';
 
 function HomeComponent() {
   const searchParams = useSearchParams();
@@ -428,7 +429,7 @@ function HomeComponent() {
           </div>
         </div>
       )}
-      <Footer>
+      <Footer isCapacitor={isCapacitor}>
         <button
           onClick={() => handleTabChange(Tab.START_PUZZLE)}
           className={`group inline-flex cursor-pointer flex-col items-center justify-center px-0 transition-colors duration-200 active:opacity-70 ${tabBackground(Tab.START_PUZZLE)}`}

@@ -9,10 +9,7 @@ import {
 import { SCORING_CONFIG } from './scoringConfig';
 import { ServerState } from '../types/state';
 import { Puzzle } from '../types/puzzle';
-import {
-  ServerStateResult,
-  Party,
-} from '@sudoku-web/template/types/serverTypes';
+import { ServerStateResult, Party } from '@sudoku-web/types/serverTypes';
 
 // Helper to create empty puzzle
 const createEmptyPuzzle = (): Puzzle<number> => {

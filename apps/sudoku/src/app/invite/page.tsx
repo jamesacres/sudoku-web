@@ -10,7 +10,7 @@ import { PremiumFeatures } from '@sudoku-web/template/components/PremiumFeatures
 import {
   PublicInvite,
   EntitlementDuration,
-} from '@sudoku-web/template/types/serverTypes';
+} from '@sudoku-web/types/serverTypes';
 import { useParties } from '@sudoku-web/sudoku/hooks/useParties';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useCallback, useContext, useEffect, useState } from 'react';

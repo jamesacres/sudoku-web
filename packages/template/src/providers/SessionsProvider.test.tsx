@@ -2,8 +2,8 @@ import React from 'react';
 import { render, screen, waitFor, act } from '@testing-library/react';
 import { SessionsProvider, useSessions } from './SessionsProvider';
 import { UserContext } from '@sudoku-web/auth/providers/AuthProvider';
-import { ServerStateResult, Party } from '../types/serverTypes';
-import { ServerState } from '@sudoku-web/sudoku/types/state';
+import { ServerStateResult, Party } from '@sudoku-web/types/serverTypes';
+import { ServerState } from '@sudoku-web/types/gameState';
 import { useServerStorage } from '../hooks/serverStorage';
 
 // Mock dependencies

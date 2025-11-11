@@ -1,7 +1,7 @@
 import {
   Difficulty,
   BookPuzzleDifficulty,
-} from '@sudoku-web/template/types/serverTypes';
+} from '@sudoku-web/types/serverTypes';
 
 // Use a function to defer enum evaluation and avoid circular dependency issues in tests
 const getDifficultyMultipliers = () =>

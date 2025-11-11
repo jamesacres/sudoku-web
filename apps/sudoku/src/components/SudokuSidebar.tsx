@@ -1,7 +1,7 @@
 import { memo, useContext } from 'react';
 import { Loader, RefreshCw, Users, X } from 'react-feather';
 import { PartyRow } from './PartyRow';
-import { Parties, Session } from '@sudoku-web/template/types/serverTypes';
+import { Parties, Session } from '@sudoku-web/types/serverTypes';
 import { ServerState } from '@sudoku-web/sudoku/types/state';
 import { useParties } from '@sudoku-web/sudoku/hooks/useParties';
 import {

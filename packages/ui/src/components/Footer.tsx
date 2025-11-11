@@ -1,7 +1,11 @@
-import { isCapacitor } from '@sudoku-web/auth/services/capacitor';
 import { Children, ReactNode } from 'react';
 
-const Footer = ({ children }: { children: ReactNode }) => {
+interface FooterProps {
+  children: ReactNode;
+  isCapacitor?: () => boolean;
+}
+
+const Footer = ({ children, isCapacitor = () => false }: FooterProps) => {
   return (
     <nav
       data-testid="footer"

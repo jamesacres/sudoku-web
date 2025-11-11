@@ -1,5 +1,5 @@
 'use client';
-import { ServerStateResult } from '@sudoku-web/template/types/serverTypes';
+import { ServerStateResult } from '@sudoku-web/types/serverTypes';
 import { ServerState } from '@sudoku-web/sudoku/types/state';
 import IntegratedSessionRow from './IntegratedSessionRow';
 

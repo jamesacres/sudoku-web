@@ -1,5 +1,10 @@
 
+ui repo no dependencies - ensure all components which are refactored into packages inject dependencies instead of needing to depend on other internal packages
+remove ui package dependencies
+
 Root package few dependencies. Instead install them where they're used. Also tsconfig should be in sub directories. Packages should install local dependencies too, ensure no circular - template should rely on auth but not the other way round
+
+update constitution with new repo structure
 
 review all changes
 move auth services capacitor and electron to template
@@ -19,7 +24,7 @@ restore old tests
 move remaining sudoku components into package
 fix next config file generation vercel
 remove from package json all packages not used by each part, reorder, re lint
-rename to bubbly-apps
+rename to bubbly-app deploy separately to vercel
 render template, other apps
 test capacitor xcode and android
 test electron
@@ -98,6 +103,11 @@ packages/sudoku/src/types/SudokuGrid.ts
 Add contact + manage subscription link https://www.revenuecat.com/docs/subscription-guidance/managing-subscriptions#using-the-managementurl-to-help-customers-cancel-a-subscription
 
 Sign in button on invite page header should redirect back to the invite
+
+
+
+Sudoku solver build with ai like sudoku coach, then make MCP server
+
 
 Bugs
 ----

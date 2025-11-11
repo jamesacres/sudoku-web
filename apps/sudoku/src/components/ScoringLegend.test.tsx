@@ -5,7 +5,7 @@ import { SCORING_CONFIG } from '@sudoku-web/sudoku/helpers/scoringConfig';
 import {
   Difficulty,
   BookPuzzleDifficulty,
-} from '@sudoku-web/template/types/serverTypes';
+} from '@sudoku-web/types/serverTypes';
 
 describe('ScoringLegend', () => {
   const mockOnClose = jest.fn();

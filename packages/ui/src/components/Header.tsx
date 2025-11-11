@@ -10,12 +10,17 @@ const HeaderOnline = dynamic(() => import('./HeaderOnline'), { ssr: false });
 
 import ThemeControls from './ThemeControls';
 
-interface HeaderProps extends HeaderUserDependencies {}
+interface HeaderProps extends HeaderUserDependencies {
+  isOnline?: boolean;
+  isCapacitor?: () => boolean;
+}
 
 const Header = ({
   isSubscribed,
   showSubscribeModal,
   deleteAccount,
+  isOnline,
+  isCapacitor,
 }: HeaderProps) => {
   return (
     <>
@@ -31,8 +36,8 @@ const Header = ({
               showSubscribeModal={showSubscribeModal}
               deleteAccount={deleteAccount}
             />
-            <ThemeControls />
-            <HeaderOnline />
+            <ThemeControls isCapacitor={isCapacitor} />
+            <HeaderOnline isOnline={isOnline} />
           </div>
         </div>
       </nav>

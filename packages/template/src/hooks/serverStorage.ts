@@ -25,7 +25,7 @@ import {
   SudokuBookOfTheMonth,
   Difficulty,
   SudokuOfTheDay,
-} from '../types/serverTypes';
+} from '@sudoku-web/types/serverTypes';
 
 const app = 'sudoku';
 const apiUrl = 'https://api.bubblyclouds.com';

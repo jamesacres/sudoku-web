@@ -2,11 +2,6 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import Footer from './Footer';
 
-// Mock the capacitor helper
-jest.mock('@sudoku-web/auth/services/capacitor', () => ({
-  isCapacitor: jest.fn(() => false),
-}));
-
 describe('Footer', () => {
   describe('rendering', () => {
     it('should render footer with children', () => {
@@ -176,23 +171,45 @@ describe('Footer', () => {
 
   describe('conditional styling with Capacitor', () => {
     it('should add pb-safe and pt-2 classes when isCapacitor is true', () => {
-      const { isCapacitor } = require('@sudoku-web/auth/services/capacitor');
-      isCapacitor.mockReturnValueOnce(true);
+      const mockIsCapacitor = jest.fn(() => true);
 
-      const { rerender } = render(
+      const { container } = render(
+        <Footer isCapacitor={mockIsCapacitor}>
+          <div>Content</div>
+        </Footer>
+      );
+
+      const nav = container.querySelector('nav');
+      expect(mockIsCapacitor).toHaveBeenCalled();
+      expect(nav).toHaveClass('pb-safe');
+      expect(nav).toHaveClass('pt-2');
+    });
+
+    it('should not add pb-safe and pt-2 classes when isCapacitor is false', () => {
+      const mockIsCapacitor = jest.fn(() => false);
+
+      const { container } = render(
+        <Footer isCapacitor={mockIsCapacitor}>
+          <div>Content</div>
+        </Footer>
+      );
+
+      const nav = container.querySelector('nav');
+      expect(mockIsCapacitor).toHaveBeenCalled();
+      expect(nav).not.toHaveClass('pb-safe');
+      expect(nav).not.toHaveClass('pt-2');
+    });
+
+    it('should use default isCapacitor that returns false when not provided', () => {
+      const { container } = render(
         <Footer>
           <div>Content</div>
         </Footer>
       );
 
-      rerender(
-        <Footer>
-          <div>Content</div>
-        </Footer>
-      );
-
-      // The isCapacitor mock should have been called in the first render
-      expect(isCapacitor).toHaveBeenCalled();
+      const nav = container.querySelector('nav');
+      expect(nav).not.toHaveClass('pb-safe');
+      expect(nav).not.toHaveClass('pt-2');
     });
   });
 

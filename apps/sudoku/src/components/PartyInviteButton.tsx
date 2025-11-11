@@ -1,6 +1,7 @@
 import { useServerStorage } from '@sudoku-web/template/hooks/serverStorage';
 import { CopyButton } from '@sudoku-web/ui/components/CopyButton';
 import { useState } from 'react';
+import { isIOS } from '@sudoku-web/auth/services/capacitor';
 
 const PartyInviteButton = ({
   puzzleId,
@@ -44,6 +45,7 @@ const PartyInviteButton = ({
       getText={getInviteUrl}
       extraSmall={extraSmall}
       partyName={partyName}
+      isIOS={isIOS}
     />
   );
 };

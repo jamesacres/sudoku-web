@@ -6,13 +6,23 @@
   "types": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
-    "./*": "./src/*.ts"
+    "./*": "./src/*.ts",
+    "./gameState": "./src/gameState.ts",
+    "./serverTypes": "./src/serverTypes.ts",
+    "./tabs": "./src/tabs.ts",
+    "./userSessions": "./src/userSessions.ts"
   },
   "scripts": {
     "type-check": "tsc --noEmit",
     "lint": "eslint ."
   },
   "devDependencies": {
+    "@types/jest": "^29.5.10",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "eslint": "^8",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "prettier": "^3.2.5",
     "typescript": "^5"
   }
 }

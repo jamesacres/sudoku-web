@@ -8,11 +8,6 @@ jest.mock('next-themes', () => ({
   useTheme: jest.fn(),
 }));
 
-// Mock capacitor
-jest.mock('@sudoku-web/auth/services/capacitor', () => ({
-  isCapacitor: jest.fn(() => false),
-}));
-
 // Mock Capacitor StatusBar
 jest.mock('@capacitor/status-bar', () => ({
   StatusBar: {
@@ -279,9 +274,8 @@ describe('ThemeSwitch', () => {
 
   describe('Capacitor integration', () => {
     it('should call StatusBar.setStyle when on Capacitor in dark mode', async () => {
-      const { isCapacitor } = require('@sudoku-web/auth/services/capacitor');
       const { StatusBar } = require('@capacitor/status-bar');
-      isCapacitor.mockReturnValue(true);
+      const mockIsCapacitor = jest.fn(() => true);
 
       (useTheme as jest.Mock).mockReturnValue({
         theme: 'dark',
@@ -289,17 +283,17 @@ describe('ThemeSwitch', () => {
         resolvedTheme: 'dark',
       });
 
-      render(<ThemeSwitch />);
+      render(<ThemeSwitch isCapacitor={mockIsCapacitor} />);
 
       await waitFor(() => {
         expect(StatusBar.setStyle).toHaveBeenCalled();
+        expect(mockIsCapacitor).toHaveBeenCalled();
       });
     });
 
     it('should not call StatusBar when not on Capacitor', async () => {
-      const { isCapacitor } = require('@sudoku-web/auth/services/capacitor');
       const { StatusBar } = require('@capacitor/status-bar');
-      isCapacitor.mockReturnValue(false);
+      const mockIsCapacitor = jest.fn(() => false);
 
       (useTheme as jest.Mock).mockReturnValue({
         theme: 'dark',
@@ -307,17 +301,26 @@ describe('ThemeSwitch', () => {
         resolvedTheme: 'dark',
       });
 
-      render(<ThemeSwitch />);
+      render(<ThemeSwitch isCapacitor={mockIsCapacitor} />);
+
+      await waitFor(() => {
+        expect(mockIsCapacitor).toHaveBeenCalled();
+      });
 
       expect(StatusBar.setStyle).not.toHaveBeenCalled();
     });
 
     it('should update StatusBar style when theme changes', async () => {
-      const { isCapacitor } = require('@sudoku-web/auth/services/capacitor');
       const { StatusBar } = require('@capacitor/status-bar');
-      isCapacitor.mockReturnValue(true);
+      const mockIsCapacitor = jest.fn(() => true);
 
-      const { rerender } = render(<ThemeSwitch />);
+      (useTheme as jest.Mock).mockReturnValue({
+        theme: 'light',
+        setTheme: mockSetTheme,
+        resolvedTheme: 'light',
+      });
+
+      const { rerender } = render(<ThemeSwitch isCapacitor={mockIsCapacitor} />);
 
       (useTheme as jest.Mock).mockReturnValue({
         theme: 'dark',
@@ -325,10 +328,27 @@ describe('ThemeSwitch', () => {
         resolvedTheme: 'dark',
       });
 
-      rerender(<ThemeSwitch />);
+      rerender(<ThemeSwitch isCapacitor={mockIsCapacitor} />);
 
       await waitFor(() => {
         expect(StatusBar.setStyle).toHaveBeenCalled();
+        expect(mockIsCapacitor).toHaveBeenCalled();
+      });
+    });
+
+    it('should use default isCapacitor that returns false when not provided', async () => {
+      const { StatusBar } = require('@capacitor/status-bar');
+
+      (useTheme as jest.Mock).mockReturnValue({
+        theme: 'dark',
+        setTheme: mockSetTheme,
+        resolvedTheme: 'dark',
+      });
+
+      render(<ThemeSwitch />);
+
+      await waitFor(() => {
+        expect(StatusBar.setStyle).not.toHaveBeenCalled();
       });
     });
   });

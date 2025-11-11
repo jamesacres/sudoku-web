@@ -3,11 +3,7 @@ import SimpleSudoku from '@sudoku-web/sudoku/components/SimpleSudoku';
 import { TimerDisplay } from '@sudoku-web/sudoku/components/TimerDisplay';
 import { useParties } from '@sudoku-web/sudoku/hooks/useParties';
 import { ServerState } from '@sudoku-web/sudoku/types/state';
-import {
-  Party,
-  SessionParty,
-  Session,
-} from '@sudoku-web/template/types/serverTypes';
+import { Party, SessionParty, Session } from '@sudoku-web/types/serverTypes';
 import { calculateSeconds } from '@sudoku-web/template/helpers/calculateSeconds';
 import {
   UserContext,
@@ -24,6 +20,7 @@ import { CopyButton } from '@sudoku-web/ui/components/CopyButton';
 import { useContext, useState } from 'react';
 import { PartyConfirmationDialog } from './PartyConfirmationDialog';
 import { LogOut, Trash, UserMinus, Edit3, Users } from 'react-feather';
+import { isIOS } from '@sudoku-web/auth/services/capacitor';
 
 const DEFAULT_MAX_SIZE = 5;
 
@@ -287,6 +284,7 @@ const PartyRow = ({
                 `https://sudoku.bubblyclouds.com${window.location.pathname}${window.location.search}`
               }
               partyName={partyName}
+              isIOS={isIOS}
             />
           </div>
         )}
@@ -387,6 +385,7 @@ const PartyRow = ({
                           }
                           extraSmall={true}
                           partyName={partyName}
+                          isIOS={isIOS}
                         />
                       </div>
                     )}
