@@ -6,11 +6,7 @@
   "types": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
-    "./*": "./src/*.ts",
-    "./gameState": "./src/gameState.ts",
-    "./serverTypes": "./src/serverTypes.ts",
-    "./tabs": "./src/tabs.ts",
-    "./userSessions": "./src/userSessions.ts"
+    "./*": "./src/*.ts"
   },
   "scripts": {
     "type-check": "tsc --noEmit",
