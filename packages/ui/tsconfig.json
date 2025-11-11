@@ -1,13 +1,7 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@sudoku-web/types": ["../types/src"],
-      "@sudoku-web/types/*": ["../types/src/*"],
-      "@sudoku-web/shared": ["../shared/src"],
-      "@sudoku-web/shared/*": ["../shared/src/*"]
-    }
+    "baseUrl": "."
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": [

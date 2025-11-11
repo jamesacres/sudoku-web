@@ -1,12 +1,12 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { InAppReview } from '@capacitor-community/in-app-review';
-import { isCapacitor } from '@sudoku-web/auth/services/capacitor';
 
 interface CelebrationAnimationProps {
   isVisible: boolean;
   gridRef?: React.RefObject<HTMLDivElement>;
   completedGamesCount?: number;
+  isCapacitor?: () => boolean;
 }
 
 interface Piece {
@@ -46,6 +46,7 @@ const CelebrationAnimation: React.FC<CelebrationAnimationProps> = ({
   isVisible,
   gridRef,
   completedGamesCount = 0,
+  isCapacitor,
 }) => {
   // For the explosion animation, we'll store the pieces based on cell content
   const [explosionPieces, setExplosionPieces] = useState<Array<Piece>>([]);
@@ -124,7 +125,7 @@ const CelebrationAnimation: React.FC<CelebrationAnimationProps> = ({
         // Ask for app rating if it's their third completed game
         // We check if count is 2, because the completedGamesCount will be stale
         try {
-          if (isCapacitor() && completedGamesCount === 2) {
+          if (isCapacitor?.() && completedGamesCount === 2) {
             InAppReview.requestReview().catch((e) => {
               console.error(e);
             });
@@ -141,7 +142,7 @@ const CelebrationAnimation: React.FC<CelebrationAnimationProps> = ({
         }
       };
     }
-  }, [isVisible, gridRef, completedGamesCount]);
+  }, [isVisible, gridRef, completedGamesCount, isCapacitor]);
 
   if (!isVisible || !isAnimating) return null;
 

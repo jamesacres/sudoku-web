@@ -2,7 +2,6 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import ThemeColorSwitch from './ThemeColorSwitch';
 import { useThemeColor } from '../providers/ThemeColorProvider';
-import { SubscriptionContext } from '@sudoku-web/types/subscriptionContext';
 
 jest.mock('../providers/ThemeColorProvider');
 
@@ -240,7 +239,7 @@ describe('ThemeColorSwitch', () => {
             mockRevenueCatContext.subscribeModal.showModalIfRequired(
               onSuccess,
               () => {},
-              SubscriptionContext.THEME_COLOR
+              'themeColor'
             )
           }
         />
@@ -267,7 +266,7 @@ describe('ThemeColorSwitch', () => {
       ).toHaveBeenCalledWith(
         expect.any(Function),
         expect.any(Function),
-        SubscriptionContext.THEME_COLOR
+        'themeColor'
       );
     });
 
@@ -279,7 +278,7 @@ describe('ThemeColorSwitch', () => {
             mockRevenueCatContext.subscribeModal.showModalIfRequired(
               onSuccess,
               () => {},
-              SubscriptionContext.THEME_COLOR
+              'themeColor'
             )
           }
         />

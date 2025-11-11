@@ -2,11 +2,6 @@ import React from 'react';
 import { render, waitFor } from '@testing-library/react';
 import { CelebrationAnimation } from './CelebrationAnimation';
 
-// Mock auth package isCapacitor function
-jest.mock('@sudoku-web/auth/services/capacitor', () => ({
-  isCapacitor: jest.fn(() => false),
-}));
-
 jest.mock('@capacitor-community/in-app-review', () => ({
   InAppReview: {
     requestReview: jest.fn(() => Promise.resolve()),
@@ -206,10 +201,8 @@ describe('CelebrationAnimation', () => {
 
   describe('in-app review integration', () => {
     it('should request in-app review on third game completion', async () => {
-      const { isCapacitor } = require('@sudoku-web/auth/services/capacitor');
+      const mockIsCapacitor = jest.fn().mockReturnValue(true);
       const { InAppReview } = require('@capacitor-community/in-app-review');
-
-      isCapacitor.mockReturnValue(true);
       const requestSpy = jest.spyOn(InAppReview, 'requestReview');
 
       const gridRef = React.createRef<HTMLDivElement>();
@@ -219,6 +212,7 @@ describe('CelebrationAnimation', () => {
             isVisible={true}
             gridRef={gridRef}
             completedGamesCount={2}
+            isCapacitor={mockIsCapacitor}
           />
         </div>
       );
@@ -233,10 +227,8 @@ describe('CelebrationAnimation', () => {
     });
 
     it('should not request in-app review if not on Capacitor', () => {
-      const { isCapacitor } = require('@sudoku-web/auth/services/capacitor');
+      const mockIsCapacitor = jest.fn().mockReturnValue(false);
       const { InAppReview } = require('@capacitor-community/in-app-review');
-
-      isCapacitor.mockReturnValue(false);
       const requestSpy = jest.spyOn(InAppReview, 'requestReview');
 
       const gridRef = React.createRef<HTMLDivElement>();
@@ -246,6 +238,7 @@ describe('CelebrationAnimation', () => {
             isVisible={true}
             gridRef={gridRef}
             completedGamesCount={2}
+            isCapacitor={mockIsCapacitor}
           />
         </div>
       );
@@ -257,10 +250,8 @@ describe('CelebrationAnimation', () => {
     });
 
     it('should not request in-app review if completedGamesCount is not 2', () => {
-      const { isCapacitor } = require('@sudoku-web/auth/services/capacitor');
+      const mockIsCapacitor = jest.fn().mockReturnValue(true);
       const { InAppReview } = require('@capacitor-community/in-app-review');
-
-      isCapacitor.mockReturnValue(true);
       const requestSpy = jest.spyOn(InAppReview, 'requestReview');
 
       const gridRef = React.createRef<HTMLDivElement>();
@@ -270,6 +261,7 @@ describe('CelebrationAnimation', () => {
             isVisible={true}
             gridRef={gridRef}
             completedGamesCount={1}
+            isCapacitor={mockIsCapacitor}
           />
         </div>
       );
@@ -281,10 +273,8 @@ describe('CelebrationAnimation', () => {
     });
 
     it('should handle in-app review errors gracefully', async () => {
-      const { isCapacitor } = require('@sudoku-web/auth/services/capacitor');
+      const mockIsCapacitor = jest.fn().mockReturnValue(true);
       const { InAppReview } = require('@capacitor-community/in-app-review');
-
-      isCapacitor.mockReturnValue(true);
       const requestSpy = jest
         .spyOn(InAppReview, 'requestReview')
         .mockRejectedValue(new Error('Review error'));
@@ -298,6 +288,7 @@ describe('CelebrationAnimation', () => {
             isVisible={true}
             gridRef={gridRef}
             completedGamesCount={2}
+            isCapacitor={mockIsCapacitor}
           />
         </div>
       );
@@ -310,6 +301,27 @@ describe('CelebrationAnimation', () => {
 
       requestSpy.mockRestore();
       consoleErrorSpy.mockRestore();
+    });
+
+    it('should not request review when isCapacitor is not provided', () => {
+      const { InAppReview } = require('@capacitor-community/in-app-review');
+      const requestSpy = jest.spyOn(InAppReview, 'requestReview');
+
+      const gridRef = React.createRef<HTMLDivElement>();
+      render(
+        <div ref={gridRef}>
+          <CelebrationAnimation
+            isVisible={true}
+            gridRef={gridRef}
+            completedGamesCount={2}
+          />
+        </div>
+      );
+
+      jest.advanceTimersByTime(9000);
+
+      expect(requestSpy).not.toHaveBeenCalled();
+      requestSpy.mockRestore();
     });
   });
 

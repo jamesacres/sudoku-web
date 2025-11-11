@@ -95,22 +95,12 @@ jest.mock('./HeaderOnline', () => {
   };
 });
 
-jest.mock('@sudoku-web/auth', () => {
-  const actual = jest.requireActual('@sudoku-web/auth');
-  return {
-    ...actual,
-    HeaderUser: function DummyHeaderUser() {
-      return <div data-testid="header-user">Header User</div>;
-    },
-  };
-});
-
-jest.mock('@sudoku-web/auth/components/HeaderUser', () => ({
-  __esModule: true,
-  default: function DummyHeaderUser() {
-    return <div data-testid="header-user">Header User</div>;
-  },
-}));
+// Mock HeaderUser component for injection testing
+const MockHeaderUser = function MockHeaderUser(props: any) {
+  return (
+    <div data-testid="header-user">Header User: {JSON.stringify(props)}</div>
+  );
+};
 
 describe('Header', () => {
   describe('rendering', () => {
@@ -120,8 +110,13 @@ describe('Header', () => {
       expect(nav).toBeInTheDocument();
     });
 
-    it('should render core child components', async () => {
-      const { findByTestId } = render(<Header />);
+    it('should render core child components when HeaderUser is provided', async () => {
+      const { findByTestId } = render(
+        <Header
+          HeaderUser={MockHeaderUser}
+          headerUserProps={{ isSubscribed: true }}
+        />
+      );
 
       const headerBack = await findByTestId('header-back');
       const headerUser = await findByTestId('header-user');
@@ -132,6 +127,19 @@ describe('Header', () => {
       expect(headerUser).toBeInTheDocument();
       expect(themeControls).toBeInTheDocument();
       expect(headerOnline).toBeInTheDocument();
+    });
+
+    it('should not render HeaderUser when not provided', async () => {
+      const { findByTestId, queryByTestId } = render(<Header />);
+
+      const headerBack = await findByTestId('header-back');
+      const themeControls = await findByTestId('theme-controls');
+      const headerOnline = await findByTestId('header-online');
+
+      expect(headerBack).toBeInTheDocument();
+      expect(themeControls).toBeInTheDocument();
+      expect(headerOnline).toBeInTheDocument();
+      expect(queryByTestId('header-user')).not.toBeInTheDocument();
     });
 
     it('should render spacing div below header', () => {
@@ -357,6 +365,39 @@ describe('Header', () => {
     });
   });
 
+  describe('HeaderUser injection', () => {
+    it('should render injected HeaderUser with props', async () => {
+      const headerUserProps = {
+        isSubscribed: true,
+        showSubscribeModal: jest.fn(),
+        deleteAccount: jest.fn(),
+      };
+
+      const { findByTestId } = render(
+        <Header HeaderUser={MockHeaderUser} headerUserProps={headerUserProps} />
+      );
+
+      const headerUser = await findByTestId('header-user');
+      expect(headerUser).toBeInTheDocument();
+      expect(headerUser.textContent).toContain('true');
+    });
+
+    it('should pass isCapacitor prop to ThemeControls', async () => {
+      const mockIsCapacitor = jest.fn();
+      const { findByTestId } = render(<Header isCapacitor={mockIsCapacitor} />);
+
+      const themeControls = await findByTestId('theme-controls');
+      expect(themeControls).toBeInTheDocument();
+    });
+
+    it('should pass isOnline prop to HeaderOnline', async () => {
+      const { findByTestId } = render(<Header isOnline={true} />);
+
+      const headerOnline = await findByTestId('header-online');
+      expect(headerOnline).toBeInTheDocument();
+    });
+  });
+
   describe('conditional rendering', () => {
     it('should always render HeaderBack by default', async () => {
       const { findByTestId } = render(<Header />);
@@ -368,6 +409,17 @@ describe('Header', () => {
       const { findByTestId } = render(<Header />);
       const themeControls = await findByTestId('theme-controls');
       expect(themeControls).toBeInTheDocument();
+    });
+
+    it('should conditionally render HeaderUser', async () => {
+      const { queryByTestId } = render(<Header />);
+      expect(queryByTestId('header-user')).not.toBeInTheDocument();
+
+      const { findByTestId: findByTestIdWithUser } = render(
+        <Header HeaderUser={MockHeaderUser} />
+      );
+      const headerUser = await findByTestIdWithUser('header-user');
+      expect(headerUser).toBeInTheDocument();
     });
   });
 

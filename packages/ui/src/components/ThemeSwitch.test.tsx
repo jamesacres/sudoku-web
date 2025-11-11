@@ -320,7 +320,9 @@ describe('ThemeSwitch', () => {
         resolvedTheme: 'light',
       });
 
-      const { rerender } = render(<ThemeSwitch isCapacitor={mockIsCapacitor} />);
+      const { rerender } = render(
+        <ThemeSwitch isCapacitor={mockIsCapacitor} />
+      );
 
       (useTheme as jest.Mock).mockReturnValue({
         theme: 'dark',

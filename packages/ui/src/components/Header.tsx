@@ -1,26 +1,29 @@
 import dynamic from 'next/dynamic';
-import { HeaderUserDependencies } from '@sudoku-web/auth/components/HeaderUser';
+import React from 'react';
 
-const HeaderUser = dynamic(
-  () => import('@sudoku-web/auth/components/HeaderUser'),
-  { ssr: false }
-);
 const HeaderBack = dynamic(() => import('./HeaderBack'), { ssr: false });
 const HeaderOnline = dynamic(() => import('./HeaderOnline'), { ssr: false });
 
 import ThemeControls from './ThemeControls';
 
-interface HeaderProps extends HeaderUserDependencies {
+interface HeaderUserProps {
+  isSubscribed?: boolean;
+  showSubscribeModal?: (onSuccess: () => void) => void;
+  deleteAccount?: () => Promise<boolean>;
+}
+
+interface HeaderProps {
   isOnline?: boolean;
   isCapacitor?: () => boolean;
+  HeaderUser?: React.ComponentType<HeaderUserProps>;
+  headerUserProps?: HeaderUserProps;
 }
 
 const Header = ({
-  isSubscribed,
-  showSubscribeModal,
-  deleteAccount,
   isOnline,
   isCapacitor,
+  HeaderUser,
+  headerUserProps,
 }: HeaderProps) => {
   return (
     <>
@@ -31,11 +34,7 @@ const Header = ({
         <div className="block flex grow items-center">
           <div className="grow text-center font-medium"></div>
           <div className="flex h-12 items-center">
-            <HeaderUser
-              isSubscribed={isSubscribed}
-              showSubscribeModal={showSubscribeModal}
-              deleteAccount={deleteAccount}
-            />
+            {HeaderUser && <HeaderUser {...headerUserProps} />}
             <ThemeControls isCapacitor={isCapacitor} />
             <HeaderOnline isOnline={isOnline} />
           </div>
