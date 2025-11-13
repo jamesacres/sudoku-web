@@ -52,22 +52,22 @@ interface SessionsProviderProps {
   children: ReactNode;
 }
 
-export const SessionsProvider = <T,>({ children }: SessionsProviderProps) => {
+export const SessionsProvider = <T extends {}>({
+  children,
+}: SessionsProviderProps) => {
   const context = useContext(UserContext) as UserContextInterface | undefined;
   const { user } = context || {};
   const [sessions, setSessionsState] = useState<ServerStateResult<T>[] | null>(
     null
   );
   const [isLoading, setIsLoading] = useState(false);
-  const [friendSessions, setFriendSessions] = useState<
-    UserSessions<ServerStateResult<T>>
-  >({});
+  const [friendSessions, setFriendSessions] = useState<UserSessions<T>>({});
   const [isFriendSessionsLoading, setIsFriendSessionsLoading] = useState(false);
   const [hasFriendSessionsInitialized, setHasFriendSessionsInitialized] =
     useState(false);
-  const friendSessionsRef = useRef<UserSessions<ServerStateResult<T>>>({});
+  const friendSessionsRef = useRef<UserSessions<T>>({});
   const isLoadingRef = useRef(false);
-  const sessionsRef = useRef<ServerStateResult<any>[] | null>(null);
+  const sessionsRef = useRef<ServerStateResult<T>[] | null>(null);
   const { listValues: listServerValues } = useServerStorage();
 
   // Update refs whenever state changes
@@ -94,7 +94,7 @@ export const SessionsProvider = <T,>({ children }: SessionsProviderProps) => {
     });
 
   const mergeSessions = useCallback(
-    (newSessions: ServerStateResult<any>[]) => {
+    (newSessions: ServerStateResult<T>[]) => {
       setSessionsState((previousSessions) => {
         if (previousSessions !== null) {
           // If missing previously, update local with server value
@@ -108,25 +108,29 @@ export const SessionsProvider = <T,>({ children }: SessionsProviderProps) => {
             const { sessionId: sessionIdWithPrefix, state } = serverState;
             if (sessionIdWithPrefix.startsWith(prefix) && state) {
               const sessionId = sessionIdWithPrefix.replace(prefix, '');
-              const { timer: serverTimerState, ...serverGameState } = state;
 
               // Apply the same shrinking logic as gameState for consistency
               // Completed puzzles only need 2 states for cheat detection
-              const optimizedGameState: any = {
-                ...serverGameState,
+              const optimizedGameState: T = {
+                ...state,
+                timer: undefined,
                 answerStack:
-                  serverGameState.completed && serverGameState.answerStack
-                    ? serverGameState.answerStack.slice(-2)
-                    : serverGameState.answerStack,
+                  'answerStack' in state
+                    ? 'completed' in state &&
+                      state.completed &&
+                      Array.isArray(state.answerStack) &&
+                      state.answerStack
+                      ? state.answerStack.slice(-2)
+                      : state.answerStack
+                    : undefined,
               };
-
               console.info('Saving missing local puzzle', sessionId);
-              saveLocalPuzzle<any>(optimizedGameState, {
+              saveLocalPuzzle<T>(optimizedGameState, {
                 overrideId: sessionId,
               });
-              if (serverTimerState) {
+              if ('timer' in state && state.timer) {
                 console.info('Saving missing local timer', sessionId);
-                saveLocalTimer<any>(serverTimerState, {
+                saveLocalTimer<any>(state.timer, {
                   overrideId: sessionId,
                 });
               }
@@ -172,10 +176,10 @@ export const SessionsProvider = <T,>({ children }: SessionsProviderProps) => {
 
       try {
         // Load local sessions ONLY - no server sessions when offline
-        const localGameStates = listLocalPuzzles<any>() || [];
-        const localTimers = listLocalTimers<any>() || [];
+        const localGameStates = listLocalPuzzles<T>() || [];
+        const localTimers = listLocalTimers<T>() || [];
 
-        const localSessions: ServerStateResult<any>[] = (
+        const localSessions: ServerStateResult<T>[] = (
           localGameStates || []
         ).map((localGameState) => {
           const updatedAt = new Date(localGameState.lastUpdated);
@@ -199,7 +203,7 @@ export const SessionsProvider = <T,>({ children }: SessionsProviderProps) => {
 
         // Try to load server sessions if online
         try {
-          const serverSessions = await listServerValues<any>();
+          const serverSessions = await listServerValues<T>();
           if (serverSessions && serverSessions.length > 0) {
             // Filter out server sessions older than a month
             const oneMonthAgo = new Date().getTime() - 32 * 24 * 60 * 60 * 1000;
@@ -235,7 +239,7 @@ export const SessionsProvider = <T,>({ children }: SessionsProviderProps) => {
     await loadSessionsData(true);
   }, [loadSessionsData]);
 
-  const setSessions = useCallback((newSessions: ServerStateResult<any>[]) => {
+  const setSessions = useCallback((newSessions: ServerStateResult<T>[]) => {
     setSessionsState(newSessions);
   }, []);
 
@@ -267,7 +271,7 @@ export const SessionsProvider = <T,>({ children }: SessionsProviderProps) => {
         );
 
         // Set loading state for each user first
-        const loadingStates: UserSessions<ServerStateResult<any>> = {};
+        const loadingStates: UserSessions<T> = {};
         friendUserIds.forEach((userId) => {
           if (
             !friendSessionsRef.current[userId] ||
@@ -297,7 +301,7 @@ export const SessionsProvider = <T,>({ children }: SessionsProviderProps) => {
                 return { userId, sessions: null };
               }
 
-              const serverValuesForUser = await listServerValues<any>({
+              const serverValuesForUser = await listServerValues<T>({
                 partyId: userParty.partyId,
                 userId,
               });
@@ -363,9 +367,9 @@ export const SessionsProvider = <T,>({ children }: SessionsProviderProps) => {
   );
 
   const getSessionParties = useCallback(
-    (parties: Party[], sessionId: string): Parties<Session<any>> => {
+    (parties: Party[], sessionId: string): Parties<Session<T>> => {
       return parties.reduce((result, party) => {
-        const nextResult: Parties<Session<any>> = {
+        const nextResult: Parties<Session<T>> = {
           ...result,
           [party.partyId]: {
             memberSessions: Object.entries(friendSessions || {}).reduce(
@@ -375,7 +379,7 @@ export const SessionsProvider = <T,>({ children }: SessionsProviderProps) => {
                 );
                 if (userSession) {
                   const nextMemberSessions: {
-                    [userId: string]: Session<any>;
+                    [userId: string]: Session<T>;
                   } = {
                     ...memberSessions,
                     [userId]: userSession,
@@ -397,7 +401,7 @@ export const SessionsProvider = <T,>({ children }: SessionsProviderProps) => {
   const patchFriendSessions = useCallback(
     (
       sessionId: string,
-      userSessions: { [userId: string]: Session<any> }
+      userSessions: { [userId: string]: Session<T> }
     ): void => {
       console.info('patchFriendSessions', userSessions);
       if (isFriendSessionsLoading) {
@@ -412,7 +416,7 @@ export const SessionsProvider = <T,>({ children }: SessionsProviderProps) => {
                 friendSessions[userId]?.sessions &&
                 !friendSessions[userId].isLoading
               ) {
-                const userSession: UserSession<ServerStateResult<any>> = {
+                const userSession: UserSession<T> = {
                   ...friendSessions[userId],
                   isLoading: friendSessions[userId].isLoading,
                   sessions: [
