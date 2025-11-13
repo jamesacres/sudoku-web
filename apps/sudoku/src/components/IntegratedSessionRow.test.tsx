@@ -30,7 +30,7 @@ jest.mock('@sudoku-web/sudoku/components/SimpleSudoku', () => ({
   },
 }));
 
-jest.mock('@sudoku-web/sudoku/hooks/useParties');
+jest.mock('@sudoku-web/template/hooks/useParties');
 jest.mock('@sudoku-web/sudoku/helpers/cheatDetection', () => ({
   isPuzzleCheated: jest.fn(() => false),
 }));
@@ -43,7 +43,7 @@ jest.mock('@sudoku-web/sudoku/helpers/calculateCompletionPercentage', () => ({
 }));
 
 jest.mock('@sudoku-web/template/providers/SessionsProvider');
-jest.mock('@sudoku-web/template/helpers/calculateSeconds');
+jest.mock('@sudoku-web/sudoku/helpers/calculateSeconds');
 
 jest.mock('@/helpers/buildPuzzleUrl', () => ({
   buildPuzzleUrl: jest.fn(() => '/puzzle?id=test'),
@@ -90,7 +90,7 @@ describe('IntegratedSessionRow', () => {
     // Setup useParties mock
     const {
       useParties: mockUseParties,
-    } = require('@sudoku-web/sudoku/hooks/useParties');
+    } = require('@sudoku-web/template/hooks/useParties');
     (mockUseParties as jest.Mock).mockReturnValue({
       parties: [],
     });
@@ -98,7 +98,7 @@ describe('IntegratedSessionRow', () => {
     // Setup calculateSeconds mock
     const {
       calculateSeconds: mockCalculateSeconds,
-    } = require('@sudoku-web/template/helpers/calculateSeconds');
+    } = require('@sudoku-web/sudoku/helpers/calculateSeconds');
     (mockCalculateSeconds as jest.Mock).mockReturnValue(120);
   });
 
@@ -437,7 +437,7 @@ describe('IntegratedSessionRow', () => {
 
       const {
         useParties: mockUseParties,
-      } = require('@sudoku-web/sudoku/hooks/useParties');
+      } = require('@sudoku-web/template/hooks/useParties');
       (mockUseParties as jest.Mock).mockReturnValue({
         parties: [
           {
@@ -459,7 +459,7 @@ describe('IntegratedSessionRow', () => {
     it('should not display friends section if no parties', () => {
       const {
         useParties: mockUseParties,
-      } = require('@sudoku-web/sudoku/hooks/useParties');
+      } = require('@sudoku-web/template/hooks/useParties');
       (mockUseParties as jest.Mock).mockReturnValue({
         parties: [],
       });

@@ -1,11 +1,10 @@
 import { ServerStateResult } from './serverTypes';
-import { ServerState } from './gameState';
 
-export interface UserSession {
+export interface UserSession<T = unknown> {
   isLoading: boolean;
-  sessions?: ServerStateResult<ServerState>[];
+  sessions?: ServerStateResult<T>[];
 }
 
-export interface UserSessions {
-  [userId: string]: UserSession | undefined;
+export interface UserSessions<T = unknown> {
+  [userId: string]: UserSession<T> | undefined;
 }

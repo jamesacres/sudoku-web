@@ -3,7 +3,7 @@ import { render, screen, waitFor, act } from '@testing-library/react';
 import { SessionsProvider, useSessions } from './SessionsProvider';
 import { UserContext } from '@sudoku-web/auth/providers/AuthProvider';
 import { ServerStateResult, Party } from '@sudoku-web/types/serverTypes';
-import { ServerState } from '@sudoku-web/types/gameState';
+import { ServerState } from '@sudoku-web/sudoku/types/gameState';
 import { useServerStorage } from '../hooks/serverStorage';
 
 // Mock dependencies
@@ -356,7 +356,7 @@ describe('SessionsProvider', () => {
       let setSessions: any;
 
       const TestComponent = () => {
-        const context = useSessions();
+        const context = useSessions<any>();
         sessions = context.sessions;
         setSessions = context.setSessions;
         return <div>Sessions: {sessions?.length}</div>;
@@ -398,7 +398,7 @@ describe('SessionsProvider', () => {
       let clearSessions: any;
 
       const TestComponent = () => {
-        const context = useSessions();
+        const context = useSessions<any>();
         sessions = context.sessions;
         clearSessions = context.clearSessions;
         return <div>Sessions: {sessions?.length}</div>;

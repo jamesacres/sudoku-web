@@ -1,7 +1,4 @@
-// TODO: import { Timer } from '../types/timer'; // File not yet migrated from sudoku app
-
-// TODO: Define Timer type or import from correct location
-type Timer = any;
+import type { Timer } from '../types/gameState';
 
 const calculateSeconds = (timer: Timer | null) => {
   let nextSeconds = 0;

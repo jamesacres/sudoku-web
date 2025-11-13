@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { Suspense } from 'react';
 import Invite from './page';
 import * as serverStorageHook from '@sudoku-web/template/hooks/serverStorage';
-import * as usePartiesHook from '@sudoku-web/sudoku/hooks/useParties';
+import * as usePartiesHook from '@sudoku-web/template/hooks/useParties';
 import {
   UserContext,
   UserContextInterface,
@@ -23,7 +23,7 @@ import {
 
 // Mock dependencies
 jest.mock('next/navigation');
-jest.mock('@sudoku-web/sudoku/hooks/useParties');
+jest.mock('@sudoku-web/template/hooks/useParties');
 jest.mock('next/image', () => ({
   __esModule: true,
   default: (props: any) => {

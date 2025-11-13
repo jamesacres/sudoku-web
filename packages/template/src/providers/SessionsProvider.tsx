@@ -31,7 +31,7 @@ interface SessionsContextType<T = any> {
   setSessions: (sessions: ServerStateResult<T>[]) => void;
   clearSessions: () => void;
   // Friend sessions
-  friendSessions: UserSessions;
+  friendSessions: UserSessions<T>;
   isFriendSessionsLoading: boolean;
   fetchFriendSessions: (parties: Party[]) => Promise<void>;
   lazyLoadFriendSessions: (parties: Party[]) => Promise<void>;
@@ -52,18 +52,20 @@ interface SessionsProviderProps {
   children: ReactNode;
 }
 
-export const SessionsProvider = ({ children }: SessionsProviderProps) => {
+export const SessionsProvider = <T,>({ children }: SessionsProviderProps) => {
   const context = useContext(UserContext) as UserContextInterface | undefined;
   const { user } = context || {};
-  const [sessions, setSessionsState] = useState<
-    ServerStateResult<any>[] | null
-  >(null);
+  const [sessions, setSessionsState] = useState<ServerStateResult<T>[] | null>(
+    null
+  );
   const [isLoading, setIsLoading] = useState(false);
-  const [friendSessions, setFriendSessions] = useState<UserSessions>({});
+  const [friendSessions, setFriendSessions] = useState<
+    UserSessions<ServerStateResult<T>>
+  >({});
   const [isFriendSessionsLoading, setIsFriendSessionsLoading] = useState(false);
   const [hasFriendSessionsInitialized, setHasFriendSessionsInitialized] =
     useState(false);
-  const friendSessionsRef = useRef<UserSessions>({});
+  const friendSessionsRef = useRef<UserSessions<ServerStateResult<T>>>({});
   const isLoadingRef = useRef(false);
   const sessionsRef = useRef<ServerStateResult<any>[] | null>(null);
   const { listValues: listServerValues } = useServerStorage();
@@ -265,7 +267,7 @@ export const SessionsProvider = ({ children }: SessionsProviderProps) => {
         );
 
         // Set loading state for each user first
-        const loadingStates: UserSessions = {};
+        const loadingStates: UserSessions<ServerStateResult<any>> = {};
         friendUserIds.forEach((userId) => {
           if (
             !friendSessionsRef.current[userId] ||
@@ -410,7 +412,7 @@ export const SessionsProvider = ({ children }: SessionsProviderProps) => {
                 friendSessions[userId]?.sessions &&
                 !friendSessions[userId].isLoading
               ) {
-                const userSession: UserSession = {
+                const userSession: UserSession<ServerStateResult<any>> = {
                   ...friendSessions[userId],
                   isLoading: friendSessions[userId].isLoading,
                   sessions: [
@@ -458,8 +460,8 @@ export const SessionsProvider = ({ children }: SessionsProviderProps) => {
   );
 };
 
-export const useSessions = () => {
-  const context = useContext(SessionsContext);
+export const useSessions = <T,>() => {
+  const context = useContext<SessionsContextType<T> | null>(SessionsContext);
   if (!context) {
     throw new Error('useSessions must be used within a SessionsProvider');
   }

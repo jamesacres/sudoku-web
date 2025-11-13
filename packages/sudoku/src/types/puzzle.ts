@@ -1,12 +1,12 @@
-// Import Puzzle types from the shared types package
+// Import Puzzle types from gameState
 export type {
   Notes,
   PuzzleRowOrColumn,
   PuzzleBox,
   PuzzleRow,
   Puzzle,
-} from '@sudoku-web/types/gameState';
-import type { Puzzle } from '@sudoku-web/types/gameState';
+} from './gameState';
+import type { Puzzle } from './gameState';
 
 export const emptyPuzzle: Puzzle<number> = {
   '0': {

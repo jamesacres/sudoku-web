@@ -1,6 +1,6 @@
 'use client';
 import { useContext, useEffect } from 'react';
-import { PartiesContext } from '../providers/PartiesProvider';
+import { PartiesContext } from '@sudoku-web/template/providers/PartiesProvider';
 
 /**
  * Hook to access Parties context with automatic lazy loading

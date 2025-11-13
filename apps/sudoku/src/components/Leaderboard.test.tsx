@@ -145,7 +145,7 @@ describe('Leaderboard', () => {
   it('should render leaderboard with data', () => {
     const user = createUser('user-1', 'Alice');
     const sessions = [createSession('user-1', true)];
-    const friendSessions: UserSessions = {
+    const friendSessions: UserSessions<ServerStateResult<ServerState>> = {
       'user-2': {
         isLoading: false,
         sessions: [createSession('user-2', true)],
@@ -171,7 +171,7 @@ describe('Leaderboard', () => {
       { userId: 'user-2', memberNickname: 'Bob' },
     ]);
     const sessions = [createSession('user-1', true)];
-    const friendSessions: UserSessions = {
+    const friendSessions: UserSessions<ServerStateResult<ServerState>> = {
       'user-2': {
         isLoading: false,
         sessions: [createSession('user-2', true)],

@@ -14,7 +14,7 @@ import Footer from '@sudoku-web/ui/components/Footer';
 import MyPuzzlesTab from '@/components/MyPuzzlesTab';
 import FriendsTab from '@/components/FriendsTab';
 import ActivityWidget from '@/components/ActivityWidget';
-import { useParties } from '@sudoku-web/sudoku/hooks/useParties';
+import { useParties } from '@sudoku-web/template/hooks/useParties';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
   Suspense,
@@ -30,6 +30,7 @@ import Image from 'next/image';
 import BookCover from '@/components/BookCover';
 import { buildPuzzleUrl } from '@/helpers/buildPuzzleUrl';
 import { isCapacitor } from '@sudoku-web/auth/services/capacitor';
+import { GameState } from '@sudoku-web/sudoku/types/gameState';
 
 function HomeComponent() {
   const searchParams = useSearchParams();
@@ -52,7 +53,7 @@ function HomeComponent() {
     refetchSessions,
     lazyLoadFriendSessions,
     fetchFriendSessions,
-  } = useSessions();
+  } = useSessions<GameState>();
 
   const hasLoadedFriendSessionsRef = useRef(false);
 

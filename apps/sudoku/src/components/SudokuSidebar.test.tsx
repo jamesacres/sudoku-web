@@ -9,9 +9,9 @@ import {
   RevenueCatContextInterface,
   RevenueCatContext,
 } from '@sudoku-web/template/providers/RevenueCatProvider';
-import { useParties } from '@sudoku-web/sudoku/hooks/useParties';
+import { useParties } from '@sudoku-web/template/hooks/useParties';
 
-jest.mock('@sudoku-web/sudoku/hooks/useParties');
+jest.mock('@sudoku-web/template/hooks/useParties');
 jest.mock('./PartyRow', () => ({
   __esModule: true,
   PartyRow: () => <div data-testid="party-row">Party Row</div>,

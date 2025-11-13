@@ -3,8 +3,7 @@ import React, { useState, useMemo } from 'react';
 import { Award } from 'react-feather';
 import { ServerStateResult, Party } from '@sudoku-web/types/serverTypes';
 import { UserProfile } from '@sudoku-web/types/userProfile';
-import { UserSessions } from '@sudoku-web/types/userSessions';
-import { ServerState } from '@sudoku-web/sudoku/types/state';
+import { GameState, ServerState } from '@sudoku-web/sudoku/types/state';
 import {
   FriendsLeaderboardScore,
   AllFriendsSessionsMap,
@@ -15,10 +14,11 @@ import {
 } from '@sudoku-web/sudoku/helpers/scoringUtils';
 import FriendLeaderboardEntry from './FriendLeaderboardEntry';
 import ScoringLegend from './ScoringLegend';
+import { UserSessions } from '@sudoku-web/types/userSessions';
 
 interface LeaderboardProps {
   sessions: ServerStateResult<ServerState>[] | null;
-  friendSessions: UserSessions;
+  friendSessions: UserSessions<GameState>;
   parties: Party[];
   user: UserProfile;
   selectedParty?: Party;

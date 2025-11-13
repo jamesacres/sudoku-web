@@ -7,7 +7,7 @@ import GlobalStateProvider from '@sudoku-web/template/providers/GlobalStateProvi
 import { ThemeColorProvider } from '@sudoku-web/ui/providers/ThemeColorProvider';
 import RevenueCatProvider from '@sudoku-web/template/providers/RevenueCatProvider';
 import { SessionsProvider } from '@sudoku-web/template/providers/SessionsProvider';
-import PartiesProvider from '@sudoku-web/sudoku/providers/PartiesProvider';
+import PartiesProvider from '@sudoku-web/template/providers/PartiesProvider';
 import { BookProvider } from '@sudoku-web/sudoku/providers/BookProvider';
 import { ThemeProvider } from 'next-themes';
 import { PropsWithChildren } from 'react';

@@ -1,5 +1,0 @@
-export enum Tab {
-  START_PUZZLE = 'START_PUZZLE',
-  MY_PUZZLES = 'MY_PUZZLES',
-  FRIENDS = 'FRIENDS',
-}

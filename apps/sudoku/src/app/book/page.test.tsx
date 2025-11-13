@@ -41,7 +41,7 @@ jest.mock('@sudoku-web/sudoku/providers/BookProvider', () => ({
   useBook: jest.fn(),
 }));
 
-jest.mock('@sudoku-web/sudoku/hooks/useParties', () => ({
+jest.mock('@sudoku-web/template/hooks/useParties', () => ({
   useParties: jest.fn(),
 }));
 
@@ -107,7 +107,7 @@ describe('Book Page', () => {
       lazyLoadFriendSessions: mockLazyLoadFriendSessions,
     });
 
-    const { useParties } = require('@sudoku-web/sudoku/hooks/useParties');
+    const { useParties } = require('@sudoku-web/template/hooks/useParties');
     useParties.mockReturnValue({
       parties: [],
     });
@@ -649,7 +649,7 @@ describe('Book Page', () => {
     });
 
     it('should load friend sessions when parties are available', async () => {
-      const { useParties } = require('@sudoku-web/sudoku/hooks/useParties');
+      const { useParties } = require('@sudoku-web/template/hooks/useParties');
       useParties.mockReturnValue({
         parties: [{ members: [{ userId: 'other-user' }] }],
       });

@@ -21,7 +21,7 @@ import { useServerStorage } from '@sudoku-web/template/hooks/serverStorage';
 import { checkCell, checkGrid } from '../helpers/checkAnswer';
 import { StateType } from '@sudoku-web/types/stateType';
 import { useTimer } from './timer';
-import { calculateSeconds } from '@sudoku-web/template/helpers/calculateSeconds';
+import { calculateSeconds } from '../helpers/calculateSeconds';
 import {
   Parties,
   ServerStateResult,
@@ -42,7 +42,7 @@ import {
 } from '@sudoku-web/template/utils/dailyActionCounter';
 import { useDocumentVisibility } from '@sudoku-web/template/hooks/documentVisibility';
 import { useSessions } from '@sudoku-web/template/providers/SessionsProvider';
-import { useParties } from './useParties';
+import { useParties } from '@sudoku-web/template/hooks/useParties';
 import type { SubscriptionContext as SubscriptionContextType } from '@sudoku-web/types/subscriptionContext';
 
 const INACTIVITY_MS = 5 * 60 * 1000; // 5 minutes in milliseconds
@@ -101,7 +101,7 @@ function useGameState({
       type: StateType.PUZZLE,
     });
   const { parties } = useParties();
-  const { getSessionParties, patchFriendSessions } = useSessions();
+  const { getSessionParties, patchFriendSessions } = useSessions<GameState>();
 
   const [isNotesMode, setIsNotesMode] = useState<boolean>(false);
   const [showSidebar, setShowSidebar] = useState(false);

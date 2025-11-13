@@ -1,8 +1,3 @@
-// Main template exports
-// Note: Components are imported from @sudoku-web/template package
-// Note: Hooks are now imported from @sudoku-web/template package, not exported from app
-export * from './types/serverTypes';
-export * from './types/tabs';
-export * from './types/userSessions';
-export * from './config/dailyLimits';
-// Note: Utils have been moved to packages/template, import from @sudoku-web/template directly
+// Note: This is a Just-In-Time package. Apps should import directly from
+// source files using the paths defined in package.json exports.
+// We don't maintain a barrel export here to avoid circular dependencies.

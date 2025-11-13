@@ -2,7 +2,7 @@
 import { Parties, Session } from '@sudoku-web/types/serverTypes';
 import { GameState, ServerState } from '../types/state';
 import { calculateCompletionPercentage } from '../helpers/calculateCompletionPercentage';
-import { useParties } from '../hooks/useParties';
+import { useParties } from '@sudoku-web/template/hooks/useParties';
 import { memo, useMemo } from 'react';
 import {
   getPlayerColor,

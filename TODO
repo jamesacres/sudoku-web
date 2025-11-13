@@ -1,6 +1,12 @@
 
-ui repo no dependencies - ensure all components which are refactored into packages inject dependencies instead of needing to depend on other internal packages
-remove ui package dependencies
+
+auth services capacitor and electron should be removed instead use them from templates. usage should inject.
+
+
+
+
+
+move parties provider to template
 
 Root package few dependencies. Instead install them where they're used. Also tsconfig should be in sub directories. Packages should install local dependencies too, ensure no circular - template should rely on auth but not the other way round
 

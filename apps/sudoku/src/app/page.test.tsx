@@ -71,14 +71,14 @@ jest.mock('@sudoku-web/auth/providers/AuthProvider', () => ({
   }),
 }));
 
-jest.mock('@sudoku-web/sudoku/providers/PartiesProvider', () => {
+jest.mock('@sudoku-web/template/providers/PartiesProvider', () => {
   return {
     __esModule: true,
     default: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   };
 });
 
-jest.mock('@sudoku-web/sudoku/hooks/useParties', () => ({
+jest.mock('@sudoku-web/template/hooks/useParties', () => ({
   useParties: jest.fn(() => ({
     parties: [],
     refreshParties: jest.fn(),

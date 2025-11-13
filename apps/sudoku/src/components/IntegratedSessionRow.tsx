@@ -5,25 +5,25 @@ import {
   ServerStateResult,
   SudokuBookPuzzle,
 } from '@sudoku-web/types/serverTypes';
-import { ServerState } from '@sudoku-web/sudoku/types/state';
+import { GameState, ServerState } from '@sudoku-web/sudoku/types/state';
 import { calculateCompletionPercentage } from '@sudoku-web/sudoku/helpers/calculateCompletionPercentage';
 import {
   puzzleTextToPuzzle,
   puzzleToPuzzleText,
 } from '@sudoku-web/sudoku/helpers/puzzleTextToPuzzle';
 import SimpleSudoku from '@sudoku-web/sudoku/components/SimpleSudoku';
-import { useParties } from '@sudoku-web/sudoku/hooks/useParties';
+import { useParties } from '@sudoku-web/template/hooks/useParties';
 import { isPuzzleCheated } from '@sudoku-web/sudoku/helpers/cheatDetection';
 import {
   UserContext,
   UserContextInterface,
 } from '@sudoku-web/auth/providers/AuthProvider';
-import { calculateSeconds } from '@sudoku-web/template/helpers/calculateSeconds';
+import { calculateSeconds } from '@sudoku-web/sudoku/helpers/calculateSeconds';
 import { useSessions } from '@sudoku-web/template/providers/SessionsProvider';
-import { UserSession, UserSessions } from '@sudoku-web/types/userSessions';
 import { Award, Loader } from 'react-feather';
 import Link from 'next/link';
 import { buildPuzzleUrl } from '@/helpers/buildPuzzleUrl';
+import { UserSessions } from '@sudoku-web/types/userSessions';
 
 // Function to get game status text
 const getGameStatusText = (
@@ -374,7 +374,7 @@ const useUserSessionData = (
 
 // Helper to process friend sessions
 const getFriendSessions = (
-  friendSessions: UserSessions,
+  friendSessions: UserSessions<GameState>,
   session: ServerStateResult<ServerState>,
   currentUserId: string | undefined,
   parties: Party[]
@@ -388,43 +388,41 @@ const getFriendSessions = (
     isCheated: boolean;
   }> = [];
 
-  Object.entries(friendSessions || {}).forEach(
-    ([userId, userSessionData]: [string, UserSession | undefined]) => {
-      if (userId === currentUserId || !userSessionData?.sessions) return;
+  Object.entries(friendSessions).forEach(([userId, userSessionData]) => {
+    if (userId === currentUserId || !userSessionData?.sessions) return;
 
-      const matchingSession = userSessionData.sessions.find(
-        (friendSession: ServerStateResult<ServerState>) =>
-          friendSession.sessionId === session.sessionId
+    const matchingSession = userSessionData.sessions.find(
+      (friendSession: ServerStateResult<ServerState>) =>
+        friendSession.sessionId === session.sessionId
+    );
+
+    if (matchingSession) {
+      const friendNickname =
+        parties
+          ?.flatMap((party) => party.members || [])
+          .find((member) => member?.userId === userId)?.memberNickname ||
+        'Unknown';
+
+      const latest =
+        matchingSession.state.answerStack[
+          matchingSession.state.answerStack.length - 1
+        ];
+      const completionPercentage = calculateCompletionPercentage(
+        matchingSession.state.initial,
+        matchingSession.state.final,
+        latest
       );
 
-      if (matchingSession) {
-        const friendNickname =
-          parties
-            ?.flatMap((party) => party.members || [])
-            .find((member) => member?.userId === userId)?.memberNickname ||
-          'Unknown';
-
-        const latest =
-          matchingSession.state.answerStack[
-            matchingSession.state.answerStack.length - 1
-          ];
-        const completionPercentage = calculateCompletionPercentage(
-          matchingSession.state.initial,
-          matchingSession.state.final,
-          latest
-        );
-
-        friendSessionData.push({
-          nickname: friendNickname,
-          userId,
-          completionPercentage,
-          completionTime: matchingSession.state.completed?.seconds || null,
-          isCompleted: !!matchingSession.state.completed,
-          isCheated: isPuzzleCheated(matchingSession.state),
-        });
-      }
+      friendSessionData.push({
+        nickname: friendNickname,
+        userId,
+        completionPercentage,
+        completionTime: matchingSession.state.completed?.seconds || null,
+        isCompleted: !!matchingSession.state.completed,
+        isCheated: isPuzzleCheated(matchingSession.state),
+      });
     }
-  );
+  });
 
   return friendSessionData;
 };
@@ -436,7 +434,7 @@ export const IntegratedSessionRow = ({
 }: IntegratedSessionRowProps) => {
   const context = useContext(UserContext) as UserContextInterface | undefined;
   const { user } = context || {};
-  const { friendSessions, isFriendSessionsLoading } = useSessions();
+  const { friendSessions, isFriendSessionsLoading } = useSessions<GameState>();
   const { parties } = useParties();
 
   const initial = puzzleToPuzzleText(session.state.initial);

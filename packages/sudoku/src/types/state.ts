@@ -1,11 +1,11 @@
 import { Notes } from './notes';
-// Import ServerState from the shared types package
+// Import ServerState from gameState
 export type {
   ServerState,
   GameState,
   GameStateMetadata,
   Timer,
-} from '@sudoku-web/types/gameState';
+} from './gameState';
 
 export type SelectNumber = (_value: number, forceNotes?: boolean) => void;
 

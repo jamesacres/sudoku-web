@@ -63,7 +63,7 @@ jest.mock('@sudoku-web/ui/providers/ThemeColorProvider', () => ({
 }));
 
 // Mock sudoku providers
-jest.mock('@sudoku-web/sudoku/providers/PartiesProvider', () => ({
+jest.mock('@sudoku-web/template/providers/PartiesProvider', () => ({
   __esModule: true,
   default: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="parties-provider">{children}</div>

@@ -17,8 +17,8 @@ import {
   puzzleTextToPuzzle,
   puzzleToPuzzleText,
 } from '@sudoku-web/sudoku/helpers/puzzleTextToPuzzle';
-import { ServerState } from '@sudoku-web/sudoku/types/state';
-import { useParties } from '@sudoku-web/sudoku/hooks/useParties';
+import { GameState, ServerState } from '@sudoku-web/sudoku/types/state';
+import { useParties } from '@sudoku-web/template/hooks/useParties';
 import { useBook } from '@sudoku-web/sudoku/providers/BookProvider';
 import IntegratedSessionRow from '@/components/IntegratedSessionRow';
 import { sha256 } from '@/helpers/sha256';
@@ -38,7 +38,7 @@ export default function BookPage() {
     isLoading: sessionsLoading,
     fetchSessions,
     lazyLoadFriendSessions,
-  } = useSessions();
+  } = useSessions<GameState>();
   const { parties } = useParties();
   const { isOnline } = useOnline();
 

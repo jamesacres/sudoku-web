@@ -2,7 +2,7 @@
 import { Puzzle, PuzzleRowOrColumn } from '@sudoku-web/sudoku/types/puzzle';
 import { calculateBoxId } from '@sudoku-web/sudoku/helpers/calculateId';
 import { TimerDisplay } from '@sudoku-web/sudoku/components/TimerDisplay';
-import { GameStateMetadata } from '@sudoku-web/sudoku/types/state';
+import { GameState, GameStateMetadata } from '@sudoku-web/sudoku/types/state';
 import { puzzleToPuzzleText } from '@sudoku-web/sudoku/helpers/puzzleTextToPuzzle';
 import SudokuBox from '@sudoku-web/sudoku/components/SudokuBox';
 import RaceTrack from '@sudoku-web/sudoku/components/RaceTrack';
@@ -14,7 +14,7 @@ import {
 } from '@sudoku-web/sudoku/utils/dailyPuzzleCounter';
 import { useGameState } from '@sudoku-web/sudoku/hooks/gameState';
 import SudokuControls from '@/components/SudokuControls';
-import { calculateSeconds } from '@sudoku-web/template/helpers/calculateSeconds';
+import { calculateSeconds } from '@sudoku-web/sudoku/helpers/calculateSeconds';
 import SudokuSidebar from '@/components/SudokuSidebar';
 import {
   useCallback,
@@ -59,7 +59,7 @@ const Sudoku = ({
   const context = useContext(UserContext) as UserContextInterface | undefined;
   const { user } = context || {};
   const { isSubscribed, subscribeModal } = useContext(RevenueCatContext) || {};
-  const { sessions } = useSessions();
+  const { sessions } = useSessions<GameState>();
 
   const {
     answer,

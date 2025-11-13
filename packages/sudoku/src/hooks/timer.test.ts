@@ -6,7 +6,7 @@ import { useTimer } from './timer';
 // Mock template hooks (must be before imports to avoid hoisting issues)
 jest.mock('@sudoku-web/template/hooks/documentVisibility');
 jest.mock('@sudoku-web/template/hooks/localStorage');
-jest.mock('@sudoku-web/template/helpers/calculateSeconds');
+jest.mock('../helpers/calculateSeconds');
 jest.mock('@sudoku-web/types/stateType', () => ({
   StateType: { TIMER: 'timer' },
 }));
@@ -27,9 +27,7 @@ describe('useTimer', () => {
     const {
       useLocalStorage,
     } = require('@sudoku-web/template/hooks/localStorage');
-    const {
-      calculateSeconds,
-    } = require('@sudoku-web/template/helpers/calculateSeconds');
+    const { calculateSeconds } = require('../helpers/calculateSeconds');
 
     mockUseDocumentVisibility = useDocumentVisibility;
     mockUseLocalStorage = useLocalStorage;

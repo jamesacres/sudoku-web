@@ -6,11 +6,14 @@
   "types": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
-    "./components": "./src/components/index.ts",
-    "./hooks": "./src/hooks/index.ts",
-    "./providers": "./src/providers/index.ts",
-    "./types": "./src/types/index.ts",
-    "./utils": "./src/utils/index.ts"
+    "./components/*": "./src/components/*.tsx",
+    "./providers/*": "./src/providers/*.tsx",
+    "./hooks/*": "./src/hooks/*.ts",
+    "./helpers/*": "./src/helpers/*.ts",
+    "./config/*": "./src/config/*.ts",
+    "./services/*": "./src/services/*.ts",
+    "./types/*": "./src/types/*.ts",
+    "./utils/*": "./src/utils/*.ts"
   },
   "scripts": {
     "dev": "tsc --watch --noEmit",

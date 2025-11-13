@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { ServerStateResult, Party } from '@sudoku-web/types/serverTypes';
 import { UserProfile } from '@sudoku-web/types/userProfile';
 import { useSessions } from '@sudoku-web/template/providers/SessionsProvider';
-import { ServerState } from '@sudoku-web/sudoku/types/state';
+import { GameState, ServerState } from '@sudoku-web/sudoku/types/state';
 import { Loader, ChevronDown, ChevronRight, RotateCcw } from 'react-feather';
 import IntegratedSessionRow from './IntegratedSessionRow';
 import Leaderboard from './Leaderboard';
@@ -21,7 +21,7 @@ export const FriendsTab = ({
   mySessions,
   onRefresh,
 }: FriendsTabProps) => {
-  const { sessions, friendSessions } = useSessions();
+  const { sessions, friendSessions } = useSessions<GameState>();
   const [expandedUsers, setExpandedUsers] = useState<Set<string>>(new Set());
   const [selectedPartyId, setSelectedPartyId] = useState<string | 'all'>('all');
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -192,24 +192,17 @@ export const FriendsTab = ({
                                   <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
                                     {friendSessions[userId]?.sessions
                                       ?.sort(
-                                        (
-                                          a: ServerStateResult<ServerState>,
-                                          b: ServerStateResult<ServerState>
-                                        ) =>
+                                        (a, b) =>
                                           new Date(b.updatedAt).getTime() -
                                           new Date(a.updatedAt).getTime()
                                       )
-                                      ?.map(
-                                        (
-                                          userSession: ServerStateResult<ServerState>
-                                        ) => (
-                                          <IntegratedSessionRow
-                                            key={userSession.sessionId}
-                                            session={userSession}
-                                            userSessions={mySessions}
-                                          />
-                                        )
-                                      )}
+                                      ?.map((userSession) => (
+                                        <IntegratedSessionRow
+                                          key={userSession.sessionId}
+                                          session={userSession}
+                                          userSessions={mySessions}
+                                        />
+                                      ))}
                                   </ul>
                                 ) : (
                                   <p className="px-3 pb-3 text-gray-600 dark:text-gray-400">

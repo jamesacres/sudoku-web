@@ -11,7 +11,7 @@ import {
   PublicInvite,
   EntitlementDuration,
 } from '@sudoku-web/types/serverTypes';
-import { useParties } from '@sudoku-web/sudoku/hooks/useParties';
+import { useParties } from '@sudoku-web/template/hooks/useParties';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useCallback, useContext, useEffect, useState } from 'react';
 import { Loader, Users, Star } from 'react-feather';
