@@ -111,7 +111,7 @@ export const SessionsProvider = <T extends {}>({
 
               // Apply the same shrinking logic as gameState for consistency
               // Completed puzzles only need 2 states for cheat detection
-              const optimizedGameState: T = {
+              const optimizedGameState = {
                 ...state,
                 timer: undefined,
                 answerStack:
@@ -125,12 +125,12 @@ export const SessionsProvider = <T extends {}>({
                     : undefined,
               };
               console.info('Saving missing local puzzle', sessionId);
-              saveLocalPuzzle<T>(optimizedGameState, {
+              saveLocalPuzzle(optimizedGameState, {
                 overrideId: sessionId,
               });
               if ('timer' in state && state.timer) {
                 console.info('Saving missing local timer', sessionId);
-                saveLocalTimer<any>(state.timer, {
+                saveLocalTimer(state.timer, {
                   overrideId: sessionId,
                 });
               }
@@ -177,21 +177,22 @@ export const SessionsProvider = <T extends {}>({
       try {
         // Load local sessions ONLY - no server sessions when offline
         const localGameStates = listLocalPuzzles<T>() || [];
-        const localTimers = listLocalTimers<T>() || [];
+        const localTimers = listLocalTimers() || [];
 
         const localSessions: ServerStateResult<T>[] = (
           localGameStates || []
         ).map((localGameState) => {
           const updatedAt = new Date(localGameState.lastUpdated);
+          const state: T = {
+            ...localGameState.state,
+            timer: (localTimers || []).find(
+              (timer) => timer.sessionId === localGameState.sessionId
+            )?.state,
+          };
           return {
             ...localGameState,
             updatedAt,
-            state: {
-              ...localGameState.state,
-              timer: (localTimers || []).find(
-                (timer) => timer.sessionId === localGameState.sessionId
-              )?.state,
-            },
+            state,
           };
         });
 
