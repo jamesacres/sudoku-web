@@ -7,7 +7,7 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { splitCellId } from '../helpers/cellIdParser';
+import { splitCellId } from '../helpers/calculateId';
 
 interface UseDragOptions {
   isZoomMode: boolean;

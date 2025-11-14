@@ -24,7 +24,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { useDrag } from '@sudoku-web/template/hooks/useDrag';
+import { useDrag } from '@sudoku-web/sudoku/hooks/useDrag';
 import {
   UserContext,
   UserContextInterface,
