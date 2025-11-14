@@ -50,10 +50,12 @@ const SessionsContext = createContext<SessionsContextType | null>(null);
 
 interface SessionsProviderProps {
   children: ReactNode;
+  stateType: StateType;
 }
 
 export const SessionsProvider = <T extends {}>({
   children,
+  stateType,
 }: SessionsProviderProps) => {
   const context = useContext(UserContext) as UserContextInterface | undefined;
   const { user } = context || {};
@@ -83,10 +85,10 @@ export const SessionsProvider = <T extends {}>({
 
   const {
     prefix,
-    listValues: listLocalPuzzles,
-    saveValue: saveLocalPuzzle,
+    listValues: listLocalStates,
+    saveValue: saveLocalState,
   } = useLocalStorage({
-    type: StateType.PUZZLE,
+    type: stateType,
   });
   const { listValues: listLocalTimers, saveValue: saveLocalTimer } =
     useLocalStorage({
@@ -111,7 +113,7 @@ export const SessionsProvider = <T extends {}>({
 
               // Apply the same shrinking logic as gameState for consistency
               // Completed puzzles only need 2 states for cheat detection
-              const optimizedGameState = {
+              const optimizedState = {
                 ...state,
                 timer: undefined,
                 answerStack:
@@ -124,8 +126,8 @@ export const SessionsProvider = <T extends {}>({
                       : state.answerStack
                     : undefined,
               };
-              console.info('Saving missing local puzzle', sessionId);
-              saveLocalPuzzle(optimizedGameState, {
+              console.info('Saving missing local state', sessionId);
+              saveLocalState(optimizedState, {
                 overrideId: sessionId,
               });
               if ('timer' in state && state.timer) {
@@ -153,7 +155,7 @@ export const SessionsProvider = <T extends {}>({
         return newSessions;
       });
     },
-    [prefix, saveLocalPuzzle, saveLocalTimer]
+    [prefix, saveLocalState, saveLocalTimer]
   );
 
   const loadSessionsData = useCallback(
@@ -176,25 +178,25 @@ export const SessionsProvider = <T extends {}>({
 
       try {
         // Load local sessions ONLY - no server sessions when offline
-        const localGameStates = listLocalPuzzles<T>() || [];
+        const localStates = listLocalStates<T>() || [];
         const localTimers = listLocalTimers() || [];
 
-        const localSessions: ServerStateResult<T>[] = (
-          localGameStates || []
-        ).map((localGameState) => {
-          const updatedAt = new Date(localGameState.lastUpdated);
-          const state: T = {
-            ...localGameState.state,
-            timer: (localTimers || []).find(
-              (timer) => timer.sessionId === localGameState.sessionId
-            )?.state,
-          };
-          return {
-            ...localGameState,
-            updatedAt,
-            state,
-          };
-        });
+        const localSessions: ServerStateResult<T>[] = (localStates || []).map(
+          (localState) => {
+            const updatedAt = new Date(localState.lastUpdated);
+            const state: T = {
+              ...localState.state,
+              timer: (localTimers || []).find(
+                (timer) => timer.sessionId === localState.sessionId
+              )?.state,
+            };
+            return {
+              ...localState,
+              updatedAt,
+              state,
+            };
+          }
+        );
 
         // Sort and set sessions directly instead of using mergeSessions
         const sortedSessions = localSessions.sort(
@@ -223,7 +225,7 @@ export const SessionsProvider = <T extends {}>({
         setIsLoading(false);
       }
     },
-    [listLocalPuzzles, listLocalTimers, listServerValues, mergeSessions]
+    [listLocalStates, listLocalTimers, listServerValues, mergeSessions]
   );
 
   const fetchSessions = useCallback(async () => {

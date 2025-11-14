@@ -11,6 +11,7 @@ import PartiesProvider from '@sudoku-web/template/providers/PartiesProvider';
 import { BookProvider } from '@sudoku-web/sudoku/providers/BookProvider';
 import { ThemeProvider } from 'next-themes';
 import { PropsWithChildren } from 'react';
+import { StateType } from '@sudoku-web/types/stateType';
 
 export function Providers({ children }: PropsWithChildren) {
   return (
@@ -20,7 +21,7 @@ export function Providers({ children }: PropsWithChildren) {
           <UserProvider>
             <RevenueCatProvider>
               <PartiesProvider>
-                <SessionsProvider>
+                <SessionsProvider stateType={StateType.PUZZLE}>
                   <BookProvider>
                     <ThemeProvider attribute="class">
                       <ThemeColorProvider>{children}</ThemeColorProvider>
