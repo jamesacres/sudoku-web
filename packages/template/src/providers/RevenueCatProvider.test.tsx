@@ -8,13 +8,13 @@ import {
 import { Purchases } from '@revenuecat/purchases-capacitor';
 
 // Mock the auth helpers
-jest.mock('@sudoku-web/auth/services/capacitor', () => ({
+jest.mock('../helpers/capacitor', () => ({
   isCapacitor: jest.fn(() => true),
   isAndroid: jest.fn(() => false),
   isIOS: jest.fn(() => true),
 }));
 
-jest.mock('@sudoku-web/auth/services/electron', () => ({
+jest.mock('../helpers/electron', () => ({
   isElectron: jest.fn(() => false),
 }));
 

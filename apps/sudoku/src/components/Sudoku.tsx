@@ -35,7 +35,7 @@ import { DAILY_LIMITS } from '@sudoku-web/template/config/dailyLimits';
 import { useSessions } from '@sudoku-web/template/providers/SessionsProvider';
 import { AppDownloadModal } from '@sudoku-web/template/components/AppDownloadModal';
 import { CelebrationAnimation } from '@sudoku-web/ui/components/CelebrationAnimation';
-import { isCapacitor } from '@sudoku-web/auth/services/capacitor';
+import { isCapacitor } from '@sudoku-web/template/helpers/capacitor';
 import MemoisedSidebarButton from '@/components/SidebarButton';
 import { useRouter } from 'next/navigation';
 import RacingPromptModal from '@/components/RacingPromptModal';

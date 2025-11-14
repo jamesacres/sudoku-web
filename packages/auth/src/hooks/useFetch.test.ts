@@ -1,6 +1,9 @@
 import { renderHook, act } from '@testing-library/react';
 import { useFetch } from './useFetch';
 import FetchProvider from '../providers/FetchProvider';
+import PlatformServicesProvider, {
+  PlatformServices,
+} from '../providers/PlatformServicesContext';
 import React, { ReactNode } from 'react';
 
 // Mock global fetch
@@ -9,9 +12,22 @@ global.fetch = jest.fn();
 describe('useFetch', () => {
   const mockFetch = global.fetch as jest.Mock;
 
+  const mockPlatformServices: PlatformServices = {
+    isElectron: () => false,
+    isCapacitor: () => false,
+    openBrowser: jest.fn(),
+    saveElectronState: jest.fn(),
+    getCapacitorState: jest.fn(() => Promise.resolve('')),
+    saveCapacitorState: jest.fn(),
+  };
+
   const createWrapper = () => {
     const Wrapper = ({ children }: { children: ReactNode }) => {
-      return React.createElement(FetchProvider, null, children);
+      return React.createElement(
+        PlatformServicesProvider,
+        { services: mockPlatformServices },
+        React.createElement(FetchProvider, null, children)
+      );
     };
     Wrapper.displayName = 'TestWrapper';
     return Wrapper;

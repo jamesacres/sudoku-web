@@ -6,6 +6,9 @@ import AuthProvider, {
   UserContextInterface,
 } from './AuthProvider';
 import FetchProvider from './FetchProvider';
+import PlatformServicesProvider, {
+  PlatformServices,
+} from './PlatformServicesContext';
 
 // Mock dependencies
 jest.mock('next/navigation', () => ({
@@ -14,15 +17,7 @@ jest.mock('next/navigation', () => ({
   })),
 }));
 
-jest.mock('../services/capacitor', () => ({
-  isCapacitor: jest.fn(() => false),
-  getCapacitorState: jest.fn(() => Promise.resolve(null)),
-}));
-
-jest.mock('../services/electron', () => ({
-  isElectron: jest.fn(() => false),
-  openBrowser: jest.fn(),
-}));
+// These mocks are no longer needed - services will be injected through context
 
 jest.mock('../services/pkce', () => ({
   pkce: jest.fn(() =>
@@ -42,10 +37,21 @@ jest.mock('@capacitor/browser', () => ({
   },
 }));
 
+const mockPlatformServices: PlatformServices = {
+  isElectron: () => false,
+  isCapacitor: () => false,
+  openBrowser: jest.fn(),
+  saveElectronState: jest.fn(),
+  getCapacitorState: jest.fn(() => Promise.resolve('')),
+  saveCapacitorState: jest.fn(),
+};
+
 const Wrapper = ({ children }: { children: React.ReactNode }) => (
-  <FetchProvider>
-    <AuthProvider>{children}</AuthProvider>
-  </FetchProvider>
+  <PlatformServicesProvider services={mockPlatformServices}>
+    <FetchProvider>
+      <AuthProvider>{children}</AuthProvider>
+    </FetchProvider>
+  </PlatformServicesProvider>
 );
 
 describe('AuthProvider', () => {

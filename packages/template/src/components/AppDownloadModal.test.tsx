@@ -3,11 +3,11 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { AppDownloadModal } from './AppDownloadModal';
 
 // Mock the capacitor helper
-jest.mock('@sudoku-web/auth/services/capacitor', () => ({
+jest.mock('../helpers/capacitor', () => ({
   isCapacitor: jest.fn(() => false),
 }));
 
-const { isCapacitor } = require('@sudoku-web/auth/services/capacitor');
+const { isCapacitor } = require('../helpers/capacitor');
 
 describe('AppDownloadModal', () => {
   const mockOnClose = jest.fn();

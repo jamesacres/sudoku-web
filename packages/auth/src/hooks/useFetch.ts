@@ -1,6 +1,5 @@
-import { saveCapacitorState, isCapacitor } from '../services/capacitor';
-import { isElectron, saveElectronState } from '../services/electron';
 import { FetchContext, State } from '../providers/FetchProvider';
+import { PlatformServicesContext } from '../providers/PlatformServicesContext';
 import { UserProfile } from '../types/UserProfile';
 import { useCallback, useContext } from 'react';
 
@@ -14,8 +13,6 @@ const jwtDecode = (token: string) =>
     )
   );
 const iss = 'https://auth.bubblyclouds.com';
-const clientId =
-  isElectron() || isCapacitor() ? 'bubbly-sudoku-native' : 'bubbly-sudoku';
 const apiUrls = ['https://api.bubblyclouds.com'];
 const authUrls = ['https://auth.bubblyclouds.com'];
 const publicApiPathPatterns = [new RegExp('^/invites/[^/]+$')];
@@ -33,6 +30,12 @@ let isRefreshing = false;
 
 function useFetch() {
   const [stateRef, setState] = useContext(FetchContext)!;
+  const platformServices = useContext(PlatformServicesContext)!;
+  const { isElectron, isCapacitor, saveElectronState, saveCapacitorState } =
+    platformServices;
+
+  const clientId =
+    isElectron() || isCapacitor() ? 'bubbly-sudoku-native' : 'bubbly-sudoku';
 
   const saveState = useCallback(
     async (newState: State, isRestoreState: boolean = false) => {
@@ -56,7 +59,7 @@ function useFetch() {
         }
       }
     },
-    [setState]
+    [setState, isElectron, isCapacitor, saveElectronState, saveCapacitorState]
   );
 
   const resetState = useCallback(async () => {
@@ -151,7 +154,7 @@ function useFetch() {
     }
 
     isRefreshing = false;
-  }, [handleTokenSuccess, stateRef]);
+  }, [handleTokenSuccess, stateRef, clientId]);
 
   const hasValidUser = useCallback(
     () =>

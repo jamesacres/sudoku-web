@@ -3,33 +3,13 @@ import { useContext } from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import UserProvider from './UserProvider';
 import { UserContext, UserContextInterface } from './AuthProvider';
+import { PlatformServices } from './PlatformServicesContext';
 
 // Mock dependencies
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(() => ({
     replace: jest.fn(),
   })),
-}));
-
-jest.mock('../services/capacitor', () => ({
-  isCapacitor: jest.fn(() => false),
-  getCapacitorState: jest.fn(() => Promise.resolve(null)),
-}));
-
-jest.mock('../services/electron', () => ({
-  isElectron: jest.fn(() => false),
-  openBrowser: jest.fn(),
-}));
-
-jest.mock('@sudoku-web/auth', () => ({
-  ...jest.requireActual('@sudoku-web/auth'),
-  pkce: jest.fn(() =>
-    Promise.resolve({
-      codeChallenge: 'test-challenge',
-      codeVerifier: 'test-verifier',
-      codeChallengeMethod: 'S256',
-    })
-  ),
 }));
 
 jest.mock('@capacitor/browser', () => ({
@@ -40,6 +20,15 @@ jest.mock('@capacitor/browser', () => ({
   },
 }));
 
+const mockPlatformServices: PlatformServices = {
+  isElectron: () => false,
+  isCapacitor: () => false,
+  openBrowser: jest.fn(),
+  saveElectronState: jest.fn(),
+  getCapacitorState: jest.fn(() => Promise.resolve('')),
+  saveCapacitorState: jest.fn(),
+};
+
 describe('UserProvider', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -49,7 +38,7 @@ describe('UserProvider', () => {
   describe('provider setup', () => {
     it('should render children', () => {
       render(
-        <UserProvider>
+        <UserProvider platformServices={mockPlatformServices}>
           <div>Test Content</div>
         </UserProvider>
       );
@@ -66,7 +55,7 @@ describe('UserProvider', () => {
       };
 
       render(
-        <UserProvider>
+        <UserProvider platformServices={mockPlatformServices}>
           <TestComponent />
         </UserProvider>
       );
@@ -88,7 +77,7 @@ describe('UserProvider', () => {
       };
 
       render(
-        <UserProvider>
+        <UserProvider platformServices={mockPlatformServices}>
           <TestComponent />
         </UserProvider>
       );
@@ -108,7 +97,7 @@ describe('UserProvider', () => {
       };
 
       render(
-        <UserProvider>
+        <UserProvider platformServices={mockPlatformServices}>
           <TestComponent />
         </UserProvider>
       );
@@ -127,7 +116,7 @@ describe('UserProvider', () => {
       };
 
       render(
-        <UserProvider>
+        <UserProvider platformServices={mockPlatformServices}>
           <TestComponent />
         </UserProvider>
       );
@@ -154,7 +143,7 @@ describe('UserProvider', () => {
       };
 
       render(
-        <UserProvider>
+        <UserProvider platformServices={mockPlatformServices}>
           <TestComponent />
         </UserProvider>
       );
@@ -180,7 +169,7 @@ describe('UserProvider', () => {
       };
 
       render(
-        <UserProvider>
+        <UserProvider platformServices={mockPlatformServices}>
           <TestComponent />
         </UserProvider>
       );
@@ -208,7 +197,7 @@ describe('UserProvider', () => {
       };
 
       render(
-        <UserProvider>
+        <UserProvider platformServices={mockPlatformServices}>
           <TestComponent />
         </UserProvider>
       );
@@ -236,7 +225,7 @@ describe('UserProvider', () => {
       };
 
       render(
-        <UserProvider>
+        <UserProvider platformServices={mockPlatformServices}>
           <TestComponent />
         </UserProvider>
       );
@@ -268,7 +257,7 @@ describe('UserProvider', () => {
       };
 
       render(
-        <UserProvider>
+        <UserProvider platformServices={mockPlatformServices}>
           <TestComponent />
         </UserProvider>
       );
@@ -296,7 +285,7 @@ describe('UserProvider', () => {
       };
 
       render(
-        <UserProvider>
+        <UserProvider platformServices={mockPlatformServices}>
           <TestComponent />
         </UserProvider>
       );
@@ -324,7 +313,7 @@ describe('UserProvider', () => {
       };
 
       render(
-        <UserProvider>
+        <UserProvider platformServices={mockPlatformServices}>
           <TestComponent />
         </UserProvider>
       );
@@ -347,7 +336,7 @@ describe('UserProvider', () => {
       };
 
       render(
-        <UserProvider>
+        <UserProvider platformServices={mockPlatformServices}>
           <TestComponent />
         </UserProvider>
       );
@@ -375,7 +364,7 @@ describe('UserProvider', () => {
       };
 
       render(
-        <UserProvider>
+        <UserProvider platformServices={mockPlatformServices}>
           <TestComponent />
         </UserProvider>
       );
@@ -398,7 +387,7 @@ describe('UserProvider', () => {
       };
 
       render(
-        <UserProvider>
+        <UserProvider platformServices={mockPlatformServices}>
           <TestComponent />
         </UserProvider>
       );
@@ -418,7 +407,7 @@ describe('UserProvider', () => {
       };
 
       render(
-        <UserProvider>
+        <UserProvider platformServices={mockPlatformServices}>
           <TestComponent />
         </UserProvider>
       );
@@ -438,7 +427,7 @@ describe('UserProvider', () => {
       };
 
       render(
-        <UserProvider>
+        <UserProvider platformServices={mockPlatformServices}>
           <TestComponent />
         </UserProvider>
       );
@@ -458,7 +447,7 @@ describe('UserProvider', () => {
       };
 
       render(
-        <UserProvider>
+        <UserProvider platformServices={mockPlatformServices}>
           <TestComponent />
         </UserProvider>
       );
@@ -480,7 +469,7 @@ describe('UserProvider', () => {
       };
 
       render(
-        <UserProvider>
+        <UserProvider platformServices={mockPlatformServices}>
           <TestComponent />
         </UserProvider>
       );
@@ -505,7 +494,7 @@ describe('UserProvider', () => {
       };
 
       render(
-        <UserProvider>
+        <UserProvider platformServices={mockPlatformServices}>
           <TestComponent />
         </UserProvider>
       );
@@ -525,7 +514,7 @@ describe('UserProvider', () => {
       };
 
       render(
-        <UserProvider>
+        <UserProvider platformServices={mockPlatformServices}>
           <TestComponent />
         </UserProvider>
       );
@@ -545,7 +534,7 @@ describe('UserProvider', () => {
 
       expect(() => {
         render(
-          <UserProvider>
+          <UserProvider platformServices={mockPlatformServices}>
             <TestComponent />
           </UserProvider>
         );
@@ -564,7 +553,7 @@ describe('UserProvider', () => {
       };
 
       render(
-        <UserProvider>
+        <UserProvider platformServices={mockPlatformServices}>
           <TestComponent />
         </UserProvider>
       );
@@ -603,10 +592,10 @@ describe('UserProvider', () => {
 
       const { container } = render(
         <>
-          <UserProvider>
+          <UserProvider platformServices={mockPlatformServices}>
             <TestComponent id={1} />
           </UserProvider>
-          <UserProvider>
+          <UserProvider platformServices={mockPlatformServices}>
             <TestComponent id={2} />
           </UserProvider>
         </>
@@ -624,7 +613,7 @@ describe('UserProvider', () => {
       };
 
       const { unmount } = render(
-        <UserProvider>
+        <UserProvider platformServices={mockPlatformServices}>
           <TestComponent />
         </UserProvider>
       );
@@ -638,7 +627,7 @@ describe('UserProvider', () => {
       context = undefined;
 
       render(
-        <UserProvider>
+        <UserProvider platformServices={mockPlatformServices}>
           <TestComponent />
         </UserProvider>
       );

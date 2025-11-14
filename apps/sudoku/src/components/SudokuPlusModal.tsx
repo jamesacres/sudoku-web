@@ -1,7 +1,7 @@
 'use client';
 
-import { isCapacitor } from '@sudoku-web/auth/services/capacitor';
-import { isElectron } from '@sudoku-web/auth/services/electron';
+import { isCapacitor } from '@sudoku-web/template/helpers/capacitor';
+import { isElectron } from '@sudoku-web/template/helpers/electron';
 import { RevenueCatContext } from '@sudoku-web/template/providers/RevenueCatProvider';
 import { SubscriptionContext } from '@sudoku-web/types/subscriptionContext';
 import { PREMIUM_FEATURES } from '@sudoku-web/template/config/premiumFeatures';

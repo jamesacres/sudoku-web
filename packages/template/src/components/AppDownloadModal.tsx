@@ -3,7 +3,7 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
 import { Smartphone, Download } from 'react-feather';
-import { isCapacitor } from '@sudoku-web/auth/services/capacitor';
+import { isCapacitor } from '../helpers/capacitor';
 import Image from 'next/image';
 
 interface AppDownloadModalProps {

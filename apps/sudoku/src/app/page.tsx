@@ -29,7 +29,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import BookCover from '@/components/BookCover';
 import { buildPuzzleUrl } from '@/helpers/buildPuzzleUrl';
-import { isCapacitor } from '@sudoku-web/auth/services/capacitor';
+import { isCapacitor } from '@sudoku-web/template/helpers/capacitor';
 import { GameState } from '@sudoku-web/sudoku/types/gameState';
 
 function HomeComponent() {

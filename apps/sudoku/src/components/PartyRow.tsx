@@ -20,7 +20,7 @@ import { CopyButton } from '@sudoku-web/ui/components/CopyButton';
 import { useContext, useState } from 'react';
 import { PartyConfirmationDialog } from './PartyConfirmationDialog';
 import { LogOut, Trash, UserMinus, Edit3, Users } from 'react-feather';
-import { isIOS } from '@sudoku-web/auth/services/capacitor';
+import { isIOS } from '@sudoku-web/template/helpers/capacitor';
 
 const DEFAULT_MAX_SIZE = 5;
 

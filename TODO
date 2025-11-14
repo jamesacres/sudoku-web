@@ -1,9 +1,5 @@
 
 
-auth services capacitor and electron should be removed instead use them from templates. usage should inject.
-
-
-
 
 
 move parties provider to template

@@ -1,11 +1,10 @@
 'use client';
-import { getCapacitorState, isCapacitor } from '../services/capacitor';
-import { isElectron, openBrowser } from '../services/electron';
 import { pkce } from '../services/pkce';
 import { useFetch } from '../hooks/useFetch';
+import { PlatformServicesContext } from './PlatformServicesContext';
 import { UserProfile } from '../types/UserProfile';
 import { useRouter } from 'next/navigation';
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Browser } from '@capacitor/browser';
 
 export interface UserContextInterface {
@@ -30,7 +29,10 @@ export interface AuthFetchHook {
   restoreState: (stateString: string) => Promise<UserProfile | undefined>;
 }
 
-const buildRedirectUri = () => {
+const buildRedirectUri = (
+  isElectron: () => boolean,
+  isCapacitor: () => boolean
+) => {
   if (isElectron()) {
     // Deep link
     const scheme = 'com.bubblyclouds.sudoku';
@@ -52,12 +54,22 @@ interface AuthProviderProps {
 
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = React.useState<UserProfile | undefined>(undefined);
+  const platformServices = useContext(PlatformServicesContext);
+
+  if (!platformServices) {
+    throw new Error(
+      'AuthProvider must be used within PlatformServicesProvider'
+    );
+  }
+
   const { fetch, getUser, logout, restoreState } = useFetch();
   const [isLoggingIn, setIsLoggingIn] = React.useState(false);
   const [isInitialised, setIsInitialised] = React.useState(false);
   const router = useRouter();
 
   const iss = 'https://auth.bubblyclouds.com';
+  const { isElectron, isCapacitor, openBrowser, getCapacitorState } =
+    platformServices;
   const clientId =
     isElectron() || isCapacitor() ? 'bubbly-sudoku-native' : 'bubbly-sudoku';
 
@@ -115,7 +127,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         console.warn(e);
       }
     },
-    [user]
+    [user, getCapacitorState]
   );
 
   const loginRedirect = React.useCallback(
@@ -134,7 +146,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const { codeChallenge, codeVerifier, codeChallengeMethod } = await pkce();
       localStorage.setItem('code_verifier', codeVerifier);
 
-      const redirectUri = buildRedirectUri();
+      const redirectUri = buildRedirectUri(isElectron, isCapacitor);
       const scope = [
         'openid',
         'profile',
@@ -174,7 +186,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setIsLoggingIn(false);
       }, 10000);
     },
-    [clientId]
+    [clientId, isElectron, isCapacitor, openBrowser]
   );
 
   const handleUser = React.useCallback(
@@ -207,7 +219,13 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
       }
     },
-    [loginRedirect, restoreState, restoreCapacitorState]
+    [
+      loginRedirect,
+      restoreState,
+      restoreCapacitorState,
+      isCapacitor,
+      isElectron,
+    ]
   );
 
   const handleAuthUrl = React.useCallback(
@@ -222,7 +240,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             const query = new URLSearchParams(window.location.search);
             const code = query.get('code') || '';
             const state = query.get('state') || '';
-            const redirectUri = buildRedirectUri();
+            const redirectUri = buildRedirectUri(isElectron, isCapacitor);
 
             const codeVerifier = localStorage.getItem('code_verifier');
             if (state === localStorage.getItem('state') && codeVerifier) {
@@ -287,7 +305,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       };
       await codeExchange();
     },
-    [clientId, router, handleUser, fetch]
+    [clientId, router, handleUser, fetch, isElectron, isCapacitor]
   );
 
   const handleRestoreState = React.useCallback(async () => {
