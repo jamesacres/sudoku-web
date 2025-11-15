@@ -120,7 +120,7 @@ jest.mock('@sudoku-web/sudoku/helpers/checkAnswer', () => ({
 
 jest.mock('@sudoku-web/sudoku/helpers/calculateId', () => ({
   calculateBoxId: jest.fn(
-    (row, col) => Math.floor(row / 3) * 3 + Math.floor(col / 3)
+    (x, y) => x * 3 + y // Generate unique IDs for each position
   ),
 }));
 
