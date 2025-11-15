@@ -8,3 +8,4 @@ Rules:
 - When moving and changing files, update the test files.
 - Ensure md files are updated if they reference something which is no longer
   true.
+- imports from within the same package should use relative imports.

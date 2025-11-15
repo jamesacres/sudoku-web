@@ -1,25 +1,12 @@
 
-
-
-
-move parties provider to template
-
-Root package few dependencies. Instead install them where they're used. Also tsconfig should be in sub directories. Packages should install local dependencies too, ensure no circular - template should rely on auth but not the other way round
-
 update constitution with new repo structure
 
 review all changes
-move auth services capacitor and electron to template
-should header ui components be moved to template?
-move theme provider from ui to template
-move sudoku parties provider to template
 fix electron auth
 make template actually build and run
 
 Add contact + manage subscription link https://www.revenuecat.com/docs/subscription-guidance/managing-subscriptions#using-the-managementurl-to-help-customers-cancel-a-subscription
 
-
-tidy up sub package jsons with only the parts used for each
 
 restore old tests
 
