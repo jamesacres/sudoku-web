@@ -38,28 +38,6 @@ packages/ui/src/components/Header/Header.tsx
 
 move rest into packages?
 
-duplicates
-playerColors.ts
-packages/template/src/providers/PartyProvider.tsx
-packages/template/src/helpers/electron.ts
-packages/template/src/helpers/capacitor.ts
-packages/template/src/helpers/cellIdParser.ts
-packages/template/src/config/dailyLimits.ts
-packages/sudoku/src/hooks/useTimer.ts
-packages/sudoku/src/helpers/scoringConfig.ts
-packages/sudoku/src/components/SudokuInputNotes/SudokuInputNotes.tsx
-packages/sudoku/src/components/SudokuInput/SudokuInput.tsx
-packages/auth/src/types/User.ts
-packages/auth/src/types/AuthToken.ts
-packages/auth/src/providers/AuthProvider.tsx
-apps/template/src/types/userSessions.ts
-apps/template/src/types/serverTypes.ts
-remove index apps/template/src/types/index.ts
-remove apps/template/src/config/index.ts and apps/template/src/components/index.ts
-apps/sudoku/src/components/leaderboard/types.ts and apps/sudoku/src/components/leaderboard/scoringUtils.ts
-apps/sudoku/src/components/leaderboard/scoringConfig.ts remove?
-default export apps/sudoku/src/components/HintBox/HintBox.tsx
-PartiesProvider move to template??
 
 remove alias rename apps/sudoku/src/components/SudokuControls/SudokuControls.tsx
 remove alias rename apps/sudoku/src/components/SidebarButton/SidebarButton.tsx and apps/sudoku/src/components/RacingPromptModal/RacingPromptModal.tsx
