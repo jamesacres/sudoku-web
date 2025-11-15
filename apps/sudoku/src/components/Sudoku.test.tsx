@@ -8,16 +8,6 @@ import { RevenueCatContext } from '@sudoku-web/template/providers/RevenueCatProv
 import { useSessions } from '@sudoku-web/template/providers/SessionsProvider';
 import { useRouter } from 'next/navigation';
 
-// Mock all the Sudoku component dependencies
-jest.mock('@sudoku-web/sudoku/types/puzzle', () => ({
-  PuzzleRowOrColumn: {},
-}));
-
-jest.mock('@sudoku-web/sudoku/types/state', () => ({
-  GameState: {},
-  GameStateMetadata: {},
-}));
-
 jest.mock('@sudoku-web/sudoku/hooks/gameState');
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
