@@ -1,10 +1,7 @@
 'use client';
 
 import { renderHook, act } from '@testing-library/react';
-import {
-  useLocalStorage,
-  StateResult,
-} from '@sudoku-web/template/hooks/localStorage';
+import { useLocalStorage } from './localStorage';
 import { StateType } from '@sudoku-web/types/stateType';
 
 describe('useLocalStorage', () => {
@@ -452,9 +449,7 @@ describe('useLocalStorage', () => {
         result.current.saveValue(testData);
       });
 
-      const retrieved = result.current.getValue() as
-        | StateResult<any>
-        | undefined;
+      const retrieved = result.current.getValue();
       expect(retrieved).toHaveProperty('state');
       expect(retrieved).toHaveProperty('lastUpdated');
       expect(retrieved?.state).toEqual(testData);
@@ -609,16 +604,6 @@ describe('useLocalStorage', () => {
       expect(listedValues).toEqual([]);
     });
 
-    it('should handle empty listValues', () => {
-      const { result } = renderHook(() =>
-        useLocalStorage({ type: StateType.PUZZLE, id: 'unique-empty' })
-      );
-
-      // Don't save anything
-      const values = result.current.listValues();
-      expect(Array.isArray(values)).toBe(true);
-    });
-
     it('should skip corrupted entries', () => {
       const { result } = renderHook(() =>
         useLocalStorage({
@@ -672,6 +657,16 @@ describe('useLocalStorage', () => {
         expect(savedValue).toHaveProperty('sessionId');
         expect(savedValue).toHaveProperty('lastUpdated');
       }
+    });
+
+    it('should handle empty listValues', () => {
+      const { result } = renderHook(() =>
+        useLocalStorage({ type: StateType.PUZZLE, id: 'unique-empty' })
+      );
+
+      // Don't save anything
+      const values = result.current.listValues();
+      expect(Array.isArray(values)).toBe(true);
     });
   });
 

@@ -5,93 +5,47 @@ import Header from './Header';
 // Mock next/dynamic to avoid SSR issues in tests
 jest.mock('next/dynamic', () => ({
   __esModule: true,
-  default: (importFn: any, _options: any) => {
-    const DynamicComponent = (props: any) => {
-      const [Component, setComponent] =
-        React.useState<React.ComponentType<any> | null>(null);
-
-      React.useEffect(() => {
-        let isMounted = true;
-
-        const loadComponent = async () => {
-          try {
-            // Call the import function
-            let result = importFn();
-
-            // If it's a Promise, await it
-            if (result && typeof result.then === 'function') {
-              result = await result;
-            }
-
-            if (!isMounted) return;
-
-            // Extract the component
-            let component = result;
-            if (result && typeof result === 'object' && 'default' in result) {
-              component = result.default;
-            }
-
-            // Validate and set the component - use function form to store the component itself
-            if (typeof component === 'function') {
-              setComponent(() => component);
-            } else if (
-              component &&
-              typeof component === 'object' &&
-              component.$$typeof
-            ) {
-              setComponent(() => component);
-            } else {
-              console.error(
-                'Dynamic import did not return a valid component:',
-                component
-              );
-            }
-          } catch (error) {
-            if (isMounted) {
-              console.error('Failed to load dynamic component:', error);
-            }
-          }
-        };
-
-        loadComponent();
-
-        return () => {
-          isMounted = false;
-        };
-      }, []);
-
-      if (!Component) {
-        return null;
-      }
-
-      return React.createElement(Component, props);
-    };
-
-    return DynamicComponent;
+  default: (fn: () => Promise<any>, _options: any) => {
+    const DynamicComponent = React.lazy(fn);
+    return (props: any) => (
+      <React.Suspense fallback={<div>Loading...</div>}>
+        <DynamicComponent {...props} />
+      </React.Suspense>
+    );
   },
 }));
 
 // Mock the subcomponents
-jest.mock('./HeaderBack', () => {
-  return function DummyHeaderBack() {
-    return <div data-testid="header-back">Header Back</div>;
+jest.mock('@sudoku-web/auth/components/HeaderUser', () => {
+  return function DummyHeaderUser() {
+    return <div data-testid="header-user">Header User</div>;
   };
 });
 
-jest.mock('./ThemeControls', () => {
-  return function DummyThemeControls() {
-    return <div data-testid="theme-controls">Theme Controls</div>;
+jest.mock('./HeaderBack', () => {
+  return {
+    __esModule: true,
+    default: function DummyHeaderBack() {
+      return <div data-testid="header-back">Header Back</div>;
+    },
   };
 });
 
 jest.mock('./HeaderOnline', () => {
-  const DummyHeaderOnline = function DummyHeaderOnline() {
-    return <div data-testid="header-online">Header Online</div>;
-  };
   return {
     __esModule: true,
-    default: DummyHeaderOnline,
-    HeaderOnline: DummyHeaderOnline,
+    default: function DummyHeaderOnline() {
+      return <div data-testid="header-online">Header Online</div>;
+    },
+  };
+});
+
+jest.mock('./ThemeControls', () => {
+  return {
+    __esModule: true,
+    default: function DummyThemeControls() {
+      return <div data-testid="theme-controls">Theme Controls</div>;
+    },
   };
 });
 
@@ -108,6 +62,18 @@ describe('Header', () => {
       const { container } = render(<Header />);
       const nav = container.querySelector('nav');
       expect(nav).toBeInTheDocument();
+    });
+
+    it('should render all child components', async () => {
+      const { findByTestId } = render(<Header />);
+
+      const headerBack = await findByTestId('header-back');
+      const themeControls = await findByTestId('theme-controls');
+      const headerOnline = await findByTestId('header-online');
+
+      expect(headerBack).toBeInTheDocument();
+      expect(themeControls).toBeInTheDocument();
+      expect(headerOnline).toBeInTheDocument();
     });
 
     it('should render core child components when HeaderUser is provided', async () => {
@@ -264,10 +230,86 @@ describe('Header', () => {
       expect(headerBack.textContent).toBe('Header Back');
     });
 
+    it('should render HeaderUser when injected', async () => {
+      const { findByTestId } = render(<Header HeaderUser={MockHeaderUser} />);
+      const headerUser = await findByTestId('header-user');
+      expect(headerUser.textContent).toContain('Header User');
+    });
+
     it('should render ThemeControls in right section', async () => {
       const { findByTestId } = render(<Header />);
       const themeControls = await findByTestId('theme-controls');
       expect(themeControls.textContent).toBe('Theme Controls');
+    });
+
+    it('should render HeaderOnline in right section', async () => {
+      const { findByTestId } = render(<Header />);
+      const headerOnline = await findByTestId('header-online');
+      expect(headerOnline.textContent).toBe('Header Online');
+    });
+  });
+
+  describe('HeaderUser injection', () => {
+    it('should render injected HeaderUser with props', async () => {
+      const headerUserProps = {
+        isSubscribed: true,
+        showSubscribeModal: jest.fn(),
+        deleteAccount: jest.fn(),
+      };
+
+      const { findByTestId } = render(
+        <Header HeaderUser={MockHeaderUser} headerUserProps={headerUserProps} />
+      );
+
+      const headerUser = await findByTestId('header-user');
+      expect(headerUser).toBeInTheDocument();
+      expect(headerUser.textContent).toContain('true');
+    });
+
+    it('should pass isCapacitor prop to ThemeControls', async () => {
+      const mockIsCapacitor = jest.fn();
+      const { findByTestId } = render(<Header isCapacitor={mockIsCapacitor} />);
+
+      const themeControls = await findByTestId('theme-controls');
+      expect(themeControls).toBeInTheDocument();
+    });
+
+    it('should pass isOnline prop to HeaderOnline', async () => {
+      const { findByTestId } = render(<Header isOnline={true} />);
+
+      const headerOnline = await findByTestId('header-online');
+      expect(headerOnline).toBeInTheDocument();
+    });
+  });
+
+  describe('conditional rendering', () => {
+    it('should always render HeaderBack by default', async () => {
+      const { findByTestId } = render(<Header />);
+      const headerBack = await findByTestId('header-back');
+      expect(headerBack).toBeInTheDocument();
+    });
+
+    it('should always render ThemeControls by default', async () => {
+      const { findByTestId } = render(<Header />);
+      const themeControls = await findByTestId('theme-controls');
+      expect(themeControls).toBeInTheDocument();
+    });
+
+    it('should always render HeaderOnline by default', async () => {
+      const { findByTestId } = render(<Header />);
+      const headerOnline = await findByTestId('header-online');
+      expect(headerOnline).toBeInTheDocument();
+    });
+
+    it('should conditionally render HeaderUser', async () => {
+      const { queryByTestId } = render(<Header />);
+      expect(queryByTestId('header-user')).not.toBeInTheDocument();
+
+      const { findByTestId: findByTestIdWithUser } = render(
+        <Header HeaderUser={MockHeaderUser} />
+      );
+      const headerUser = await findByTestIdWithUser('header-user');
+      expect(headerUser).toBeInTheDocument();
     });
   });
 
@@ -362,64 +404,6 @@ describe('Header', () => {
       // Look for the spacing div with className containing pt-[calc
       const spacingDiv = container.querySelector('[class*="pt-"]');
       expect(spacingDiv).toBeInTheDocument();
-    });
-  });
-
-  describe('HeaderUser injection', () => {
-    it('should render injected HeaderUser with props', async () => {
-      const headerUserProps = {
-        isSubscribed: true,
-        showSubscribeModal: jest.fn(),
-        deleteAccount: jest.fn(),
-      };
-
-      const { findByTestId } = render(
-        <Header HeaderUser={MockHeaderUser} headerUserProps={headerUserProps} />
-      );
-
-      const headerUser = await findByTestId('header-user');
-      expect(headerUser).toBeInTheDocument();
-      expect(headerUser.textContent).toContain('true');
-    });
-
-    it('should pass isCapacitor prop to ThemeControls', async () => {
-      const mockIsCapacitor = jest.fn();
-      const { findByTestId } = render(<Header isCapacitor={mockIsCapacitor} />);
-
-      const themeControls = await findByTestId('theme-controls');
-      expect(themeControls).toBeInTheDocument();
-    });
-
-    it('should pass isOnline prop to HeaderOnline', async () => {
-      const { findByTestId } = render(<Header isOnline={true} />);
-
-      const headerOnline = await findByTestId('header-online');
-      expect(headerOnline).toBeInTheDocument();
-    });
-  });
-
-  describe('conditional rendering', () => {
-    it('should always render HeaderBack by default', async () => {
-      const { findByTestId } = render(<Header />);
-      const headerBack = await findByTestId('header-back');
-      expect(headerBack).toBeInTheDocument();
-    });
-
-    it('should always render ThemeControls by default', async () => {
-      const { findByTestId } = render(<Header />);
-      const themeControls = await findByTestId('theme-controls');
-      expect(themeControls).toBeInTheDocument();
-    });
-
-    it('should conditionally render HeaderUser', async () => {
-      const { queryByTestId } = render(<Header />);
-      expect(queryByTestId('header-user')).not.toBeInTheDocument();
-
-      const { findByTestId: findByTestIdWithUser } = render(
-        <Header HeaderUser={MockHeaderUser} />
-      );
-      const headerUser = await findByTestIdWithUser('header-user');
-      expect(headerUser).toBeInTheDocument();
     });
   });
 

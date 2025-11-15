@@ -9,6 +9,15 @@ Add contact + manage subscription link https://www.revenuecat.com/docs/subscript
 
 
 restore old tests
+packages/ui/src/components/HeaderOnline.test.tsx
+src/components/HeaderUser/DeleteAccountDialog.test.tsx
+src/components/HeaderUser/HeaderUser.test.tsx
+src/components/HeaderUser/UserAvatar.test.tsx
+src/components/HeaderUser/UserButton.test.tsx
+src/components/HeaderUser/UserPanel.test.tsx
+src/components/Sudoku/Sudoku.test.tsx
+
+move apps/template/src/config/dailyLimits.ts into sudoku app
 
 move remaining sudoku components into package
 fix next config file generation vercel

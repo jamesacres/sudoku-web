@@ -2,17 +2,14 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import RaceTrack from './RaceTrack';
 import * as usePartiesModule from '@sudoku-web/template/hooks/useParties';
+import * as playerColorsModule from '@sudoku-web/template/utils/playerColors';
 import * as completionModule from '../helpers/calculateCompletionPercentage';
 import * as cheatDetectionModule from '../helpers/cheatDetection';
-import { Parties, Session, ServerState } from '@sudoku-web/types/serverTypes';
+import { Parties, Session } from '@sudoku-web/types/serverTypes';
+import { ServerState } from '@sudoku-web/types/state';
 
 jest.mock('@sudoku-web/template/hooks/useParties');
-jest.mock('@sudoku-web/template', () => ({
-  ...jest.requireActual('@sudoku-web/template'),
-  getPlayerColor: jest.fn(),
-  getAllUserIds: jest.fn(),
-  formatSeconds: jest.fn((seconds) => `${seconds}s`),
-}));
+jest.mock('@sudoku-web/template/utils/playerColors');
 jest.mock('../helpers/calculateCompletionPercentage');
 jest.mock('../helpers/cheatDetection');
 jest.mock('./TrafficLight', () => ({
@@ -23,8 +20,8 @@ jest.mock('./TrafficLight', () => ({
 }));
 
 const mockUseParties = usePartiesModule.useParties as jest.Mock;
-const { getPlayerColor: mockGetPlayerColor, getAllUserIds: mockGetAllUserIds } =
-  jest.requireMock('@sudoku-web/template');
+const mockGetPlayerColor = playerColorsModule.getPlayerColor as jest.Mock;
+const mockGetAllUserIds = playerColorsModule.getAllUserIds as jest.Mock;
 const mockCalculateCompletionPercentage =
   completionModule.calculateCompletionPercentage as jest.Mock;
 const mockIsPuzzleCheated = cheatDetectionModule.isPuzzleCheated as jest.Mock;

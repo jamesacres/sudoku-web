@@ -180,9 +180,9 @@ describe('Footer', () => {
       );
 
       const nav = container.querySelector('nav');
-      expect(mockIsCapacitor).toHaveBeenCalled();
       expect(nav).toHaveClass('pb-safe');
       expect(nav).toHaveClass('pt-2');
+      expect(mockIsCapacitor).toHaveBeenCalled();
     });
 
     it('should not add pb-safe and pt-2 classes when isCapacitor is false', () => {
@@ -195,9 +195,9 @@ describe('Footer', () => {
       );
 
       const nav = container.querySelector('nav');
-      expect(mockIsCapacitor).toHaveBeenCalled();
       expect(nav).not.toHaveClass('pb-safe');
       expect(nav).not.toHaveClass('pt-2');
+      expect(mockIsCapacitor).toHaveBeenCalled();
     });
 
     it('should use default isCapacitor that returns false when not provided', () => {

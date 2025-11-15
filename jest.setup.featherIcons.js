@@ -50,6 +50,7 @@ const iconNames = [
   'EyeOff',
   'Check',
   'AlertCircle',
+  'AlertTriangle',
   'Smartphone',
   'Download',
   'RefreshCw',

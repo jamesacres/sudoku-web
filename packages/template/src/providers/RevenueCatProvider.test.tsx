@@ -7,67 +7,13 @@ import {
 } from '@sudoku-web/auth/providers/AuthProvider';
 import { Purchases } from '@revenuecat/purchases-capacitor';
 
-// Mock the auth helpers
 jest.mock('../helpers/capacitor', () => ({
-  isCapacitor: jest.fn(() => true),
-  isAndroid: jest.fn(() => false),
-  isIOS: jest.fn(() => true),
+  isCapacitor: () => true,
+  isAndroid: () => false,
+  isIOS: () => true,
 }));
-
-jest.mock('../helpers/electron', () => ({
-  isElectron: jest.fn(() => false),
-}));
-
-// Mock the Capacitor purchases SDK
-jest.mock('@revenuecat/purchases-capacitor', () => ({
-  Purchases: {
-    setLogLevel: jest.fn().mockResolvedValue(undefined),
-    configure: jest.fn().mockResolvedValue(undefined),
-    getOfferings: jest.fn().mockResolvedValue({
-      all: {
-        default: {
-          availablePackages: [],
-        },
-      },
-    }),
-    getCustomerInfo: jest.fn().mockResolvedValue({
-      customerInfo: { entitlements: { active: { premium: {} } } },
-    }),
-    purchasePackage: jest.fn().mockResolvedValue({
-      customerInfo: { entitlements: { active: { premium: {} } } },
-    }),
-  },
-  LOG_LEVEL: {
-    DEBUG: 'debug',
-    INFO: 'info',
-    WARN: 'warn',
-    ERROR: 'error',
-  },
-}));
-
-// Mock the Web purchases SDK to prevent real network calls
-jest.mock('@revenuecat/purchases-js', () => ({
-  Purchases: {
-    setLogLevel: jest.fn(),
-    configure: jest.fn(),
-    getSharedInstance: jest.fn(() => ({
-      getOfferings: jest.fn().mockResolvedValue({
-        all: {
-          default: {
-            availablePackages: [],
-          },
-        },
-      }),
-      getCustomerInfo: jest.fn().mockResolvedValue({
-        entitlements: { active: {} },
-      }),
-      purchase: jest.fn(),
-    })),
-  },
-  LogLevel: {
-    Debug: 'Debug',
-  },
-}));
+jest.mock('../helpers/electron', () => ({ isElectron: () => false }));
+jest.mock('@revenuecat/purchases-capacitor');
 
 const mockPurchases = Purchases as jest.Mocked<typeof Purchases>;
 
@@ -93,14 +39,10 @@ describe('RevenueCatProvider', () => {
     jest.clearAllMocks();
     mockPurchases.configure.mockResolvedValue(undefined);
     mockPurchases.getCustomerInfo.mockResolvedValue({
-      customerInfo: { entitlements: { active: { Plus: {} } } },
+      customerInfo: { entitlements: { active: {} } },
     } as any);
     mockPurchases.getOfferings.mockResolvedValue({
-      all: {
-        default: {
-          availablePackages: [],
-        },
-      },
+      all: { default: { availablePackages: [] } },
     } as any);
   });
 
@@ -121,13 +63,6 @@ describe('RevenueCatProvider', () => {
     mockPurchases.getCustomerInfo.mockResolvedValue({
       customerInfo: { entitlements: { active: { Plus: {} } } },
     } as any);
-    mockPurchases.getOfferings.mockResolvedValue({
-      all: {
-        default: {
-          availablePackages: [],
-        },
-      },
-    } as any);
     renderWithUser(mockUser);
     await waitFor(() => {
       expect(screen.getByText('Subscribed')).toBeInTheDocument();
@@ -135,18 +70,7 @@ describe('RevenueCatProvider', () => {
   });
 
   it('provides a function to purchase a package', async () => {
-    const mockPackage = { identifier: 'test_package' } as any;
-    mockPurchases.purchasePackage.mockResolvedValue({
-      customerInfo: { entitlements: { active: {} } },
-    } as any);
-    mockPurchases.getOfferings.mockResolvedValue({
-      all: {
-        default: {
-          availablePackages: [],
-        },
-      },
-    } as any);
-
+    mockPurchases.purchasePackage.mockResolvedValue({} as any);
     let context: any;
     const Consumer = () => {
       context = useContext(RevenueCatContext);
@@ -165,11 +89,11 @@ describe('RevenueCatProvider', () => {
     });
 
     await act(async () => {
-      await context.purchasePackage(mockPackage);
+      await context.purchasePackage('test_package');
     });
 
     expect(mockPurchases.purchasePackage).toHaveBeenCalledWith({
-      aPackage: mockPackage,
+      aPackage: 'test_package',
     });
   });
 });
