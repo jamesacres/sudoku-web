@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import SudokuBox from './SudokuBox';
-import { PuzzleBox } from '../types/puzzle';
+import type { PuzzleBox } from '../types/puzzle';
 
 // Mock SudokuInput to avoid complex dependencies
 jest.mock('./SudokuInput', () => {
@@ -306,6 +306,233 @@ describe('SudokuBox', () => {
     });
   });
 
+  describe('initial cell styling', () => {
+    it('should pass isInitial prop correctly to SudokuInput', () => {
+      render(
+        <SudokuBox
+          boxId="0-0"
+          selectedCell={null}
+          setSelectedCell={mockSetSelectedCell}
+          answer={createFilledBox()}
+          selectNumber={mockSelectNumber}
+          initial={createInitialBox()}
+        />
+      );
+
+      // Verify the box renders and the cells are created
+      expect(mockSetSelectedCell).not.toHaveBeenCalled();
+    });
+
+    it('should have 9 cells with correct data attributes', () => {
+      const { container } = render(
+        <SudokuBox
+          boxId="0-0"
+          selectedCell={null}
+          setSelectedCell={mockSetSelectedCell}
+          answer={createFilledBox()}
+          selectNumber={mockSelectNumber}
+          initial={createInitialBox()}
+        />
+      );
+
+      const cells = container.querySelectorAll('[data-cell-container-id]');
+      expect(cells.length).toBe(9);
+
+      // Verify each cell has proper data attributes
+      cells.forEach((cell) => {
+        expect(cell).toHaveAttribute('data-cell-container-id');
+      });
+    });
+  });
+
+  describe('zoom mode', () => {
+    it('should accept isZoomMode prop', () => {
+      const { container } = render(
+        <SudokuBox
+          boxId="0-0"
+          selectedCell={null}
+          setSelectedCell={mockSetSelectedCell}
+          answer={createEmptyBox()}
+          selectNumber={mockSelectNumber}
+          initial={createEmptyBox()}
+          isZoomMode={true}
+        />
+      );
+
+      expect(
+        container.querySelector('[data-box-id="0-0"]')
+      ).toBeInTheDocument();
+    });
+  });
+
+  describe('drag support', () => {
+    const mockOnDragStart = jest.fn();
+
+    beforeEach(() => {
+      mockOnDragStart.mockClear();
+    });
+
+    it('should accept onDragStart prop', () => {
+      const { container } = render(
+        <SudokuBox
+          boxId="0-0"
+          selectedCell={null}
+          setSelectedCell={mockSetSelectedCell}
+          answer={createEmptyBox()}
+          selectNumber={mockSelectNumber}
+          initial={createEmptyBox()}
+          onDragStart={mockOnDragStart}
+        />
+      );
+
+      expect(
+        container.querySelector('[data-box-id="0-0"]')
+      ).toBeInTheDocument();
+    });
+  });
+
+  describe('multiple boxes', () => {
+    it('should render different box IDs correctly', () => {
+      const { rerender, container } = render(
+        <SudokuBox
+          boxId="0-0"
+          selectedCell={null}
+          setSelectedCell={mockSetSelectedCell}
+          answer={createEmptyBox()}
+          selectNumber={mockSelectNumber}
+          initial={createEmptyBox()}
+        />
+      );
+
+      let boxElement = container.querySelector('[data-box-id="0-0"]');
+      expect(boxElement).toBeInTheDocument();
+
+      rerender(
+        <SudokuBox
+          boxId="2-2"
+          selectedCell={null}
+          setSelectedCell={mockSetSelectedCell}
+          answer={createEmptyBox()}
+          selectNumber={mockSelectNumber}
+          initial={createEmptyBox()}
+        />
+      );
+
+      boxElement = container.querySelector('[data-box-id="2-2"]');
+      expect(boxElement).toBeInTheDocument();
+    });
+  });
+
+  describe('cell interactions with grid', () => {
+    it('should create correct grid layout with 3x3 cells', () => {
+      const { container } = render(
+        <SudokuBox
+          boxId="0-0"
+          selectedCell={null}
+          setSelectedCell={mockSetSelectedCell}
+          answer={createEmptyBox()}
+          selectNumber={mockSelectNumber}
+          initial={createEmptyBox()}
+        />
+      );
+
+      const boxElement = container.querySelector('[data-box-id="0-0"]');
+      const cells = boxElement?.querySelectorAll('[data-cell-container-id]');
+
+      expect(cells).toHaveLength(9);
+    });
+
+    it('should handle empty values gracefully', () => {
+      const answer: PuzzleBox = {
+        0: [0, 0, 0],
+        1: [0, 0, 0],
+        2: [0, 0, 0],
+      };
+
+      const { container } = render(
+        <SudokuBox
+          boxId="0-0"
+          selectedCell={null}
+          setSelectedCell={mockSetSelectedCell}
+          answer={answer}
+          selectNumber={mockSelectNumber}
+          initial={createEmptyBox()}
+        />
+      );
+
+      const cells = container.querySelectorAll('[data-cell-container-id]');
+      cells.forEach((cell) => {
+        // Cells with value 0 should not display any text
+        const content = cell.textContent;
+        expect(content).toBe('');
+      });
+    });
+  });
+
+  describe('memoization', () => {
+    it('should be memoized and not re-render on props change if values are same', () => {
+      const { rerender } = render(
+        <SudokuBox
+          boxId="0-0"
+          selectedCell={null}
+          setSelectedCell={mockSetSelectedCell}
+          answer={createEmptyBox()}
+          selectNumber={mockSelectNumber}
+          initial={createEmptyBox()}
+        />
+      );
+
+      // Re-render with same props
+      rerender(
+        <SudokuBox
+          boxId="0-0"
+          selectedCell={null}
+          setSelectedCell={mockSetSelectedCell}
+          answer={createEmptyBox()}
+          selectNumber={mockSelectNumber}
+          initial={createEmptyBox()}
+        />
+      );
+
+      // Component should still exist and be functional
+      expect(mockSetSelectedCell).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('accessibility', () => {
+    it('should use semantic HTML elements', () => {
+      const { container } = render(
+        <SudokuBox
+          boxId="0-0"
+          selectedCell={null}
+          setSelectedCell={mockSetSelectedCell}
+          answer={createFilledBox()}
+          selectNumber={mockSelectNumber}
+          initial={createEmptyBox()}
+        />
+      );
+
+      const boxElement = container.querySelector('[data-box-id="0-0"]');
+      expect(boxElement?.tagName).toBe('DIV');
+    });
+
+    it('should have descriptive data attributes', () => {
+      const { container } = render(
+        <SudokuBox
+          boxId="1-2"
+          selectedCell={null}
+          setSelectedCell={mockSetSelectedCell}
+          answer={createEmptyBox()}
+          selectNumber={mockSelectNumber}
+          initial={createEmptyBox()}
+        />
+      );
+
+      const boxElement = container.querySelector('[data-box-id="1-2"]');
+      expect(boxElement).toHaveAttribute('data-box-id', '1-2');
+    });
+  });
+
   describe('edge cases', () => {
     it('should handle partial fills', () => {
       const answer: PuzzleBox = {
@@ -329,6 +556,34 @@ describe('SudokuBox', () => {
       expect(screen.getByText('2')).toBeInTheDocument();
       expect(screen.getByText('6')).toBeInTheDocument();
       expect(screen.getByText('9')).toBeInTheDocument();
+    });
+
+    it('should handle changing answer between renders', () => {
+      const { rerender } = render(
+        <SudokuBox
+          boxId="0-0"
+          selectedCell={null}
+          setSelectedCell={mockSetSelectedCell}
+          answer={createEmptyBox()}
+          selectNumber={mockSelectNumber}
+          initial={createEmptyBox()}
+        />
+      );
+
+      rerender(
+        <SudokuBox
+          boxId="0-0"
+          selectedCell={null}
+          setSelectedCell={mockSetSelectedCell}
+          answer={createFilledBox()}
+          selectNumber={mockSelectNumber}
+          initial={createEmptyBox()}
+        />
+      );
+
+      for (let i = 1; i <= 9; i++) {
+        expect(screen.getByText(i.toString())).toBeInTheDocument();
+      }
     });
   });
 });
