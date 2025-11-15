@@ -31,7 +31,7 @@ import {
 } from '@sudoku-web/auth/providers/AuthProvider';
 import { RevenueCatContext } from '@sudoku-web/template/providers/RevenueCatProvider';
 import { SubscriptionContext } from '@sudoku-web/types/subscriptionContext';
-import { DAILY_LIMITS } from '@sudoku-web/template/config/dailyLimits';
+import { DAILY_LIMITS } from '../config/dailyLimits';
 import { useSessions } from '@sudoku-web/template/providers/SessionsProvider';
 import { AppDownloadModal } from '@sudoku-web/template/components/AppDownloadModal';
 import { CelebrationAnimation } from '@sudoku-web/ui/components/CelebrationAnimation';

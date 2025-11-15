@@ -127,7 +127,7 @@ jest.mock('@sudoku-web/sudoku/utils/dailyPuzzleCounter', () => ({
   getDailyPuzzleCount: jest.fn(() => 1),
 }));
 
-jest.mock('@sudoku-web/template/config/dailyLimits', () => ({
+jest.mock('../config/dailyLimits', () => ({
   DAILY_LIMITS: {
     FREE_DAILY_PUZZLES: 3,
   },
