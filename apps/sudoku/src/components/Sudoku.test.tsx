@@ -118,12 +118,6 @@ jest.mock('@sudoku-web/sudoku/helpers/checkAnswer', () => ({
   isInitialCell: jest.fn(() => false),
 }));
 
-jest.mock('@sudoku-web/sudoku/helpers/calculateId', () => ({
-  calculateBoxId: jest.fn(
-    (x, y) => x * 3 + y // Generate unique IDs for each position
-  ),
-}));
-
 jest.mock('@sudoku-web/sudoku/helpers/calculateSeconds', () => ({
   calculateSeconds: jest.fn(() => 120),
 }));
